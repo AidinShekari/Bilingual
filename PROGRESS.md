@@ -8,7 +8,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 |---|-------|----|----|----------|
 | 01 | GSM, GPRS and EDGE | done | done | yes |
 | 02 | 2G Circuit Switching | done | done | yes |
-| 03 | | | | |
+| 03 | 2G/3G Core Networks | done | done | yes |
 | 04 | | | | |
 | 05 | | | | |
 | 06 | | | | |
