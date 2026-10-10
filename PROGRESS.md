@@ -26,7 +26,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 18 | 5G Service-Based Architecture | done | done | yes |
 | 19 | 5G Core Architecture | done | done | yes |
 | 20 | 5G Procedures | done | done | yes |
-| 21 | | | | |
+| 21 | Network Slicing | done | done | yes |
 | 22 | | | | |
 | 23 | | | | |
 | 24 | | | | |

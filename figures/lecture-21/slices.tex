@@ -1,0 +1,24 @@
+% End-to-end network slices across RAN, transport and core with shared and dedicated functions
+\begin{tikzpicture}[x=1cm,y=1cm,
+  dom/.style={zone,minimum width=3.0cm,minimum height=4.6cm,fill=acnmist},
+  fn/.style={nf,minimum width=1.25cm,minimum height=0.55cm,font=\ACNheadfont\tiny\bfseries},
+  sl/.style={line width=3pt,opacity=0.75,line cap=round}]
+  \node[dom] (ran) at (1.5,0) {}; \node[zonelabel,anchor=north] at (ran.north) {RAN};
+  \node[dom] (tr) at (5.0,0) {}; \node[zonelabel,anchor=north] at (tr.north) {\bil{transport}{انتقال}};
+  \node[dom,minimum width=4.4cm] (cn) at (9.4,0) {}; \node[zonelabel,anchor=north] at (cn.north) {\bil{5G core}{هستهٔ نسل پنجم}};
+  % shared parts
+  \node[fn,minimum width=2.4cm] at (1.5,-1.85) {\bil{shared gNB (PRB partitions)}{gNB مشترک (بخش‌های PRB)}};
+  \node[fn,fill=acnmist,minimum width=2.6cm] at (9.4,1.75) {\bil{shared: AMF, NSSF, NRF, UDM}{مشترک: AMF، NSSF، NRF، UDM}};
+  % slice-specific core functions
+  \node[fn,fill=acnsky] (s1) at (8.4,0.9) {SMF\textsubscript{1}}; \node[fn,fill=acnsky] (u1) at (10.4,0.9) {UPF\textsubscript{1}};
+  \node[fn,fill=acnmint,draw=acnteal] (s2) at (8.4,0.0) {SMF\textsubscript{2}}; \node[fn,fill=acnmint,draw=acnteal] (u2) at (10.4,0.0) {UPF\textsubscript{2}};
+  \node[fn,fill=acnsand,draw=acnamber] (s3) at (8.4,-0.9) {SMF\textsubscript{3}}; \node[fn,fill=acnsand,draw=acnamber] (u3) at (10.4,-0.9) {UPF\textsubscript{3}};
+  % slice pipes
+  \draw[sl,acnblue] (0.2,0.9) -- (u1.west);
+  \draw[sl,acnteal] (0.2,0.0) -- (u2.west);
+  \draw[sl,acnamber] (0.2,-0.9) -- (u3.west);
+  \node[caplabel,anchor=east,text=acnblue] at (0.1,0.9) {\bil{slice 1: eMBB}{برش ۱: eMBB}};
+  \node[caplabel,anchor=east,text=acnteal] at (0.1,0.0) {\bil{slice 2: URLLC}{برش ۲: URLLC}};
+  \node[caplabel,anchor=east,text=acnamber] at (0.1,-0.9) {\bil{slice 3: mMTC}{برش ۳: mMTC}};
+  \node[caplabel] at (5.0,-1.85) {\bil{VPNs / SR policies}{VPN / سیاست‌های SR}};
+\end{tikzpicture}
