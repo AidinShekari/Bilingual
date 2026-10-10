@@ -1,0 +1,486 @@
+% =====================================================================
+%  Lecture 08 -- Random Access Channel (RACH)             (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{08}
+\ACNset{title}{Random Access Channel (RACH)}
+\ACNset{shorttitle}{Random Access (RACH)}
+\ACNset{titleother}{کانال دسترسی تصادفی (RACH)}
+\ACNset{part}{Part II -- 4G access and core (Lectures 5--13)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Intermediate}
+\ACNset{prereq}{Lectures 6--7; slotted ALOHA; complex exponentials and correlation}
+\ACNset{gen}{4}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{List} the situations in which an LTE UE must perform random access and
+        \textbf{explain} why uplink synchronisation is the core problem.
+  \item \textbf{Describe} the PRACH: preamble formats, cyclic prefix, guard time and the
+        maximum cell range they imply.
+  \item \textbf{Explain} Zadoff--Chu sequences, their correlation properties and how 64
+        preambles are generated per cell with cyclic shifts.
+  \item \textbf{Trace} contention-based (4-step) and contention-free random access, and the NR
+        2-step variant.
+  \item \textbf{Compute} timing advance values and the cell radius supported by a cyclic-shift
+        configuration.
+  \item \textbf{Model} preamble collisions and RACH overload, and \textbf{evaluate} countermeasures
+        such as access class barring and backoff.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+You need the LTE frame structure and uplink scheduling of Lecture~7 (in particular that PUSCH
+transmissions of different UEs must arrive time-aligned at the eNB), the timing advance concept
+of GSM (Lecture~1), the slotted ALOHA model of random access from introductory networking, and
+the definition of the periodic cross-correlation of two complex sequences.
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+Random access (RA) & \fa{دسترسی تصادفی} & Uncoordinated first uplink access of a UE. \\
+PRACH & \fa{کانال فیزیکی دسترسی تصادفی} & Time--frequency resources reserved for preambles. \\
+Preamble & \fa{پیش‌نوا} & Known sequence sent by the UE in Msg1. \\
+Zadoff--Chu (ZC) sequence & \fa{دنبالهٔ زادوف--چو} & Constant-amplitude sequence with ideal cyclic autocorrelation. \\
+Cyclic shift ($N_{\mathrm{CS}}$) & \fa{جابه‌جایی چرخشی} & Shift that creates orthogonal preambles from one root. \\
+Timing advance (TA) & \fa{پیش‌فرستی زمانی} & Uplink advance compensating the round-trip delay. \\
+RAR & \fa{پاسخ دسترسی تصادفی} & Msg2: TA, uplink grant and temporary identity. \\
+Contention resolution & \fa{حل رقابت} & Msg4: tells which of the colliding UEs won. \\
+Backoff & \fa{عقب‌نشینی} & Random wait before a new attempt. \\
+Access class barring (ACB) & \fa{مسدودسازی ردهٔ دسترسی} & Probabilistic admission control before RA. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+Scheduled access needs two things the network does not have for a newly arriving UE: an
+\emph{identity} to address it on the PDCCH and \emph{uplink time alignment}. A UE that has just woken
+up knows the downlink timing (from the synchronisation signals) but not its distance to the eNB.
+If it simply transmitted on PUSCH, its symbols would arrive late by the round-trip delay and destroy
+the orthogonality of SC-FDMA with other users.
+
+Random access is the procedure that solves both problems at once. The UE sends a short, robust
+signal (a \emph{preamble}) in resources reserved for this purpose; the eNB measures its arrival time,
+sends back a timing correction and a first grant, and the two sides then resolve the possibility that
+several UEs chose the same preamble. The procedure is used surprisingly often -- at every call set-up
+from idle, at every handover, after radio link failure and whenever an out-of-sync UE has data -- so its
+capacity, latency and robustness matter. With massive IoT and 5G beam-based access, random access has
+become one of the most actively engineered parts of the radio interface.
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{When random access is triggered}
+In LTE the MAC performs random access \cite{ts36321} for:
+\begin{itemize}
+  \item initial access from RRC\_IDLE (RRC connection establishment);
+  \item RRC connection re-establishment after radio link failure;
+  \item handover, to synchronise with the target cell;
+  \item downlink data arrival for a connected UE that has lost uplink synchronisation;
+  \item uplink data arrival when the UE is out of sync or has no scheduling-request resources;
+  \item positioning, where the timing advance is needed.
+\end{itemize}
+
+\subsection{Contention-based versus contention-free}
+In \textbf{contention-based} random access (CBRA) the UE picks a preamble at random from a common set;
+two UEs may pick the same one, so a contention-resolution step is needed. In \textbf{contention-free}
+random access (CFRA) the eNB assigns a dedicated preamble in advance (for handover or downlink data
+arrival); no collision can occur and the procedure ends after the RAR.
+
+\subsection{Zadoff--Chu sequences}
+\begin{definitionbox}{Zadoff--Chu sequence}
+For an odd prime length $N_{\mathrm{ZC}}$ and a root index $u\in\{1,\dots,N_{\mathrm{ZC}}-1\}$,
+\begin{equation}\label{eq:zc}
+  x_u(n) = \exp\!\left(-\jj\,\frac{\pi\,u\,n\,(n+1)}{N_{\mathrm{ZC}}}\right), \qquad n = 0,1,\dots,N_{\mathrm{ZC}}-1 .
+\end{equation}
+Its amplitude is constant, its periodic autocorrelation is zero for every non-zero shift, and the
+cross-correlation of two different roots has constant magnitude $1/\sqrt{N_{\mathrm{ZC}}}$ (normalised).
+\end{definitionbox}
+These properties make ZC sequences ideal preambles: constant amplitude means a low peak-to-average
+power ratio; zero autocorrelation means that \emph{cyclic shifts} of one root are orthogonal and the
+delay of a received preamble shows up as a clean correlation peak. LTE uses $N_{\mathrm{ZC}} = 839$ for
+preamble formats 0--3 \cite{ts36211}; the script \texttt{scripts/validate\_examples.py} verifies the
+properties numerically for $u=25$ and $u=29$.
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{The PRACH}
+The PRACH occupies six resource blocks (1.08\,MHz) in the uplink, in subframes given by the
+\emph{PRACH configuration index} broadcast in SIB2. Inside this band the preamble uses a subcarrier
+spacing of 1.25\,kHz, so its 839 subcarriers fit in about 1.05\,MHz. A preamble consists of a cyclic
+prefix, the ZC sequence (800\,$\mu$s, or 1600\,$\mu$s repeated) and an implicit guard time:
+\begin{table}[htbp]
+\centering\small
+\caption{LTE FDD preamble formats \cite{ts36211}. The guard time bounds the round-trip delay, hence the
+cell range $d_{\max} = c\,T_{\mathrm{GT}}/2$.}\label{tab:formats}
+\rowcolors{2}{acnmist}{white}
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+\rowcolor{white}Format & Subframes & CP [$\mu$s] & Sequence [$\mu$s] & Guard [$\mu$s] & Range [km] \\
+\midrule
+0 & 1 & 103.1 & 800  & 96.9  & 14.5 \\
+1 & 2 & 684.4 & 800  & 515.6 & 77.3 \\
+2 & 2 & 203.1 & 1600 & 196.9 & 29.5 \\
+3 & 3 & 684.4 & 1600 & 715.6 & 107.3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Formats with longer CP and guard serve large cells; formats with a repeated sequence collect more
+energy for coverage-limited cells. Format~4 (TDD only) uses a short sequence of length 139 in the
+special subframe.
+
+\subsection{64 preambles per cell}
+Each cell offers 64 preambles. They are generated from one or more ZC roots by cyclic shifts of
+$N_{\mathrm{CS}}$ samples: one root yields $\floor{N_{\mathrm{ZC}}/N_{\mathrm{CS}}}$ preambles, and further
+roots (consecutive in a broadcast logical order) are used until 64 are obtained. The shift must
+exceed the maximum round-trip delay plus delay spread; otherwise a distant UE's preamble would be
+detected as a neighbouring shift (\cref{sec:ncs}). The 64 preambles are divided into contention-based
+groups (A and B, the latter signalling a larger Msg3) and a set reserved for contention-free use.
+
+\subsection{Contention-based random access (4 steps)}
+\begin{enumerate}
+  \item \textbf{Msg1 -- preamble.} The UE selects a preamble at random from its group and transmits
+        it in the next PRACH occasion, with an open-loop power estimate from the downlink path loss.
+  \item \textbf{Msg2 -- random access response (RAR).} Within a response window the eNB sends, on PDSCH
+        addressed by an RA-RNTI derived from the PRACH occasion, the detected preamble index (RAPID), a
+        timing advance command (11 bits), an uplink grant for Msg3 and a temporary C-RNTI. If no RAR
+        arrives, the UE \emph{ramps} its power and retries.
+  \item \textbf{Msg3 -- scheduled transmission.} The UE applies the TA and sends, on PUSCH with HARQ, its
+        identity and request -- for initial access the \msg{RRC Connection Request} with S-TMSI or a random
+        value.
+  \item \textbf{Msg4 -- contention resolution.} The eNB echoes the identity it decoded. A UE whose identity
+        matches has won; the temporary C-RNTI becomes its C-RNTI. Others start the backoff and retry.
+\end{enumerate}
+Two UEs that chose the same preamble in the same occasion both receive the same RAR and both send Msg3
+on the same resources; typically only one Msg3 is decoded (capture effect), which is why Msg4 must
+echo the identity.
+
+\subsection{Contention-free random access}
+For handover the target cell reserves a preamble and includes it in the handover command; for
+downlink data arrival the eNB signals it on the PDCCH. The UE sends the dedicated preamble, receives
+the RAR with TA and grant, and the procedure ends -- Lecture~4 relied on this for the access step of
+X2 handover.
+
+\subsection{RACH overload and its control}
+When many devices access simultaneously -- after a power outage, at a stadium, or when thousands of
+meters report at the same time -- collisions multiply, retries multiply further, and the PRACH collapses.
+LTE offers several countermeasures:
+\begin{itemize}
+  \item \textbf{Access class barring (ACB)}: SIB2 broadcasts a barring factor $a$ and time; before
+        accessing, a UE draws a uniform number and proceeds only if it is below $a$, otherwise it waits.
+        Extended access barring (EAB) targets delay-tolerant devices.
+  \item \textbf{Backoff indicator} in the RAR: losers wait a random time up to the indicated maximum.
+  \item \textbf{More PRACH resources}: additional PRACH occasions per frame, at the cost of uplink
+        capacity.
+  \item \textbf{Separate resources for IoT}: NB-IoT and LTE-M define their own random access channels.
+\end{itemize}
+
+\subsection{Random access in 5G NR}
+NR keeps the four-step structure but adapts it to beams and to low latency \cite{ts38300}: each
+synchronisation signal block (SSB, one per beam) is associated with specific PRACH occasions, so the
+preamble also tells the gNB which downlink beam the UE sees best; preambles of length 839 or 139 with
+several subcarrier spacings support everything from long-range rural cells to mmWave; and Release~16
+adds \textbf{2-step RACH}, in which MsgA combines the preamble and the Msg3 payload and MsgB combines the
+RAR and contention resolution, halving the round trips.
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{Timing advance}\label{sec:ta}
+\paragraph{Problem} How precisely can LTE align a UE, and how far can it be?
+\paragraph{Model} The RAR carries $T_A\in\{0,\dots,1282\}$; the UE advances its uplink by
+$N_{\mathrm{TA}} = 16\,T_A\,T_\mathrm{s}$ with $T_\mathrm{s} = 1/(15000\times2048)$\,s \cite{ts36213}.
+\paragraph{Derivation} One step corresponds to a round-trip time of $16T_\mathrm{s} = \qty{0.521}{\micro\second}$
+and therefore to a one-way distance
+\begin{equation}\label{eq:tastep}
+  \Delta d = \frac{c \cdot 16\,T_\mathrm{s}}{2} = \frac{2.998\times10^8\times0.521\times10^{-6}}{2} \approx \qty{78.1}{\metre},
+  \qquad d_{\max} = 1282\,\Delta d \approx \qty{100}{\kilo\metre}.
+\end{equation}
+\paragraph{Interpretation} The step is a fraction of the normal cyclic prefix (4.7\,$\mu$s), so
+residual misalignment is absorbed by the CP. Compare with GSM's 553\,m step (Lecture~1): the finer
+step reflects the much shorter LTE symbol and the need to keep all users within the CP. After access,
+MAC TA commands (6 bits, relative) keep the alignment as the UE moves.
+
+\subsection{Cyclic shift and cell radius}\label{sec:ncs}
+\paragraph{Model} The sequence duration $T_{\mathrm{SEQ}} = 800\,\mu$s spans $N_{\mathrm{ZC}} = 839$ samples,
+so one sample lasts $T_{\mathrm{SEQ}}/N_{\mathrm{ZC}} = 0.954\,\mu$s. A UE at distance $r$ shifts its preamble
+by the round-trip delay $2r/c$; with multipath delay spread $\tau_{\mathrm{ds}}$ the received energy occupies
+$2r/c + \tau_{\mathrm{ds}}$.
+\paragraph{Condition} To be unambiguous, this must fit inside one cyclic-shift zone:
+\begin{equation}\label{eq:ncs}
+  N_{\mathrm{CS}}\,\frac{T_{\mathrm{SEQ}}}{N_{\mathrm{ZC}}} \;\ge\; \frac{2r}{c} + \tau_{\mathrm{ds}}
+  \quad\Longrightarrow\quad
+  r_{\max} = \frac{c}{2}\left(N_{\mathrm{CS}}\,\frac{T_{\mathrm{SEQ}}}{N_{\mathrm{ZC}}} - \tau_{\mathrm{ds}}\right).
+\end{equation}
+\paragraph{Example and interpretation} With $\tau_{\mathrm{ds}} = 5.2\,\mu$s: $N_{\mathrm{CS}} = 13$ gives
+$r_{\max} \approx \qty{1.1}{\kilo\metre}$ and $\floor{839/13} = 64$ preambles from a \emph{single} root;
+$N_{\mathrm{CS}} = 119$ gives $r_{\max}\approx\qty{16.2}{\kilo\metre}$ but only 7 preambles per root, so
+$\ceil{64/7} = 10$ roots are needed. Different roots are not orthogonal (cross-correlation
+$1/\sqrt{839}\approx0.035$), so large cells have more false alarms and inter-cell preamble interference --
+a coverage/robustness trade-off planned per cell. The formula ignores a small detection margin used in
+practice; the guard-time limit of \cref{tab:formats} must also hold.
+
+\subsection{Collision probability}\label{sec:collision}
+\paragraph{Model} $n$ UEs contend in the same PRACH occasion and choose uniformly among $M$ contention
+preambles (e.g.\ $M = 54$ when 10 of the 64 are reserved for CFRA). A UE succeeds if no other UE chose its
+preamble (ignoring detection errors and Msg3 capture).
+\paragraph{Derivation} The probability that a given UE is alone on its preamble is
+\begin{equation}\label{eq:psucc}
+  P_\mathrm{s}(n) = \left(1-\frac{1}{M}\right)^{n-1},
+\end{equation}
+and the expected number of successful UEs in the occasion is
+\begin{equation}\label{eq:nsucc}
+  S(n) = n\left(1-\frac{1}{M}\right)^{n-1}.
+\end{equation}
+Treating $n$ as continuous, $\mathrm{d}S/\mathrm{d}n = 0$ gives $n^\ast = -1/\ln(1-1/M)\approx M$, where
+$S(n^\ast)\approx M/\e$ -- exactly the slotted-ALOHA efficiency of $1/\e\approx37\%$ per preamble.
+\paragraph{Interpretation} For $M = 54$: 10 contenders succeed individually with 84.5\%; 54 contenders give
+about 20 successes (37\%); 150 contenders give only 9.3 successes -- \emph{fewer} than 54 did
+(\cref{fig:collision}). Beyond the optimum, more load means less throughput, and the failed UEs retry,
+pushing the load further: a positive feedback that leads to collapse unless access is throttled (ACB,
+backoff). The model ignores power ramping, capture and the multiple PRACH occasions per frame.
+
+\begin{acnfigure}
+  \acnfig{lecture-08/collision}
+  \caption{Expected successful UEs per PRACH occasion (left axis, \cref{eq:nsucc}) and per-UE success
+  probability (right axis, \cref{eq:psucc}) for $M = 54$ contention preambles.}
+  \label{fig:collision}
+\end{acnfigure}
+
+\subsection{Access delay}
+If each attempt succeeds independently with probability $P_\mathrm{s}$, the number of attempts is geometric
+with mean $1/P_\mathrm{s}$, and the mean access delay is
+\begin{equation}\label{eq:delay}
+  \bar D_{\mathrm{RA}} \approx T_{\mathrm{RA}} + \Bigl(\frac{1}{P_\mathrm{s}}-1\Bigr)\bigl(T_{\mathrm{fail}} + \bar T_{\mathrm{BO}}\bigr),
+\end{equation}
+where $T_{\mathrm{RA}}$ is the duration of a successful 4-step exchange, $T_{\mathrm{fail}}$ the time to
+detect a failure (end of the RAR window or of the contention-resolution timer) and $\bar T_{\mathrm{BO}}$ the
+mean backoff (\cref{exr:delay}).
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+Random access is a purely radio-level procedure between UE and eNB (MAC and PHY), but its outcome
+feeds the higher layers: Msg3 carries the first RRC message, and Msg4 (in initial access) the
+\msg{RRC Connection Setup}, after which the NAS \msg{Service Request} or \msg{Attach Request} reaches the
+MME (Lecture~6). \Cref{fig:prach} shows the format-0 preamble, \cref{fig:cbra,fig:cfra,fig:twostep} the
+procedures.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-08/prach-format}}
+  \caption{Preamble format 0. The cyclic prefix absorbs the round-trip delay (RTD) and delay spread; the
+  guard time keeps a late preamble from overlapping the next subframe.}
+  \label{fig:prach}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+\begin{procedurebox}{Contention-based random access for initial access}\label{proc:cbra}
+\begin{steps}
+  \item Read SIB2: PRACH configuration index, root sequence, $N_{\mathrm{CS}}$, preamble groups, power
+        parameters, RAR window, contention-resolution timer, ACB parameters.
+  \item Pass the access-barring check (if configured), select group A or B, pick a preamble at random and
+        transmit it with initial power $P = \min\{P_{\max},\,P_{\mathrm{target}} + \PL\}$.
+  \item Monitor the PDCCH for the RA-RNTI during the RAR window. No matching RAR: increase power by the
+        ramping step, apply backoff and go back to step~2 (up to the maximum number of attempts).
+  \item On RAR: apply TA, store the temporary C-RNTI, send Msg3 on the granted PUSCH, start the
+        contention-resolution timer.
+  \item On Msg4 with matching identity: success, C-RNTI confirmed, RRC continues. Timer expiry or
+        mismatch: backoff and retry.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \acnfig{lecture-08/cbra}
+  \caption{Contention-based (4-step) random access (\cref{proc:cbra}).}
+  \label{fig:cbra}
+\end{acnfigure}
+
+\begin{acnfigure}
+  \acnfig{lecture-08/cfra}
+  \caption{Contention-free random access, e.g.\ at handover.}
+  \label{fig:cfra}
+\end{acnfigure}
+
+\begin{acnfigure}
+  \acnfig{lecture-08/two-step}
+  \caption{NR 2-step random access (Release 16).}
+  \label{fig:twostep}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Timing advance from a measured delay}\label{ex:ta}
+\textbf{Problem.} The eNB measures a preamble round-trip delay of 21.4\,$\mu$s. Which $T_A$ is sent and how
+far is the UE?
+
+\textbf{Solution.} $T_A = \mathrm{round}(21.4/0.521) = 41$; $d \approx 41\times78.1 = \qty{3.2}{\kilo\metre}$
+(directly: $c\tau/2 = 3.21$\,km).
+\end{examplebox}
+
+\begin{examplebox}{Planning $N_{\mathrm{CS}}$}\label{ex:ncs}
+\textbf{Problem.} A rural cell must serve UEs up to 12\,km with a delay spread of 5.2\,$\mu$s. Find the
+smallest $N_{\mathrm{CS}}$, the preambles per root and the number of roots.
+
+\textbf{Solution.} \Cref{eq:ncs}: $N_{\mathrm{CS}} \ge (2\times12\,000/c + 5.2\times10^{-6})/0.954\times10^{-6} =
+(80.1+5.2)/0.954 = 89.4$. The standard set of $N_{\mathrm{CS}}$ values contains 93, which gives
+$\floor{839/93} = 9$ preambles per root and $\ceil{64/9} = 8$ roots.
+\end{examplebox}
+
+\begin{examplebox}{Event-driven IoT burst}\label{ex:burst}
+\textbf{Problem.} After a power cut, 5000 meters in one cell try to access within 1\,s. The cell has one PRACH
+occasion per 10\,ms frame (100 per second) and $M = 54$ contention preambles. Estimate the successes if every
+meter tries once in a random occasion, and suggest an access-barring factor.
+
+\textbf{Solution.} 50 contenders per occasion on average: $S = 50\,(53/54)^{49} \approx 50\times0.40 = 20.0$
+successes per occasion, about 2000 in the first second; the 3000 losers retry and add to the next second's
+load. If the 5000 meters instead all fell into 10 occasions (one per 100\,ms), there would be 500 contenders
+per occasion and $S = 500\,(53/54)^{499}\approx 0.04$: almost nobody succeeds. A barring factor
+$a\approx 54/500\approx0.1$ brings the effective load back to the optimum $n\approx M$, where about $M/\e\approx20$
+UEs succeed per occasion.
+
+\textbf{Interpretation.} In an overloaded random access channel, throttling \emph{increases} the throughput --
+the central lesson of ALOHA.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{Random access across generations.}\label{tab:compare}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y Y@{}}
+\toprule
+\rowcolor{white} & GSM & LTE & NR \\
+\midrule
+Channel           & RACH burst on a timeslot           & PRACH, 6 RBs, ZC preambles        & PRACH tied to SSB beams \\
+Contention resolution & SDCCH assignment + identity    & Msg3/Msg4 with identity           & 4-step or 2-step (MsgA/MsgB) \\
+TA step / range   & 553\,m / 35\,km                    & 78\,m / 100\,km                   & depends on numerology (finer at higher SCS) \\
+Contention-free   & no                                 & yes (handover, DL data)           & yes, plus beam-failure recovery \\
+Overload control  & access classes                     & ACB, EAB, backoff                 & unified access control \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Trade-offs} Longer preambles and larger cyclic shifts extend range but reduce the number of
+orthogonal preambles per root; more PRACH occasions reduce collisions but consume uplink capacity; 2-step
+RACH halves latency but needs PUSCH resources for payloads that may collide.
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item Random access provides uplink time alignment and a first identity/grant; it is used for initial
+        access, re-establishment, handover and out-of-sync data.
+  \item Preambles are ZC sequences ($N_{\mathrm{ZC}} = 839$): constant amplitude, zero cyclic
+        autocorrelation; 64 per cell from cyclic shifts of one or more roots.
+  \item $r_{\max} = \tfrac{c}{2}(N_{\mathrm{CS}}T_{\mathrm{SEQ}}/N_{\mathrm{ZC}} - \tau_{\mathrm{ds}})$; the guard time also
+        bounds the range (format 0: 14.5\,km).
+  \item TA step $16T_\mathrm{s} = 0.52\,\mu$s $\Rightarrow$ 78\,m; 11-bit RAR TA $\Rightarrow$ $\approx100$\,km.
+  \item CBRA: preamble $\to$ RAR $\to$ Msg3 $\to$ contention resolution; CFRA ends after the RAR.
+  \item Successes per occasion $n(1-1/M)^{n-1}$ peak at $\approx M/\e$; overload collapses throughput, so
+        throttle (ACB, backoff).
+  \item NR adds beam-associated PRACH and 2-step RACH.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Why not just PUSCH?}\label{exr:why}
+Explain what would go wrong if an idle UE transmitted its first message directly on PUSCH without
+random access. Consider both timing and identity.
+\end{exercisebox}
+
+\begin{exercisebox}{1}{CBRA or CFRA?}\label{exr:which}
+For each case state whether CBRA or CFRA is used and why: initial attach; handover; RRC re-establishment
+after RLF; downlink data arrival for an out-of-sync connected UE.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Format choice}\label{exr:format}
+A cell must cover 60\,km over flat terrain. Which LTE preamble formats are possible from the guard-time
+point of view, and what is the smallest $N_{\mathrm{CS}}$ (with $\tau_{\mathrm{ds}} = 5.2\,\mu$s)? Is it
+possible with an 800\,$\mu$s sequence?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Access delay}\label{exr:delay}
+With $T_{\mathrm{RA}} = 20$\,ms, $T_{\mathrm{fail}} = 15$\,ms and a uniform backoff in $[0,20]$\,ms, compute the
+mean access delay from \cref{eq:delay} for $n = 10$ and $n = 54$ contenders ($M = 54$).
+\end{exercisebox}
+
+\begin{exercisebox}{3}{ZC properties}\label{exr:zc}
+Prove that the periodic autocorrelation of \cref{eq:zc} is zero for every non-zero shift $\tau$ when
+$N_{\mathrm{ZC}}$ is prime. (Hint: write $x_u(n+\tau)x_u^\ast(n)$ and sum a geometric series in $n$.)
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Stability of retries}\label{exr:stab}
+New UEs arrive at a mean of $\lambda$ per PRACH occasion; each failed UE retries in the next occasion.
+Using \cref{eq:nsucc} with Poisson approximation $S \approx G e^{-G/M}$ for offered load $G$ per occasion,
+write the equilibrium condition, find the maximum sustainable $\lambda$ and discuss what happens beyond it.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:why}}
+Timing: the UE knows only the downlink timing; its uplink would arrive late by the round-trip delay (up to
+hundreds of $\mu$s), overlapping other users' SC-FDMA symbols and destroying orthogonality. Identity: the
+eNB has no C-RNTI for the UE and cannot address a grant to it; unscheduled PUSCH resources do not exist.
+Random access solves both with a robust, delay-tolerant preamble.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:which}}
+Initial attach: CBRA (the network does not know the UE). Handover: CFRA (the target reserves a preamble,
+saving the contention step and time). RRC re-establishment: CBRA (unplanned). Downlink data for an
+out-of-sync UE: CFRA (the eNB knows the UE and signals a dedicated preamble on the PDCCH), falling back to
+CBRA if no dedicated preamble is available.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:format}}
+The guard time must cover the round trip $2\times60\,000/c = 400\,\mu$s: formats 1 (515.6\,$\mu$s) and 3
+(715.6\,$\mu$s) qualify; 0 and 2 do not. \Cref{eq:ncs} requires $N_{\mathrm{CS}} \ge (400+5.2)/0.954 = 425$
+samples. The largest non-zero value of the standard unrestricted set is 419 ($r_{\max}\approx59$\,km), just
+short; the remaining option is $N_{\mathrm{CS}} = 0$ (no cyclic shift), in which each root provides a single
+preamble and 64 roots are used. This works for any delay, but the 64 preambles are no longer orthogonal (only
+their low cross-correlation separates them), so detection performance degrades -- the price of very large
+cells. The 800-$\mu$s sequence length is not the issue; repetition (format 3) helps the link budget only.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:delay}}
+$\bar T_{\mathrm{BO}} = 10$\,ms. $n=10$: $P_\mathrm{s} = 0.845$, $1/P_\mathrm{s}-1 = 0.183$, $\bar D = 20 + 0.183\times25 =
+24.6$\,ms. $n=54$: $P_\mathrm{s} = 0.371$, $1/P_\mathrm{s}-1 = 1.70$, $\bar D = 20 + 1.70\times25 = 62.4$\,ms
+(optimistic, because retries also add load).
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:zc}}
+$x_u(n+\tau)x_u^\ast(n) = \exp(-\jj\pi u[(n+\tau)(n+\tau+1) - n(n+1)]/N) =
+\exp(-\jj\pi u[\tau^2+\tau]/N)\,\exp(-\jj 2\pi u\tau n/N)$. The first factor is constant in $n$; summing the
+second over $n = 0,\dots,N-1$ gives $\sum_n \e^{-\jj2\pi u\tau n/N} = 0$ unless $u\tau \equiv 0 \pmod N$. With
+$N$ prime and $1\le u,\tau<N$, $u\tau$ is never a multiple of $N$, so the autocorrelation is zero for all
+$\tau\neq0$. (Periodicity of the quadratic phase modulo $N$ holds for odd $N$.)
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:stab}}
+In equilibrium the success rate equals the arrival rate: $\lambda = G e^{-G/M}$. The right-hand side is
+maximal at $G = M$ with value $M/\e$, so $\lambda_{\max} = M/\e \approx 19.9$ UEs per occasion for $M=54$. For
+$\lambda < M/\e$ there are two equilibria: the low-load one ($G<M$) is stable, the high-load one is not. For
+$\lambda > M/\e$ no equilibrium exists: the backlog grows without bound and successes fall towards zero --
+the instability that ACB and randomised backoff are designed to prevent.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+The MAC random access procedure is in \cite{ts36321}, preamble generation and formats in \cite{ts36211},
+timing advance in \cite{ts36213}, and ACB in the RRC specification \cite{ts36331}. NR random access,
+including 2-step RACH, is summarised in \cite{ts38300}. Sesia et al.\ \cite{sesia2011lte} contains a detailed
+chapter on PRACH design and ZC sequences; Dahlman et al.\ \cite{dahlman2020nr} covers the NR procedures.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

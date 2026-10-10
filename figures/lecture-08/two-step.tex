@@ -1,0 +1,8 @@
+% NR 2-step random access (Release 16)
+\begin{tikzpicture}
+  \SeqActors[6.0]{UE,gNB}
+  \SeqMsg{0}{1}{MsgA: \bil{preamble (PRACH) + payload (PUSCH)}{پیش‌نوا (PRACH) + محموله (PUSCH)}}
+  \SeqMsg{1}{0}{MsgB: \bil{RAR + contention resolution}{RAR + حل رقابت}}
+  \SeqNote{0}{1}{\bil{fallback to 4-step if only the preamble is decoded}{بازگشت به ۴ مرحله‌ای اگر تنها پیش‌نوا آشکار شود}}
+  \SeqEnd
+\end{tikzpicture}
