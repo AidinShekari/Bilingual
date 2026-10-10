@@ -110,10 +110,19 @@ def _fa_arg_fix(arg):
     masked = LATDIG.sub(lambda m: "\\lr{" + m.group(1) + "}", masked)
     return _unmask(masked, keep)
 
+PERSIAN_LETTER = re.compile("[\u0621-\u064a\u067e\u0686\u0698\u06a9\u06af\u06cc]")
+
+def _bil_fix(m):
+    en, fa = m.group(1), m.group(2)
+    if not PERSIAN_LETTER.search(fa) and not re.fullmatch(r"\\[A-Za-z]+", fa.strip()):
+        # nothing Persian to show: use the English label, kept left-to-right
+        return "\\ACNlatin{%s}" % en
+    return "\\bil{%s}{%s}" % (en, _fa_arg_fix(fa))
+
 def fix_figures():
     for p in glob.glob(os.path.join(ROOT, "figures", "*", "*.tex")):
         s = open(p, encoding="utf-8").read()
-        t = BIL.sub(lambda m: "\\bil{%s}{%s}" % (m.group(1), _fa_arg_fix(m.group(2))), s)
+        t = BIL.sub(_bil_fix, s)
         if t != s:
             open(p, "w", encoding="utf-8").write(t)
             print("autofixed", os.path.relpath(p, ROOT))
@@ -177,7 +186,10 @@ def main():
             if "\\\\" in m.group(0):
                 problems.append("%s: line break inside \\bil (breaks in RTL)" % os.path.relpath(p, ROOT))
         for m in BIL.finditer(t):
-            if _fa_arg_fix(m.group(2)) != m.group(2):
+            if not PERSIAN_LETTER.search(m.group(2)) and not re.fullmatch(r"\\[A-Za-z]+", m.group(2).strip()):
+                problems.append("%s: Persian label without Persian text: %s"
+                                % (os.path.relpath(p, ROOT), m.group(2)[:50]))
+            elif _fa_arg_fix(m.group(2)) != m.group(2):
                 problems.append("%s: Latin token with digits not wrapped in \\lr: %s"
                                 % (os.path.relpath(p, ROOT), m.group(2)[:50]))
     for p in problems:

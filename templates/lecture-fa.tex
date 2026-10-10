@@ -41,6 +41,11 @@
 \renewcommand{\ACNfigsetup}{\tikzset{every node/.append style={execute at begin node={\latinfont\sffamily}}}}
 \renewcommand{\ACNdispfont}{\ACNfadisplay}
 \renewcommand{\ACNlatin}[1]{\lr{#1}}
+% \text{...} inside mathematics is Latin, left-to-right material (units, words such as
+% "bits", "messages/s"); without this, multi-word text in a math formula would be
+% shaped right-to-left with Persian digits. \text{\rl{...}} still allows Persian.
+\let\ACNamstext\text
+\renewcommand{\text}[1]{\ACNamstext{\lr{#1}}}
 \newcommand{\ACNnodetext}[1]{\rl{#1}}
 \newcommand{\ACNothertext}[1]{\lr{#1}}
 \newcommand{\ACNotherfont}{\latinfont\sffamily}

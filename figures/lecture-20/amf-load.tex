@@ -1,0 +1,15 @@
+% AMF message load per procedure type (illustrative model of Section 6.2)
+\begin{tikzpicture}
+\begin{axis}[acnplot,ybar,bar width=12pt,height=5.6cm,
+  ylabel={\bil{messages/s at the AMF}{پیام بر ثانیه در AMF}},
+  symbolic x coords={reg,sr,ho,pdu},xtick=data,
+  xticklabels={\bil{registration}{ثبت‌نام},\bil{service request}{درخواست خدمت},\bil{Xn handover}{تحویل Xn},\bil{PDU session}{نشست PDU}},
+  ymin=0,ymax=38000,legend pos=north east,
+  nodes near coords,nodes near coords style={font=\tiny},
+  enlarge x limits=0.18]
+  \addplot[fill=acnsky,draw=acnnavy] coordinates {(reg,1944) (sr,33333) (ho,2222) (pdu,556)};
+  \addlegendentry{\bil{without RRC\_INACTIVE}{بدون RRC\_INACTIVE}}
+  \addplot[fill=acnmint,draw=acnteal] coordinates {(reg,1944) (sr,10000) (ho,2222) (pdu,556)};
+  \addlegendentry{\bil{70\,\% via RRC\_INACTIVE}{70\,\% با RRC\_INACTIVE}}
+\end{axis}
+\end{tikzpicture}

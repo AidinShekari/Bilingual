@@ -1,0 +1,385 @@
+% =====================================================================
+%  Lecture 20 -- 5G Procedures                            (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{20}
+\ACNset{title}{5G System Procedures}
+\ACNset{shorttitle}{5G procedures}
+\ACNset{titleother}{رویه‌های سامانهٔ نسل پنجم}
+\ACNset{part}{Part IV -- 5G system and procedures (Lectures 14, 19--22)}
+\ACNset{time}{7--9 hours (3.5 h reading, 4--5 h exercises)}
+\ACNset{level}{Advanced}
+\ACNset{prereq}{Lectures 9, 12, 18 and 19}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Trace} initial registration including 5G-AKA, NAS security and subscription retrieval.
+  \item \textbf{Derive} the 5G-AKA verification values and key hierarchy at the level of their inputs and purpose.
+  \item \textbf{Trace} PDU session establishment across AMF, SMF, PCF, UPF and the RAN.
+  \item \textbf{Explain} UE- and network-triggered service request, RRC\_INACTIVE and Xn/N2 handover.
+  \item \textbf{Estimate} procedure latency, AMF signalling load and handover forwarding buffers.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+This lecture uses the 5GC architecture and identities of Lecture~19, the SBI and NRF of Lecture~18, the EPS-AKA and EPC
+procedures of Lectures~9 and~12 (as a comparison) and the PFCP rules of Lecture~13. Procedures are presented in simplified form
+following TS~23.502 \cite{ts23502}; optional steps (roaming, interworking, many error cases) are omitted.
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+Registration & \fa{ثبت‌نام} & Procedure that makes the UE known to the 5GC (initial, mobility, periodic). \\
+5G-AKA & \fa{احراز هویت و توافق کلید ۵G} & Authentication with home-network confirmation of RES*. \\
+SEAF & \fa{تابع لنگر امنیتی} & Security anchor in the serving network (co-located with the AMF). \\
+NAS SMC & \fa{فرمان حالت امنیتی NAS} & Activation of NAS ciphering and integrity. \\
+PDU session establishment & \fa{برقراری نشست PDU} & Creation of a session, its QoS flows and tunnels. \\
+N1N2 message transfer & \fa{انتقال پیام N1N2} & AMF service carrying SMF messages to UE (N1) and RAN (N2). \\
+Service request & \fa{درخواست خدمت} & Transition from CM-IDLE to CM-CONNECTED. \\
+RRC\_INACTIVE & \fa{حالت غیرفعال RRC} & RAN-level suspended state with core context kept. \\
+Path switch & \fa{تغییر مسیر} & Moving the N3 tunnel to the target gNB after Xn handover. \\
+ABBA & \fa{پارامتر ضدحمله به پایین‌برداری} & Anti-bidding-down parameter bound into K\textsubscript{AMF}. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+An architecture becomes concrete only through its procedures: the ordered exchanges that make a UE known to the network, secure
+its signalling, give it a data session and keep that session alive while the UE sleeps and moves. In the 5GC these procedures
+combine three kinds of signalling: NAS between UE and AMF (TS~24.501 \cite{ts24501}), NGAP between RAN and AMF (TS~38.413
+\cite{ts38413}) and service operations between NFs (Lecture~18), plus PFCP towards the UPF.
+
+Understanding the procedures is essential for troubleshooting (where did an attach fail?), for dimensioning (how many messages
+does each NF handle?) and for latency engineering (how long until the first packet flows?). This lecture traces the four central
+procedures and quantifies their cost.
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{Types of registration}
+\begin{itemize}
+  \item \textbf{Initial registration}: the UE is RM-DEREGISTERED and registers for the first time (or after a long absence).
+  \item \textbf{Mobility registration update}: the UE enters a tracking area outside its registration area, or its capabilities or
+        requested slices change.
+  \item \textbf{Periodic registration update}: on expiry of the periodic timer, to confirm reachability.
+  \item \textbf{Emergency registration}: limited service for emergency calls.
+\end{itemize}
+
+\subsection{Security anchors}
+5G-AKA \cite{ts33501} differs from EPS-AKA in one important respect: the \emph{home network} confirms the authentication. The serving
+network's SEAF checks a hashed expected response (HXRES*) for a first verification, but the AUSF in the home network verifies RES*
+itself before releasing the anchor key $K_{\mathrm{SEAF}}$ and the SUPI. A visited network therefore cannot claim that a subscriber was
+present without proof -- an answer to fraud concerns in roaming.
+
+\subsection{Session establishment roles}
+The AMF only relays session signalling: it selects an SMF and transports N1 (NAS SM) and N2 (NGAP resource set-up) messages for it. The
+SMF owns the session: it obtains policy from the PCF, selects and programs the UPF over N4, and asks the AMF to deliver the NAS accept to
+the UE and the resource request to the RAN in a single \emph{N1N2 message transfer}.
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{Initial registration}
+The UE sends a Registration Request with its SUCI (or a 5G-GUTI if it has one), requested slices (NSSAI) and capabilities
+(\cref{fig:reg}) \cite{ts23502}. The RAN selects an AMF (from the GUAMI in the 5G-S-TMSI or by load) and forwards the message in an NGAP
+Initial UE Message. If the UE gave a 5G-GUTI from another AMF, the new AMF fetches the context from the old AMF
+(Namf\_Communication\_UEContextTransfer). The AMF then authenticates the UE (5G-AKA, \cref{sec:aka}), activates NAS security, registers
+with the UDM (Nudm\_UECM\_Registration), retrieves the access and mobility subscription (Nudm\_SDM\_Get) and subscribes to changes, creates
+an AM policy association with the PCF, and, if needed, asks the NSSF to select slices. Registration Accept carries the new 5G-GUTI, the
+registration area and the allowed NSSAI; the UE acknowledges with Registration Complete.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-20/registration}}
+  \caption{Initial registration with 5G-AKA (simplified) \cite{ts23502,ts33501}.}
+  \label{fig:reg}
+\end{acnfigure}
+
+\subsection{5G-AKA}\label{sec:aka}
+The UDM generates an authentication vector with the same functions $f_1$--$f_5$ as in Lecture~11, but derives 5G-specific values bound to
+the \emph{serving network name} (SNN, of the form \nolinkurl{5G:mnc<MNC>.mcc<MCC>.3gppnetwork.org}) \cite{ts33501}:
+\begin{subequations}\label{eq:aka}
+\begin{align}
+  \mathrm{XRES}^{*} &= \KDF\bigl(\mathrm{CK}\concat\mathrm{IK},\ \mathrm{SNN},\ \mathrm{RAND},\ \mathrm{XRES}\bigr)\ \text{(128 bits)}, \label{eq:xres}\\
+  \mathrm{HXRES}^{*} &= \mathrm{SHA\text{-}256}\bigl(\mathrm{RAND}\concat\mathrm{XRES}^{*}\bigr)\ \text{(truncated to 128 bits)}, \label{eq:hxres}\\
+  K_{\mathrm{AUSF}} &= \KDF\bigl(\mathrm{CK}\concat\mathrm{IK},\ \mathrm{SNN},\ \mathrm{SQN}\xor\mathrm{AK}\bigr), \label{eq:kausf}
+\end{align}
+\end{subequations}
+followed by
+\[
+\begin{aligned}
+  K_{\mathrm{SEAF}} &= \KDF(K_{\mathrm{AUSF}}, \mathrm{SNN}), \qquad
+  K_{\mathrm{AMF}} = \KDF(K_{\mathrm{SEAF}}, \mathrm{SUPI}, \mathrm{ABBA}),\\
+  K_{\mathrm{gNB}} &= \KDF(K_{\mathrm{AMF}}, \text{UL NAS COUNT}, \ldots).
+\end{aligned}
+\]
+The AUSF stores XRES* and gives the SEAF only HXRES*: the SEAF can check whether
+the hash of RAND and RES* computed as in \cref{eq:hxres} matches, but cannot compute RES* itself, so it must forward RES* to the
+home network for the final decision.
+
+\subsection{PDU session establishment}
+The UE sends a PDU Session Establishment Request (with a new PDU session ID, DNN, S-NSSAI, session type and SSC mode) inside an UL NAS
+Transport message (\cref{fig:pdu}). The AMF selects an SMF (NRF discovery by DNN and slice) and calls Nsmf\_PDUSession\_CreateSMContext.
+The SMF retrieves session-management subscription data from the UDM, creates an SM policy association with the PCF (which returns PCC rules),
+selects a UPF and establishes the N4 session (PDRs, FARs, QERs, URRs), obtaining the uplink tunnel endpoint. It then calls
+Namf\_Communication\_N1N2MessageTransfer with the NAS accept (QoS rules, IP address) for the UE and the N2 resource set-up information (QoS
+flows and profiles, UPF tunnel endpoint) for the gNB. The gNB configures data radio bearers with RRC Reconfiguration and returns its
+downlink tunnel endpoint, which the SMF installs in the UPF with an N4 modification. QoS flows are now active in both directions.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-20/pdu-session}}
+  \caption{PDU session establishment (simplified) \cite{ts23502}.}
+  \label{fig:pdu}
+\end{acnfigure}
+
+\subsection{Service request and paging}
+A UE in CM-IDLE with uplink data sends a Service Request (with its 5G-S-TMSI) in RRC set-up; the AMF re-activates the user plane of the
+selected PDU sessions through the SMFs (UpdateSMContext, N4 modification) and the RAN (N2 Initial Context Setup). For downlink data, the UPF
+buffers (or the SMF buffers, by FAR configuration) and notifies the SMF over N4; the SMF calls N1N2MessageTransfer; the AMF pages the UE in
+its registration area; the UE answers with a Service Request. A UE in RRC\_INACTIVE skips most of this: the core context and N3 tunnels are
+kept, the RAN pages within its notification area and resumes the RRC connection locally, so no core signalling is needed unless the UE has
+moved out of the area.
+
+\subsection{Handover}
+With an Xn interface between gNBs, the source decides, prepares the target over Xn, commands the UE, forwards buffered data; the target then
+sends an N2 Path Switch Request so that the AMF and SMF move the N3 tunnel to the target, with end markers on the old path (\cref{fig:xn}).
+Without Xn (or when the AMF or UPF must change), an \emph{N2 handover} is prepared through the AMF(s), which also handles AMF relocation
+and inter-system handover to LTE.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-20/xn-handover}}
+  \caption{Xn handover with path switch (simplified).}
+  \label{fig:xn}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{Procedure latency}\label{sec:lat}
+\paragraph{Model} A procedure is a chain of sequential exchanges; parallel branches count only once. With $n_{\mathrm{N}}$ UE--AMF round trips of
+duration $T_{\mathrm{N}}$ (radio and RAN included) and $n_{\mathrm{S}}$ sequential core exchanges of duration $T_{\mathrm{S}}$,
+\begin{equation}\label{eq:latency}
+  T_{\mathrm{proc}} \approx n_{\mathrm{N}}\,T_{\mathrm{N}} + n_{\mathrm{S}}\,T_{\mathrm{S}} .
+\end{equation}
+\paragraph{Example} Initial registration (\cref{fig:reg}) has about 6 UE--AMF round trips (registration, authentication, security mode, accept
+plus RRC) and 8 sequential SBI exchanges. With $T_{\mathrm{N}} = 15$\,ms and $T_{\mathrm{S}} = 3$\,ms: $T_{\mathrm{proc}} \approx 90 + 24 = 114$\,ms. The radio
+round trips dominate; core optimisation helps mainly when NFs are far apart or overloaded.
+
+\subsection{Signalling load at the AMF}\label{sec:load}
+\paragraph{Model} If procedure type $k$ occurs $r_k$ times per UE per hour and costs $m_k$ messages at the AMF (NAS, NGAP and SBI counted), an AMF
+serving $N$ UEs handles
+\begin{equation}\label{eq:load}
+  \Lambda = \frac{N}{3600}\sum_k r_k\, m_k \quad \text{messages/s}.
+\end{equation}
+\paragraph{Example} Illustrative values for $N = 10^6$: registrations 0.5/h at 14 messages, service requests 20/h at 6, Xn handovers 2/h at 4, PDU
+session establishments 0.2/h at 10: $\Lambda = 10^6\times137/3600 = 3.8\times10^4$ messages/s, of which service requests make up 88\,\%
+(\cref{fig:load}). If 70\,\% of idle-to-active transitions use RRC\_INACTIVE (no core messages), $\Lambda$ falls to $1.5\times10^4$ messages/s.
+\paragraph{Interpretation} Frequent short sessions -- smartphones and IoT devices waking for a few packets -- dominate core signalling; RRC\_INACTIVE
+is primarily a signalling-reduction feature.
+
+\begin{acnfigure}
+  \acnfig{lecture-20/amf-load}
+  \caption{AMF message load per procedure type for the illustrative model of \cref{sec:load}.}
+  \label{fig:load}
+\end{acnfigure}
+
+\subsection{Forwarding buffer during handover}\label{sec:fwd}
+\paragraph{Model} Between the moment the source stops transmitting and the moment the path switch is complete, downlink data at rate $R$ are
+forwarded over Xn and buffered at the target until the UE is ready. With interruption $T_{\mathrm{s}}$,
+\begin{equation}\label{eq:fwd}
+  B = R\,T_{\mathrm{s}} .
+\end{equation}
+\paragraph{Example} $R = 100$\,Mbit/s, $T_{\mathrm{s}} = 20$\,ms: $B = 2$\,Mbit $= 250$\,kB per UE. For an eMBB cell with several fast users the target
+needs megabytes of buffer; for URLLC, dual active protocol stack handover avoids the interruption altogether.
+
+\subsection{Authentication security}\label{sec:sec}
+\paragraph{Model} An attacker without $K$ who guesses RES* (128 bits) succeeds with probability $2^{-128}$ per attempt; one who has observed HXRES*
+must invert a 128-bit truncated hash. The expected number of attempts for a brute-force search over $b$ bits is
+\begin{equation}\label{eq:brute}
+  \E[A] = 2^{b-1}.
+\end{equation}
+\paragraph{Example} $b = 128$: $1.7\times10^{38}$ attempts -- infeasible; the security of 5G-AKA rests on the secrecy of $K$ and the freshness of SQN,
+not on the length of the verification values.
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+The figures of this lecture are \emph{message sequence charts}: vertical lifelines for UE, RAN and NFs, horizontal arrows for messages.
+They abstract from transport (SCTP for NGAP, HTTP/2 for SBI, UDP for PFCP), from intermediate SCPs and from parallelism. In a real trace the
+same procedure appears as dozens of packets on several interfaces; reading traces efficiently means mapping them back to these charts.
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+
+\begin{procedurebox}{Initial registration}\label{proc:reg}
+\begin{steps}
+  \item UE $\to$ AMF: Registration Request (SUCI, requested NSSAI, capabilities) via RRC set-up and NGAP Initial UE Message.
+  \item AMF $\to$ AUSF $\to$ UDM: authentication request; the UDM de-conceals the SUCI and returns a 5G home-environment vector.
+  \item AMF (SEAF) $\to$ UE: Authentication Request; UE verifies AUTN and returns RES*; SEAF checks HXRES*; AUSF checks RES* and returns
+        SUPI and $K_{\mathrm{SEAF}}$.
+  \item NAS Security Mode Command/Complete; the AMF derives $K_{\mathrm{AMF}}$ and NAS keys.
+  \item AMF registers with the UDM and retrieves subscription data; creates the AM policy association; selects slices.
+  \item Registration Accept (5G-GUTI, registration area, allowed NSSAI); Registration Complete.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{PDU session establishment}\label{proc:pdu}
+\begin{steps}
+  \item UE $\to$ AMF: PDU Session Establishment Request (DNN, S-NSSAI, type, SSC mode) in UL NAS Transport.
+  \item AMF selects an SMF and calls CreateSMContext; SMF fetches SM subscription, creates the SM policy association.
+  \item SMF selects a UPF and sends N4 Session Establishment with the rules; receives the UL tunnel endpoint.
+  \item SMF $\to$ AMF: N1N2MessageTransfer (N1: Accept with QoS rules and IP address; N2: QoS flows, UL TEID).
+  \item AMF $\to$ gNB: PDU Session Resource Setup; gNB configures DRBs and returns the DL TEID.
+  \item AMF $\to$ SMF: UpdateSMContext; SMF $\to$ UPF: N4 modification with the DL TEID.
+\end{steps}
+\end{procedurebox}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Who checks what in 5G-AKA}\label{ex:aka}
+\textbf{Problem.} A visited network's AMF receives RES* from the UE. Explain which checks it can perform and why it needs the AUSF.
+
+\textbf{Solution.} The SEAF has HXRES* and RAND; it computes $\mathrm{SHA\text{-}256}(\mathrm{RAND}\concat\mathrm{RES}^*)$ (truncated) and compares with
+HXRES* (\cref{eq:hxres}) -- this filters wrong responses locally. It cannot derive XRES* (it lacks CK, IK) and does not receive the SUPI
+or $K_{\mathrm{SEAF}}$ until the AUSF has compared RES* with XRES*. The home network thus confirms the authentication.
+\end{examplebox}
+
+\begin{examplebox}{Time to first packet}\label{ex:first}
+\textbf{Problem.} After power-on, a UE registers and then establishes a PDU session. The PDU session has 3 UE--AMF round trips (request, RRC
+reconfiguration with accept) and 6 sequential SBI/N4 exchanges. With the values of \cref{sec:lat}, when can the first packet flow?
+
+\textbf{Solution.} Registration 114\,ms; PDU session $3\times15 + 6\times3 = 63$\,ms; total about 180\,ms (plus cell search and system information
+acquisition, typically longer). Running the PDU session request piggybacked on registration (allowed for some cases) or pre-establishing
+sessions shortens it.
+\end{examplebox}
+
+\begin{examplebox}{Dimensioning with RRC\_INACTIVE}\label{ex:inactive}
+\textbf{Problem.} An AMF instance handles $2\times10^4$ messages/s. How many instances are needed for the load of \cref{sec:load} with and without
+RRC\_INACTIVE, at 70\,\% target utilisation?
+
+\textbf{Solution.} Without: $3.8\times10^4/(0.7\times2\times10^4) = 2.7 \to 3$ instances; with: $1.47\times10^4/1.4\times10^4 = 1.05 \to 2$ instances (plus
+redundancy in both cases).
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{EPS and 5GS procedures compared.}\label{tab:cmp}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
+\toprule
+\rowcolor{white} & EPS & 5GS \\
+\midrule
+Attach / registration & Attach always creates a default bearer & Registration without session; PDU sessions separately \\
+Authentication        & EPS-AKA, decision in serving network & 5G-AKA or EAP-AKA$'$, home confirmation \\
+Identity              & IMSI may be sent in clear          & SUCI (concealed) \\
+Session set-up        & MME $\to$ S-GW $\to$ P-GW (GTPv2-C)  & AMF relays; SMF drives PCF, UPF (SBI, PFCP) \\
+Idle optimisation     & ECM-IDLE only                      & CM-IDLE and RRC\_INACTIVE \\
+Handover path switch  & MME $\to$ S-GW (S11)               & AMF $\to$ SMF $\to$ UPF (SBI, N4) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Always-on versus on-demand} The EPS attach always created a default bearer (``always-on IP''); 5G separates registration from
+session establishment. A device can register (e.g.\ for SMS or for a later session) without consuming user-plane resources, and sessions are
+created per DNN and slice as needed.
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item Registration = identification (SUCI/5G-GUTI) + 5G-AKA + NAS SMC + UDM registration and subscription + policy + accept.
+  \item 5G-AKA binds keys to the serving network name; SEAF checks HXRES*, the home AUSF confirms RES*.
+  \item PDU session: AMF relays, SMF orchestrates PCF and UPF, N1N2 transfer delivers NAS accept and N2 set-up together.
+  \item Service requests dominate AMF load; RRC\_INACTIVE removes most of them from the core.
+  \item Latency $\approx n_{\mathrm{N}}T_{\mathrm{N}} + n_{\mathrm{S}}T_{\mathrm{S}}$; load $= (N/3600)\sum r_k m_k$; forwarding buffer $= RT_{\mathrm{s}}$.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Order of steps}\label{exr:order}
+Why must NAS security be activated before the AMF sends the Registration Accept? What could an attacker do otherwise?
+\end{exercisebox}
+
+\begin{exercisebox}{1}{N1N2 message transfer}\label{exr:n1n2}
+Explain why the SMF sends both the NAS accept and the N2 resource information to the AMF in one service operation rather than in two.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Latency}\label{exr:latency}
+A mobility registration update needs 2 UE--AMF round trips and 4 sequential SBI exchanges (context transfer from the old AMF, UDM update,
+policy update, subscription retrieval). Compute its latency with $T_{\mathrm{N}} = 15$\,ms and $T_{\mathrm{S}} = 3$\,ms, and with $T_{\mathrm{S}} = 12$\,ms if the
+old AMF is in a distant data centre.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Forwarding buffer}\label{exr:fwd}
+A cell has 5 users each receiving 300\,Mbit/s when a train carries them all into a neighbouring cell simultaneously; the interruption is 30\,ms.
+How much buffer does the target gNB need? What would reduce it?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{IoT signalling}\label{exr:iot}
+$10^6$ IoT devices per AMF send one small report every 15 minutes. Each report needs a service request (6 AMF messages) if the device returns to
+CM-IDLE, or none if it stays in RRC\_INACTIVE (resumed in the RAN). Compute the AMF load in both cases, and discuss what RRC\_INACTIVE costs the
+RAN instead.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Authentication in roaming}\label{exr:roam}
+A visited network claims to have served a roaming subscriber for 2 hours and bills the home operator. With EPS-AKA and with 5G-AKA, what evidence
+does the home network have that the subscriber was really authenticated in the visited network? Relate your answer to \cref{eq:aka}.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:order}}
+The Registration Accept carries the new 5G-GUTI, the allowed slices and the registration area. Without integrity protection an attacker could
+modify these (e.g.\ restrict the UE's services or force it to reveal itself), and without ciphering the GUTI--SUCI link would be visible,
+undermining identity privacy. The security mode procedure also confirms the UE's security capabilities, preventing bidding-down attacks.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:n1n2}}
+The NAS accept and the RAN resource set-up belong together: the RAN must create radio bearers for the QoS flows the UE is told about, and the AMF
+can deliver both in one NGAP message (PDU Session Resource Setup with the NAS PDU inside). One operation keeps them consistent and saves a round
+trip; if the RAN rejects the resources, the AMF can report the failure to the SMF without the UE ever seeing an inconsistent accept.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:latency}}
+$2\times15 + 4\times3 = 42$\,ms; with $T_{\mathrm{S}} = 12$\,ms: $30 + 48 = 78$\,ms. Distant core NFs can dominate procedures with many sequential
+exchanges -- an argument for locality-aware NF selection.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:fwd}}
+$B = 5\times300\times10^6\times0.03/8 = 5.6$\,MB. Reductions: shorter interruption (RACH-less or conditional handover, prepared target), dual active
+protocol stack (no interruption), or reducing the forwarded volume by letting TCP slow down; on trains, a moving relay or group handover helps.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:iot}}
+Reports: $10^6/900 = 1111$\,s$^{-1}$. CM-IDLE: $1111\times6 = 6667$ AMF messages/s; RRC\_INACTIVE: none for the reports (only periodic RAN notification
+area updates, also handled in the RAN). The RAN must keep the UE contexts and security state for all inactive UEs (memory) and handle RAN paging
+and resume; when a UE moves out of the RAN notification area, a RAN-based update is needed.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:roam}}
+With EPS-AKA the serving network compares RES with XRES itself; the home network only knows that it sent authentication vectors -- it cannot prove
+the UE responded. With 5G-AKA the AUSF receives RES* and compares it with XRES* (\cref{eq:xres}); RES* can only be computed by a USIM holding $K$ in
+response to that RAND and bound to that serving network name. The home network thus has cryptographic evidence that the subscriber was authenticated
+in that network at that time.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+The procedures are specified in TS~23.502 \cite{ts23502}, with NAS in TS~24.501 \cite{ts24501}, NGAP in TS~38.413 \cite{ts38413} and security
+(5G-AKA, key hierarchy, SUCI) in TS~33.501 \cite{ts33501}; the SBI operations used are in TS~29.500 \cite{ts29500} and the NRF in TS~29.510
+\cite{ts29510}. RRC\_INACTIVE and handover on the RAN side are in TS~38.300 \cite{ts38300}. Rommer et al.\ \cite{rommer2020core} walk through the
+procedures in detail.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}
