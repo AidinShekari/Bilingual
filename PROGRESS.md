@@ -16,7 +16,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 08 | Random Access (RACH) | done | done | yes |
 | 09 | Evolved Packet Core | done | done | yes |
 | 10 | Diameter Protocol | done | done | yes |
-| 11 | | | | |
+| 11 | Home Subscriber Server (HSS) | done | done | yes |
 | 12 | | | | |
 | 13 | | | | |
 | 14 | | | | |
