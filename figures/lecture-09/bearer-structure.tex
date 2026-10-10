@@ -1,0 +1,19 @@
+% EPS bearer = radio bearer + S1 bearer + S5/S8 bearer, with TFTs at the ends
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \foreach \x/\n in {0/UE,3.6/eNB,7.2/S-GW,10.8/P-GW}{\node[nf,minimum width=1.5cm,minimum height=3.3cm] (\n) at (\x,0) {};
+    \node[font=\ACNheadfont\small\bfseries,text=acnnavy] at (\x,1.95) {\n};}
+  \node[nfgray,minimum height=3.3cm,minimum width=1.3cm] (pdn) at (13.6,0) {PDN};
+  % default bearer
+  \draw[up,acnteal] (0.75,0.85) -- node[iflabel,above]{\bil{radio bearer}{حامل رادیویی}} (2.85,0.85);
+  \draw[up,acnteal] (4.35,0.85) -- node[iflabel,above]{\bil{S1 bearer}{حامل S1}} (6.45,0.85);
+  \draw[up,acnteal] (7.95,0.85) -- node[iflabel,above]{\bil{S5/S8 bearer}{حامل S5/S8}} (10.05,0.85);
+  \node[caplabel,align=center] at (1.8,0.35) {\bil{default bearer}{حامل پیش‌فرض}\\(QCI 9, non-GBR)};
+  % dedicated bearer
+  \draw[up,acnblue] (0.75,-0.75) -- (2.85,-0.75); \draw[up,acnblue] (4.35,-0.75) -- (6.45,-0.75); \draw[up,acnblue] (7.95,-0.75) -- (10.05,-0.75);
+  \node[caplabel,align=center] at (1.8,-1.25) {\bil{dedicated bearer}{حامل اختصاصی}\\(QCI 1, GBR)};
+  \draw[link] (11.55,0) -- (12.95,0) node[midway,iflabel,above]{SGi};
+  \node[caplabel,fill=white] at (0,-1.95) {UL TFT};
+  \node[caplabel,fill=white] at (10.8,-1.95) {DL TFT};
+  \draw[decorate,decoration={brace,mirror,amplitude=5pt},acngray] (0,-2.35) -- node[caplabel,below=5pt]{\bil{EPS bearer}{حامل EPS}} (10.8,-2.35);
+  \draw[decorate,decoration={brace,mirror,amplitude=5pt},acngray] (0,-3.05) -- node[caplabel,below=5pt]{\bil{E-RAB}{E-RAB}} (7.2,-3.05);
+\end{tikzpicture}

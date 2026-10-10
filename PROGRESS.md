@@ -14,7 +14,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 06 | E-UTRAN | done | done | yes |
 | 07 | LTE Scheduling | done | done | yes |
 | 08 | Random Access (RACH) | done | done | yes |
-| 09 | | | | |
+| 09 | Evolved Packet Core | done | done | yes |
 | 10 | | | | |
 | 11 | | | | |
 | 12 | | | | |
