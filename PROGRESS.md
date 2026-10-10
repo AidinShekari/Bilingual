@@ -17,7 +17,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 09 | Evolved Packet Core | done | done | yes |
 | 10 | Diameter Protocol | done | done | yes |
 | 11 | Home Subscriber Server (HSS) | done | done | yes |
-| 12 | | | | |
+| 12 | Mobility Management Entity (MME) | done | done | yes |
 | 13 | | | | |
 | 14 | | | | |
 | 15 | | | | |
