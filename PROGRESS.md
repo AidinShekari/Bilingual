@@ -10,7 +10,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 02 | 2G Circuit Switching | done | done | yes |
 | 03 | 2G/3G Core Networks | done | done | yes |
 | 04 | Mobility and Handover | done | done | yes |
-| 05 | | | | |
+| 05 | 4G LTE Architecture | done | done | yes |
 | 06 | | | | |
 | 07 | | | | |
 | 08 | | | | |

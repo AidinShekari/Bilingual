@@ -9,7 +9,8 @@
   * syllabus alignment: every lecture directory 01..26 exists with both files
     and the expected lecture number.
 
-Usage: python3 scripts/lint_sources.py      (exit status 1 on any problem)
+Usage: python3 scripts/lint_sources.py [--fix]   (exit status 1 on any problem)
+  --fix  replaces Persian commas inside \\lr{...} by Latin commas before checking.
 """
 import glob
 import os
@@ -40,7 +41,18 @@ def facts(path):
     f["number"] = (re.findall(r"\\ACNset\{number\}\{(\d+)\}", t) or ["?"])[0]
     return f, t
 
+def autofix():
+    for p in glob.glob(os.path.join(ROOT, "lectures", "*", "*-fa.tex")) + \
+             glob.glob(os.path.join(ROOT, "syllabus", "*-fa.tex")):
+        s = open(p, encoding="utf-8").read()
+        t = re.sub(r"\\lr\{([^{}]*)\}", lambda m: "\\lr{" + m.group(1).replace("\u060c", ",") + "}", s)
+        if t != s:
+            open(p, "w", encoding="utf-8").write(t)
+            print("fixed Persian commas in", os.path.relpath(p, ROOT))
+
 def main():
+    if "--fix" in sys.argv:
+        autofix()
     problems = []
     dirs = sorted(glob.glob(os.path.join(ROOT, "lectures", "lecture-[0-9][0-9]")))
     present = {os.path.basename(d)[-2:] for d in dirs}
