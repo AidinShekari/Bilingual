@@ -1,0 +1,18 @@
+% average power and added latency vs DRX cycle (on-duration 10 ms)
+\begin{tikzpicture}
+\begin{axis}[acnplot,width=0.78\linewidth,height=5.6cm,xmode=log,log basis x=2,
+  xlabel={\bil{DRX cycle $T_{\mathrm{DRX}}$ [ms]}{چرخهٔ DRX، $T_{\mathrm{DRX}}$ [ms]}},
+  ylabel={\bil{average power [mW]}{توان میانگین [mW]}},xmin=20,xmax=2560,ymin=0,ymax=270,
+  xtick={20,40,80,160,320,640,1280,2560},xticklabels={20,40,80,160,320,640,1280,2560},
+  axis y line*=left,legend pos=north east]
+  \addplot+[no marks,domain=20:2560,samples=100] {500*10/x+10*(1-10/x)};\label{pl:pow}
+\end{axis}
+\begin{axis}[acnplot,width=0.78\linewidth,height=5.6cm,xmode=log,log basis x=2,xmin=20,xmax=2560,
+  ymin=0,ymax=1400,axis y line*=right,axis x line=none,grid=none,
+  ylabel={\bil{mean added latency [ms]}{میانگین تأخیر افزوده [ms]}},
+  legend style={at={(0.5,0.97)},anchor=north}]
+  \addlegendimage{/pgfplots/refstyle=pl:pow}\addlegendentry{\bil{power}{توان}}
+  \addplot+[no marks,acnteal,dashed,domain=20:2560,samples=2] {x/2};
+  \addlegendentry{\bil{latency $T_{\mathrm{DRX}}/2$}{تأخیر $T_{\mathrm{DRX}}/2$}}
+\end{axis}
+\end{tikzpicture}

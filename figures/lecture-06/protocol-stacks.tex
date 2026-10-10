@@ -1,0 +1,20 @@
+% LTE control-plane and user-plane radio protocol stacks
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \tikzset{L/.style={stacklayer,minimum width=1.75cm},N/.style={stacklayeralt,minimum width=1.75cm}}
+  % control plane
+  \node[font=\ACNheadfont\small\bfseries,text=acnnavy] at (2.6,4.35) {\bil{Control plane}{صفحهٔ کنترل}};
+  \foreach \l [count=\k] in {NAS,RRC,PDCP,RLC,MAC,PHY}{\node[L] at (0,4.0-0.55*\k) {\l};}
+  \foreach \l [count=\k] in {RRC,PDCP,RLC,MAC,PHY}{\node[L] at (2.6,3.45-0.55*\k) {\l};}
+  \node[N] at (5.2,3.45) {NAS};
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acngray] at (0,0.25) {UE};
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acngray] at (2.6,0.25) {eNB};
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acngray] at (5.2,0.25) {MME};
+  \draw[cp,<->] (0.9,3.45) -- node[iflabel,above]{\bil{NAS (transparent via eNB)}{NAS (شفاف از طریق eNB)}} (4.3,3.45);
+  % user plane
+  \node[font=\ACNheadfont\small\bfseries,text=acnnavy] at (9.6,4.35) {\bil{User plane}{صفحهٔ کاربر}};
+  \foreach \l [count=\k] in {IP,PDCP,RLC,MAC,PHY}{\node[L] at (8.2,3.45-0.55*\k+0.55) {\l};}
+  \foreach \l [count=\k] in {PDCP,RLC,MAC,PHY}{\node[L] at (10.8,3.45-0.55*\k) {\l};}
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acngray] at (8.2,0.25) {UE};
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acngray] at (10.8,0.25) {eNB};
+  \draw[up,->] (10.8,3.2) -- ++(0,0.5) node[iflabel,above]{\bil{to S1-U (GTP-U)}{به S1-U (GTP-U)}};
+\end{tikzpicture}
