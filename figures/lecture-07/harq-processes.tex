@@ -1,0 +1,16 @@
+% 8 parallel stop-and-wait HARQ processes (FDD, 8 ms round trip)
+\begin{tikzpicture}[x=0.62cm,y=1cm]
+  \foreach \i in {0,...,15}{%
+    \pgfmathtruncatemacro\p{mod(\i,8)}
+    \node[draw=acnnavy,fill=acnsky,minimum width=0.6cm,minimum height=0.5cm,inner sep=0,
+      font=\ACNheadfont\scriptsize\bfseries,text=acnnavy] at (\i+0.5,1) {P\p};}
+  \node[draw=acnamber,fill=acnamber!30,minimum width=0.6cm,minimum height=0.5cm,inner sep=0,
+      font=\ACNheadfont\scriptsize\bfseries] at (2.5,1) {P2};
+  \node[draw=acnamber,fill=acnamber!30,minimum width=0.6cm,minimum height=0.5cm,inner sep=0,
+      font=\ACNheadfont\scriptsize\bfseries] at (10.5,1) {P2};
+  \draw[->,acncp,line width=0.8pt] (3,0.72) to[bend right=20] node[iflabel,below]{\bil{NACK after 4 ms}{NACK پس از ۴ ms}} (7,0.72);
+  \draw[->,acncp,line width=0.8pt] (7,0.72) to[bend right=20] node[iflabel,below]{\bil{retransmission}{ارسال مجدد}} (10.2,0.72);
+  \foreach \i in {0,4,8,12,16}{\node[caplabel] at (\i,1.55) {\i};}
+  \node[caplabel] at (8,1.95) {\bil{time [ms]}{زمان [ms]}};
+  \draw[decorate,decoration={brace,mirror,amplitude=4pt},acngray] (2,-0.25) -- node[caplabel,below=4pt]{$T_{\mathrm{HARQ}} = 8$ ms} (10,-0.25);
+\end{tikzpicture}

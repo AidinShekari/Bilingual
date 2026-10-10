@@ -1,0 +1,25 @@
+% LTE time-frequency resource grid: frame, subframe, slot, resource block
+\begin{tikzpicture}[x=1cm,y=1cm]
+  % one RB pair: 14 symbols x 12 subcarriers
+  \def\sx{0.42}\def\sy{0.27}
+  \foreach \t in {0,...,13}{\foreach \f in {0,...,11}{%
+    \fill[white] (\t*\sx,\f*\sy) rectangle ++(\sx,\sy);}}
+  \fill[acnamber!35] (0,0) rectangle (2*\sx,12*\sy);
+  \foreach \t/\f in {0/0,0/6,4/3,4/9,7/0,7/6,11/3,11/9,0/3,0/9,4/0,4/6,7/3,7/9,11/0,11/6}{%
+    \fill[acnnavy!70] (\t*\sx,\f*\sy) rectangle ++(\sx,\sy);}
+  \fill[acnteal!60] (5*\sx,4*\sy) rectangle ++(\sx,\sy);
+  \draw[acnline,line width=0.3pt,step=1] (0,0) grid[xstep=\sx,ystep=\sy] (14*\sx,12*\sy);
+  \draw[acnnavy,line width=1pt] (0,0) rectangle (7*\sx,12*\sy);
+  \draw[acnnavy,line width=1pt] (7*\sx,0) rectangle (14*\sx,12*\sy);
+  \draw[decorate,decoration={brace,amplitude=4pt},acngray] (0,12*\sy+0.08) -- node[caplabel,above=4pt]{\bil{slot 0.5 ms (7 symbols)}{شیار ۰٫۵ میلی‌ثانیه (۷ نماد)}} (7*\sx,12*\sy+0.08);
+  \draw[decorate,decoration={brace,amplitude=4pt},acngray] (7*\sx,12*\sy+0.08) -- node[caplabel,above=4pt]{\bil{slot 0.5 ms}{شیار ۰٫۵ میلی‌ثانیه}} (14*\sx,12*\sy+0.08);
+  \draw[decorate,decoration={brace,mirror,amplitude=4pt},acngray] (0,-0.08) -- node[caplabel,below=4pt]{\bil{subframe = TTI = 1 ms}{زیرقاب = TTI = ۱ میلی‌ثانیه}} (14*\sx,-0.08);
+  \draw[decorate,decoration={brace,amplitude=4pt},acngray] (-0.08,0) -- node[caplabel,left=5pt,align=right]{12 \bil{subcarriers}{زیرحامل}\\180 kHz} (-0.08,12*\sy);
+  % legend
+  \begin{scope}[shift={(6.6,0.4)}]
+    \fill[acnamber!35] (0,2.2) rectangle ++(0.3,0.22); \node[caplabel,anchor=west] at (0.4,2.31) {\bil{control region (PDCCH)}{ناحیهٔ کنترل (PDCCH)}};
+    \fill[acnnavy!70] (0,1.6) rectangle ++(0.3,0.22); \node[caplabel,anchor=west] at (0.4,1.71) {\bil{cell-specific RS (2 ports)}{سیگنال مرجع سلول (۲ درگاه)}};
+    \fill[acnteal!60] (0,1.0) rectangle ++(0.3,0.22); \node[caplabel,anchor=west] at (0.4,1.11) {\bil{one resource element}{یک عنصر منبع}};
+    \draw (0,0.4) rectangle ++(0.3,0.22); \node[caplabel,anchor=west] at (0.4,0.51) {PDSCH \bil{data}{داده}};
+  \end{scope}
+\end{tikzpicture}
