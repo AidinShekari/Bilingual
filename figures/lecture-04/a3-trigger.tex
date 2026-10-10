@@ -1,0 +1,17 @@
+% A3 event: neighbour becomes offset better than serving, held for time-to-trigger
+\begin{tikzpicture}
+\begin{axis}[acnplot,width=0.86\linewidth,height=6.2cm,
+  xlabel={\bil{time [s]}{زمان [s]}},ylabel={RSRP [dBm]},xmin=0,xmax=10,ymin=-112,ymax=-78,
+  legend style={at={(0.5,1.03)},anchor=south},legend columns=3]
+  \addplot+[no marks,domain=0:10,samples=80] {-80-2.6*x};
+  \addplot+[no marks,domain=0:10,samples=80] {-106+2.6*x};
+  \addplot+[no marks,densely dotted,acnamber,domain=0:10,samples=2] {-80-2.6*x+3};
+  \legend{\bil{serving $M_\mathrm{p}$}{خدمت‌دهنده $M_\mathrm{p}$},\bil{neighbour $M_\mathrm{n}$}{همسایه $M_\mathrm{n}$},$M_\mathrm{p}+\mathrm{Off}+\mathrm{Hys}$}
+  \draw[acngray,densely dashed] (axis cs:5,-112) -- (axis cs:5,-78);
+  \draw[acnteal,line width=1pt] (axis cs:5.577,-112) -- (axis cs:5.577,-78);
+  \draw[acnnavy,line width=1pt] (axis cs:5.897,-112) -- (axis cs:5.897,-78);
+  \draw[<->,acnnavy] (axis cs:5.577,-109) -- node[above,font=\scriptsize]{$T_{\mathrm{TTT}}$} (axis cs:5.897,-109);
+  \node[caplabel,anchor=east] at (axis cs:4.95,-84) {\bil{equal RSRP}{RSRP برابر}};
+  \node[caplabel,anchor=west,align=left] at (axis cs:6.0,-104) {\bil{report sent,}{ارسال گزارش،}\\\bil{HO starts}{آغاز تحویل}};
+\end{axis}
+\end{tikzpicture}
