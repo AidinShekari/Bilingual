@@ -10,7 +10,8 @@
     and the expected lecture number.
 
 Usage: python3 scripts/lint_sources.py [--fix]   (exit status 1 on any problem)
-  --fix  replaces Persian commas inside \\lr{...} by Latin commas before checking.
+  --fix  replaces Persian commas inside \\lr{...} by Latin commas, and Latin decimal
+         points in Persian running text by the Persian decimal separator, before checking.
 """
 import glob
 import os
@@ -41,14 +42,72 @@ def facts(path):
     f["number"] = (re.findall(r"\\ACNset\{number\}\{(\d+)\}", t) or ["?"])[0]
     return f, t
 
+PROTECTED_CMDS = ("lr", "acro", "msg", "iface", "spec", "qty", "qtyrange", "num", "SI", "ang",
+                  "cite", "cref", "Cref", "ref", "label", "acnfig", "texttt", "url", "resizebox",
+                  "nocite", "includegraphics", "hspace", "vspace", "rule", "addbibresource")
+MATH_ENVS = ("equation", "equation*", "align", "align*", "gather", "gather*", "multline",
+             "subequations", "tikzpicture", "axis")
+
+def _mask(text):
+    """Replace math and protected command arguments by placeholders."""
+    keep = []
+    def stash(frag):
+        keep.append(frag)
+        return "\x00%d\x00" % (len(keep) - 1)
+    out, i, n = [], 0, len(text)
+    while i < n:
+        c = text[i]
+        if c == "%" and (i == 0 or text[i - 1] != "\\"):            # comment
+            j = text.find("\n", i)
+            j = n if j < 0 else j
+            out.append(stash(text[i:j])); i = j; continue
+        if c == "$":                                                 # inline/display math
+            dbl = text.startswith("$$", i)
+            end = text.find("$$" if dbl else "$", i + (2 if dbl else 1))
+            end = n if end < 0 else end + (2 if dbl else 1)
+            out.append(stash(text[i:end])); i = end; continue
+        if text.startswith("\\begin{", i):
+            m = re.match(r"\\begin\{([^}]*)\}", text[i:])
+            if m and m.group(1) in MATH_ENVS:
+                endtag = "\\end{%s}" % m.group(1)
+                end = text.find(endtag, i)
+                end = n if end < 0 else end + len(endtag)
+                out.append(stash(text[i:end])); i = end; continue
+        if c == "\\":
+            m = re.match(r"\\([A-Za-z]+)\*?", text[i:])
+            if m and m.group(1) in PROTECTED_CMDS:
+                j = i + m.end()
+                while j < n and text[j] in "[{":                     # all following arguments
+                    close = "]" if text[j] == "[" else "}"
+                    depth, k = 0, j
+                    while k < n:
+                        if text[k] in "[{" and text[k] == text[j]: depth += 1
+                        elif text[k] == close:
+                            depth -= 1
+                            if depth == 0: break
+                        k += 1
+                    j = k + 1
+                out.append(stash(text[i:j])); i = j; continue
+        out.append(c); i += 1
+    return "".join(out), keep
+
+def _unmask(text, keep):
+    return re.sub("\x00(\\d+)\x00", lambda m: keep[int(m.group(1))], text)
+
+DEC = re.compile(r"(?<![\w.\\])(\d+)\.(\d+)(?![\w.]|\\linewidth|\\textwidth|cm|pt|em\b|ex\b)")
+
 def autofix():
     for p in glob.glob(os.path.join(ROOT, "lectures", "*", "*-fa.tex")) + \
              glob.glob(os.path.join(ROOT, "syllabus", "*-fa.tex")):
         s = open(p, encoding="utf-8").read()
         t = re.sub(r"\\lr\{([^{}]*)\}", lambda m: "\\lr{" + m.group(1).replace("\u060c", ",") + "}", s)
+        head, body = t.split("\\begin{document}", 1) if "\\begin{document}" in t else ("", t)
+        masked, keep = _mask(body)
+        masked = DEC.sub("\\1\u066b\\2", masked)
+        t = head + ("\\begin{document}" if head else "") + _unmask(masked, keep)
         if t != s:
             open(p, "w", encoding="utf-8").write(t)
-            print("fixed Persian commas in", os.path.relpath(p, ROOT))
+            print("autofixed", os.path.relpath(p, ROOT))
 
 def main():
     if "--fix" in sys.argv:
@@ -79,6 +138,10 @@ def main():
                                     % (num, k, sorted(a - b), sorted(b - a)))
                 else:
                     problems.append("lecture-%s parity %s: EN %d vs FA %d" % (num, k, fe[k], ff[k]))
+        body = tfa.split("\\begin{document}", 1)[-1]
+        masked, _ = _mask(body)
+        for m in DEC.findall(masked):
+            problems.append("lecture-%s FA: Latin decimal point in RTL text: %s.%s" % (num, m[0], m[1]))
         for m in re.findall(r"\\lr\{[^{}]*\u060c[^{}]*\}", tfa):
             problems.append("lecture-%s FA: Persian comma inside \\lr: %s" % (num, m[:60]))
         for fig in fe["figures"]:

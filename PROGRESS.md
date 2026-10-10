@@ -12,7 +12,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 04 | Mobility and Handover | done | done | yes |
 | 05 | 4G LTE Architecture | done | done | yes |
 | 06 | E-UTRAN | done | done | yes |
-| 07 | | | | |
+| 07 | LTE Scheduling | done | done | yes |
 | 08 | | | | |
 | 09 | | | | |
 | 10 | | | | |
