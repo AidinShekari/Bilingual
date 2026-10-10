@@ -10,7 +10,7 @@
   \node[t,minimum width=2.2cm] (gtp) at (udp.east) {GTP-U\\[-2pt]{\tiny 8 B (+4 B \bil{optional}{اختیاری})}};
   \node[p,minimum width=2.0cm] (iip) at (gtp.east) {\bil{user IP header}{سرآیند IP کاربر}};
   \node[p,minimum width=3.6cm] (pay) at (iip.east) {\bil{user payload}{بار مفید کاربر}};
-  \draw[br] (oip.south west) -- node[caplabel,below=5pt]{\bil{tunnel overhead $H$ = 36 B (IPv4) or 56 B (IPv6)}{سربار تونل $H$ = 36 B (IPv4) یا 56 B (IPv6)}} (gtp.south east);
+  \draw[br] (oip.south west) -- node[caplabel,below=5pt]{\bil{tunnel overhead $H$ = 36 B (IPv4) or 56 B (IPv6)}{سربار تونل $H$ = 36 B (\lr{IPv4}) یا 56 B (\lr{IPv6})}} (gtp.south east);
   \draw[br] (iip.south west) -- node[caplabel,below=5pt]{\bil{T-PDU: the UE's packet, unchanged ($L$ bytes)}{T-PDU: بستهٔ UE بدون تغییر ($L$ بایت)}} (pay.south east);
   % GTP-U header detail
   \node[font=\ACNheadfont\scriptsize\bfseries,text=acnteal,anchor=west] at (0,1.75) {\bil{GTP-U header (8 bytes)}{سرآیند GTP-U (۸ بایت)}};

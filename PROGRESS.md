@@ -20,7 +20,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 12 | Mobility Management Entity (MME) | done | done | yes |
 | 13 | S-GW and P-GW | done | done | yes |
 | 14 | 5G Networks Introduction | done | done | yes |
-| 15 | | | | |
+| 15 | Software-Defined Networking (SDN) | done | done | yes |
 | 16 | | | | |
 | 17 | | | | |
 | 18 | | | | |

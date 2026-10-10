@@ -1,0 +1,25 @@
+% SDN layered architecture
+\begin{tikzpicture}[x=1cm,y=1cm,
+  layer/.style={draw=acnline,fill=acnmist,rounded corners=4pt,minimum width=11.4cm,minimum height=1.25cm},
+  ll/.style={font=\ACNheadfont\scriptsize\bfseries,text=acngray,anchor=west},
+  api/.style={font=\ACNheadfont\scriptsize\itshape,text=acnteal,fill=white,inner sep=1.5pt}]
+  % application layer
+  \node[layer] (al) at (0,3.6) {};
+  \node[ll] at ($(al.west)+(0.15,0.38)$) {\bil{application plane}{صفحهٔ کاربرد}};
+  \foreach \x/\t in {-2.6/{\bil{routing}{مسیریابی}},0.4/{\bil{load balancing}{توازن بار}},3.4/{\bil{security / ACL}{امنیت / ACL}}}{
+    \node[nfalt,minimum width=2.4cm,minimum height=0.55cm,font=\ACNheadfont\scriptsize\bfseries] at (\x,3.45) {\t};}
+  % control layer
+  \node[layer,fill=acnsky!50] (cl) at (0,1.6) {};
+  \node[ll] at ($(cl.west)+(0.15,0.38)$) {\bil{control plane}{صفحهٔ کنترل}};
+  \node[nf,minimum width=7.6cm,minimum height=0.6cm] (ctl) at (0.6,1.45) {\bil{SDN controller (network OS): topology, state, path computation}{کنترل‌گر SDN (سیستم‌عامل شبکه): توپولوژی، حالت، محاسبهٔ مسیر}};
+  % data layer
+  \node[layer] (dl) at (0,-0.8) {};
+  \node[ll] at ($(dl.west)+(0.15,0.38)$) {\bil{data plane}{صفحهٔ داده}};
+  \foreach \i/\x in {1/-3.0,2/-0.6,3/1.8,4/4.2}{
+    \node[nfgray,minimum width=1.5cm,minimum height=0.6cm,font=\ACNheadfont\scriptsize\bfseries] (s\i) at (\x,-0.95) {\bil{switch}{سوئیچ} \i};}
+  \draw[link] (s1) -- (s2); \draw[link] (s2) -- (s3); \draw[link] (s3) -- (s4);
+  % APIs
+  \draw[cp,<->] (0.6,2.95) -- node[api]{\bil{northbound API (e.g. REST)}{API شمالی (مثلاً REST)}} (0.6,1.75);
+  \foreach \i in {1,...,4}{\draw[cp,<->] (s\i.north) -- (s\i.north|-ctl.south);}
+  \node[api] at (-1.8,0.45) {\bil{southbound: OpenFlow, P4Runtime, NETCONF}{جنوبی: OpenFlow، \lr{P4Runtime}، NETCONF}};
+\end{tikzpicture}

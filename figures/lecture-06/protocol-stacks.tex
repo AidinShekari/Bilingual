@@ -16,5 +16,5 @@
   \foreach \l [count=\k] in {PDCP,RLC,MAC,PHY}{\node[L] at (10.8,3.45-0.55*\k) {\l};}
   \node[font=\ACNheadfont\scriptsize\bfseries,text=acngray] at (8.2,0.25) {UE};
   \node[font=\ACNheadfont\scriptsize\bfseries,text=acngray] at (10.8,0.25) {eNB};
-  \draw[up,->] (10.8,3.2) -- ++(0,0.5) node[iflabel,above]{\bil{to S1-U (GTP-U)}{به S1-U (GTP-U)}};
+  \draw[up,->] (10.8,3.2) -- ++(0,0.5) node[iflabel,above]{\bil{to S1-U (GTP-U)}{به \lr{S1-U} (GTP-U)}};
 \end{tikzpicture}

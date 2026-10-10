@@ -2,7 +2,7 @@
 \begin{tikzpicture}
   \SeqActors[3.3]{UE,eNB,MME,S-GW,P-GW}
   \SeqMsg[up]{4}{3}{\bil{downlink packet}{بستهٔ فروسو}}
-  \SeqSelf{3}{\bil{no S1-U tunnel: buffer}{بدون تونل S1-U: بافر}}
+  \SeqSelf{3}{\bil{no S1-U tunnel: buffer}{بدون تونل \lr{S1-U}: بافر}}
   \SeqMsg{3}{2}{Downlink Data Notification}
   \SeqMsg{2}{3}{DDN Ack}
   \SeqMsg{2}{1}{Paging (S-TMSI, TAI list)}

@@ -1,7 +1,7 @@
 % contention-based random access (4-step)
 \begin{tikzpicture}
   \SeqActors[6.0]{UE,eNB}
-  \SeqNote{0}{1}{\bil{read SIB2: PRACH configuration, preamble set, RAR window}{خواندن SIB2: پیکربندی PRACH، مجموعهٔ پیش‌نوا، پنجرهٔ RAR}}
+  \SeqNote{0}{1}{\bil{read SIB2: PRACH configuration, preamble set, RAR window}{خواندن \lr{SIB2}: پیکربندی PRACH، مجموعهٔ پیش‌نوا، پنجرهٔ RAR}}
   \SeqMsg{0}{1}{Msg1: \bil{random preamble on PRACH}{پیش‌نوای تصادفی روی PRACH}}
   \SeqSelf{1}{\bil{detect preamble, estimate delay}{آشکارسازی پیش‌نوا، تخمین تأخیر}}
   \SeqMsg{1}{0}{Msg2: RAR (RAPID, TA, UL grant, TC-RNTI)}

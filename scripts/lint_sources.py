@@ -96,7 +96,30 @@ def _unmask(text, keep):
 
 DEC = re.compile(r"(?<![\w.\\])(\d+)\.(\d+)(?![\w.]|\\linewidth|\\textwidth|cm|pt|em\b|ex\b)")
 
+LATDIG = re.compile(r"(?<![\\\w])([A-Za-z][\w./-]*\d[\w./-]*|\d+[A-Za-z][\w./-]*)")
+BIL = re.compile(r"\\bil\{([^{}]*)\}\{((?:[^{}]|\{[^{}]*\})*)\}")
+
+def _fa_arg_fix(arg):
+    """Wrap Latin tokens that contain digits (S4, P4Runtime, GTPv2-C) in \\lr so
+    that their digits are not shaped as Persian digits inside the RTL label."""
+    keep = []
+    def stash(m):
+        keep.append(m.group(0))
+        return "\x00%d\x00" % (len(keep) - 1)
+    masked = re.sub(r"\$[^$]*\$|\\lr\{[^{}]*\}|\\[A-Za-z]+", stash, arg)
+    masked = LATDIG.sub(lambda m: "\\lr{" + m.group(1) + "}", masked)
+    return _unmask(masked, keep)
+
+def fix_figures():
+    for p in glob.glob(os.path.join(ROOT, "figures", "*", "*.tex")):
+        s = open(p, encoding="utf-8").read()
+        t = BIL.sub(lambda m: "\\bil{%s}{%s}" % (m.group(1), _fa_arg_fix(m.group(2))), s)
+        if t != s:
+            open(p, "w", encoding="utf-8").write(t)
+            print("autofixed", os.path.relpath(p, ROOT))
+
 def autofix():
+    fix_figures()
     for p in glob.glob(os.path.join(ROOT, "lectures", "*", "*-fa.tex")) + \
              glob.glob(os.path.join(ROOT, "syllabus", "*-fa.tex")):
         s = open(p, encoding="utf-8").read()
@@ -153,6 +176,10 @@ def main():
         for m in re.finditer(r"\\bil\{([^{}]*)\}\{([^{}]*)\}", t):
             if "\\\\" in m.group(0):
                 problems.append("%s: line break inside \\bil (breaks in RTL)" % os.path.relpath(p, ROOT))
+        for m in BIL.finditer(t):
+            if _fa_arg_fix(m.group(2)) != m.group(2):
+                problems.append("%s: Latin token with digits not wrapped in \\lr: %s"
+                                % (os.path.relpath(p, ROOT), m.group(2)[:50]))
     for p in problems:
         print("PROBLEM:", p)
     print("%d lecture directories checked, %d problems" % (len(dirs), len(problems)))

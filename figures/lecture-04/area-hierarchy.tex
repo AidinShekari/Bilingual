@@ -1,6 +1,6 @@
 % registration areas across generations
 \begin{tikzpicture}[x=1cm,y=1cm]
-  \foreach \x/\lab/\sub/\col in {0/LA/\bil{GSM CS}{CS در GSM}/acnsky,3.4/RA/\bil{GPRS PS}{PS در GPRS}/acnmint,6.8/{TA list}/{LTE, 5G}/acnsky,10.2/RNA/\bil{5G RRC\_INACTIVE}{RRC\_INACTIVE در 5G}/acnmint}{%
+  \foreach \x/\lab/\sub/\col in {0/LA/\bil{GSM CS}{CS در GSM}/acnsky,3.4/RA/\bil{GPRS PS}{PS در GPRS}/acnmint,6.8/{TA list}/{LTE, 5G}/acnsky,10.2/RNA/\bil{5G RRC\_INACTIVE}{RRC\_INACTIVE در \lr{5G}}/acnmint}{%
     \begin{scope}[shift={(\x,0)}]
       \foreach \i in {0,1,2}{\foreach \j in {0,1}{%
         \node[regular polygon,regular polygon sides=6,minimum size=0.95cm,draw=acnnavy,fill=\col,line width=0.5pt] at ({\i*0.82},{\j*0.95+mod(\i,2)*0.47}) {};}}

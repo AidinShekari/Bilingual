@@ -9,8 +9,8 @@
   \draw[tr] (reg.192) -- node[trl,below]{\bil{detach / reject}{جدا شدن / رد}} (dereg.348);
   \node[st2] (idle) at (0,-2.2) {ECM-IDLE};
   \node[st2] (conn) at (6,-2.2) {ECM-CONNECTED};
-  \draw[tr,acnteal] (idle.12) -- node[trl,above]{\bil{RRC + S1 connection set up}{برقراری اتصال RRC و S1}} (conn.168);
-  \draw[tr,acnteal] (conn.192) -- node[trl,below]{\bil{S1 release (inactivity)}{آزادسازی S1 (بی‌فعالیتی)}} (idle.348);
+  \draw[tr,acnteal] (idle.12) -- node[trl,above]{\bil{RRC + S1 connection set up}{برقراری اتصال RRC و \lr{S1}}} (conn.168);
+  \draw[tr,acnteal] (conn.192) -- node[trl,below]{\bil{S1 release (inactivity)}{آزادسازی \lr{S1} (بی‌فعالیتی)}} (idle.348);
   \node[caplabel,anchor=west,align=left] at (8.0,0) {\bil{registration state}{حالت ثبت‌نام}};
   \node[caplabel,anchor=west,align=left] at (8.0,-2.2) {\bil{signalling-connection state}{حالت اتصال سیگنالینگ}};
 \end{tikzpicture}
