@@ -18,7 +18,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 10 | Diameter Protocol | done | done | yes |
 | 11 | Home Subscriber Server (HSS) | done | done | yes |
 | 12 | Mobility Management Entity (MME) | done | done | yes |
-| 13 | | | | |
+| 13 | S-GW and P-GW | done | done | yes |
 | 14 | | | | |
 | 15 | | | | |
 | 16 | | | | |
