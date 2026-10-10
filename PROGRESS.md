@@ -15,7 +15,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 07 | LTE Scheduling | done | done | yes |
 | 08 | Random Access (RACH) | done | done | yes |
 | 09 | Evolved Packet Core | done | done | yes |
-| 10 | | | | |
+| 10 | Diameter Protocol | done | done | yes |
 | 11 | | | | |
 | 12 | | | | |
 | 13 | | | | |

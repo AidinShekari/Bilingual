@@ -1,0 +1,13 @@
+% Rx/Gx interaction for a VoLTE call
+\begin{tikzpicture}
+  \SeqActors[4.5]{P-CSCF (AF),PCRF,P-GW (PCEF),\bil{bearer path}{مسیر حامل}}
+  \SeqMsg{0}{1}{Rx AAR (\bil{media: codec, ports}{رسانه: کدک، درگاه‌ها})}
+  \SeqSelf{1}{\bil{policy decision: QCI 1, GBR}{تصمیم سیاست: QCI 1 و GBR}}
+  \SeqMsg{1}{0}{Rx AAA}
+  \SeqMsg{1}{2}{Gx RAR (Charging-Rule-Install)}
+  \SeqMsg{2}{3}{\bil{Create Bearer Req. (GTPv2-C)}{درخواست ساخت حامل}}
+  \SeqMsg{3}{2}{\bil{Create Bearer Response}{پاسخ ساخت حامل}}
+  \SeqMsg{2}{1}{Gx RAA}
+  \SeqNote{0}{3}{\bil{call ends: Rx STR/STA, Gx RAR (rule remove), Delete Bearer}{پایان تماس: Rx STR/STA، Gx RAR (حذف قاعده)، حذف حامل}}
+  \SeqEnd
+\end{tikzpicture}
