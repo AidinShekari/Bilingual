@@ -19,7 +19,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 11 | Home Subscriber Server (HSS) | done | done | yes |
 | 12 | Mobility Management Entity (MME) | done | done | yes |
 | 13 | S-GW and P-GW | done | done | yes |
-| 14 | | | | |
+| 14 | 5G Networks Introduction | done | done | yes |
 | 15 | | | | |
 | 16 | | | | |
 | 17 | | | | |
