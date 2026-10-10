@@ -7,7 +7,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | # | Topic | EN | FA | Reviewed |
 |---|-------|----|----|----------|
 | 01 | GSM, GPRS and EDGE | done | done | yes |
-| 02 | | | | |
+| 02 | 2G Circuit Switching | done | done | yes |
 | 03 | | | | |
 | 04 | | | | |
 | 05 | | | | |

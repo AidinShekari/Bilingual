@@ -1,0 +1,535 @@
+% =====================================================================
+%  Lecture 02 -- 2G Circuit Switching                     (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{02}
+\ACNset{title}{2G Circuit Switching}
+\ACNset{shorttitle}{2G Circuit Switching}
+\ACNset{titleother}{سوئیچ مداری در نسل دوم}
+\ACNset{part}{Part I -- 2G/3G foundations (Lectures 1--4)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Intermediate}
+\ACNset{prereq}{Lecture 1 (GSM architecture); basic probability (Poisson process, exponential distribution)}
+\ACNset{gen}{2}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Explain} what a circuit is, which resources a GSM call reserves and why
+        reservation guarantees quality but wastes capacity.
+  \item \textbf{Describe} the SS7 protocol stack (MTP, SCCP, TCAP, MAP, ISUP, BSSAP) and
+        the role of signalling points and signal transfer points.
+  \item \textbf{Trace} a mobile-originated and a mobile-terminated call, including HLR
+        interrogation and the use of the MSRN.
+  \item \textbf{Derive} the Erlang-B formula from the $M/M/m/m$ model and
+        \textbf{dimension} a cell or trunk group for a target blocking probability.
+  \item \textbf{Quantify} trunking efficiency and the cost of splitting a channel pool.
+  \item \textbf{Analyse} roaming signalling and call routing, and \textbf{evaluate} why
+        circuit switching became a limitation for data.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+You need the GSM architecture and identities of Lecture~1 (MSC, VLR, HLR, GMSC, IMSI,
+TMSI) and elementary probability: a Poisson arrival process with rate $\lambda$, and an
+exponentially distributed holding time with mean $h$. We use the word \emph{traffic} in
+the telephony sense: the average number of simultaneously busy circuits.
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+Circuit switching & \fa{سوئیچ مداری} & A dedicated path is reserved end to end for the whole call. \\
+Signalling System No.~7 (SS7) & \fa{سامانهٔ سیگنالینگ شمارهٔ ۷} & Out-of-band signalling network between exchanges. \\
+ISUP & \fa{بخش کاربر ISDN} & SS7 protocol for setting up and releasing trunk circuits. \\
+MAP & \fa{بخش کاربرد موبایل} & SS7 application protocol for mobility (HLR, VLR, MSC). \\
+MSISDN & \fa{شمارهٔ تلفن مشترک} & The dialled telephone number of a subscriber. \\
+MSRN & \fa{شمارهٔ رومینگ ایستگاه موبایل} & Temporary number used to route a call to the serving MSC. \\
+Erlang (E) & \fa{ارلانگ} & Unit of traffic: one circuit busy continuously. \\
+Blocking probability & \fa{احتمال انسداد} & Probability that a call attempt finds all circuits busy. \\
+Grade of service & \fa{درجهٔ خدمت} & Target blocking probability used for dimensioning. \\
+Trunking efficiency & \fa{بازده ترانکینگ} & Carried traffic per circuit; grows with pool size. \\
+Roaming & \fa{رومینگ} & Use of a visited network with a home subscription. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+Telephony was built on one simple promise: once the called party answers, the voice
+path behaves like a pair of wires, with constant delay, no loss and no competition from
+other users. The engineering way to keep that promise is to \emph{reserve} resources for
+the whole call. GSM inherited this model from ISDN, because its first job was to be a
+mobile extension of the fixed telephone network and because 1990s exchanges, trunks and
+billing systems were all built around 64\,kbit/s circuits.
+
+Two problems had to be solved on top of the classic telephone network. First,
+\emph{signalling} had to carry much more than digits: authentication, location updates,
+handover, roaming between countries. Second, the network had to \emph{find} a subscriber
+whose location changes, before any circuit can be set up. GSM solved both with the
+Signalling System No.~7 (SS7) and its Mobile Application Part (MAP). This lecture follows
+a call from dial to hang-up, then asks the quantitative question every operator faces:
+\emph{how many circuits are enough?}
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{What a circuit reserves}
+For a GSM voice call the network reserves, for its entire duration:
+\begin{itemize}
+  \item one traffic channel (TCH) on the radio interface (a timeslot on a carrier);
+  \item one 16\,kbit/s sub-channel on the Abis link and one 64\,kbit/s timeslot on the A
+        interface after transcoding;
+  \item a connection through the switching matrix of the MSC;
+  \item a 64\,kbit/s trunk on each inter-exchange link (one ISUP circuit per link).
+\end{itemize}
+The reservation is held even during silence. In a typical conversation each direction
+is active only about 40\% of the time, so most of the reserved capacity carries nothing.
+
+\begin{definitionbox}{Traffic intensity}
+If calls arrive at rate $\lambda$ (calls per second) and each lasts on average $h$ seconds,
+the offered traffic is $A = \lambda h$, a dimensionless number measured in erlangs. One
+erlang is the traffic that keeps one circuit busy all the time.
+\end{definitionbox}
+
+\subsection{In-band versus common-channel signalling}
+Early telephone networks signalled with tones on the voice circuit itself. This was slow,
+limited in vocabulary and insecure (tones could be imitated by users). Common-channel
+signalling separates the two: signalling messages travel over a dedicated packet network,
+while voice circuits carry only voice. SS7 is the ITU-T standard for this signalling
+network \cite{ituq700}. It is the first example in this course of the
+\emph{separation of control plane and user plane}, an idea that will return in every
+generation.
+
+\subsection{Signalling points}
+Nodes of an SS7 network are \emph{signalling points} (SPs), each identified by a point
+code. A \emph{service switching point} (SSP) is an exchange such as an MSC. A
+\emph{signal transfer point} (STP) is a packet router of the SS7 network: it forwards
+messages between SPs without terminating them, and STPs are deployed in mated pairs for
+reliability. A \emph{service control point} (SCP) hosts databases and service logic,
+for example the intelligent-network logic used for prepaid charging.
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{The SS7 protocol stack}
+\Cref{fig:ss7} shows the stack as used in GSM.
+\begin{itemize}
+  \item \textbf{MTP 1--3} (Message Transfer Part) carries messages reliably between
+        adjacent nodes (MTP\,2: framing, error detection and retransmission) and routes them
+        across the signalling network using point codes (MTP\,3).
+  \item \textbf{SCCP} (Signalling Connection Control Part) adds connection-less and
+        connection-oriented services and, crucially for mobility, \emph{global title
+        translation}: a message can be addressed with a telephone-number-like global title
+        (for example derived from an IMSI) and the network finds the point code of the HLR.
+  \item \textbf{TCAP} (Transaction Capabilities Application Part) structures
+        request--response dialogues between applications.
+  \item \textbf{MAP} \cite{ts29002} runs over TCAP and defines mobility operations:
+        \msg{Update Location}, \msg{Insert Subscriber Data}, \msg{Send Authentication Info},
+        \msg{Send Routing Information} (SRI), \msg{Provide Roaming Number} (PRN),
+        \msg{Cancel Location}.
+  \item \textbf{ISUP} (ISDN User Part) runs directly over MTP\,3 and sets up and releases
+        trunk circuits between exchanges with messages such as IAM, ACM, ANM, REL and RLC.
+  \item \textbf{BSSAP} runs over SCCP on the A interface. Its BSSMAP part carries messages
+        between MSC and BSC (assignment, handover, ciphering); its DTAP part transparently
+        carries messages between MSC and MS (call control and mobility management).
+\end{itemize}
+
+\begin{acnfigure}
+  \acnfig{lecture-02/ss7-stack}
+  \caption{SS7 stack in a GSM core network. MTP provides transport; ISUP controls trunk
+  circuits; SCCP and TCAP support the MAP mobility dialogues and BSSAP on the A interface.}
+  \label{fig:ss7}
+\end{acnfigure}
+
+\subsection{Layer-3 protocols between MS and MSC}
+On the radio side, layer 3 is divided into three sublayers \cite{ts24008}: \emph{radio
+resource management} (RR, terminated in the BSS: channel assignment, handover),
+\emph{mobility management} (MM: location updating, authentication, TMSI reallocation) and
+\emph{connection management} (CM, with call control CC: Setup, Alerting, Connect,
+Disconnect). MM and CC messages are carried transparently through the BSS in DTAP.
+
+\subsection{Numbers and identities used for routing}
+Three numbers must not be confused:
+\begin{itemize}
+  \item \textbf{MSISDN} -- the number people dial; it points to the subscriber's home
+        network and is used by the GMSC to find the HLR.
+  \item \textbf{IMSI} -- the subscription identity used inside the mobile network (MAP
+        addressing, authentication); never dialled.
+  \item \textbf{MSRN} -- a temporary E.164 number allocated by the visited VLR for one
+        incoming call; it routes the call through the fixed network to the serving MSC.
+\end{itemize}
+The HLR maps MSISDN to IMSI and stores which VLR serves the subscriber; the VLR maps the
+MSRN back to the IMSI when the call arrives.
+
+\subsection{Location updating}
+Three cases trigger a location update \cite{ts23012}:
+\begin{itemize}
+  \item \textbf{Normal} -- the MS reads a new location area identity (LAI) on the broadcast
+        channel. If the new LA belongs to another VLR, the new VLR fetches the subscriber
+        data from the HLR with \msg{Update Location}; the HLR sends \msg{Cancel Location} to the
+        old VLR.
+  \item \textbf{Periodic} -- the MS re-registers when timer T3212 expires, so the network
+        can purge subscribers that disappeared without detaching (battery removed, coverage lost).
+  \item \textbf{IMSI attach} -- at power-on in the same LA. The mirror procedure,
+        \textbf{IMSI detach}, tells the VLR that the MS is off, so incoming calls are not paged
+        in vain.
+\end{itemize}
+
+\subsection{Roaming}
+A roaming subscriber registers in a visited network (VPLMN). The visited VLR addresses
+the home HLR (HPLMN) over the international SS7 network, using global titles derived from
+the IMSI, and receives the subscription data and authentication triplets. Roaming
+agreements define charging and which services are allowed. Two consequences are worth
+noting:
+\begin{itemize}
+  \item \textbf{Authentication stays with the home network}: only the home AuC knows $K_i$.
+  \item \textbf{Tromboning}: a call to a roamer is always routed first to the home GMSC
+        (the MSISDN belongs to the home network) and then internationally to the visited
+        MSC. A local caller in the visited country therefore pays for two international
+        legs, unless optimal routing is implemented.
+\end{itemize}
+
+\subsection{Call release}
+Either party can release. The mobile sends \msg{Disconnect}; the MSC replies
+\msg{Release} and the MS confirms \msg{Release Complete}. Towards the fixed network the MSC
+sends ISUP \msg{REL} and receives \msg{RLC}, which frees the trunk. Finally the MSC orders
+the BSS to release the radio channel (BSSMAP \msg{Clear Command}). Billing records are
+closed when the circuit is released, which is why circuit-switched charging is naturally
+time-based.
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{The loss system and the Erlang-B formula}\label{sec:erlangb}
+\paragraph{Engineering problem} A cell has $m$ traffic channels. Calls that arrive when all
+are busy are \emph{blocked} (lost); they do not wait. How large must $m$ be so that no more
+than, say, 2\% of attempts are blocked?
+
+\paragraph{System model and assumptions} (i) Call arrivals form a Poisson process of rate
+$\lambda$ from a large population; (ii) holding times are independent and exponentially
+distributed with mean $h = 1/\mu$; (iii) blocked calls are cleared (no retry);
+(iv) all $m$ channels are fully accessible. This is the $M/M/m/m$ queue.
+
+\paragraph{Derivation} Let $p_k$ be the steady-state probability that $k$ channels are busy.
+In state $k$ the system moves up at rate $\lambda$ and down at rate $k\mu$. Balancing the
+flow between neighbouring states gives
+\begin{equation}\label{eq:balance}
+  \lambda\,p_{k-1} = k\mu\,p_k \quad\Longrightarrow\quad
+  p_k = \frac{A}{k}\,p_{k-1} = \frac{A^k}{k!}\,p_0, \qquad A = \frac{\lambda}{\mu} = \lambda h .
+\end{equation}
+Normalising $\sum_{k=0}^{m}p_k = 1$ yields $p_0 = \bigl(\sum_{i=0}^{m}A^i/i!\bigr)^{-1}$.
+Because Poisson arrivals see time averages (the PASTA property), the probability that an
+arriving call is blocked equals the probability that all $m$ channels are busy:
+\begin{equation}\label{eq:erlangb}
+  P_{\mathrm{B}} = B(A,m) = \frac{A^m/m!}{\displaystyle\sum_{i=0}^{m}\frac{A^i}{i!}} .
+\end{equation}
+\paragraph{Symbols and units} $A$: offered traffic [E]; $m$: number of channels; $\lambda$:
+arrival rate [calls/s]; $h$: mean holding time [s]; $P_{\mathrm{B}}$: blocking probability
+(dimensionless). The carried traffic is $A_{\mathrm{c}} = A(1-P_{\mathrm{B}})$ and the
+utilisation of each channel is $\rho = A_{\mathrm{c}}/m$.
+
+\paragraph{Numerically stable form} Direct evaluation of \cref{eq:erlangb} overflows for
+large $m$. Dividing numerator and denominator by $A^m/m!$ gives the recursion
+\begin{equation}\label{eq:erlangrec}
+  B(A,0) = 1, \qquad B(A,k) = \frac{A\,B(A,k-1)}{k + A\,B(A,k-1)}, \quad k = 1,\dots,m,
+\end{equation}
+used in \texttt{scripts/acnmath.py} to produce \cref{fig:erlang} and every number below.
+
+\paragraph{Interpretation} \Cref{eq:erlangb} depends only on the \emph{mean} holding time
+(it is insensitive to the holding-time distribution), which is why it worked well for
+telephony for a century. It assumes, however, that blocked users go away; in reality many
+retry, which increases the offered traffic and the true blocking (\cref{exr:retry}).
+
+\begin{acnfigure}
+  \acnfig{lecture-02/erlang-b}
+  \caption{Erlang-B blocking probability versus offered traffic for $m = 8$, 30 and 94
+  channels. For the same 2\% grade of service, 8 channels carry 3.6\,E (0.45\,E per channel)
+  whereas 94 channels carry 82.2\,E (0.87\,E per channel).}
+  \label{fig:erlang}
+\end{acnfigure}
+
+\subsection{Trunking efficiency}
+\paragraph{Problem} Is it better to have one pool of $2m$ channels or two pools of $m$?
+\paragraph{Result} For a fixed grade of service, large pools carry more traffic per channel.
+This is the \emph{trunking gain} (or pooling gain) and follows from \cref{eq:erlangb}: the
+relative fluctuation of the number of active calls, $\sqrt{A}/A$, shrinks as $A$ grows, so
+less spare capacity is needed. \Cref{tab:trunking} quantifies it. It explains why GSM
+operators avoid splitting channels between sectors unless interference requires it, and
+why statistical multiplexing in packet networks is so attractive.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Traffic carried at 2\% blocking (computed with \cref{eq:erlangrec}).}\label{tab:trunking}
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+Channels $m$ & Offered traffic $A$ [E] & Carried traffic per channel [E] & Utilisation \\
+\midrule
+8  & 3.63  & 0.44 & 44\% \\
+15 & 9.01  & 0.59 & 59\% \\
+30 & 21.93 & 0.72 & 72\% \\
+47 & 37.46 & 0.78 & 78\% \\
+94 & 82.17 & 0.86 & 86\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Waste of a reserved circuit}
+If the voice activity factor is $\alpha$ (fraction of time a speaker is active), the
+useful load of a reserved circuit is $\alpha$ times its capacity. With $\alpha\approx0.4$ in
+each direction, roughly 60\% of every reserved circuit-second carries silence. Packet
+switching recovers this capacity statistically, at the price of variable delay -- the
+fundamental trade-off between the two switching paradigms, revisited in Lectures~3 and~5.
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+The SS7 network is a separate packet network overlaid on the circuit network. Every MSC,
+GMSC and HLR is a signalling point; STPs route between them. Trunks between MSCs and the
+PSTN carry voice, while MAP and ISUP messages travel on signalling links that may follow
+completely different physical routes. \Cref{fig:mtc} shows the interplay for the hardest
+case, an incoming call, and \cref{fig:moc} the outgoing case.
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+
+\begin{procedurebox}{Mobile-originated call (MOC)}\label{proc:moc}
+\begin{steps}
+  \item The MS sends a channel request on the random access channel (RACH) and receives a
+        signalling channel (SDCCH) on the access grant channel (AGCH).
+  \item It sends \msg{CM Service Request}; the MSC/VLR authenticates the MS and starts
+        ciphering (Lecture~1).
+  \item The MS sends \msg{Setup} with the called number. The MSC checks the subscription
+        (barring, prepaid credit) and answers \msg{Call Proceeding}.
+  \item The MSC orders the BSS to assign a traffic channel (BSSMAP \msg{Assignment Request});
+        the MS moves from SDCCH to a TCH.
+  \item The MSC analyses the number and sends ISUP \msg{IAM} towards the destination; the
+        remote exchange answers \msg{ACM} when the called phone rings, and the MSC sends
+        \msg{Alerting} to the MS (ring-back tone).
+  \item When the called party answers, ISUP \msg{ANM} arrives; the MSC sends \msg{Connect},
+        the MS acknowledges, and charging starts.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{0.92\linewidth}{!}{\acnfig{lecture-02/moc-sequence}}
+  \caption{Mobile-originated call (\cref{proc:moc}).}
+  \label{fig:moc}
+\end{acnfigure}
+
+\begin{procedurebox}{Mobile-terminated call (MTC)}\label{proc:mtc}
+\begin{steps}
+  \item A caller in the PSTN dials the MSISDN. The PSTN routes the call (ISUP \msg{IAM}) to a
+        GMSC of the home network.
+  \item The GMSC sends MAP \msg{Send Routing Information} to the HLR.
+  \item The HLR finds the serving VLR and requests a roaming number with MAP
+        \msg{Provide Roaming Number}; the VLR allocates an MSRN and returns it.
+  \item The HLR returns the MSRN to the GMSC, which routes the call with a new \msg{IAM}
+        addressed to the MSRN -- the fixed network delivers it to the serving MSC.
+  \item The MSC asks its VLR for the subscriber context; the VLR releases the MSRN and
+        returns the location area; the MSC pages the MS in all cells of that LA.
+  \item The MS answers the page, is authenticated, receives \msg{Setup} and a TCH; ringing
+        and answer are signalled back with \msg{ACM} and \msg{ANM}.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-02/mtc-sequence}}
+  \caption{Mobile-terminated call: HLR interrogation, MSRN allocation, routing and paging
+  (\cref{proc:mtc}). Dashed: signalling; solid: the reserved circuit.}
+  \label{fig:mtc}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Dimensioning a cell}\label{ex:dim}
+\textbf{Problem.} The cell of Lecture~1, Example~1, has 94 traffic channels. Subscribers
+generate 25\,mE each during the busy hour. How many subscribers can the cell serve at a
+2\% grade of service?
+
+\textbf{Solution.} Solving $B(A,94) = 0.02$ with \cref{eq:erlangrec} gives
+$A = 82.2$\,E. The number of subscribers is $N = A/a = 82.2/0.025 \approx 3290$.
+Carried traffic $A_{\mathrm{c}} = 82.2\times0.98 = 80.5$\,E, i.e.\ 86\% channel utilisation.
+
+\textbf{Interpretation.} If the same 94 channels were split into two sectors of 47, each
+sector would carry 37.5\,E, 74.9\,E in total -- about 9\% fewer subscribers for the same
+hardware (\cref{tab:trunking}).
+\end{examplebox}
+
+\begin{examplebox}{Erlang-B by hand}\label{ex:hand}
+\textbf{Problem.} A small site has $m=3$ channels and $A=2$\,E. Compute $P_{\mathrm{B}}$.
+
+\textbf{Solution.}
+\begin{equation*}
+  P_{\mathrm{B}} = \frac{2^3/3!}{1 + 2 + 2^2/2! + 2^3/3!}
+  = \frac{1.333}{6.333} = 0.211 .
+\end{equation*}
+The recursion gives the same: $B_1 = 2/3$, $B_2 = (2\cdot\tfrac23)/(2+\tfrac43) = 0.4$,
+$B_3 = 0.8/(3+0.8) = 0.211$.
+
+\textbf{Interpretation.} One call in five is lost: a 3-channel site is useless at 2\,E.
+Small pools need very low load for an acceptable grade of service.
+\end{examplebox}
+
+\begin{examplebox}{Busy-hour arrival rate}\label{ex:lambda}
+\textbf{Problem.} Mean call duration is 90\,s. What arrival rate produces the 82.2\,E of
+\cref{ex:dim}, and how many call set-ups per second must the MSC handle in that cell?
+
+\textbf{Solution.} $\lambda = A/h = 82.2/90 = 0.913$ calls/s, i.e.\ about 3290 call attempts
+per hour in one cell. Each attempt generates tens of signalling messages (RR, MM, CC,
+BSSMAP and ISUP), so signalling load scales with $\lambda$, not with $A$.
+
+\textbf{Interpretation.} Short calls (or SMS and location updates, which use SDCCH)
+stress signalling capacity, which must be dimensioned separately (\cref{exr:sdcch}).
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{Circuit switching versus packet switching.}\label{tab:csps}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
+\toprule
+\rowcolor{white} & Circuit switching (GSM voice) & Packet switching (GPRS and later) \\
+\midrule
+Resource allocation & Reserved at set-up for the whole call & Per packet or per scheduling interval \\
+Delay               & Constant, low                          & Variable (queuing) \\
+Loss mechanism      & Blocking at set-up                     & Packet loss or delay under load \\
+Efficiency          & Low for bursty sources                 & High (statistical multiplexing) \\
+Dimensioning model  & Erlang-B ($M/M/m/m$)                   & Queueing models ($M/M/1$, etc.) \\
+Charging            & Time                                   & Volume or flat rate \\
+Signalling          & SS7: ISUP + MAP                        & GTP, later Diameter and HTTP/2 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Why circuit switching was right for voice} Voice is a constant-rate, delay-sensitive
+stream; reserving 13\,kbit/s guarantees quality without complex scheduling, and the Erlang
+model allows precise dimensioning. \paragraph{Why it became a limitation} Data is bursty: a
+web page needs a high rate for a second and nothing for a minute. Reserving a circuit for
+that is wasteful, and a single 9.6\,kbit/s circuit is far too slow. Running two core
+networks (circuit and packet) also doubled operational cost -- the motivation for the
+all-IP core of LTE (Lecture~5), where voice itself becomes packets (VoLTE).
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item A GSM call reserves a radio timeslot, Abis/A channels, a switch path and trunks
+        for its whole duration -- even during silence.
+  \item SS7 separates signalling from voice: MTP transports, SCCP addresses (global titles),
+        TCAP structures dialogues, MAP handles mobility, ISUP controls trunks.
+  \item An incoming call needs the HLR (\msg{SRI}) and the visited VLR (\msg{PRN}) to obtain an
+        MSRN before it can be routed and paged.
+  \item Erlang-B, $B(A,m)$, dimensions loss systems; compute it with the recursion
+        \cref{eq:erlangrec}.
+  \item Larger pools are more efficient (trunking gain); splitting pools costs capacity.
+  \item Circuit switching wastes the silent part of every call and cannot serve bursty
+        data efficiently; this drove the move to packet switching.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Signalling}\label{exr:ss7}
+Why does ISUP run directly over MTP\,3, while MAP needs SCCP? Relate your answer to how
+the destination of each message is known.
+\end{exercisebox}
+
+\begin{exercisebox}{1}{Numbers}\label{exr:msrn}
+Why can the GMSC not route an incoming call using the IMSI? Why is the MSRN released as
+soon as the call reaches the serving MSC?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Dimensioning}\label{exr:dim}
+A cell has 30 traffic channels. (a) What traffic can it offer at 1\% and at 5\% blocking?
+(b) With 20\,mE per subscriber, how many more subscribers are served at 5\% than at 1\%?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{SDCCH capacity}\label{exr:sdcch}
+Location updates, SMS and call set-ups each hold an SDCCH for about 3\,s. A cell sees 1.5
+such transactions per second in the busy hour. How many SDCCH sub-channels are needed for
+a blocking of at most 0.5\%?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Retries}\label{exr:retry}
+Assume every blocked caller retries once, immediately and independently. Show that the
+offered traffic becomes approximately $A' = A(1+P_{\mathrm{B}}')$ where
+$P_{\mathrm{B}}' = B(A',m)$, solve this fixed-point equation numerically for $m = 30$,
+$A = 21.93$\,E, and comment on the result.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Tromboning}\label{exr:trombone}
+A subscriber of an Iranian operator roams in Turkey and is called by a Turkish fixed-line
+user. Draw the circuit path and list which networks carry each leg. Propose a signalling
+change that would avoid the international legs, and identify what information the
+Turkish network would need.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:ss7}}
+ISUP messages travel between adjacent exchanges along the circuit being set up; the next
+exchange and its point code are known from the routing tables, so MTP\,3 routing is
+enough. MAP messages are addressed to databases identified by subscriber identities (e.g.\
+``the HLR of IMSI 432\ldots''), possibly in another country; SCCP global title translation
+converts such an identity into a point code, hop by hop.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:msrn}}
+The PSTN routes by E.164 numbers; an IMSI is not a dialable number and is deliberately not
+exposed outside the mobile network. The MSRN is a scarce temporary number taken from the
+visited MSC's pool; once the call reaches that MSC the IMSI is retrieved from the VLR and
+the MSRN can be reused for another call.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:dim}}
+(a) $B(A,30)=0.01 \Rightarrow A = 20.3$\,E; $B(A,30)=0.05 \Rightarrow A = 24.8$\,E.
+(b) Subscribers: $20.3/0.02 \approx 1017$ versus $24.8/0.02 \approx 1240$, i.e.\ about 220
+more (22\%) at the price of five times more blocking.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:sdcch}}
+$A = \lambda h = 1.5\times3 = 4.5$\,E. Iterating \cref{eq:erlangrec}: $B(4.5,10)=0.0105$,
+$B(4.5,11)=0.0043$. Eleven sub-channels are needed; in practice operators configure two
+SDCCH/8 channels (16 sub-channels), which also leaves room for peaks.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:retry}}
+A fraction $P_{\mathrm{B}}'$ of the $\lambda$ first attempts generate a second attempt, so
+the total attempt rate is $\lambda(1+P_{\mathrm{B}}')$ and $A' = A(1+P_{\mathrm{B}}')$ (treating
+retries as Poisson, which is an approximation). Iterating from $P_{\mathrm{B}}'=0.02$:
+$A' = 22.37$, $B = 0.0236$; $A' = 22.45$, $B = 0.0243$; converging to
+$A' \approx 22.47$\,E, $P_{\mathrm{B}}' \approx 0.0244$. The blocking seen by an attempt grows by
+about 22\%; the fraction of \emph{users} who finally fail is $P_{\mathrm{B}}'^{\,2}\approx 0.06\%$,
+but the network carries more signalling. Retries are a positive feedback that can
+destabilise an overloaded network.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:trombone}}
+Path: Turkish caller $\to$ Turkish PSTN $\to$ international leg to the home GMSC in Iran
+(the MSISDN is Iranian) $\to$ HLR interrogation returns a Turkish MSRN $\to$ second
+international leg back to the visited MSC in Turkey $\to$ the roamer. Optimal routing
+lets the Turkish gateway query the home HLR directly (MAP SRI towards the HPLMN) and route
+to the MSRN inside Turkey; it requires the visited network to recognise the number as
+belonging to a roaming subscriber and an agreement allowing the HLR query, and it changes
+charging, which is why it was rarely deployed.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+SS7 is introduced in \cite{ituq700}; MAP is specified in \cite{ts29002}, location
+management in \cite{ts23012} and call handling in \cite{ts23018}. Layer-3 call control and
+mobility messages are in \cite{ts24008}. Kleinrock \cite{kleinrock1975queueing} derives
+the loss formula rigorously, and Rappaport \cite{rappaport2002wireless} applies it to
+cellular dimensioning. Eberspächer et al.\ \cite{eberspaecher2009gsm} describe GSM call
+flows in detail.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

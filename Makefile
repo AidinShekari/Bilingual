@@ -15,7 +15,7 @@
 # =====================================================================
 ROOT     := $(abspath .)
 BUILD    := $(ROOT)/build
-PDFDIR   := $(ROOT)/pdf
+PDFDIR   := pdf
 LATEXMK  := latexmk -r $(ROOT)/latexmkrc
 PYTHON   ?= python3
 # shared bibliography for biber and latexmk (\addbibresource{acn.bib})
