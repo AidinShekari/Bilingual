@@ -21,7 +21,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 13 | S-GW and P-GW | done | done | yes |
 | 14 | 5G Networks Introduction | done | done | yes |
 | 15 | Software-Defined Networking (SDN) | done | done | yes |
-| 16 | | | | |
+| 16 | Network Functions Virtualisation (NFV) | done | done | yes |
 | 17 | | | | |
 | 18 | | | | |
 | 19 | | | | |
