@@ -1,0 +1,16 @@
+% GSM authentication and ciphering (message sequence chart)
+\begin{tikzpicture}
+  \SeqActors[3.9]{MS,BTS/BSC,MSC/VLR,HLR/AuC}
+  \SeqMsg{0}{2}{\msg{Location Updating Request} (IMSI {\bil{or}{یا}} TMSI)}
+  \SeqMsg{2}{3}{MAP \msg{Send Authentication Info} (IMSI)}
+  \SeqMsg{3}{2}{$n\times$ (RAND, SRES, $K_c$)}
+  \SeqMsg{2}{0}{\msg{Authentication Request} (RAND)}
+  \SeqSelf{0}{A3, A8 \bil{in SIM}{در SIM}}
+  \SeqMsg{0}{2}{\msg{Authentication Response} (SRES$'$)}
+  \SeqSelf{2}{SRES$'$ $\stackrel{?}{=}$ SRES}
+  \SeqMsg{2}{1}{BSSMAP \msg{Cipher Mode Command} ($K_c$)}
+  \SeqMsg{1}{0}{\msg{Ciphering Mode Command}}
+  \SeqMsg{0}{1}{\msg{Ciphering Mode Complete}}
+  \SeqNote{0}{1}{\bil{A5 encryption on Um with $K_c$}{رمزنگاری A5 روی Um با $K_c$}}
+  \SeqEnd
+\end{tikzpicture}

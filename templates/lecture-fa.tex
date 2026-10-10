@@ -1,0 +1,59 @@
+% =====================================================================
+%  Persian (RTL) lecture preamble.  Usage:
+%    \documentclass[11pt,a4paper]{article}
+%    \providecommand\ACNroot{../..}
+%    \input{\ACNroot/templates/lecture-fa}
+%  xepersian (and therefore bidi) is loaded LAST, as bidi requires.
+% =====================================================================
+\usepackage{\ACNroot/templates/shared-style}
+\usepackage{xepersian}
+
+% ---- fonts: bundled OFL Vazirmatn (fonts/) + TeX Gyre from TeX Live ------
+\settextfont{Vazirmatn}[Path=\ACNroot/fonts/,Extension=.ttf,
+  UprightFont=*-Regular,BoldFont=*-Bold,ItalicFont=*-Bold,
+  BoldItalicFont=*-Black,Scale=0.93]  % Persian emphasis = bold (no italics)
+\setlatintextfont{texgyrepagella}[Extension=.otf,UprightFont=*-regular,
+  BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic,Scale=0.97]
+\setlatinsansfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,
+  BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic,Scale=0.88]
+\setlatinmonofont{lmmono10}[Extension=.otf,UprightFont=*-regular,
+  ItalicFont=*-italic,Scale=0.92]
+\setpersiansansfont{Vazirmatn}[Path=\ACNroot/fonts/,Extension=.ttf,
+  UprightFont=*-Regular,BoldFont=*-Bold,ItalicFont=*-Bold,Scale=0.95]
+\defpersianfont\ACNfahead{Vazirmatn}[Path=\ACNroot/fonts/,Extension=.ttf,
+  UprightFont=*-Medium,BoldFont=*-Bold,ItalicFont=*-Bold,Scale=0.95]
+\defpersianfont\ACNfadisplay{Vazirmatn}[Path=\ACNroot/fonts/,Extension=.ttf,
+  UprightFont=*-Black,BoldFont=*-Black,ItalicFont=*-Black]
+% No \setdigitfont: digits in mathematics stay Latin, so every equation is
+% identical to the English edition. Digits in running Persian text are Persian.
+\linespread{1.25}
+% keep inline formulas in RTL paragraphs on one line where possible
+\relpenalty=9999 \binoppenalty=9999
+
+% ---- language switches -------------------------------------------------
+\newif\ifACNrtl \ACNrtltrue
+\renewcommand{\bil}[2]{\rl{#2}}
+\renewcommand{\ACNheadfont}{\ACNfahead}
+% TikZ nodes are typeset left-to-right (diagrams are never mirrored);
+% Persian labels inside figures come from \bil{..}{..}, which wraps them in \rl.
+\tikzset{every node/.append style={execute at begin node={\setLTR}}}
+% Inside figures, Latin labels use the same Latin font as the English edition.
+\renewcommand{\ACNfigsetup}{\tikzset{every node/.append style={execute at begin node={\latinfont\sffamily}}}}
+\renewcommand{\ACNdispfont}{\ACNfadisplay}
+\renewcommand{\ACNlatin}[1]{\lr{#1}}
+\newcommand{\ACNnodetext}[1]{\rl{#1}}
+\newcommand{\ACNothertext}[1]{\lr{#1}}
+\newcommand{\ACNotherfont}{\latinfont\sffamily}
+\newcommand{\ACNalign}{right}
+\newcommand{\ACNotheralign}{right}
+\newcommand{\fa}[1]{#1}
+% English words in Persian text: \lr{...} (from bidi); acronyms: \acro{...}
+\renewcommand{\acro}[1]{\lr{\textsf{#1}}}
+\renewcommand{\msg}[1]{\lr{\textsf{#1}}}
+\renewcommand{\iface}[1]{\lr{\textsf{\itshape #1}}}
+\renewcommand{\spec}[1]{\lr{\textsf{#1}}}
+
+\input{\ACNroot/templates/strings-fa}
+\input{\ACNroot/templates/macros}
+\input{\ACNroot/templates/cover}
+\addbibresource{acn.bib}

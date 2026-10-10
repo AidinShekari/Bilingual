@@ -1,0 +1,28 @@
+% GSM time hierarchy: 26-multiframe, TDMA frame, normal burst
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \tikzset{cell/.style={draw=acnnavy,line width=0.5pt,minimum height=0.55cm,
+      font=\ACNheadfont\scriptsize,inner sep=0pt,anchor=west}}
+  % 26-multiframe
+  \node[caplabel,anchor=east] at (-0.15,2.6) {\bil{26-multiframe}{چندقاب ۲۶تایی}\\{\scriptsize 120 ms}};
+  \foreach \i in {0,...,25}{%
+    \node[cell,fill=acnsky,minimum width=0.56cm] at (\i*0.56,2.6) {\i};}
+  \node[cell,fill=acnteal!60,minimum width=0.56cm] at (12*0.56,2.6) {12};
+  \node[cell,fill=acnmist,minimum width=0.56cm] at (25*0.56,2.6) {25};
+  \node[caplabel,anchor=west] at (14.6,2.6) {\scriptsize 12: SACCH\\[-2pt]\scriptsize 25: idle};
+  % TDMA frame
+  \node[caplabel,anchor=east] at (-0.15,1.1) {\bil{TDMA frame}{قاب TDMA}\\{\scriptsize 4.615 ms}};
+  \foreach \i in {0,...,7}{%
+    \node[cell,fill=acnsky,minimum width=1.82cm] at (\i*1.82,1.1) {TS \i};}
+  \node[cell,fill=acnteal!60,minimum width=1.82cm] at (2*1.82,1.1) {TS 2};
+  \draw[densely dotted,acngray] (6*0.56,2.33) -- (0,1.37);
+  \draw[densely dotted,acngray] (7*0.56,2.33) -- (14.56,1.37);
+  % normal burst
+  \node[caplabel,anchor=east] at (-0.15,-0.4) {\bil{normal burst}{بُرست عادی}\\{\scriptsize 576.9\,$\mu$s}};
+  \foreach \s/\w/\lab/\c in {0/3/T/acnmist,3/57/\bil{data}{داده}/acnsky,60/1/F/acnmist,
+      61/26/\bil{training}{آموزشی}/acnmint,87/1/F/acnmist,88/57/\bil{data}{داده}/acnsky,
+      145/3/T/acnmist,148/8.25/G/white}{%
+    \node[cell,fill=\c,minimum width=\w*0.0925cm] at (\s*0.0925,-0.4) {\lab};}
+  \draw[densely dotted,acngray] (2*1.82,0.83) -- (0,-0.13);
+  \draw[densely dotted,acngray] (3*1.82,0.83) -- (14.45,-0.13);
+  \draw[decorate,decoration={brace,mirror,amplitude=4pt},acngray] (0,-0.75) -- node[caplabel,below=4pt]{\scriptsize 156.25 \bil{bit periods}{دورهٔ بیت} $\times$ 3.69\,$\mu$s} (14.45,-0.75);
+\end{tikzpicture}
