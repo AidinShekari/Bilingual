@@ -27,7 +27,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 19 | 5G Core Architecture | done | done | yes |
 | 20 | 5G Procedures | done | done | yes |
 | 21 | Network Slicing | done | done | yes |
-| 22 | | | | |
+| 22 | Quality of Service (QoS) | done | done | yes |
 | 23 | | | | |
 | 24 | | | | |
 | 25 | | | | |

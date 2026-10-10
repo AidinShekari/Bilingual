@@ -174,6 +174,9 @@ def main():
         masked, _ = _mask(body)
         for m in DEC.findall(masked):
             problems.append("lecture-%s FA: Latin decimal point in RTL text: %s.%s" % (num, m[0], m[1]))
+        for m in re.findall(r"\\lr\{([^{}]*)\}", tfa):
+            if PERSIAN_LETTER.search(m):
+                problems.append("lecture-%s FA: Persian letters inside \\lr (no glyphs): %s" % (num, m[:60]))
         for m in re.findall(r"\\lr\{[^{}]*\u060c[^{}]*\}", tfa):
             problems.append("lecture-%s FA: Persian comma inside \\lr: %s" % (num, m[:60]))
         for fig in fe["figures"]:
