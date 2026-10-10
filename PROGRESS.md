@@ -24,7 +24,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 16 | Network Functions Virtualisation (NFV) | done | done | yes |
 | 17 | 3GPP Standardisation | done | done | yes |
 | 18 | 5G Service-Based Architecture | done | done | yes |
-| 19 | | | | |
+| 19 | 5G Core Architecture | done | done | yes |
 | 20 | | | | |
 | 21 | | | | |
 | 22 | | | | |
