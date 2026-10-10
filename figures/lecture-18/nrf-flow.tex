@@ -1,0 +1,14 @@
+% NF registration, discovery, token and service invocation
+\begin{tikzpicture}
+  \SeqActors[5.8]{\bil{consumer (AMF)}{مصرف‌کننده (AMF)},NRF,\bil{producer (SMF)}{تولیدکننده (SMF)}}
+  \SeqMsg{2}{1}{PUT /nnrf-nfm/v1/nf-instances/\{id\} (NFProfile)}
+  \SeqMsg{1}{2}{201 Created}
+  \SeqNote{1}{2}{\bil{heartbeat: periodic PATCH (NF status)}{ضربان: PATCH دوره‌ای (وضعیت NF)}}
+  \SeqMsg{0}{1}{GET /nnrf-disc/v1/nf-instances?target-nf-type=SMF\&\ldots}
+  \SeqMsg{1}{0}{200 OK (\bil{list of SMF profiles, validity period}{فهرست نمایه‌های SMF، دورهٔ اعتبار})}
+  \SeqMsg{0}{1}{POST /oauth2/token (\bil{scope}{دامنه}: nsmf-pdusession)}
+  \SeqMsg{1}{0}{200 OK (access token)}
+  \SeqMsg{0}{2}{POST /nsmf-pdusession/v1/sm-contexts (\bil{Bearer token}{توکن Bearer})}
+  \SeqMsg{2}{0}{201 Created (Location: \ldots/sm-contexts/\{ref\})}
+  \SeqEnd
+\end{tikzpicture}

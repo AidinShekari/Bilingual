@@ -23,7 +23,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 15 | Software-Defined Networking (SDN) | done | done | yes |
 | 16 | Network Functions Virtualisation (NFV) | done | done | yes |
 | 17 | 3GPP Standardisation | done | done | yes |
-| 18 | | | | |
+| 18 | 5G Service-Based Architecture | done | done | yes |
 | 19 | | | | |
 | 20 | | | | |
 | 21 | | | | |
