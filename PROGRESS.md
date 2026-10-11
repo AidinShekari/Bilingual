@@ -31,4 +31,4 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 23 | The 5G User Plane | done | done | yes |
 | 24 | The 5G Control Plane | done | done | yes |
 | 25 | Network Evolution: a Grand Synthesis | done | done | yes |
-| 26 | | | | |
+| 26 | Future 6G Technologies | done | done | yes |
