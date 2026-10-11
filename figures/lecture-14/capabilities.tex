@@ -1,0 +1,17 @@
+% Improvement factors of IMT-2020 key capabilities over IMT-Advanced (values from ITU-R M.2083)
+\begin{tikzpicture}
+\begin{axis}[acnplot,
+  ybar,bar width=10pt,ymode=log,log origin=infty,ymin=1,ymax=300,
+  height=6.0cm,
+  ylabel={\ACNlatin{IMT-2020 / IMT-Advanced}},
+  symbolic x coords={peak,user,se,mob,lat,dens,energy,area},
+  xtick=data,
+  xticklabels={\bil{peak rate}{نرخ اوج},\bil{user rate}{نرخ کاربر},\bil{spectral eff.}{بازدهی طیفی},\bil{mobility}{تحرک},
+               \bil{latency$^{-1}$}{تأخیر$^{-1}$},\bil{conn.\ density}{چگالی اتصال},\bil{energy eff.}{بازدهی انرژی},\bil{area traffic}{ترافیک ناحیه}},
+  x tick label style={font=\scriptsize,rotate=30,anchor=north east},
+  nodes near coords,nodes near coords style={font=\scriptsize},
+  point meta=explicit symbolic]
+  \addplot[fill=acnsky,draw=acnnavy] coordinates {
+    (peak,20)[20] (user,10)[10] (se,3)[3] (mob,1.43)[1.4] (lat,10)[10] (dens,10)[10] (energy,100)[100] (area,100)[100]};
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,28 @@
+% 3GPP organisation: organisational partners, PCG, TSGs and working groups
+\begin{tikzpicture}[x=1cm,y=1cm,
+  wg/.style={draw=acnteal,fill=acnmint,font=\ACNheadfont\tiny,text=acnnavy,minimum width=3.6cm,
+    minimum height=0.42cm,inner sep=1pt,anchor=north},
+  tsg/.style={nf,minimum width=3.6cm,minimum height=0.6cm,font=\ACNheadfont\scriptsize\bfseries}]
+  \node[nfgray,minimum width=12.0cm,minimum height=0.6cm,font=\ACNheadfont\scriptsize\bfseries] (op) at (0,3.0)
+       {\bil{organisational partners: ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC}{شرکای سازمانی: ARIB، ATIS، CCSA، ETSI، TSDSI، TTA، TTC}};
+  \node[nf,minimum width=6.0cm,minimum height=0.6cm,font=\ACNheadfont\scriptsize\bfseries] (pcg) at (0,1.9)
+       {\bil{Project Co-ordination Group (PCG)}{گروه هماهنگی پروژه (PCG)}};
+  \draw[link] (op) -- (pcg);
+  \foreach \n/\x/\t in {ran/-4.2/{TSG RAN},sa/0/{TSG SA},ct/4.2/{TSG CT}}{
+    \node[tsg] (\n) at (\x,0.8) {\t};
+    \draw[link] (pcg.south) -- ++(0,-0.2) -| (\n.north);}
+  % RAN WGs
+  \foreach \i/\t in {1/{RAN1: \bil{physical layer}{لایهٔ فیزیکی}},2/{RAN2: \bil{radio layers 2 and 3}{لایه‌های ۲ و ۳ رادیو}},
+                      3/{RAN3: \bil{RAN architecture, interfaces}{معماری RAN، واسط‌ها}},4/{RAN4: \bil{RF, performance}{RF، کارایی}},
+                      5/{RAN5: \bil{UE conformance tests}{آزمون انطباق UE}}}{
+    \node[wg] at (-4.2,0.35-0.48*\i+0.48) {\t};}
+  % SA WGs
+  \foreach \i/\t in {1/{SA1: \bil{services}{خدمات}},2/{SA2: \bil{architecture}{معماری}},3/{SA3: \bil{security}{امنیت}},
+                      4/{SA4: \bil{codecs, media}{کدک‌ها، رسانه}},5/{SA5: \bil{management, charging}{مدیریت، صورت‌حساب}},
+                      6/{SA6: \bil{application enablement}{توانمندسازی کاربرد}}}{
+    \node[wg] at (0,0.35-0.48*\i+0.48) {\t};}
+  % CT WGs
+  \foreach \i/\t in {1/{CT1: \bil{UE--core protocols (NAS)}{پروتکل‌های UE--هسته (NAS)}},2/{CT3: \bil{policy, external interworking}{سیاست، همکاری بیرونی}},
+                      3/{CT4: \bil{core network protocols}{پروتکل‌های شبکهٔ هسته}},4/{CT6: \bil{smart card (USIM)}{کارت هوشمند (USIM)}}}{
+    \node[wg] at (4.2,0.35-0.48*\i+0.48) {\t};}
+\end{tikzpicture}

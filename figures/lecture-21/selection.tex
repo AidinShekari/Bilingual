@@ -1,0 +1,14 @@
+% Slice selection at registration and slice-specific session set-up (simplified)
+\begin{tikzpicture}
+  \SeqActors[3.3]{UE,AMF,NSSF,UDM,\bil{SMF (slice 2)}{SMF (برش ۲)}}
+  \SeqMsg{0}{1}{Registration Request (\bil{requested NSSAI}{NSSAI درخواستی})}
+  \SeqMsg{1}{3}{Nudm\_SDM\_Get (\bil{subscribed S-NSSAIs}{S-NSSAIهای مشترک‌شده})}
+  \SeqMsg{1}{2}{Nnssf\_NSSelection (\bil{requested, subscribed, TAI}{درخواستی، مشترک‌شده، TAI})}
+  \SeqMsg{2}{1}{\bil{allowed NSSAI, target AMF set}{NSSAI مجاز، مجموعهٔ AMF هدف}}
+  \SeqSelf{1}{\bil{AMF re-allocation if needed}{جابه‌جایی AMF در صورت نیاز}}
+  \SeqMsg{1}{0}{Registration Accept (\bil{allowed / rejected NSSAI}{NSSAI مجاز / ردشده})}
+  \SeqMsg{0}{1}{PDU Session Request (S-NSSAI 2, DNN)}
+  \SeqSelf{1}{\bil{NRF discovery by S-NSSAI}{کشف NRF با S-NSSAI}}
+  \SeqMsg{1}{4}{Nsmf\_PDUSession\_CreateSMContext}
+  \SeqEnd
+\end{tikzpicture}

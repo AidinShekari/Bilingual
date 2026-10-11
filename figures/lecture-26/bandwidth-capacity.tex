@@ -1,0 +1,12 @@
+% Power-limited capacity versus bandwidth: SNR = 20 dB at 1 GHz, fixed received power
+\begin{tikzpicture}
+\begin{semilogxaxis}[acnplot,height=5.6cm,
+  xlabel={\bil{bandwidth $B$ [GHz]}{پهنای باند $B$ [GHz]}},
+  ylabel={\bil{capacity $C$ [Gbit/s]}{ظرفیت $C$ [Gbit/s]}},
+  xmin=0.1,xmax=1000,ymin=0,ymax=160,legend pos=north west]
+  \addplot[acnnavy,domain=0.1:1000,samples=120] {x*ln(1+100/x)/ln(2)};
+  \addlegendentry{$C = B\log_2(1 + P/(N_0 B))$}
+  \addplot[acnamber,dashed,domain=0.1:1000,samples=2] {144.3};
+  \addlegendentry{\bil{limit $P/(N_0 \ln 2)$}{حد $P/(N_0 \ln 2)$}}
+\end{semilogxaxis}
+\end{tikzpicture}

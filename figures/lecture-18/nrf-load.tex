@@ -1,0 +1,14 @@
+% NRF discovery load versus cache validity (C consumers, K target types)
+\begin{tikzpicture}
+\begin{loglogaxis}[acnplot,height=5.4cm,
+  xlabel={\bil{cache validity $T$ [s]}{دورهٔ اعتبار نهان $T$ [s]}},
+  ylabel={\bil{discovery requests/s}{درخواست کشف بر ثانیه}},
+  xmin=1,xmax=3600,ymin=0.1,ymax=2e4,legend pos=south west]
+  \addplot[acnnavy,domain=1:3600,samples=30] {100*5/x};
+  \addlegendentry{$C = 100$, $K = 5$}
+  \addplot[acnteal,dashed,domain=1:3600,samples=30] {1000*5/x};
+  \addlegendentry{$C = 1000$, $K = 5$}
+  \addplot[acnamber,dashdotted,domain=1:3600] {1e4};
+  \addlegendentry{\bil{no cache ($\lambda = 10^4$/s)}{بدون نهان ($\lambda = 10^4$/s)}}
+\end{loglogaxis}
+\end{tikzpicture}

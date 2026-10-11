@@ -1,0 +1,21 @@
+% mobile-terminated call: routing via HLR and MSRN
+\begin{tikzpicture}
+  \SeqActors[3.0]{PSTN,GMSC,HLR,VLR,MSC,MS}
+  \SeqMsg{0}{1}{ISUP IAM (MSISDN)}
+  \SeqMsg{1}{2}{MAP SRI (MSISDN)}
+  \SeqMsg{2}{3}{MAP PRN (IMSI)}
+  \SeqSelf{3}{\bil{allocate MSRN}{تخصیص MSRN}}
+  \SeqMsg{3}{2}{PRN ack (MSRN)}
+  \SeqMsg{2}{1}{SRI ack (MSRN)}
+  \SeqMsg{1}{4}{ISUP IAM (MSRN)}
+  \SeqMsg{4}{3}{\bil{Send Info for Incoming Call}{اطلاعات تماس ورودی}}
+  \SeqMsg{4}{5}{\bil{Paging (in LA)}{فراخوانی در LA}}
+  \SeqMsg{5}{4}{\bil{Paging Response}{پاسخ فراخوانی}}
+  \SeqNote{4}{5}{\bil{authentication, ciphering, Setup}{احراز هویت، رمزنگاری، Setup}}
+  \SeqMsg{4}{1}{ISUP ACM (alerting)}
+  \SeqMsg{1}{0}{ACM}
+  \SeqMsg{4}{1}{ISUP ANM (answer)}
+  \SeqMsg{1}{0}{ANM}
+  \SeqMsg[up,<->]{0}{5}{\bil{64 kbit/s circuit end to end}{مدار 64 kbit/s سرتاسری}}
+  \SeqEnd
+\end{tikzpicture}

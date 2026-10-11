@@ -1,0 +1,425 @@
+% =====================================================================
+%  Lecture 17 -- 3GPP Standardisation                     (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{17}
+\ACNset{title}{3GPP Standardisation}
+\ACNset{shorttitle}{3GPP standardisation}
+\ACNset{titleother}{استانداردسازی 3GPP}
+\ACNset{part}{Part III -- Software-driven architectures (Lectures 15--18)}
+\ACNset{time}{5--7 hours (3 h reading, 2--4 h exercises)}
+\ACNset{level}{Introductory to intermediate}
+\ACNset{prereq}{Lectures 1--16 (as examples); basic probability}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Describe} how 3GPP is organised: organisational partners, TSGs and working groups, and its
+        relation to ITU-R and the IETF.
+  \item \textbf{Explain} the three-stage methodology, specification numbering and the release model.
+  \item \textbf{Decode} a specification version number and \textbf{classify} change requests.
+  \item \textbf{Trace} how a feature moves from a study item to a specification and to products.
+  \item \textbf{Locate and read} a specification efficiently: scope, normative text, annexes.
+  \item \textbf{Reason quantitatively} about interoperability, work backlogs and time to market.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+This lecture is about the process behind everything in this course. The earlier lectures provide the
+examples: the specifications cited there (TS~23.401, TS~29.272, TS~38.300, \ldots) are the products of the
+process described here. Exercise~5 uses Little's law (Lecture~15).
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+3GPP & \fa{پروژهٔ مشارکت نسل سوم} & Partnership of standards organisations that specifies mobile systems. \\
+Organisational partner & \fa{شریک سازمانی} & Regional/national standards body that is a member of 3GPP. \\
+TSG / WG & \fa{گروه مشخصات فنی / گروه کاری} & Decision-making groups and their technical sub-groups. \\
+TS / TR & \fa{مشخصات فنی / گزارش فنی} & Normative specification / informative study report. \\
+Stage 1, 2, 3 & \fa{مراحل ۱، ۲، ۳} & Requirements, architecture, detailed protocols. \\
+Release & \fa{انتشار} & Consistent set of features and specifications frozen together. \\
+Freeze & \fa{انجماد} & Point after which only corrections are accepted. \\
+Change request (CR) & \fa{درخواست تغییر} & Formal proposal to modify a specification under change control. \\
+Work item / study item & \fa{مورد کاری / مطالعه} & Approved task to specify / to study a feature. \\
+SEP / FRAND & \fa{پتنت ضروری استاندارد} & Standard-essential patent / fair, reasonable and non-discriminatory licensing. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+A phone bought in one country works on a network built from equipment of several vendors in another country.
+That this works at all is the result of standards: thousands of documents that specify every message, every
+timer and every bit, written by competitors who cooperate in the same rooms. For mobile networks the dominant
+body is the \emph{3rd Generation Partnership Project} (3GPP), created in 1998 to specify the third generation and
+since responsible for GSM's evolution, LTE, 5G and, now, 6G.
+
+Engineers in the mobile industry spend much of their time with 3GPP specifications: implementing them, testing
+against them, or contributing to them. Understanding how the documents are organised, how they evolve and how
+decisions are made is therefore a practical skill, not trivia. It also explains why the systems look the way
+they do: many design choices in this course are compromises reached in standardisation meetings.
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{Organisation}
+3GPP is not a legal entity of its own: it is a partnership of seven \emph{organisational partners} -- ARIB and TTC
+(Japan), ATIS (USA), CCSA (China), ETSI (Europe), TSDSI (India) and TTA (Korea) -- which transpose its specifications
+into their own standards. Companies participate as members of one of these partners; \emph{market representation
+partners} (industry associations) contribute requirements. The technical work is done in three \emph{Technical
+Specification Groups} and their working groups (\cref{fig:org}) \cite{tr21900}:
+\begin{itemize}
+  \item \textbf{TSG RAN}: radio access (physical layer, radio protocols, RAN architecture, RF, UE conformance tests);
+  \item \textbf{TSG SA}: service and system aspects (requirements, architecture, security, codecs, management) and overall
+        coordination;
+  \item \textbf{TSG CT}: core network and terminals (NAS, core protocols, policy, USIM).
+\end{itemize}
+Working groups prepare documents; TSG plenaries, meeting quarterly, approve them. Decisions are made by consensus;
+formal voting is possible but rare.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-17/organisation}}
+  \caption{Organisation of 3GPP: organisational partners, project co-ordination, TSGs and their working groups (selection).}
+  \label{fig:org}
+\end{acnfigure}
+
+\subsection{Relation to other bodies}
+ITU-R defines the requirements of each IMT generation (Lecture~14) \cite{itu2017m2410,itu2023m2160}; 3GPP's
+technologies are submitted, through the organisational partners, as candidate IMT radio interfaces and evaluated.
+The IETF specifies the Internet protocols that 3GPP reuses -- SCTP, Diameter, HTTP/2, SIP, IPsec, TLS
+\cite{rfc6733,rfc9113,rfc9260,rfc3261} -- and 3GPP requests extensions when needed. Industry bodies such as the
+GSMA define operational guidelines (e.g.\ roaming, VoLTE profiles), and certification organisations test devices
+against 3GPP conformance specifications.
+
+\subsection{Three stages}
+Each feature is specified at three levels (\cref{fig:stages}):
+\begin{itemize}
+  \item \textbf{Stage~1} describes the service from the user's point of view: requirements, without solutions
+        (e.g.\ TS~22.261 \cite{ts22261}).
+  \item \textbf{Stage~2} describes the architecture: functional entities, reference points and information flows
+        (e.g.\ TS~23.501 \cite{ts23501}).
+  \item \textbf{Stage~3} specifies protocols bit by bit: messages, information elements, encodings, state machines
+        (e.g.\ TS~24.501 \cite{ts24501}, TS~38.331 \cite{ts38331}).
+\end{itemize}
+Conformance-test specifications then define how devices are tested against stage~3.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-17/stages}}
+  \caption{Three-stage methodology with typical specifications.}
+  \label{fig:stages}
+\end{acnfigure}
+
+\subsection{Specification numbering}
+Every specification has a number \emph{ss.nnn} whose series \emph{ss} indicates the subject \cite{tr21900}.
+\begin{table}[htbp]
+\centering\small
+\caption{Selected 3GPP specification series.}\label{tab:series}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y l@{}}
+\toprule
+\rowcolor{white}Series & Subject & Example \\
+\midrule
+21 & Requirements, vocabulary, working methods & TR 21.905 \cite{tr21905} \\
+22 & Service aspects (stage 1)                 & TS 22.261 \\
+23 & Technical realisation (stage 2)           & TS 23.401, 23.501 \\
+24 & Signalling protocols UE--core (stage 3)   & TS 24.301, 24.501 \\
+26 & Codecs                                    & -- \\
+28, 32 & Management and charging              & TS 28.530 \\
+29 & Core network protocols (stage 3)          & TS 29.274, 29.500 \\
+31 & SIM/USIM                                  & -- \\
+33 & Security                                  & TS 33.401, 33.501 \\
+35 & Security algorithms                       & TS 35.206 \\
+36 & LTE (E-UTRA) radio                        & TS 36.300, 36.331 \\
+37 & Multiple radio technologies               & TS 37.340 \\
+38 & NR radio                                  & TS 38.300, 38.331 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+A \emph{technical specification} (TS) is normative: products must comply with it. A \emph{technical report} (TR)
+is informative: it records studies, evaluations and options, often in the 8xx and 9xx ranges (e.g.\ TR~38.913
+\cite{tr38913}, TR~38.901 \cite{tr38901}).
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{Releases}
+3GPP publishes its work in \emph{releases}: consistent sets of features specified together (\cref{fig:releases}).
+Each release has freeze dates: after the \emph{stage~3 freeze} no new functions are added, only corrections; after the
+\emph{ASN.1 freeze} the encoding of radio protocol messages is stable so that implementations become
+interoperable. Releases overlap: while one is being corrected, the next is under development and the one after
+is being studied. Vendors and operators implement a subset of features of a release, and devices declare their
+capabilities, so ``supporting Release~17'' means little without a feature list.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-17/releases}}
+  \caption{Selected 3GPP releases with headline features. Years indicate approximate completion; teal marks 5G releases.}
+  \label{fig:releases}
+\end{acnfigure}
+
+\subsection{Versions}
+Each specification has a version \emph{x.y.z} \cite{tr21900}. Before approval, $x = 1$ (presented for information)
+or $x = 2$ (presented for approval). Once approved and under change control, $x$ equals the release (e.g.\ 17 for
+Release~17); $y$ increases with every set of approved technical changes; $z$ increases for purely editorial
+changes. A specification thus exists in parallel versions, one per release, and corrections are often mirrored
+into several releases.
+
+\subsection{Change requests}
+A specification under change control changes only through \emph{change requests} (CRs), each with a category
+\cite{tr21900}: \textbf{F} (correction of an error), \textbf{A} (mirror of a category-F correction in a later
+release), \textbf{B} (addition of a feature), \textbf{C} (functional modification of a feature) and \textbf{D}
+(editorial). After freeze only F, A and D are normally accepted. CRs are agreed in the working group and approved by
+the TSG; the specification is then republished with an incremented version (\cref{fig:cr}).
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-17/cr-process}}
+  \caption{From study item to specification, and the change-request cycle.}
+  \label{fig:cr}
+\end{acnfigure}
+
+\subsection{How work is done}
+Companies submit written contributions (temporary documents, ``Tdocs'') to working-group meetings, held several
+times per release cycle in different regions, with electronic meetings in between. Proposals are discussed,
+merged and revised until consensus emerges; chairs record agreements. Typical contributions are proposals for
+solutions in a study, text proposals for a TR or TS, and CRs. All documents are public on the 3GPP website, which
+makes the history of every design decision traceable.
+
+\subsection{Reading a specification}
+A 3GPP specification follows a fixed template: scope, references, definitions and abbreviations, then the
+technical clauses and annexes. Normative text uses ``shall'' (mandatory), ``should'' (recommended) and ``may''
+(permitted); informative annexes give background and examples. Practical advice: read the stage-2 description
+first, then the stage-3 procedure, and only then the message and information-element definitions; check the
+release and version; and search across specifications, because a procedure is usually split over several of
+them (e.g.\ an attach involves TS~23.401, 24.301, 36.413, 29.274 and 29.272).
+
+\subsection{Intellectual property}
+Companies that contribute technology often hold patents essential to implementing a standard (\emph{standard-essential
+patents}, SEPs). Under the IPR policies of the organisational partners, they declare such patents and commit to
+license them on fair, reasonable and non-discriminatory (FRAND) terms. Licensing is negotiated bilaterally, outside
+3GPP, and the level of aggregate royalties is a recurring debate (\cref{sec:stack}).
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+The models below are deliberately simple; their numerical examples use illustrative assumptions, not measured
+3GPP statistics.
+
+\subsection{Interoperability across interfaces}\label{sec:interop}
+\paragraph{Model} An end-to-end service crosses $k$ multi-vendor interfaces. If each is implemented correctly with
+probability $p$, independently, the service works with probability
+\begin{equation}\label{eq:interop}
+  P_{\mathrm{e2e}} = p^{k}.
+\end{equation}
+\paragraph{Example} $p = 0.98$, $k = 20$: $P_{\mathrm{e2e}} = 0.67$. To reach 0.9 with $k = 20$ requires
+$p \ge 0.9^{1/20} = 0.995$.
+\paragraph{Interpretation} The more interfaces a system has, the more precise the specifications and the more
+thorough the testing must be -- the reason for stage-3 detail, conformance tests and interoperability test events.
+It is also an argument for fewer, simpler interfaces.
+
+\subsection{Work in progress}\label{sec:little}
+\paragraph{Model} If CRs on a specification group arrive at rate $\lambda$ (per month) and each spends on average $T$
+months from first submission to approval, Little's law gives the number of open CRs:
+\begin{equation}\label{eq:little}
+  N = \lambda\,T .
+\end{equation}
+\paragraph{Example} With $\lambda = 400$ CRs/month and $T = 3$ months, about 1200 CRs are open at any time. Halving
+$T$ (e.g.\ with electronic meetings between plenaries) halves the backlog for the same throughput.
+
+\subsection{Time to market}\label{sec:ttm}
+\paragraph{Model} A feature passes through study, normative work, implementation and testing; phases can partly
+overlap. The time from study start to commercial availability is
+\begin{equation}\label{eq:ttm}
+  T_{\mathrm{market}} = \sum_{i} T_i - \sum_{j} \Delta_j ,
+\end{equation}
+with phase durations $T_i$ and overlaps $\Delta_j$.
+\paragraph{Example} Study 12 months, stage~2 12, stage~3 12, implementation 18, testing and certification 6, with 6
+months of overlap between implementation and late stage~3: $T_{\mathrm{market}} = 54$ months, i.e.\ about 4.5 years
+-- consistent with the gap of several years between the start of a generation's studies and its first commercial
+networks.
+
+\subsection{Royalty stacking}\label{sec:stack}
+\paragraph{Model} A device price $P$ carries royalties to $N$ SEP holders. If each independently asks a rate $r_i$, the
+total is $R = \sum_i r_i$; under an aggregate cap $R_{\max}$ allocated by each holder's share $s_i$ of essential patents,
+\begin{equation}\label{eq:stack}
+  R = \sum_{i=1}^{N} r_i, \qquad r_i^{\mathrm{cap}} = R_{\max}\, s_i, \quad \sum_i s_i = 1 .
+\end{equation}
+\paragraph{Example} Twenty holders each asking 1\,\% stack to 20\,\% of the device price; with a 5\,\% cap, a holder with
+10\,\% of the essential patents receives 0.5\,\%. The economics of SEPs are contested; the model only shows why the
+question arises.
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+The organisation of 3GPP mirrors the architecture of the systems it specifies: RAN working groups own the radio
+interface and RAN interfaces (Uu, X2/Xn, S1/NG, F1), SA2 owns the system architecture and reference points, CT
+groups own the core protocols and the UE--core NAS. A new feature that crosses these boundaries -- network slicing,
+for example -- needs coordinated work items in several groups, with SA2's stage~2 as the common reference.
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+
+\begin{procedurebox}{Introducing a new feature}\label{proc:feature}
+\begin{steps}
+  \item Companies propose a study item (SI) with objectives; the TSG approves it.
+  \item The working groups study use cases and candidate solutions and document them in a TR, with evaluations and a
+        conclusion.
+  \item A work item (WI) is approved with a scope, target release and responsible groups.
+  \item Stage~2 and stage~3 specifications are written or extended (new TS or CRs to existing ones) until the
+        stage~3 and ASN.1 freezes.
+  \item After freeze, corrections continue through category-F CRs; conformance tests are specified; products
+        implement and certify the feature.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{Finding the right specification}\label{proc:find}
+\begin{steps}
+  \item Identify the topic and stage: requirement (22), architecture (23), protocol (24, 29, 36, 38), security (33).
+  \item Start from the stage-2 overview (e.g.\ TS~23.501 or TS~38.300) and follow its references.
+  \item Choose the release that matches the implementation and download the latest version of that release.
+  \item Read scope and definitions, then the procedure clause, then the message definitions; check the CR history for
+        recent changes.
+\end{steps}
+\end{procedurebox}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Decoding a version}\label{ex:version}
+\textbf{Problem.} What do ``TS~38.331 V17.5.0'' and ``TS~23.501 V2.0.0'' tell you?
+
+\textbf{Solution.} TS~38.331 is in series 38 (NR radio): the NR RRC protocol. V17.5.0: Release~17, under change control,
+fifth set of technical changes after its first Release-17 version, no editorial-only update since. TS~23.501 V2.0.0: a draft
+presented to the TSG for approval (before it became V15.0.0 in Release~15).
+\end{examplebox}
+
+\begin{examplebox}{Interoperability budget}\label{ex:interop}
+\textbf{Problem.} A VoLTE call involves about 20 interfaces between UE, eNB, MME, gateways, PCRF and IMS nodes from
+different vendors. What per-interface correctness is needed for 99\,\% end-to-end success?
+
+\textbf{Solution.} $p \ge 0.99^{1/20} = 0.9995$. Field experience with early VoLTE, which needed extensive interoperability
+testing and an industry profile to narrow the options, illustrates the point.
+\end{examplebox}
+
+\begin{examplebox}{Classifying CRs}\label{ex:cr}
+\textbf{Problem.} Classify: (a) a wrong timer value in Release~16, fixed in Release~16; (b) the same fix copied into
+Release~17; (c) a new optional information element enabling a feature; (d) a typo.
+
+\textbf{Solution.} (a) F; (b) A; (c) B (only before the release's freeze); (d) D.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{Standards bodies relevant to mobile networks.}\label{tab:bodies}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
+\toprule
+\rowcolor{white}Body & Role & Typical output \\
+\midrule
+ITU-R  & Spectrum regulation and IMT requirements      & Recommendations and reports (e.g.\ M.2083, M.2410, M.2160) \\
+3GPP   & Specification of mobile systems               & TS and TR (series 21--38) \\
+IETF   & Internet protocols                            & RFCs (e.g.\ SCTP, Diameter, HTTP/2) \\
+ETSI   & European standards; NFV, MEC industry groups  & ENs, group specifications (e.g.\ NFV) \\
+ONF, O-RAN Alliance & Open interfaces for SDN and RAN  & Specifications (e.g.\ OpenFlow, O-RAN interfaces) \\
+GSMA   & Operator association                          & Permanent reference documents, profiles \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Consensus versus speed} Open, consensus-based standardisation produces specifications that many companies
+can implement and that last for decades, at the cost of time and complexity: options are added to satisfy many
+parties. Industry alliances and open-source projects move faster but with less formal commitment; modern
+networks combine all of them.
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item 3GPP = seven organisational partners; work in TSG RAN, SA and CT and their WGs; consensus decisions.
+  \item Stage 1 (requirements), stage 2 (architecture), stage 3 (protocols); TS normative, TR informative.
+  \item Series numbers identify the topic (23 architecture, 24/29 protocols, 33 security, 36 LTE, 38 NR).
+  \item Releases freeze in stages; versions $x.y.z$ = release, technical changes, editorial changes.
+  \item Change requests (F, A, B, C, D) are the only way to change a specification under change control.
+  \item Interoperability decays as $p^k$; specifications and testing must be precise.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Which series?}\label{exr:series}
+In which series would you look for: (a) the NAS protocol of 5G; (b) the 5G security architecture; (c) the LTE MAC protocol;
+(d) the service requirements of 5G; (e) the GTP-U protocol?
+\end{exercisebox}
+
+\begin{exercisebox}{1}{TS or TR?}\label{exr:tstr}
+Is a channel model used to evaluate candidate technologies normative? Where is it published, and why does it matter for
+comparing simulation results?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Versions}\label{exr:version}
+A vendor's documentation states compliance with ``TS~24.501 V16.5.0''. The operator's network implements V16.9.0. What
+kinds of differences can exist between the two, and how would you find them?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Interfaces and correctness}\label{exr:interop}
+Using \cref{eq:interop}, compute $P_{\mathrm{e2e}}$ for $p = 0.995$ and $k = 20$ and 50. How many interfaces can a service
+cross at $p = 0.999$ if $P_{\mathrm{e2e}} \ge 0.95$ is required?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Backlog}\label{exr:backlog}
+A working group handles 250 CRs per month with an average time to approval of 4 months. A new release adds a burst so that
+arrivals rise to 350 per month while approval capacity stays at 250 per month. Using \cref{eq:little} and a simple fluid
+argument, estimate the backlog after 6 months of the burst. What can the group do?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Overlapping phases}\label{exr:ttm}
+With the phase durations of \cref{sec:ttm}, how much earlier could commercial products appear if implementation started
+when stage~2 is complete (overlapping stage~3 fully)? What risk does this create, and how do the freeze dates mitigate it?
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:series}}
+(a) 24 (TS~24.501); (b) 33 (TS~33.501); (c) 36 (TS~36.321); (d) 22 (TS~22.261); (e) 29 (TS~29.281).
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:tstr}}
+No: channel models are informative; they are published in TRs (e.g.\ TR~38.901). They matter because simulation results from
+different companies are comparable only if they use the same channel model and assumptions, which the TR fixes.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:version}}
+Both are Release~16; V16.9.0 includes four more sets of technical changes -- mostly corrections (category F), possibly
+clarifications that change behaviour in corner cases. Compare the CR lists between the versions (the change history
+annex and the CR database) and check whether any affect implemented procedures.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:interop}}
+$0.995^{20} = 0.905$; $0.995^{50} = 0.778$. With $p = 0.999$: $k \le \ln 0.95/\ln 0.999 = 51.3$, i.e.\ at most 51 interfaces.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:backlog}}
+Initially $N = 250\times4 = 1000$ open CRs. During the burst the backlog grows by $350 - 250 = 100$ per month: after 6 months
+about 1600, and by Little's law the time to approval rises to about $1600/250 = 6.4$ months. Options: more meeting time
+(additional electronic sessions), prioritisation of essential CRs, postponing optional features to the next release.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:ttm}}
+Implementation would overlap the whole 12 months of stage~3 instead of 6: products about 6 months earlier (48 instead of 54
+months). Risk: implementing a moving target -- later stage-3 changes force rework and early products may not interoperate.
+Freeze dates (especially the ASN.1 freeze) mark when the specification is stable enough to implement without such risk.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+TR~21.900 \cite{tr21900} describes 3GPP working methods, version numbering and CR categories; TR~21.905 \cite{tr21905} is the
+vocabulary. The ITU-R documents on IMT-2020 and IMT-2030 \cite{itu2015m2083,itu2017m2410,itu2023m2160} show how 3GPP's work
+connects to global requirements. Dahlman et al.\ \cite{dahlman2020nr} describe the standardisation history of NR.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

@@ -1,0 +1,410 @@
+% =====================================================================
+%  Lecture 14 -- 5G Networks: Introduction                (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{14}
+\ACNset{title}{5G Networks: Introduction}
+\ACNset{shorttitle}{5G introduction}
+\ACNset{titleother}{مقدمه‌ای بر شبکه‌های نسل پنجم}
+\ACNset{part}{Part IV -- 5G system and procedures (Lectures 14, 19--22)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Intermediate}
+\ACNset{prereq}{Lectures 5--7 and 9; OFDM basics; Shannon capacity}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{State} the IMT-2020 usage scenarios and key minimum requirements, and \textbf{relate}
+        each to a design choice of 5G.
+  \item \textbf{Explain} NR's scalable numerology and \textbf{compute} slot and symbol durations for
+        each subcarrier spacing.
+  \item \textbf{Compute} the approximate peak data rate of an NR carrier with the 3GPP formula.
+  \item \textbf{Compare} non-standalone (EN-DC) and standalone deployments.
+  \item \textbf{Estimate} latency, connection density and area capacity for given deployments, and
+        \textbf{judge} whether a requirement is met.
+  \item \textbf{Outline} the 5G core and the topics of the following lectures.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+You need the LTE architecture and radio protocols (Lectures~5--7), the EPC (Lecture~9), the structure of
+an OFDM resource grid (subcarriers, symbols, cyclic prefix, resource blocks) and Shannon's capacity
+formula $C = B\log_2(1+\SNR)$ \cite{shannon1948mathematical}.
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+IMT-2020 & \fa{IMT-2020} & ITU-R's name for the 5G family of radio interfaces and its requirements. \\
+eMBB / URLLC / mMTC & \fa{سه سناریوی استفاده} & Enhanced broadband, ultra-reliable low latency, massive machine type. \\
+NR & \fa{رادیوی جدید} & 3GPP's 5G radio interface (Release~15 onward). \\
+Numerology $\mu$ & \fa{عددشناسی} & Subcarrier spacing $15\cdot2^\mu$\,kHz and the matching slot length. \\
+FR1 / FR2 & \fa{بازه‌های بسامدی ۱ و ۲} & Sub-7\,GHz and millimetre-wave frequency ranges. \\
+Bandwidth part & \fa{بخش پهنای باند} & Subset of a carrier configured for a UE. \\
+EN-DC & \fa{اتصال دوگانهٔ E-UTRA--NR} & LTE master and NR secondary node with the EPC (NSA). \\
+SA / NSA & \fa{مستقل / غیرمستقل} & NR with the 5G core / NR anchored on LTE. \\
+5GC & \fa{هستهٔ نسل پنجم} & Service-based core network (AMF, SMF, UPF, \ldots). \\
+Network slice & \fa{برش شبکه} & Logical end-to-end network for a service type. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+LTE was designed for one dominant use: mobile broadband to smartphones. By the mid-2010s operators and
+industries expected three different kinds of demand: far higher capacity for video and fixed wireless
+access, wireless control of machines with reliability and latency comparable to wired fieldbuses, and
+connectivity for very large numbers of cheap, battery-powered sensors. ITU-R captured these as the
+three IMT-2020 usage scenarios (\cref{fig:usage}) \cite{itu2015m2083} and set minimum technical
+requirements for any candidate radio interface \cite{itu2017m2410}. 3GPP's answer is the 5G system: the
+NR radio interface \cite{ts38300,dahlman2020nr} and the service-based 5G core \cite{ts23501}.
+
+This lecture opens Part~IV. It surveys the requirements, the main ideas of NR that address them, and the
+migration from LTE; the core network, procedures, slicing and QoS follow in Lectures~18--22, while
+software-defined networking and virtualisation, the technologies on which the 5G core is built, are the
+topic of Part~III.
+
+\begin{acnfigure}
+  \acnfig{lecture-14/usage-scenarios}
+  \caption{The three IMT-2020 usage scenarios with example applications \cite{itu2015m2083}.}
+  \label{fig:usage}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{Requirements}
+\begin{table}[htbp]
+\centering\small
+\caption{Selected IMT-2020 minimum technical requirements (ITU-R M.2410) \cite{itu2017m2410}.}\label{tab:req}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l l Y@{}}
+\toprule
+\rowcolor{white}Requirement & Value & Scenario / remark \\
+\midrule
+Peak data rate             & DL 20\,Gbit/s, UL 10\,Gbit/s  & eMBB \\
+Peak spectral efficiency   & DL 30, UL 15 bit/s/Hz         & eMBB \\
+User-experienced data rate & DL 100\,Mbit/s, UL 50\,Mbit/s & eMBB, dense urban (5th percentile) \\
+Area traffic capacity      & 10\,Mbit/s/m$^2$              & eMBB, indoor hotspot, DL \\
+User-plane latency         & 4\,ms (eMBB), 1\,ms (URLLC)   & One way, unloaded \\
+Control-plane latency      & 20\,ms                        & Idle to active \\
+Connection density         & $10^6$ devices/km$^2$         & mMTC \\
+Reliability                & $1-10^{-5}$ for 32 bytes in 1\,ms & URLLC \\
+Mobility                   & up to 500\,km/h               & High-speed trains \\
+Bandwidth                  & at least 100\,MHz; up to 1\,GHz above 6\,GHz & -- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+No single deployment has to meet all values at once: each requirement is evaluated in its own test
+environment. \Cref{fig:capabilities} shows the improvement over IMT-Advanced (4G) that ITU-R envisaged for
+each key capability.
+
+\begin{acnfigure}
+  \acnfig{lecture-14/capabilities}
+  \caption{Improvement factors of IMT-2020 key capabilities over IMT-Advanced, as envisaged in ITU-R M.2083
+           \cite{itu2015m2083}. Latency is shown as its inverse.}
+  \label{fig:capabilities}
+\end{acnfigure}
+
+\subsection{Design principles of NR}
+\begin{itemize}
+  \item \textbf{Wide spectrum range}: FR1 (410\,MHz--7.125\,GHz) and FR2 (24.25--52.6\,GHz, extended in later
+        releases), with carriers up to 100\,MHz in FR1 and 400\,MHz in FR2 \cite{ts38300}.
+  \item \textbf{Scalable numerology}: subcarrier spacing $15\cdot2^\mu$\,kHz (\cref{sec:num}).
+  \item \textbf{Ultra-lean design}: no always-on cell-specific reference signals; signals are sent only when
+        needed, which saves energy and reduces interference.
+  \item \textbf{Beam-centric operation}: synchronisation signal blocks are swept in beams; beam management is
+        built in, which is essential at millimetre waves.
+  \item \textbf{Flexible scheduling}: slots and mini-slots (2, 4 or 7 symbols), dynamic TDD, bandwidth parts.
+  \item \textbf{New channel coding}: LDPC for data, polar codes for control \cite{ts38211}.
+  \item \textbf{Forward compatibility}: reserved resources so that future features do not break legacy UEs.
+\end{itemize}
+
+\subsection{Deployment options}
+3GPP defined several ways to combine LTE, NR, the EPC and the 5GC. The two that matter in practice
+(\cref{fig:options}):
+\begin{itemize}
+  \item \textbf{Non-standalone (NSA), option 3 family (EN-DC)}: the UE is connected to an LTE eNB (master node,
+        control plane to the MME) and an NR en-gNB (secondary node, adding capacity) \cite{ts37340}. It reuses the
+        EPC and allowed the first 5G launches in 2019 without a new core, but provides none of the new core
+        features (slicing, new QoS, service-based architecture).
+  \item \textbf{Standalone (SA), option 2}: the gNB connects to the 5GC over N2 (control) and N3 (user plane).
+        All 5G features, including low latency and slicing, require SA.
+\end{itemize}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-14/deployment-options}}
+  \caption{Non-standalone EN-DC (option 3x) with the EPC, and standalone NR (option 2) with the 5GC.}
+  \label{fig:options}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{Frame structure}
+NR keeps LTE's 10\,ms frame and 1\,ms subframe. A slot has 14 OFDM symbols (normal cyclic prefix); with
+numerology $\mu$ a subframe contains $2^\mu$ slots (\cref{fig:numerology}). A resource block is 12 subcarriers
+in frequency; a carrier has at most 275 resource blocks. Because 1\,ms is a fixed grid for all numerologies,
+symbols of different numerologies align at subframe boundaries, which allows mixing them on one carrier
+\cite{ts38211}.
+
+\begin{acnfigure}
+  \acnfig{lecture-14/numerology}
+  \caption{Slots per 1\,ms subframe for numerologies $\mu = 0$--3.}
+  \label{fig:numerology}
+\end{acnfigure}
+
+\subsection{Initial access and beams}
+A gNB transmits synchronisation signal blocks (SSBs: PSS, SSS and PBCH) in a burst, each in a different beam.
+The UE detects the best SSB, reads the system information and performs random access on the RACH occasion
+associated with that SSB; the gNB thereby learns the best beam. During a connection, beams are refined with
+CSI-RS measurements and reports. In FR1 a few wide beams suffice; in FR2 up to 64 narrow beams compensate the
+higher path loss with array gain.
+
+\subsection{From EPC to 5GC}
+The 5G core separates access and mobility management (AMF) from session management (SMF) and the user plane
+(UPF), stores subscription data in the UDM/UDR, authenticates through the AUSF and controls policy in the PCF.
+Network functions expose services over HTTP/2 and discover each other through the NRF \cite{ts23501}. The QoS
+model uses QoS flows within PDU sessions instead of EPS bearers, and network slices allow several logical
+networks on one infrastructure. These topics are developed in Lectures~18--22.
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{Numerology}\label{sec:num}
+\paragraph{Definitions} For $\mu = 0,1,2,3,4$:
+\begin{equation}\label{eq:numerology}
+  \Delta f = 15\cdot2^{\mu}\ \text{kHz}, \qquad
+  T_{\mathrm{slot}} = \frac{1\ \text{ms}}{2^{\mu}}, \qquad
+  \bar T_{\mathrm{sym}} = \frac{T_{\mathrm{slot}}}{14},
+\end{equation}
+where $\bar T_{\mathrm{sym}}$ is the mean symbol duration including the cyclic prefix. The normal cyclic prefix is
+about $4.7/2^\mu$\,\textmu s.
+\paragraph{Interpretation} Wider spacing shortens symbols and slots (lower latency) and tolerates more phase
+noise and Doppler (needed in FR2), but its shorter cyclic prefix tolerates less delay spread, which suits small
+cells. FR1 macro cells typically use 15 or 30\,kHz; FR2 uses 120\,kHz.
+
+\subsection{Peak data rate}\label{sec:peak}
+\paragraph{Formula} 3GPP approximates the maximum data rate of a carrier as \cite{ts38306}
+\begin{equation}\label{eq:peak}
+  R \approx 10^{-6}\, v\, Q_m\, f\, R_{\max}\,
+          \frac{N_{\mathrm{PRB}}\cdot 12}{T_s^{\mu}}\,\bigl(1-\mathrm{OH}\bigr)\ \text{Mbit/s},
+  \qquad T_s^{\mu} = \frac{10^{-3}}{14\cdot2^{\mu}}\ \text{s},
+\end{equation}
+with $v$ MIMO layers, $Q_m$ bits per modulation symbol, scaling factor $f\le1$, maximum code rate
+$R_{\max} = 948/1024$, $N_{\mathrm{PRB}}$ resource blocks and overhead OH (0.14 in FR1 DL, 0.18 in FR2 DL, 0.08 in FR1
+UL, 0.10 in FR2 UL). For carrier aggregation the rates of the carriers are added.
+\paragraph{Example} FR1, 100\,MHz at 30\,kHz ($N_{\mathrm{PRB}} = 273$), 4 layers, 256-QAM ($Q_m = 8$), $f = 1$:
+$R \approx 2.34$\,Gbit/s (\cref{ex:peak}).
+
+\subsection{User-plane latency}\label{sec:lat}
+\paragraph{Model} A simple estimate of one-way radio latency is
+\begin{equation}\label{eq:latency}
+  T_{\mathrm{UP}} \approx T_{\mathrm{align}} + T_{\mathrm{tx}} + T_{\mathrm{proc}}
+  \approx \tfrac12 T_{\mathrm{slot}} + T_{\mathrm{slot}} + 2\,T_{\mathrm{slot}},
+\end{equation}
+counting on average half a slot to wait for the next transmission opportunity, one slot of transmission and
+about two slots of processing at transmitter and receiver.
+\paragraph{Example} $\mu = 0$: 3.5\,ms; $\mu = 1$: 1.75\,ms; $\mu = 3$: 0.44\,ms. Mini-slots and pre-configured
+(grant-free) uplink shorten $T_{\mathrm{align}}$ and $T_{\mathrm{tx}}$ further.
+\paragraph{Limitations} The model ignores scheduling requests, HARQ retransmissions, queueing and the transport
+network and core; it shows why the URLLC target of 1\,ms requires larger numerologies or mini-slots.
+
+\subsection{Connection density and area capacity}\label{sec:density}
+\paragraph{Models} With device density $\rho$ (devices/km$^2$) and cell radius $r$, a cell serves
+$N = \rho\pi r^2$ devices; if each accesses the network once per period $T$, the access rate is $N/T$. For area
+capacity, a cell with bandwidth $B$ and mean spectral efficiency $\bar\eta$ covering area $A_{\mathrm{cell}}$ offers
+\begin{equation}\label{eq:area}
+  C_{\mathrm{area}} = \frac{B\,\bar\eta}{A_{\mathrm{cell}}}.
+\end{equation}
+\paragraph{Examples} $\rho = 10^6$/km$^2$, $r = 500$\,m: $N = 7.9\times10^5$ devices; one report every 2\,h gives 109
+accesses/s per cell (\cref{ex:density}). For $C_{\mathrm{area}} = 10$\,Mbit/s/m$^2$ with $B = 400$\,MHz and $\bar\eta =
+5$\,bit/s/Hz, each cell may cover only $A_{\mathrm{cell}} = 200$\,m$^2$: area capacity is achieved by densification,
+not by spectral efficiency alone.
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+\Cref{fig:options} summarises the two main architectures. In NSA the EPC remains the core, and the NR node is an
+extension of the LTE radio network (it has no control-plane connection to the core). In SA, the gNB (split into
+central and distributed units, Lecture~23) connects to the 5GC; LTE and NR then interwork through the core
+(N26 between AMF and MME) for mobility and voice fallback. Most operators started with NSA and introduced SA
+later, often first for specific segments such as fixed wireless access or enterprise slices.
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+
+\begin{procedurebox}{Adding an NR secondary node in EN-DC}\label{proc:endc}
+\begin{steps}
+  \item The UE is connected to the LTE eNB (master node) and reports NR measurements configured by it.
+  \item The eNB decides to add an NR leg and sends SgNB Addition Request over X2 to the en-gNB.
+  \item The en-gNB allocates resources and answers with the NR radio configuration; the eNB forwards it in
+        RRC Connection Reconfiguration.
+  \item The UE performs random access on the NR cell and confirms; the eNB informs the MME (E-RAB modification)
+        so that the S-GW can send the user plane directly to the en-gNB (option 3x).
+  \item Data now flow over NR (and LTE, if the bearer is split); mobility and control remain with LTE.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{Initial access in standalone NR}\label{proc:access}
+\begin{steps}
+  \item Search the SSB raster, detect PSS/SSS, determine the cell ID and the best SSB beam.
+  \item Read the MIB on PBCH and SIB1 (scheduled by it) to obtain RACH configuration and cell parameters.
+  \item Transmit a preamble in the RACH occasion of the best SSB; receive the random-access response (Lecture~8).
+  \item Complete RRC set-up and send the Registration Request to the AMF (Lecture~20).
+\end{steps}
+\end{procedurebox}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Peak rate of an FR1 carrier}\label{ex:peak}
+\textbf{Problem.} Evaluate \cref{eq:peak} for 100\,MHz at 30\,kHz, 4 layers, 256-QAM, $f = 1$, DL.
+
+\textbf{Solution.} $T_s^{1} = 10^{-3}/28 = 35.7$\,\textmu s. $N_{\mathrm{PRB}}\cdot12/T_s = 273\times12/35.7\times10^{-6} = 9.17\times10^{7}$
+REs/s. $R = 4\times8\times0.926\times9.17\times10^{7}\times0.86 = 2.34\times10^{9}$\,bit/s. To reach 20\,Gbit/s, NR needs
+FR2 bandwidths, more layers and carrier aggregation.
+\end{examplebox}
+
+\begin{examplebox}{Latency and numerology}\label{ex:lat}
+\textbf{Problem.} Which numerologies satisfy the 1\,ms URLLC target with the model of \cref{eq:latency}?
+
+\textbf{Solution.} $T_{\mathrm{UP}} = 3.5\,T_{\mathrm{slot}} \le 1$\,ms requires $T_{\mathrm{slot}} \le 0.286$\,ms, i.e.\
+$\mu \ge 2$ (0.875\,ms at 60\,kHz). With 30\,kHz, mini-slots of 2 symbols reduce the transmission and alignment terms and can meet
+the target as well.
+\end{examplebox}
+
+\begin{examplebox}{mMTC access load}\label{ex:density}
+\textbf{Problem.} A cell of radius 500\,m in an area with $10^6$ devices/km$^2$; each device sends one report every two
+hours. Compute the access rate and compare with LTE's typical RACH capacity of the order of a few hundred
+attempts per second per cell.
+
+\textbf{Solution.} $N = 10^6\times\pi\times0.25 = 7.85\times10^5$; rate $= 7.85\times10^5/7200 = 109$\,s$^{-1}$ on average --
+manageable, but synchronised reporting (all devices at the full hour) would be catastrophic (Lecture~8). mMTC
+therefore relies on randomised schedules, early data transmission and NB-IoT/LTE-M features, not only on raw
+capacity.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{LTE and NR compared.}\label{tab:cmp}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
+\toprule
+\rowcolor{white} & LTE (4G) & NR (5G) \\
+\midrule
+Spectrum          & Below 6\,GHz             & FR1 and FR2 (mmWave) \\
+Max carrier bandwidth & 20\,MHz (aggregation up to 32 carriers) & 100\,MHz (FR1), 400\,MHz (FR2) \\
+Subcarrier spacing & 15\,kHz (fixed)          & $15\cdot2^\mu$\,kHz \\
+Scheduling unit   & 1\,ms subframe           & Slot ($1/2^\mu$\,ms), mini-slot \\
+Reference signals & Always-on CRS            & On demand (ultra-lean) \\
+Channel coding    & Turbo (data), convolutional (control) & LDPC (data), polar (control) \\
+Beamforming       & Added in later releases  & Native, including initial access \\
+Core              & EPC                      & EPC (NSA) or 5GC (SA) \\
+QoS unit          & EPS bearer               & QoS flow \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Evolution, not replacement} LTE continues to evolve (LTE-M, NB-IoT, and dynamic spectrum sharing with
+NR on the same carrier), and NR reuses many LTE concepts: OFDM, HARQ, the layer-2 stack, and the
+attach/registration and bearer/flow logic of the core.
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item IMT-2020 defines three scenarios (eMBB, URLLC, mMTC) and minimum requirements such as 20\,Gbit/s peak,
+        1\,ms URLLC latency and $10^6$ devices/km$^2$.
+  \item NR: wide spectrum (FR1, FR2), numerology $15\cdot2^\mu$\,kHz, slots of $1/2^\mu$\,ms, lean and beam-based.
+  \item Peak rate $\propto v\,Q_m\,R_{\max}\,N_{\mathrm{PRB}}\cdot12/T_s\,(1-\mathrm{OH})$; 100\,MHz FR1 gives about 2.3\,Gbit/s with 4 layers.
+  \item NSA (EN-DC) reuses the EPC; SA with the 5GC unlocks slicing, new QoS and low latency.
+  \item Area capacity comes from densification; latency from numerology and mini-slots; density from access design.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Which scenario?}\label{exr:scenario}
+Assign each service to eMBB, URLLC or mMTC and name its most demanding requirement: (a) 8K video streaming;
+(b) motion control in a factory; (c) water meters; (d) remote surgery; (e) fixed wireless access to homes.
+\end{exercisebox}
+
+\begin{exercisebox}{1}{Why NSA first?}\label{exr:nsa}
+Give two reasons why most operators launched 5G as NSA, and one capability they could not offer until SA.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{FR2 peak rate}\label{exr:fr2}
+Compute the peak DL rate of a 400\,MHz FR2 carrier at 120\,kHz ($N_{\mathrm{PRB}} = 264$) with 2 layers and 64-QAM.
+How many such carriers would be needed for 20\,Gbit/s?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Cyclic prefix and cell size}\label{exr:cp}
+The normal cyclic prefix is about $4.7/2^\mu$\,\textmu s. Compute it for $\mu = 0$--3 and the corresponding path-length
+difference it can absorb. Which numerologies suit a rural macro cell with a delay spread of 2\,\textmu s?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Peak spectral efficiency}\label{exr:se}
+Using \cref{eq:peak}, compute the peak spectral efficiency of a 100\,MHz FR1 carrier at 30\,kHz with 8 DL layers and
+256-QAM. Does it meet the IMT-2020 requirement of 30\,bit/s/Hz? Which assumptions make this a theoretical
+value?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Densification}\label{exr:dense}
+An indoor hotspot must provide 10\,Mbit/s/m$^2$. Compare the cell area needed with (a) 400\,MHz at 5\,bit/s/Hz and
+(b) 100\,MHz at 7\,bit/s/Hz. Discuss the implications for backhaul and for the core network.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:scenario}}
+(a) eMBB -- user data rate; (b) URLLC -- latency and reliability; (c) mMTC -- connection density and battery life;
+(d) URLLC (with eMBB video) -- reliability and latency; (e) eMBB -- capacity per area and per user.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:nsa}}
+NSA reused the existing EPC (no new core, faster time to market) and LTE coverage for control and mobility, while
+NR added capacity; early devices and spectrum were also tuned for it. Features needing the 5GC -- network slicing,
+QoS flows, service-based exposure, low-latency edge user planes, and NR-only coverage -- required SA.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:fr2}}
+$T_s^{3} = 10^{-3}/112 = 8.93$\,\textmu s; $R = 2\times6\times0.926\times264\times12/8.93\times10^{-6}\times0.82 = 3.23$\,Gbit/s. For
+20\,Gbit/s about $20/3.23 = 6.2$, i.e.\ 7 carriers -- or more layers and higher-order modulation.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:cp}}
+$\mu = 0$: 4.69\,\textmu s (1406\,m); $\mu = 1$: 2.34\,\textmu s (703\,m); $\mu = 2$: 1.17\,\textmu s (352\,m); $\mu = 3$: 0.59\,\textmu s
+(176\,m), using $d = c\,T_{\mathrm{CP}}$. With 2\,\textmu s delay spread, $\mu = 0$ (and marginally $\mu = 1$) are suitable;
+60\,kHz needs the extended CP, and 120\,kHz is for small FR2 cells.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:se}}
+With 8 layers the rate doubles to $4.67$\,Gbit/s, i.e.\ $46.7$\,bit/s/Hz over 100\,MHz -- above 30. The value assumes
+8 spatially separable layers, 256-QAM at the highest code rate (very high SINR), the fixed overhead factor and full
+allocation to one UE; real systems reach a fraction of it.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:dense}}
+(a) $400\times10^6\times5 = 2$\,Gbit/s per cell, so $A = 2\times10^9/10^7 = 200$\,m$^2$; (b) $0.7$\,Gbit/s, so 70\,m$^2$. Either way
+cells are rooms, not streets. Each cell needs multi-gigabit backhaul (fibre), and the core must handle traffic of
+$10$\,Tbit/s per km$^2$ of such hotspots locally -- an argument for edge user planes (Lecture~23).
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+ITU-R M.2083 \cite{itu2015m2083} sets out the vision and M.2410 \cite{itu2017m2410} the requirements; 3GPP's own scenarios
+are in TR~38.913 \cite{tr38913} and service requirements in TS~22.261 \cite{ts22261}. NR is described in TS~38.300
+\cite{ts38300} and TS~38.211 \cite{ts38211}, EN-DC in TS~37.340 \cite{ts37340} and the 5G system in TS~23.501
+\cite{ts23501}. Dahlman et al.\ \cite{dahlman2020nr} is the standard textbook on NR.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

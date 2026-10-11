@@ -1,0 +1,16 @@
+% UMTS service request with RRC connection and RAB establishment (PS domain)
+\begin{tikzpicture}
+  \SeqActors[3.6]{UE,NodeB,RNC,SGSN}
+  \SeqMsg{0}{2}{RRC Connection Request}
+  \SeqMsg{2}{1}{NBAP: \bil{radio link setup}{برقراری پیوند رادیویی}}
+  \SeqMsg{2}{0}{RRC Connection Setup}
+  \SeqMsg{0}{2}{RRC Connection Setup Complete}
+  \SeqMsg{0}{3}{\bil{Service Request (NAS, in Initial Direct Transfer)}{Service Request (NAS درون Initial Direct Transfer)}}
+  \SeqNote{0}{3}{\bil{AKA (mutual) + Security Mode: ciphering and integrity in RNC}{AKA دوطرفه + Security Mode: رمزنگاری و یکپارچگی در RNC}}
+  \SeqMsg{3}{2}{RANAP RAB Assignment Request}
+  \SeqMsg{2}{0}{RRC Radio Bearer Setup}
+  \SeqMsg{0}{2}{RRC Radio Bearer Setup Complete}
+  \SeqMsg{2}{3}{RANAP RAB Assignment Response}
+  \SeqMsg[up,<->]{0}{3}{\bil{user data: radio bearer + Iu-PS GTP-U tunnel}{دادهٔ کاربر: حامل رادیویی + تونل GTP-U روی Iu-PS}}
+  \SeqEnd
+\end{tikzpicture}

@@ -1,0 +1,477 @@
+% =====================================================================
+%  Lecture 09 -- Evolved Packet Core (EPC)                (Persian edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-fa}
+
+\ACNset{number}{09}
+\ACNset{title}{هستهٔ بستهٔ تکامل‌یافته (\lr{EPC})}
+\ACNset{shorttitle}{هستهٔ بستهٔ تکامل‌یافته}
+\ACNset{titleother}{Evolved Packet Core (EPC)}
+\ACNset{part}{بخش دوم -- دسترسی و هستهٔ نسل چهارم (درس‌های ۵ تا ۱۳)}
+\ACNset{time}{۷ تا ۹ ساعت (۳٫۵ ساعت مطالعه، ۴ تا ۵ ساعت تمرین)}
+\ACNset{level}{متوسط}
+\ACNset{prereq}{درس‌های ۵ و ۶؛ رمزنگاری پایه (کلید متقارن، \lr{MAC})؛ مسیریابی \lr{IP}}
+\ACNset{gen}{4}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{اهداف یادگیری}
+پس از مطالعهٔ این درس باید بتوانید:
+\begin{objectives}
+  \item اهداف طراحی \acro{EPC} و تقسیم کار میان \lr{MME, HSS, S-GW, P-GW} و \acro{PCRF} را \textbf{توضیح دهید}.
+  \item مدل حامل \acro{EPS} را \textbf{توصیف کنید}: حامل‌های پیش‌فرض و اختصاصی، \acro{TFT}ها و جدول \acro{QCI}، و
+        کنترل پذیرش \acro{GBR} را \textbf{به کار ببرید}.
+  \item \lr{EPS-AKA} را \textbf{دنبال کنید} و سلسله‌مراتب کلید \acro{EPS} را از $K$ تا کلیدهای لایهٔ دسترسی استخراج کنید.
+  \item اتصال \acro{PDN} و فعال‌سازی، اصلاح و غیرفعال‌سازی حامل اختصاصی را \textbf{دنبال کنید}.
+  \item حالت‌های \lr{EMM/ECM}، به‌روزرسانی ناحیهٔ ردیابی و نقش \acro{EPC} در تحویل را \textbf{توصیف کنید}.
+  \item اثر خرابی گره‌ها را \textbf{تحلیل کنید} و طوفان سیگنالینگ پس از راه‌اندازی مجدد یک دروازه را \textbf{تخمین بزنید}.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{دانش پیش‌نیاز}
+این درس معماری و نقاط مرجع \acro{EPS} از درس ۵ و رویه‌های \lr{RRC/S1} درس ۶ را فرض می‌کند. از امنیت به ایدهٔ کلید
+متقارن مشترک، کد احراز پیام (یک جمع‌آزمای کلیددار که یکپارچگی و مبدأ را ثابت می‌کند) و تابع استخراج کلید (\acro{KDF})
+که بدون افشای کلیدهای قدیمی کلیدهای جدید می‌سازد نیاز دارید.
+
+\paragraph{واژه‌های کلیدی} واژگان این درس همراه با معادل انگلیسی آن‌ها:
+\begin{keyterms}
+اتصال \acro{PDN} & \lr{PDN connection} & پیوند میان یک نشانی \acro{IP} کاربر و یک \acro{APN} که در یک \lr{P-GW} لنگر شده است. \\
+حامل پیش‌فرض & \lr{Default bearer} & نخستین حامل هر اتصال \acro{PDN}؛ همیشه روشن. \\
+حامل اختصاصی & \lr{Dedicated bearer} & حامل اضافی با کیفیت خدمات ویژه برای جریان‌های منتخب. \\
+قالب جریان ترافیک & \lr{TFT} & فیلترهای بسته که جریان‌های \acro{IP} را به حامل‌ها نگاشت می‌کنند. \\
+شناسهٔ کلاس کیفیت خدمات & \lr{QCI} & شاخصی برای انتخاب اولویت، بودجهٔ تأخیر و نرخ اتلاف. \\
+توافق احراز هویت و کلید \acro{EPS} & \lr{EPS-AKA} & احراز هویت دوطرفه که $K_{\mathrm{ASME}}$ را تولید می‌کند. \\
+تابع استخراج کلید & \lr{KDF} & استخراج کلیدهای جدید بر پایهٔ \lr{HMAC-SHA-256}. \\
+مدیریت تحرک / اتصال \acro{EPS} & \lr{EMM / ECM} & حالت ثبت‌نام / حالت اتصال سیگنالینگ. \\
+به‌روزرسانی ناحیهٔ ردیابی & \lr{TAU} & رویهٔ \acro{UE} هنگام ورود به \acro{TA} خارج از فهرست یا به‌صورت دوره‌ای. \\
+کنترل سیاست و صورت‌حساب & \lr{PCC} & تصمیم‌های \acro{PCRF} که \acro{PCEF} در \lr{P-GW} اعمال می‌کند. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{مقدمه و انگیزه}
+\acro{EPC} در مطالعهٔ تکامل معماری سامانه (\acro{SAE}) با یک دستور روشن طراحی شد: یک هستهٔ \emph{واحد} و
+\emph{تمام‌\acro{IP}} برای \acro{LTE} که بتواند به دسترسی‌های قدیمی \acro{3GPP} (از طریق \acro{SGSN}) و دسترسی‌های
+غیر\acro{3GPP} (\acro{WLAN}، \acro{CDMA2000}) نیز خدمت دهد، با تأخیر کمتر، گره‌های کمتر و جدایی تمیز میان صفحه‌های
+کنترل و کاربر \cite{ts23401}. هستهٔ حاصل تنها پنج نوع گرهٔ اساسی دارد، اما باید -- با بسته‌ها -- هر آنچه را هسته‌های
+قدیمی \acro{CS} و \acro{PS} فراهم می‌کردند بازتولید کند: احراز هویت مشترک، تحرک با پیوستگی نشست، کیفیت خدمات برای
+صدا، صورت‌حساب و شنود قانونی.
+
+این درس نمای سامانه‌ای \acro{EPC} است. قطعه‌ها را به هم وصل می‌کند: هویت مشترک چگونه احراز می‌شود، حامل‌ها چگونه
+ساخته و به جریان‌ها نگاشت می‌شوند، حالت‌های \acro{UE} چگونه پیگیری می‌شوند و وقتی یک گره خراب می‌شود چه رخ می‌دهد.
+درس‌های ۱۰ تا ۱۳ سپس روی پروتکل‌ها و گره‌ها (\lr{Diameter}، \acro{HSS}، \acro{MME}، دروازه‌ها) تمرکز می‌کنند.
+
+% ---------------------------------------------------------------------
+\section{مفاهیم بنیادی}
+
+\subsection{تقسیم کار}
+\begin{itemize}
+  \item \textbf{\acro{MME}} -- فقط صفحهٔ کنترل: سیگنالینگ \acro{NAS}، احراز هویت، امنیت، نواحی ردیابی، فراخوانی، کنترل
+        حامل، انتخاب دروازه.
+  \item \textbf{\acro{HSS}} -- پایگاه دادهٔ اشتراک و مرکز احراز هویت.
+  \item \textbf{\lr{S-GW}} -- لنگر تحرک صفحهٔ کاربر و بافر حالت بیکار.
+  \item \textbf{\lr{P-GW}} -- لنگر \acro{IP} به سوی هر \acro{PDN} و اعمال سیاست و صورت‌حساب (\acro{PCEF}).
+  \item \textbf{\acro{PCRF}} -- تصمیم‌های سیاست و صورت‌حساب (قواعد \acro{PCC}).
+\end{itemize}
+\acro{MME} و دروازه‌ها با \lr{S11} (\lr{GTPv2-C})، دروازه‌ها با یکدیگر با \lr{S5/S8} وصل‌اند؛ \acro{MME} از طریق \lr{S6a}
+با \acro{HSS} و \lr{P-GW} از طریق \acro{Gx} با \acro{PCRF} گفت‌وگو می‌کند، هر دو با \lr{Diameter}.
+
+\subsection{مدل حامل}
+\begin{definitionbox}{حامل \lr{EPS} و \lr{TFT}}
+حامل \acro{EPS} واحد کیفیت خدمات در \acro{LTE} است: همهٔ بسته‌های یک حامل رفتار ارسال یکسانی دریافت می‌کنند. یک
+\emph{قالب جریان ترافیک} (\acro{TFT}) مجموعه‌ای از فیلترهای بسته (بازهٔ نشانی و درگاه مبدأ/مقصد، پروتکل، نوع خدمت)
+است که تعیین می‌کند هر بسته از کدام حامل استفاده کند: \emph{\lr{UL TFT}} در \acro{UE} برای بسته‌های فراسو و
+\emph{\lr{DL TFT}} در \lr{P-GW} برای بسته‌های فروسو.
+\end{definitionbox}
+هر اتصال \acro{PDN} با یک حامل پیش‌فرض بدون \acro{TFT} آغاز می‌شود (که همه‌چیز را می‌گیرد). حامل‌های اختصاصی وقتی
+ساخته می‌شوند که خدمتی کیفیت خدمات متفاوتی لازم داشته باشد -- معمولاً با تحریک \acro{PCRF} وقتی یک تابع کاربردی (مثلاً
+\acro{IMS}) آن را درخواست کند. هر حامل با این‌ها مشخص می‌شود:
+\begin{itemize}
+  \item \textbf{\acro{QCI}} -- یک کلاس استانداردشده با اولویت، بودجهٔ تأخیر بسته (\acro{PDB}) و نرخ اتلاف خطای بسته
+        (\acro{PELR}) (\cref{tab:qci})؛
+  \item \textbf{\acro{ARP}} -- اولویت تخصیص و نگه‌داشت، برای پذیرش و پیش‌دستی؛
+  \item برای حامل‌های \acro{GBR}، \textbf{\acro{GBR}} و \textbf{\acro{MBR}} (نرخ بیت تضمین‌شده و بیشینه)؛
+  \item برای مجموع حامل‌های غیر\acro{GBR}، محدودیت‌های تجمیعی \textbf{\lr{APN-AMBR}} و \textbf{\lr{UE-AMBR}}.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering\small
+\caption{مشخصات استانداردشدهٔ \acro{QCI} (\lr{TS 23.203, Table 6.1.7-A}، \acro{QCI} ۱ تا ۹) \cite{ts23203}.}\label{tab:qci}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}c c c c c Y@{}}
+\toprule
+\rowcolor{white}\acro{QCI} & نوع & اولویت & \acro{PDB} [\lr{ms}] & \acro{PELR} & خدمات نمونه \\
+\midrule
+1 & \acro{GBR}     & 2 & 100 & $10^{-2}$ & صدای مکالمه‌ای (\acro{VoLTE}) \\
+2 & \acro{GBR}     & 4 & 150 & $10^{-3}$ & ویدئوی مکالمه‌ای (زنده) \\
+3 & \acro{GBR}     & 3 & 50  & $10^{-3}$ & بازی بی‌درنگ \\
+4 & \acro{GBR}     & 5 & 300 & $10^{-6}$ & ویدئوی غیرمکالمه‌ای (بافرشده) \\
+5 & غیر\acro{GBR}  & 1 & 100 & $10^{-6}$ & سیگنالینگ \acro{IMS} \\
+6 & غیر\acro{GBR}  & 6 & 300 & $10^{-6}$ & ویدئوی بافرشده، برنامه‌های \acro{TCP} (ویژه) \\
+7 & غیر\acro{GBR}  & 7 & 100 & $10^{-3}$ & صدا، ویدئوی زنده، بازی تعاملی \\
+8 & غیر\acro{GBR}  & 8 & 300 & $10^{-6}$ & برنامه‌های \acro{TCP} (مثلاً وب، رایانامه) \\
+9 & غیر\acro{GBR}  & 9 & 300 & $10^{-6}$ & برنامه‌های \acro{TCP}، حامل پیش‌فرض رایج \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{حالت‌های \lr{EMM} و \lr{ECM}}
+دو ماشین حالت متعامد یک \acro{UE} را در \acro{EPC} توصیف می‌کنند (\cref{fig:states}): \emph{مدیریت تحرک \acro{EPS}}
+(\lr{EMM-DEREGISTERED} و \lr{EMM-REGISTERED}) می‌گوید آیا شبکه \acro{UE} را می‌شناسد؛ \emph{مدیریت اتصال \acro{EPS}}
+(\lr{ECM-IDLE} و \lr{ECM-CONNECTED}) می‌گوید آیا یک اتصال سیگنالینگ \acro{NAS} (\acro{RRC} + \lr{S1}) وجود دارد. یک \acro{UE}
+ثبت‌شده در \lr{ECM-IDLE} نشانی \acro{IP} و حامل‌های خود را در هسته نگه می‌دارد (تونل‌های \lr{S5/S8} برقرار می‌مانند)،
+اما منابع رادیویی و \lr{S1-U} ندارد؛ \lr{S-GW} دادهٔ فروسو را بافر می‌کند و از \acro{MME} می‌خواهد فراخوانی کند.
+
+\begin{acnfigure}
+  \acnfig{lecture-09/emm-ecm}
+  \caption{حالت‌های \acro{EMM} (ثبت‌نام) و \acro{ECM} (اتصال سیگنالینگ) یک \acro{UE} در \acro{EPC}.}
+  \label{fig:states}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{توضیحات فنی تفصیلی}
+
+\subsection{احراز هویت: \lr{EPS-AKA}}
+\lr{EPS-AKA} \cite{ts33401} گسترش \lr{UMTS AKA} (درس ۳) است. \acro{HSS} یک \emph{بردار احراز هویت \acro{EPS}}
+$(\text{RAND}, \text{XRES}, \text{AUTN}, K_{\mathrm{ASME}})$ تولید می‌کند؛ نوآوری آن این است که $K_{\mathrm{ASME}}$ به هویت
+شبکهٔ خدمت‌دهنده گره خورده است؛ پس برداری که برای یک شبکه صادر شده در شبکهٔ دیگر بی‌فایده است. \acro{MME} مقادیر
+\lr{RAND} و \lr{AUTN} را می‌فرستد؛ \acro{USIM} مقدار \lr{AUTN} را بررسی می‌کند (که با شمارهٔ ترتیب \acro{SQN} ثابت می‌کند
+چالش از شبکهٔ خانگی آمده و تازه است)، \lr{RES} و همان کلیدها را محاسبه می‌کند. \acro{MME} مقدار \lr{RES} را با \lr{XRES}
+مقایسه می‌کند؛ اکنون هر دو طرف $K_{\mathrm{ASME}}$ را به اشتراک دارند که هرگز از \acro{MME} خارج نمی‌شود. محاسبات تفصیلی
+\lr{Milenage} در درس ۱۱ آمده است.
+
+\subsection{امنیت \lr{NAS} و \lr{AS}}
+امنیت لایه‌لایه است:
+\begin{itemize}
+  \item \textbf{امنیت \acro{NAS}} (\lr{UE--MME}): رمزنگاری و حفاظت از یکپارچگی پیام‌های \acro{NAS} با $K_{\mathrm{NASenc}}$ و
+        $K_{\mathrm{NASint}}$ که با \acro{NAS} \msg{Security Mode Command} فعال می‌شود.
+  \item \textbf{امنیت \acro{AS}} (\lr{UE--eNB}): یکپارچگی و رمزنگاری \acro{RRC} ($K_{\mathrm{RRCint}}$، $K_{\mathrm{RRCenc}}$) و
+        رمزنگاری دادهٔ کاربر ($K_{\mathrm{UPenc}}$) در \acro{PDCP}، استخراج‌شده از $K_{\mathrm{eNB}}$ که \acro{MME} آن را در
+        \msg{Initial Context Setup} به \acro{eNB} می‌فرستد.
+\end{itemize}
+دادهٔ کاربر در \acro{LTE} حفاظت یکپارچگی \emph{نمی‌شود} (تنها رمزنگاری می‌شود) -- مصالحه‌ای آگاهانه به نفع گذردهی که
+\lr{5G} آن را بازنگری می‌کند. الگوریتم‌ها \lr{EEA1/EIA1} (\lr{SNOW\,3G})، \lr{EEA2/EIA2} (\acro{AES}) و \lr{EEA3/EIA3}
+(\acro{ZUC}) هستند؛ \lr{EEA0/EIA0} الگوریتم‌های تهی‌اند و \lr{EIA0} تنها برای تماس‌های اضطراری بدون احراز هویت مجاز است.
+
+\subsection{مدیریت نشست}
+\paragraph{اتصال \acro{PDN}} هنگام اتصال (و بعدها برای \acro{APN}های اضافی) \acro{UE} یک اتصال \acro{PDN} درخواست
+می‌کند. \acro{MME} یک \lr{P-GW} را از روی \acro{APN} (مبتنی بر \acro{DNS}) و یک \lr{S-GW} را از روی مکان \acro{UE} انتخاب
+و \msg{Create Session Request} را ارسال می‌کند؛ \lr{P-GW} نشانی \acro{IP} (\lr{IPv4}، پیشوند \lr{IPv6} یا هر دو) تخصیص
+می‌دهد، از \acro{PCRF} سیاست می‌خواهد (\lr{Gx CCR-I/CCA-I}) و حامل پیش‌فرض را می‌سازد.
+\paragraph{فعال‌سازی حامل اختصاصی} معمولاً آغازشده از شبکه (\cref{fig:dedicated}): \acro{PCRF} قواعد \acro{PCC} را
+فراهم می‌کند، \lr{P-GW} پیام \msg{Create Bearer Request} را همراه با \acro{TFT} و کیفیت خدمات از طریق \lr{S-GW} به
+\acro{MME} می‌فرستد که \lr{E-RAB} را در \acro{eNB} برقرار و پیام \acro{NAS} \msg{Activate Dedicated EPS Bearer Context Request}
+را به \acro{UE} ارسال می‌کند.
+\paragraph{اصلاح و غیرفعال‌سازی} تغییر کیفیت خدمات یا \acro{TFT} از \msg{Update Bearer Request} و حذف از
+\msg{Delete Bearer Request} استفاده می‌کند. حذف حامل پیش‌فرض کل اتصال \acro{PDN} را حذف می‌کند.
+
+\subsection{تحرک در \lr{EPC}}
+\begin{itemize}
+  \item \textbf{به‌روزرسانی ناحیهٔ ردیابی (\acro{TAU})}: وقتی \acro{UE} وارد \acro{TA}ای خارج از فهرستش می‌شود یا زمان‌سنج
+        دوره‌ای \lr{T3412} پایان می‌یابد؛ \acro{MME} ممکن است تغییر کند (انتقال زمینه از \acro{MME} قدیمی) و \lr{S-GW} نیز.
+  \item \textbf{تحویل \acro{X2}}: هسته تنها مسیر را عوض می‌کند (درس ۴).
+  \item \textbf{تحویل \lr{S1}}: بدون \acro{X2} یا وقتی \acro{MME} یا \lr{S-GW} تغییر می‌کند به کار می‌رود؛ \acro{eNB}های
+        مبدأ و مقصد پیام‌های تحویل را از طریق \acro{MME}(ها) مبادله می‌کنند.
+  \item \textbf{تحرک میان‌فناوری}: به \lr{UTRAN/GERAN} از طریق \acro{SGSN} (واسط‌های \lr{S3/S4})؛ \lr{S-GW} لنگر می‌ماند و
+        \lr{P-GW} نشانی \acro{IP} را نگه می‌دارد.
+\end{itemize}
+
+\subsection{سناریوهای خرابی}
+\begin{itemize}
+  \item \textbf{خرابی \acro{MME}} -- با \lr{S1-flex}، \acro{eNB} به \acro{MME}های دیگر مخزن وصل می‌شود؛ \acro{UE}هایی که
+        زمینه‌شان از دست رفته وقتی دوباره با شبکه تماس بگیرند بازیابی می‌شوند (\acro{TAU} یا درخواست خدمت با جداشدن
+        ضمنی رد می‌شود و اتصال مجدد دنبال آن می‌آید).
+  \item \textbf{خرابی \lr{S-GW}} -- از طریق \lr{GTP echo} و \emph{شمارندهٔ راه‌اندازی مجدد} که در عنصر اطلاعاتی
+        \lr{Recovery} حمل می‌شود آشکار می‌شود. \acro{MME} و \lr{P-GW} اتصال‌های \acro{PDN} آسیب‌دیده را حذف می‌کنند؛
+        \acro{UE}های بیکار تا وقتی دوباره متصل شوند یا \acro{MME} نشست‌ها را روی \lr{S-GW} دیگری بازیابی کند (رویه‌های
+        بازیابی) دسترس‌پذیر نیستند.
+  \item \textbf{خرابی \lr{P-GW}} -- لنگر \acro{IP} از دست می‌رود: نشانی \acro{IP} \acro{UE} و همهٔ نشست‌هایش روی آن
+        \acro{APN} ناپدید می‌شوند؛ برنامه‌ها باید دوباره وصل شوند.
+  \item \textbf{در دسترس نبودن \acro{HSS}} -- \acro{UE}های از پیش ثبت‌شده ادامه می‌دهند (\acro{MME} اشتراک و بردارهای
+        استفاده‌نشده را نگه داشته است)؛ اتصال‌های جدید \acro{UE}هایی که \acro{MME} نمی‌شناسد شکست می‌خورند.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{مدل‌های ریاضی}
+
+\subsection{کنترل پذیرش \lr{GBR}}\label{sec:admission}
+\paragraph{مسئله} یک سلول یا دروازه چند حامل \acro{GBR} را می‌تواند بپذیرد؟
+\paragraph{مدل} یک منبع (سلول، پیوند) ظرفیت میانگین $C$ دارد؛ اپراتور کسر $\rho_{\mathrm{GBR}}$ را برای ترافیک
+\acro{GBR} رزرو می‌کند. حامل $i$ مقدار $\mathrm{GBR}_i$ را درخواست می‌کند. پذیرش مستلزم این است که
+\begin{equation}\label{eq:adm}
+  \sum_{i\in\mathcal{A}}\mathrm{GBR}_i + \mathrm{GBR}_{\mathrm{new}} \le \rho_{\mathrm{GBR}}\,C ,
+\end{equation}
+در غیر این صورت درخواست رد می‌شود، یا اگر حامل جدید مجاز به پیش‌دستی و حامل قدیمی پیش‌دستی‌پذیر باشد، حاملی با
+\acro{ARP} پایین‌تر کنار گذاشته می‌شود.
+\paragraph{مثال} $C = \qty{30}{\mega\bit\per\second}$ گذردهی میانگین سلول، $\rho_{\mathrm{GBR}} = 0.5$ و \acro{GBR}
+\acro{VoLTE} برابر $\qty{40}{\kilo\bit\per\second}$: حداکثر $15\times10^6/40\times10^3 = 375$ تماس.
+\paragraph{محدودیت‌ها} در یک سلول رادیویی $C$ ثابت نیست: به محل کاربران (\acro{MCS} آن‌ها) بستگی دارد. بنابراین پذیرش
+رادیویی به‌جای نرخ بیت، \emph{منبعی} (\acro{RB}هایی) را که حامل در کیفیت کانال فعلی لازم دارد تخمین می‌زند (\cref{exr:rbadm}).
+
+\subsection{سلسله‌مراتب کلید \lr{EPS}}\label{sec:keys}
+\paragraph{مدل} کلیدها با \acro{KDF} \acro{3GPP}، یعنی \lr{HMAC-SHA-256} با کلید والد روی رشتهٔ $S$ که هدف را کدگذاری
+می‌کند (یک بایت \lr{FC} و پارامترها)، استخراج می‌شوند \cite{ts33401}:
+\begin{subequations}\label{eq:kdf}
+\begin{align}
+  K_{\mathrm{ASME}} &= \KDF\bigl(\mathrm{CK}\concat\mathrm{IK},\ \text{SN id},\ \mathrm{SQN}\xor\mathrm{AK}\bigr), \label{eq:kasme}\\
+  K_{\mathrm{eNB}} &= \KDF\bigl(K_{\mathrm{ASME}},\ \text{uplink NAS COUNT}\bigr), \label{eq:kenb}\\
+  K_{\mathrm{NASint}} &= \KDF\bigl(K_{\mathrm{ASME}},\ \text{alg.\ type},\ \text{alg.\ id}\bigr)\ \text{(truncated to 128 bits)}, \label{eq:knas}
+\end{align}
+\end{subequations}
+و به همین ترتیب برای $K_{\mathrm{NASenc}}$ و $K_{\mathrm{RRCint}}$، $K_{\mathrm{RRCenc}}$ و $K_{\mathrm{UPenc}}$ از
+$K_{\mathrm{eNB}}$ (\cref{fig:keys}).
+\paragraph{تفسیر} هر کلید به زمینهٔ خود گره خورده است: شبکهٔ خدمت‌دهنده (\cref{eq:kasme})، \lr{NAS COUNT} و در نتیجه
+$K_{\mathrm{eNB}}$ تازه در هر گذار به حالت متصل (\cref{eq:kenb})، و الگوریتم. افشای کلیدهای یک \acro{eNB} چیزی دربارهٔ
+$K_{\mathrm{ASME}}$ آشکار نمی‌کند (\acro{KDF} یک‌طرفه است). در تحویل یک $K_{\mathrm{eNB}}^\ast$ جدید استخراج می‌شود تا مقصد
+کلیدهای مبدأ را نیاموزد.
+\paragraph{جست‌وجوی کامل} یک کلید الگوریتمی ۱۲۸ بیتی $2^{128}\approx3.4\times10^{38}$ مقدار دارد؛ با $10^{12}$ آزمون در
+ثانیه، جست‌وجوی کامل حدود $1.1\times10^{19}$ سال طول می‌کشد. بنابراین امنیت بر حفاظت از $K$ و بر الگوریتم‌ها تکیه
+دارد، نه بر طول کلید.
+
+\subsection{طوفان سیگنالینگ پس از راه‌اندازی مجدد دروازه}\label{sec:storm}
+\paragraph{مسئله} یک \lr{S-GW} که به $N$ \acro{UE} خدمت می‌دهد دوباره راه‌اندازی می‌شود؛ همهٔ آن‌ها باید نشست‌های خود را
+دوباره برقرار کنند. بازیابی چقدر طول می‌کشد و چه باری روی \acro{MME} می‌گذارد؟
+\paragraph{مدل} هر بازیابی $m$ پیام در \acro{MME} هزینه دارد؛ \acro{MME} حداکثر $\mu$ پیام در ثانیه پردازش می‌کند. اگر همهٔ
+\acro{UE}ها بی‌درنگ تلاش کنند، \acro{MME} به مدت زیر اشباع می‌ماند:
+\begin{equation}\label{eq:storm}
+  T_{\mathrm{rec}} = \frac{N\,m}{\mu}.
+\end{equation}
+اگر تلاش‌های بازیابی به‌طور یکنواخت در پنجرهٔ $T_\mathrm{w} > T_{\mathrm{rec}}$ پخش شوند، نرخ سیگنالینگ ارائه‌شده
+$N m/T_\mathrm{w}$ است و \acro{MME} زیر اشباع می‌ماند.
+\paragraph{مثال} $N = 10^6$، $m = 10$ و $\mu = 2\times10^4$ پیام بر ثانیه: $T_{\mathrm{rec}} = 500$ ثانیه. پخش در
+$T_\mathrm{w} = 900$ ثانیه نرخ $1.1\times10^4$ پیام بر ثانیه (۵۶٪ ظرفیت) می‌دهد، به‌جای انفجار آنی $10^7$ پیام که
+صف‌ها را سرریز می‌کرد، به پایان مهلت می‌رسید و تلاش‌های مجددی را به راه می‌انداخت که طوفان را بدتر می‌کرد.
+\paragraph{درس} رویه‌های بازیابی و زمان‌سنج‌های تصادفی برای تبدیل یک انفجار به باری پخش‌شده وجود دارند -- همان خطر
+بازخورد مثبت ازدحام \acro{RACH} (درس ۸)، یک سطح بالاتر.
+
+% ---------------------------------------------------------------------
+\section{معماری شبکه و نمودارها}
+\Cref{fig:bearer} حامل را از دید سرتاسری نشان می‌دهد. حامل رادیویی، حامل \lr{S1} و حامل \lr{S5/S8} یک‌به‌یک به هم
+پیوسته‌اند؛ \lr{S-GW} و \acro{eNB} صرفاً بسته‌ها را میان تونل‌ها رله می‌کنند، در حالی که \acro{TFT}ها در دو سر حامل را تعیین
+می‌کنند. \lr{E-RAB} (رادیو + \lr{S1}) بخشی است که در \lr{ECM-IDLE} آزاد می‌شود؛ بخش \lr{S5/S8} باقی می‌ماند.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-09/bearer-structure}}
+  \caption{ساختار حامل \acro{EPS} با یک حامل پیش‌فرض و یک حامل اختصاصی. \lr{UL TFT} در \acro{UE} و \lr{DL TFT} در
+  \lr{P-GW} جریان‌های \acro{IP} را به حامل‌ها نگاشت می‌کنند.}
+  \label{fig:bearer}
+\end{acnfigure}
+
+\begin{acnfigure}
+  \acnfig{lecture-09/key-hierarchy}
+  \caption{سلسله‌مراتب کلید \acro{EPS}. طول کلیدها بر حسب بیت؛ کلیدهای الگوریتم به ۱۲۸ بیت کوتاه می‌شوند.}
+  \label{fig:keys}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{رویه‌های گام‌به‌گام}
+
+\begin{procedurebox}{\lr{EPS-AKA} و فعال‌سازی امنیت \lr{NAS}}\label{proc:aka}
+\begin{steps}
+  \item \acro{UE} پیام \msg{Attach Request} را با \acro{GUTI} خود (یا اگر ندارد با \acro{IMSI}) می‌فرستد.
+  \item اگر برداری در دسترس نباشد، \acro{MME} پیام \lr{S6a} \msg{Authentication Information Request} را همراه با \acro{IMSI}
+        و هویت شبکهٔ خدمت‌دهنده می‌فرستد؛ \acro{HSS} یک یا چند بردار \acro{EPS} بازمی‌گرداند.
+  \item \acro{MME} پیام \msg{Authentication Request} (\lr{RAND, AUTN}، شناسهٔ مجموعهٔ کلید) را می‌فرستد.
+  \item \acro{USIM} مقدار \lr{AUTN} را بررسی (\acro{MAC} و تازگی \acro{SQN}) و \lr{RES, CK, IK} را محاسبه می‌کند؛ \acro{UE}
+        مقدار $K_{\mathrm{ASME}}$ را استخراج و \msg{Authentication Response} (\lr{RES}) را بازمی‌گرداند.
+  \item \acro{MME} برابری \lr{RES = XRES} را بررسی و \msg{Security Mode Command} (الگوریتم‌های انتخاب‌شده، حفاظت‌شده با
+        $K_{\mathrm{NASint}}$) را می‌فرستد؛ \acro{UE} آن را بررسی و با \msg{Security Mode Complete} رمزنگاری‌شده و دارای
+        حفاظت یکپارچگی پاسخ می‌دهد.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-09/eps-aka}}
+  \caption{\lr{EPS-AKA} و حالت امنیتی \acro{NAS} (\cref{proc:aka}).}
+  \label{fig:aka}
+\end{acnfigure}
+
+\begin{procedurebox}{فعال‌سازی حامل اختصاصی آغازشده از شبکه}\label{proc:ded}
+\begin{steps}
+  \item یک تابع کاربردی (مثلاً \lr{P-CSCF} در \acro{IMS}) از طریق \acro{Rx} منابع درخواست می‌کند؛ \acro{PCRF} قواعد
+        \acro{PCC} را تعیین و از طریق \acro{Gx} به \lr{P-GW} ارسال می‌کند.
+  \item \lr{P-GW} قاعده را به یک حامل جدید (\lr{QCI, ARP, GBR/MBR, DL TFT}) پیوند می‌دهد و \lr{GTPv2-C}
+        \msg{Create Bearer Request} را به \lr{S-GW} می‌فرستد که آن را به \acro{MME} ارسال می‌کند.
+  \item \acro{MME} پیام \lr{S1AP} \msg{E-RAB Setup Request} را که \acro{NAS} \msg{Activate Dedicated EPS Bearer Context Request}
+        (\lr{UL TFT}، کیفیت خدمات) را حمل می‌کند می‌فرستد.
+  \item \acro{eNB} حامل را می‌پذیرد، یک حامل رادیویی را با \msg{RRC Connection Reconfiguration} پیکربندی می‌کند و با
+        \msg{E-RAB Setup Response} پاسخ می‌دهد؛ \acro{UE} به درخواست \acro{NAS} با \emph{پذیرش} پاسخ می‌دهد.
+  \item \msg{Create Bearer Response} به \lr{P-GW} بازمی‌گردد که به \acro{PCRF} تأیید می‌دهد (\lr{Gx RAA}). بسته‌هایی که با
+        \acro{TFT}ها منطبق‌اند اکنون از حامل جدید استفاده می‌کنند.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-09/dedicated-bearer}}
+  \caption{فعال‌سازی حامل اختصاصی با تحریک سیاست (\cref{proc:ded}).}
+  \label{fig:dedicated}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{مثال‌های حل‌شده}
+
+\begin{examplebox}{بسته از کدام حامل می‌رود؟}\label{ex:tft}
+\textbf{مسئله.} یک \acro{UE} یک حامل پیش‌فرض (\acro{QCI} ۹) و یک حامل اختصاصی (\acro{QCI} ۱) دارد که \lr{DL TFT} آن با
+بسته‌های \acro{UDP} از \lr{10.1.2.3} و درگاه‌های ۴۰۰۰۰ تا ۴۰۱۰۰ منطبق است. کدام حامل این‌ها را حمل می‌کند: (الف) یک بستهٔ
+\acro{RTP} از \lr{10.1.2.3:40050}، (ب) یک بستهٔ \acro{TCP} از \lr{10.1.2.3:443}، (ج) یک پاسخ \acro{DNS}؟
+
+\textbf{حل.} (الف) حامل اختصاصی (همهٔ اجزای فیلتر منطبق‌اند). (ب) حامل پیش‌فرض (پروتکل و درگاه منطبق نیستند). (ج) حامل
+پیش‌فرض (هیچ فیلتری منطبق نیست؛ حامل پیش‌فرض \acro{TFT} ندارد و بقیه را دریافت می‌کند).
+
+\textbf{تفسیر.} انتخاب حامل صرفاً دسته‌بندی بسته در \lr{P-GW} (فروسو) و \acro{UE} (فراسو) است؛ سپس رادیو رفتار \acro{QCI}
+را بر حامل اعمال می‌کند.
+\end{examplebox}
+
+\begin{examplebox}{پذیرش بر اساس منابع رادیویی}\label{ex:rbadm}
+\textbf{مسئله.} یک حامل \acro{VoLTE} به \lr{40\,kbit/s} نیاز دارد. با \acro{MCS} خود، یک \acro{UE} مرکز سلول ۸۰۰ بیت در هر
+جفت \acro{RB} (یک جفت \acro{RB} برای یک زیرقاب ۱ میلی‌ثانیه‌ای) و یک \acro{UE} لبهٔ سلول تنها ۱۶۰ بیت حمل می‌کند. اگر در هر
+زیرقاب ۲۵ جفت \acro{RB} برای ترافیک \acro{GBR} رزرو شده باشد، از هر نوع چند تماس را می‌توان پذیرفت؟
+
+\textbf{حل.} جفت‌های \acro{RB} لازم در هر زیرقاب $= \mathrm{GBR}/(\text{bits per RB pair}\times1000\,\mathrm{s}^{-1})$:
+مرکز $40\,000/(800\times1000) = 0.05$ و لبه $40\,000/(160\times1000) = 0.25$. قابل پذیرش: $25/0.05 = 500$ کاربر مرکز یا
+$25/0.25 = 100$ کاربر لبه.
+
+\textbf{تفسیر.} همان \acro{GBR} در لبهٔ سلول پنج برابر منبع رادیویی بیشتری هزینه دارد -- پذیرش باید مبتنی بر منبع باشد
+(\cref{sec:admission}).
+\end{examplebox}
+
+\begin{examplebox}{تازگی کلید}\label{ex:fresh}
+\textbf{مسئله.} یک \acro{UE} روزانه ۲۰۰ بار با همان $K_{\mathrm{ASME}}$ از بیکار به متصل می‌رود. از چند مقدار متفاوت
+$K_{\mathrm{eNB}}$ استفاده می‌کند و چرا این مهم است؟
+
+\textbf{حل.} ۲۰۰، زیرا هر گذار از یک \lr{NAS COUNT} فراسوی جدید در \cref{eq:kenb} استفاده می‌کند. حتی اگر یک \acro{eNB} به
+همهٔ اتصال‌ها خدمت دهد، مقادیر \lr{PDCP COUNT} با هر کلید جدید از نو آغاز می‌شوند؛ پس جریان‌های کلید هرگز زیر یک کلید
+تکرار نمی‌شوند.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{مقایسهٔ فناوری‌ها}
+\begin{table}[htbp]
+\centering\small
+\caption{کارکردهای هستهٔ بسته‌ای: هستهٔ \acro{PS} در \lr{GPRS/UMTS} در برابر \acro{EPC} در برابر \acro{5GC}.}\label{tab:core}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y Y@{}}
+\toprule
+\rowcolor{white} & \lr{GPRS/UMTS PS} & \acro{EPC} & \acro{5GC} \\
+\midrule
+کنترل تحرک/نشست     & \acro{SGSN} (هر دو)         & \acro{MME} (تحرک)، \lr{S-/P-GW-C} (نشست) & \acro{AMF} (تحرک)، \acro{SMF} (نشست) \\
+لنگر صفحهٔ کاربر    & \acro{GGSN}                 & \lr{P-GW} (\lr{S-GW} لنگر تحرک)          & \acro{UPF} (یک یا چند) \\
+واحد کیفیت خدمات    & زمینهٔ \acro{PDP}           & حامل \acro{EPS} (\acro{QCI})             & جریان کیفیت خدمات (\lr{5QI}) درون نشست \acro{PDU} \\
+\acro{IP} هنگام ثبت‌نام & خیر (فعال‌سازی جدا)       & بله (حامل پیش‌فرض)                       & اختیاری (نشست \acro{PDU} جدا) \\
+احراز هویت          & \lr{UMTS AKA} (پنج‌تایی)    & \lr{EPS-AKA} ($K_{\mathrm{ASME}}$)        & \lr{5G-AKA / EAP-AKA$'$}، کنترل خانگی \\
+پایگاه دادهٔ مشترک  & \acro{HLR} (\acro{MAP})     & \acro{HSS} (\lr{Diameter})               & \lr{UDM/UDR} (\lr{HTTP/2}) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{مصالحه‌ها} مدل حامل کیفیت خدمات دقیق برای هر حامل می‌دهد، اما هر تغییر کیفیت خدمات به یک رویهٔ سیگنالینگ
+از چهار گره نیاز دارد؛ \lr{5G} آن را با جریان‌های کیفیت خدمات جایگزین می‌کند که با سیگنالینگ کمتری درون یک نشست موجود
+افزوده می‌شوند (درس ۲۲). تمرکز \acro{NAS}، امنیت و کنترل حامل در \acro{MME} کارآمد است اما آن را به گره‌ای بزرگ و
+حالت‌دار تبدیل می‌کند؛ \lr{5G} آن را به \acro{AMF} و \acro{SMF} تقسیم می‌کند.
+
+% ---------------------------------------------------------------------
+\section{نکته‌های کلیدی}
+\begin{takeawaybox}
+\begin{itemize}
+  \item \acro{EPC}: \acro{MME} (کنترل)، \acro{HSS} (مشترکان)، \lr{S-GW} (لنگر تحرک)، \lr{P-GW} (لنگر \acro{IP}، \acro{PCEF})، \acro{PCRF} (سیاست).
+  \item واحد کیفیت خدمات = حامل \acro{EPS} (\lr{QCI, ARP, GBR/MBR})؛ \acro{TFT}ها جریان‌ها را به حامل‌ها نگاشت می‌کنند؛ حامل پیش‌فرض همیشه روشن است.
+  \item \lr{EPS-AKA} کلید $K_{\mathrm{ASME}}$ را به شبکهٔ خدمت‌دهنده می‌بندد؛ زنجیرهٔ \acro{KDF}: $K\to$ \lr{CK,IK} $\to K_{\mathrm{ASME}}\to K_{\mathrm{eNB}}\to$ کلیدهای \acro{AS}.
+  \item امنیت \acro{NAS} میان \lr{UE--MME} و امنیت \acro{AS} میان \lr{UE--eNB}؛ دادهٔ کاربر در \acro{LTE} رمزنگاری می‌شود اما حفاظت یکپارچگی ندارد.
+  \item \acro{EMM} (ثبت‌شده؟) و \acro{ECM} (اتصال سیگنالینگ؟) ماشین‌های حالت مستقل‌اند.
+  \item پذیرش \acro{GBR} باید مبتنی بر منبع باشد؛ راه‌اندازی مجدد دروازه می‌تواند طوفان سیگنالینگی به مدت $Nm/\mu$ ثانیه
+        ایجاد کند مگر اینکه بازیابی پخش شود.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{تمرین‌ها}
+
+\begin{exercisebox}{1}{\lr{UE} بیکار}\label{exr:idle}
+فهرست کنید کدام منابع برای یک \acro{UE} در \lr{EMM-REGISTERED + ECM-IDLE} وجود دارند: نشانی \acro{IP}، تونل \lr{S5/S8}،
+تونل \lr{S1-U}، حامل رادیویی، زمینهٔ \acro{eNB}، زمینهٔ \acro{MME}. چه چیزی ساخت دوبارهٔ آن‌ها را آغاز می‌کند؟
+\end{exercisebox}
+
+\begin{exercisebox}{1}{پیوند با شبکهٔ خدمت‌دهنده}\label{exr:binding}
+توضیح دهید گنجاندن هویت شبکهٔ خدمت‌دهنده در استخراج $K_{\mathrm{ASME}}$ از چه حمله‌ای جلوگیری می‌کند.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{پذیرش}\label{exr:rbadm}
+\cref{ex:rbadm} را برای ترکیبی از ۷۰٪ کاربر مرکز و ۳۰٪ کاربر لبه تکرار کنید. چند تماس \acro{VoLTE} را می‌توان پذیرفت؟
+\end{exercisebox}
+
+\begin{exercisebox}{2}{بار \lr{TAU} دوره‌ای}\label{exr:tau}
+یک \acro{MME} به $5\times10^6$ \acro{UE} ثبت‌شده با \lr{T3412} برابر ۵۴ دقیقه خدمت می‌دهد. هر \acro{TAU} دوره‌ای ۶ پیام
+هزینه دارد. میانگین نرخ پیام را محاسبه کنید. اگر \lr{T3412} به ۱۲ دقیقه کاهش یابد بار چه می‌شود؟
+\end{exercisebox}
+
+\begin{exercisebox}{3}{طوفان با تلاش مجدد}\label{exr:storm}
+در \cref{sec:storm} فرض کنید درخواست‌هایی که بیش از ۳۰ ثانیه منتظر بمانند به پایان مهلت می‌رسند و یک بار دوباره تلاش
+می‌شوند. \acro{MME} را یک صف واحد با نرخ خدمت $\mu$ مدل کنید و تعداد کل پیام‌های پردازش‌شده را وقتی همهٔ $N$ \acro{UE}
+هم‌زمان تلاش می‌کنند تخمین بزنید. با پخش در $T_\mathrm{w} = 900$ ثانیه مقایسه کنید.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{حامل در برابر جریان}\label{exr:flows}
+یک \acro{UE} یک تماس \acro{VoLTE}، یک تماس تصویری و ترافیک وب پس‌زمینه دارد. تونل‌های \acro{GTP} روی \lr{S1-U} و
+\lr{S5} را در \acro{LTE} بشمارید (یک \acro{PDN} برای \acro{IMS} و یکی برای اینترنت) و سیگنالینگ لازم برای افزودن یک جریان
+ویدئوی دوم را بررسی کنید. یک مدل مبتنی بر جریان چگونه آن را کاهش می‌دهد؟
+\end{exercisebox}
+
+\subsection*{پاسخ‌ها}
+\addcontentsline{toc}{subsection}{پاسخ‌ها}
+
+\begin{solutionbox}{\ref{exr:idle}}
+باقی می‌مانند: نشانی \acro{IP}، تونل‌های \lr{S5/S8}، زمینهٔ \acro{MME} (و زمینه‌های \lr{S-GW/P-GW}). آزاد می‌شوند: تونل
+\lr{S1-U}، حامل‌های رادیویی، زمینهٔ \acro{eNB}. با یک \lr{Service Request} دوباره ساخته می‌شوند -- که یا \acro{UE} آغاز
+می‌کند (دادهٔ فراسو یا سیگنالینگ) یا با فراخوانی پس از اینکه \lr{S-GW} دادهٔ فروسو دریافت کرد و \lr{Downlink Data
+Notification} را به \acro{MME} فرستاد.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:binding}}
+بدون این پیوند، برداری (یا کلیدی) که یک شبکهٔ خدمت‌دهنده به دست آورده می‌توانست توسط شبکهٔ دیگری استفاده شود؛ مثلاً یک
+شبکهٔ میزبان آلوده یا جعلی می‌توانست بردارها را دوباره به کار ببرد تا خود را به‌عنوان شبکهٔ دیگری به \acro{UE} معرفی کند،
+یا شبکه‌ای برای صورت‌حساب خود را شبکهٔ ارزان‌تری جلوه دهد. چون هم \acro{HSS} و هم \acro{UE} کلید $K_{\mathrm{ASME}}$ را با
+هویت شبکه استخراج می‌کنند، عدم تطابق میان شبکهٔ ادعاشده و شبکه‌ای که بردار را درخواست کرده کلیدهای متفاوتی تولید می‌کند
+و حالت امنیتی شکست می‌خورد.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:rbadm}}
+میانگین هزینهٔ هر تماس $= 0.7\times0.05 + 0.3\times0.25 = 0.11$ جفت \acro{RB} در هر زیرقاب؛ تعداد تماس‌ها
+$= 25/0.11 \approx 227$.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:tau}}
+نرخ \acro{TAU} $= 5\times10^6/(54\times60) = 1543$ در ثانیه؛ پیام‌ها $= 6\times1543 = 9259$ پیام بر ثانیه. با ۱۲ دقیقه نرخ
+$54/12 = 4.5$ برابر می‌شود و به حدود ۴۱۷۰۰ پیام بر ثانیه می‌رسد -- زمان‌سنج‌های کوتاه‌تر \acro{UE}های گم‌شده را سریع‌تر
+آشکار می‌کنند اما سیگنالینگ و باتری \acro{UE} را هزینه می‌کنند.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:storm}}
+کار کل $Nm = 10^7$ پیام با $\mu = 2\times10^4$ پیام بر ثانیه به ۵۰۰ ثانیه نیاز دارد. درخواست‌هایی که بیش از ۳۰ ثانیه
+در صف بمانند به پایان مهلت می‌رسند: تنها $30\mu/m = 6\times10^4$ \acro{UE} نخست در ۳۰ ثانیهٔ اول کامل می‌شوند؛ بقیه دوباره
+تلاش می‌کنند و تا $N$ تلاش جدید می‌افزایند. یک کران تقریبی: با یک تلاش مجدد برای هر کدام، کار ارائه‌شده به $2Nm$ و زمان
+بازیابی به حدود ۱۰۰۰ ثانیه نزدیک می‌شود و بسیاری از \acro{UE}ها دو بار شکست می‌خورند. پخش در ۹۰۰ ثانیه صف را کوتاه نگه
+می‌دارد (بار ۵۶٪)، بدون پایان مهلت، و کار کل دقیقاً $Nm$ است -- با وجود تأخیر عمدی، در مجموع سریع‌تر.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:flows}}
+\acro{PDN} مربوط به \acro{IMS}: حامل پیش‌فرض (\acro{QCI} ۵)، اختصاصی \acro{QCI} ۱ (صدا) و \acro{QCI} ۲ (ویدئو): ۳ حامل.
+\acro{PDN} اینترنت: حامل پیش‌فرض: ۱. در مجموع ۴ حامل \acro{EPS}، یعنی ۴ تونل \lr{S1-U} و ۴ تونل \lr{S5}. یک جریان ویدئوی دوم
+با همان \acro{QCI} را می‌توان با به‌روزرسانی \acro{TFT} حامل \acro{QCI} ۲ موجود افزود (رویهٔ \lr{Update Bearer}، همچنان از
+\lr{PCRF, P-GW, S-GW, MME, eNB} و \acro{UE})؛ یک \acro{QCI} جدید به حامل جدید نیاز دارد. در \lr{5G} همهٔ جریان‌های یک نشست
+\acro{PDU} یک تونل \lr{N3} مشترک دارند؛ افزودن یک جریان کیفیت خدمات یک به‌روزرسانی قاعده در \lr{SMF, UPF} و \acro{gNB} با
+حالت تونل کمتر به ازای هر جریان است (درس ۲۲).
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{مطالعهٔ بیشتر}
+رویه‌های \acro{EPC} در \cite{ts23401}، کنترل سیاست و صورت‌حساب و جدول \acro{QCI} در \cite{ts23203}، امنیت در
+\cite{ts33401}، \acro{NAS} در \cite{ts24301} و \lr{GTPv2-C} در \cite{ts29274} مشخص شده‌اند. \lr{Olsson} و همکاران
+\cite{olsson2013epc} توصیف سامانه‌ای بسیار خوانایی از \acro{EPC} ارائه می‌دهند.
+
+\begin{latin}
+\printbibliography[heading=subbibliography,title={References}]
+\end{latin}
+\end{document}

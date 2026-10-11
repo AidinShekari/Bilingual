@@ -1,0 +1,15 @@
+% RAN functional split options (selection) and indicative fronthaul rates for 100 MHz NR
+\begin{tikzpicture}[x=1cm,y=1cm,
+  ly/.style={stacklayer,minimum width=1.55cm,minimum height=0.6cm},
+  sp/.style={acnamber,line width=1.2pt,densely dashed},
+  tx/.style={font=\ACNheadfont\scriptsize,text=acnnavy,anchor=west,align=left}]
+  \foreach \t/\x in {RRC/0,PDCP/1.7,{high RLC}/3.4,{low RLC}/5.1,{high MAC}/6.8,{low MAC}/8.5,{high PHY}/10.2,{low PHY}/11.9,RF/13.6}{
+    \node[ly] at (\x,0) {\t};}
+  \draw[sp] (2.55,-0.6) -- (2.55,0.9); \node[caplabel,text=acnamber] at (2.55,1.15) {\bil{option 2 (F1)}{گزینهٔ 2 (\lr{F1})}};
+  \draw[sp] (11.05,-0.6) -- (11.05,0.9); \node[caplabel,text=acnamber] at (11.05,1.15) {\bil{option 7.2}{گزینهٔ 7.2}};
+  \draw[sp] (12.75,-0.6) -- (12.75,0.9); \node[caplabel,text=acnamber] at (12.75,1.15) {\bil{option 8 (CPRI)}{گزینهٔ 8 (CPRI)}};
+  \node[nf,minimum width=3.0cm] at (1.0,-1.6) {CU};
+  \node[nfalt,minimum width=8.3cm] at (6.8,-1.6) {DU};
+  \node[nfgray,minimum width=3.3cm] at (12.75,-1.6) {RU};
+  \node[caplabel,anchor=north,align=center] at (6.8,-2.15) {\bil{indicative fronthaul for 100 MHz, 4 layers / antennas: option 2 $\approx$ 2.5 Gbit/s; option 7.2 $\approx$ 7 Gbit/s; option 8 $\approx$ 16 Gbit/s}{نرخ تقریبی فرانت‌هال برای ۱۰۰ مگاهرتز و ۴ لایه/آنتن: گزینهٔ ۲ حدود ۲٫۵؛ گزینهٔ ۷٫۲ حدود ۷؛ گزینهٔ ۸ حدود ۱۶ گیگابیت بر ثانیه}};
+\end{tikzpicture}

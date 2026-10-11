@@ -1,0 +1,24 @@
+% Selected 3GPP releases and headline features (completion years approximate)
+\begin{tikzpicture}[x=0.82cm,y=1cm,
+  rel/.style={circle,draw=acnnavy,fill=acnsky,inner sep=1.2pt,font=\ACNheadfont\tiny\bfseries,text=acnnavy,minimum size=0.62cm},
+  rel5/.style={rel,draw=acnteal,fill=acnmint},
+  relp/.style={rel,draw=acngray,fill=white,text=acngray,dashed},
+  ft/.style={font=\ACNheadfont\tiny,text=acngray,align=center,text width=2.3cm}]
+  \draw[acnline,line width=2pt] (0,0) -- (17.2,0);
+  \foreach \x/\r/\y/\e/\f/\s/\a/\o in {
+      0/99/1999/{UMTS}/{UMTS}/rel/south/0.42,
+      1.6/5/2002/{IMS, HSDPA}/{IMS، HSDPA}/rel/north/-0.42,
+      3.2/8/2008/{LTE, EPC}/{LTE، EPC}/rel/south/0.42,
+      4.8/10/2011/{LTE-Advanced, CA}/{LTE-Advanced، CA}/rel/north/-0.42,
+      6.4/13/2016/{NB-IoT, LTE-M}/{NB-IoT، LTE-M}/rel/south/0.42,
+      8.0/14/2017/{CUPS, V2X}/{CUPS، V2X}/rel/north/-0.42,
+      9.6/15/2018/{5G NR, 5GC}/{5G NR، 5GC}/rel5/south/0.42,
+      11.2/16/2020/{URLLC, IIoT, NR-V2X}/{URLLC، IIoT، NR-V2X}/rel5/north/-0.42,
+      12.8/17/2022/{RedCap, NTN}/{RedCap، NTN}/rel5/south/0.42,
+      14.4/18/2024/{5G-Advanced}/{5G-Advanced}/rel5/north/-0.42,
+      16.0/19/2025/{5G-Advanced}/{5G-Advanced}/relp/south/0.42}{
+    \node[\s] (r\r) at (\x,0) {\r};
+    \node[ft,anchor=\a] at (\x,\o) {\y\\ \ACNlatin{\e}};
+  }
+  \node[caplabel,anchor=north east] at (17.4,-1.55) {\bil{Rel-20/21: 6G studies and first specifications (planned)}{\lr{Rel-20/21}: مطالعات و نخستین مشخصات \lr{6G} (برنامه‌ریزی‌شده)}};
+\end{tikzpicture}

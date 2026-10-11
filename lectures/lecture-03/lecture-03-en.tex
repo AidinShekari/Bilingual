@@ -1,0 +1,510 @@
+% =====================================================================
+%  Lecture 03 -- 2G/3G Core Networks                      (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{03}
+\ACNset{title}{2G/3G Core Networks}
+\ACNset{shorttitle}{2G/3G Core Networks}
+\ACNset{titleother}{شبکه‌های هستهٔ نسل دوم و سوم}
+\ACNset{part}{Part I -- 2G/3G foundations (Lectures 1--4)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Intermediate}
+\ACNset{prereq}{Lectures 1--2; spread spectrum basics; decibels}
+\ACNset{gen}{3}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Explain} the requirements that drove 3G (IMT-2000) and why a new radio
+        interface, WCDMA, was needed.
+  \item \textbf{Draw} the UMTS architecture -- UE, NodeB, RNC, CS and PS core domains -- and
+        name the interfaces Uu, Iub, Iur, Iu-CS and Iu-PS.
+  \item \textbf{Compute} processing gain, the uplink load factor and the noise rise of a WCDMA
+        cell, and \textbf{estimate} its voice pole capacity.
+  \item \textbf{Describe} the HSPA evolution (Releases 5--8) and \textbf{derive} the HSDPA peak rate
+        from codes, spreading factor and modulation.
+  \item \textbf{Trace} an RRC connection and radio access bearer (RAB) set-up with RANAP.
+  \item \textbf{Explain} the role of IMS and \textbf{evaluate} why LTE removed the CS/PS split.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+This lecture builds directly on the GSM/GPRS architecture of Lecture~1 and the
+circuit-switched core of Lecture~2. You should also recall that a spread-spectrum signal
+occupies a bandwidth much larger than its data rate, and that a receiver correlating
+with the right code recovers the signal while other codes look like noise.
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+UMTS & \fa{سامانهٔ جهانی مخابرات موبایل} & The 3GPP 3G system: WCDMA radio + evolved GSM core. \\
+WCDMA & \fa{دسترسی چندگانهٔ تقسیم کد پهن‌باند} & 3G radio interface: \qty{5}{\mega\hertz} carrier, 3.84\,Mchip/s. \\
+NodeB & \fa{نود بی} & 3G base station: radio transmission, spreading, inner-loop power control. \\
+RNC & \fa{کنترل‌گر شبکهٔ رادیویی} & Controls NodeBs: radio resources, handover, ciphering. \\
+Spreading factor (SF) & \fa{ضریب گسترش} & Chips per symbol; trades rate against protection. \\
+Processing gain & \fa{بهرهٔ پردازش} & $W/R$: how much despreading lifts the wanted signal. \\
+Soft handover & \fa{تحویل نرم} & UE connected to several cells at once (make-before-break). \\
+Noise rise & \fa{افزایش نویز} & Increase of uplink interference over thermal noise. \\
+RAB & \fa{حامل دسترسی رادیویی} & Bearer between UE and core network, set up by RANAP. \\
+HSPA & \fa{دسترسی بستهٔ پرسرعت} & Shared-channel evolution of WCDMA (HSDPA + HSUPA). \\
+IMS & \fa{زیرسامانهٔ چندرسانه‌ای IP} & SIP-based control of IP multimedia services. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+By the late 1990s GSM had proved that mobile telephony could be global, but it could not
+become a data network. EDGE squeezed about 59\,kbit/s out of a timeslot, and one 200\,kHz
+carrier can never give a single user megabits per second. The ITU's IMT-2000 programme
+asked for up to 2\,Mbit/s indoors, 384\,kbit/s for pedestrians and 144\,kbit/s for vehicles,
+flexible multiplexing of services with different rates on one connection, and global
+roaming.
+
+3GPP's answer, UMTS, combined two decisions. On the radio side it adopted a completely new
+interface, Wideband CDMA, with a \qty{5}{\mega\hertz} carrier. On the network side it did the
+opposite: it \emph{reused} the GSM/GPRS core -- MSC, HLR, SGSN, GGSN -- and connected it to the
+new radio network through a new interface, Iu. This lecture studies that hybrid: a new radio
+access network attached to an evolved 2G core with two parallel domains, and the strains
+that eventually led LTE to abandon the circuit-switched domain altogether.
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{Code division multiple access}
+In WCDMA all users of a cell transmit at the same time on the same \qty{5}{\mega\hertz} carrier.
+Each user's symbols are multiplied by a code running at the chip rate
+$W = 3.84$\,Mchip/s. The receiver multiplies again by the same code (despreading): the wanted
+signal is concentrated back into its narrow data bandwidth, while signals with other codes
+remain spread and act like noise.
+
+\begin{definitionbox}{Spreading factor and processing gain}
+The spreading factor is the number of chips per symbol, $\mathrm{SF} = W/R_{\mathrm{s}}$. For a
+service with information rate $R$, the processing gain is $G_{\mathrm{p}} = W/R$. It is the
+factor by which despreading increases the signal-to-interference ratio.
+\end{definitionbox}
+
+Two families of codes are used. \emph{Channelisation codes} (orthogonal variable spreading
+factor, OVSF) separate the channels sent by one transmitter; \emph{scrambling codes} separate
+transmitters (cells in the downlink, UEs in the uplink). OVSF codes form a tree
+(\cref{fig:ovsf}); a code can be used only if no ancestor or descendant is in use, so assigning
+a short (low-SF, high-rate) code blocks a whole branch.
+
+\subsection{Interference-limited capacity}
+Because everyone shares one carrier, WCDMA capacity is limited by interference, not by a fixed
+number of channels: every additional user raises the interference seen by all the others. Two
+consequences follow. First, \emph{power control} is essential: an uplink user close to the
+NodeB must not drown distant users (the near--far problem), so the NodeB adjusts each UE's power
+1500 times per second. Second, capacity is \emph{soft}: the operator can trade a little quality
+for more users, and the cell coverage shrinks as the load grows (cell breathing).
+
+\subsection{Soft handover}
+Since neighbouring cells use the same frequency, a UE near a cell border can be connected to two
+or three cells simultaneously. In the uplink the RNC selects the best frame; in the downlink the
+UE combines the signals of all cells in its active set. Soft handover avoids the gap of a hard
+handover and provides macro-diversity, at the cost of extra NodeB and Iub resources. It is
+analysed in Lecture~4.
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{UTRAN: NodeB and RNC}
+The UMTS Terrestrial Radio Access Network (UTRAN) \cite{ts25401} has two node types.
+The \textbf{NodeB} performs the physical layer: channel coding, spreading, modulation, RF and
+the fast inner-loop power control. The \textbf{RNC} (Radio Network Controller) is much more
+powerful than a GSM BSC. It terminates the radio protocols RLC, MAC (for dedicated channels)
+and RRC, performs admission control, handover decisions, outer-loop power control, macro-diversity
+combining, and -- unlike GSM, where ciphering ended at the BTS -- ciphering and integrity
+protection. An RNC plays different roles for a given UE:
+\begin{itemize}
+  \item \textbf{SRNC} (serving RNC): terminates the Iu connection and the RRC signalling of that UE;
+  \item \textbf{DRNC} (drift RNC): lends radio resources of its cells when the UE is in soft
+        handover with cells of another RNC; data passes over \iface{Iur} to the SRNC;
+  \item \textbf{CRNC} (controlling RNC): the RNC that controls a given NodeB's resources.
+\end{itemize}
+
+\subsection{Interfaces}
+\begin{table}[htbp]
+\centering\small
+\caption{UMTS interfaces.}\label{tab:if}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l l l Y@{}}
+\toprule
+\rowcolor{white}Interface & Between & Control protocol & Notes \\
+\midrule
+Uu    & UE -- NodeB/RNC & RRC              & WCDMA radio interface \\
+Iub   & NodeB -- RNC    & NBAP             & Transport originally ATM, later IP \\
+Iur   & RNC -- RNC      & RNSAP            & Soft handover across RNCs; no GSM equivalent \\
+Iu-CS & RNC -- MSC      & RANAP            & Replaces the A interface; AMR speech \\
+Iu-PS & RNC -- SGSN     & RANAP            & User plane in GTP-U; replaces Gb \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+A key design change is that the Iu-PS user plane uses GTP-U all the way from the RNC, so the
+SGSN no longer handles LLC/SNDCP towards the terminal; the radio-specific protocols end in the
+RNC. RANAP \cite{ts25413} carries the signalling for RAB management, relocation of the SRNC,
+paging and security mode control.
+
+\subsection{The core network: CS and PS domains}
+The UMTS core keeps the two domains of GSM/GPRS:
+\begin{itemize}
+  \item The \textbf{circuit-switched (CS) domain} (MSC/VLR, GMSC) serves voice and video calls
+        with Erlang-dimensioned circuits. From Release~4 the MSC is split into an \emph{MSC Server}
+        (call control and mobility, the control plane) and a \emph{Media Gateway} (MGW, the user
+        plane that switches and transcodes the speech). This allows the CS core transport to run
+        over IP or ATM -- an early example of control/user plane separation.
+  \item The \textbf{packet-switched (PS) domain} (SGSN, GGSN) serves IP traffic with PDP
+        contexts, now with QoS classes (conversational, streaming, interactive, background).
+\end{itemize}
+The HLR/AuC is shared; the AuC now produces \emph{quintets}
+$(\text{RAND},\text{XRES},\text{CK},\text{IK},\text{AUTN})$ for mutual authentication
+(\emph{UMTS AKA}, \cite{ts33102}). AUTN lets the USIM verify that the challenge came from its
+home network and is fresh; IK protects signalling integrity. Lecture~11 derives these values.
+
+\subsection{From Release 99 to HSPA}
+Release~99 carried packet data on dedicated channels with fixed spreading factors and 10--80\,ms
+transmission time intervals (TTIs). Allocating a dedicated code to a bursty user wasted code
+space, and scheduling in the RNC was slow. HSPA moved intelligence to the NodeB:
+\begin{itemize}
+  \item \textbf{Release 5 -- HSDPA} \cite{ts25308}: a shared downlink channel (HS-DSCH) using up
+        to 15 codes of SF\,16, a 2\,ms TTI, adaptive modulation (QPSK/16QAM), fast hybrid ARQ and
+        channel-dependent scheduling in the NodeB, driven by CQI reports from the UE every 2\,ms.
+  \item \textbf{Release 6 -- HSUPA} (enhanced uplink): an enhanced dedicated channel (E-DCH)
+        with NodeB scheduling and HARQ, up to 5.76\,Mbit/s.
+  \item \textbf{Release 7 -- HSPA+}: 64QAM in the downlink, $2\times2$ MIMO, 16QAM uplink, and
+        a flat-architecture option.
+  \item \textbf{Release 8}: dual-carrier HSDPA (two adjacent 5\,MHz carriers).
+\end{itemize}
+The philosophical shift matters more than the numbers: the network stopped allocating fixed
+resources to users and started scheduling a shared pipe every 2\,ms according to channel
+quality -- exactly the paradigm LTE adopts from the start (Lecture~7).
+
+\subsection{IMS: IP multimedia over the PS domain}
+The IP Multimedia Subsystem (IMS), introduced in Release~5 \cite{ts23228}, defines how to
+offer voice, video and messaging as IP services controlled by SIP \cite{rfc3261}. Its core
+elements are the call session control functions: the \textbf{P-CSCF} (proxy, the UE's first
+contact point), the \textbf{I-CSCF} (interrogating, entry point of the home network) and the
+\textbf{S-CSCF} (serving, which registers the user and executes service logic), plus the HSS,
+the evolution of the HLR. In 3G, IMS was rarely used for mass-market voice; its real role came
+with LTE, where it is the only way to make calls (VoLTE, Lecture~5).
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{Processing gain and the required SINR}\label{sec:pg}
+\paragraph{Problem} What signal-to-interference ratio must a WCDMA receiver see before
+despreading for a given service quality?
+\paragraph{Model} Required energy per bit to noise-plus-interference density
+$(E_\mathrm{b}/N_0)_{\mathrm{req}}$, chip rate $W$, service bit rate $R$.
+\paragraph{Derivation} Despreading accumulates $W/R$ chips per bit, so
+\begin{equation}\label{eq:ebno}
+  \frac{E_\mathrm{b}}{N_0} = \frac{W}{R}\cdot\SINR_{\mathrm{wideband}}
+  \quad\Longrightarrow\quad
+  \SINR_{\mathrm{req}} = \frac{(E_\mathrm{b}/N_0)_{\mathrm{req}}}{G_\mathrm{p}}, \qquad G_\mathrm{p} = \frac{W}{R}.
+\end{equation}
+\paragraph{Example and interpretation} AMR voice at $R = \qty{12.2}{\kilo\bit\per\second}$:
+$G_\mathrm{p} = 3.84\times10^6/12.2\times10^3 = 315 \;(\qty{25.0}{\dB})$. With
+$(E_\mathrm{b}/N_0)_{\mathrm{req}} = \qty{5}{\dB}$, the wideband SINR may be as low as
+$5-25 = \qty{-20}{\dB}$: the signal is buried 20\,dB below the interference and still decoded.
+A \qty{384}{\kilo\bit\per\second} data user has only $G_\mathrm{p} = 10$\,dB and needs
+roughly 15\,dB more received power -- which is why high-rate users consume a large share of the
+cell's capacity.
+
+\subsection{Uplink load factor, noise rise and pole capacity}\label{sec:load}
+\paragraph{Problem} How many simultaneous users can a WCDMA cell carry in the uplink?
+\paragraph{Assumptions} $N$ users of the same service, perfect power control, received powers
+adjusted so that each user just meets its $E_\mathrm{b}/N_0$; voice activity factor $\nu$;
+other-cell interference equal to a fraction $i$ of own-cell interference; thermal noise
+power $P_\mathrm{N}$ \cite{holma2010wcdma}.
+\paragraph{Derivation} Let $I_{\mathrm{tot}}$ be the total received wideband power and $P_j$ the
+received power of user $j$. Its requirement is
+\begin{equation}\label{eq:userreq}
+  \left(\frac{E_\mathrm{b}}{N_0}\right)_j = \frac{W}{\nu_j R_j}\,\frac{P_j}{I_{\mathrm{tot}}-P_j}
+  \quad\Longrightarrow\quad
+  P_j = L_j\,I_{\mathrm{tot}}, \qquad
+  L_j = \frac{1}{1+\dfrac{W}{(E_\mathrm{b}/N_0)_j\,R_j\,\nu_j}} .
+\end{equation}
+Summing own-cell users and adding other-cell interference,
+$I_{\mathrm{tot}} = (1+i)\sum_j P_j + P_\mathrm{N}$, which defines the uplink load factor
+\begin{equation}\label{eq:load}
+  \eta_{\mathrm{UL}} = (1+i)\sum_{j=1}^{N} L_j
+  \qquad\text{and}\qquad
+  \frac{I_{\mathrm{tot}}}{P_\mathrm{N}} = \frac{1}{1-\eta_{\mathrm{UL}}} .
+\end{equation}
+The ratio $I_{\mathrm{tot}}/P_\mathrm{N}$ is the \emph{noise rise}. It diverges as
+$\eta_{\mathrm{UL}}\to1$; the number of users at which this happens is the \emph{pole capacity}
+\begin{equation}\label{eq:pole}
+  N_{\mathrm{pole}} = \frac{1}{(1+i)L} = \frac{1+\dfrac{W}{(E_\mathrm{b}/N_0)R\nu}}{1+i}.
+\end{equation}
+\paragraph{Interpretation} \Cref{fig:noise} shows the noise rise: 3\,dB at 50\% load, 6\,dB at 75\%,
+10\,dB at 90\%. Each decibel of noise rise is a decibel of lost link budget -- coverage shrinks
+as the cell fills up. Operators therefore plan for 50--75\% load, not for the pole.
+\paragraph{Limitations} The model assumes perfect power control, a single service and a fixed
+$i$; real systems need margins for power-control errors and fast fading.
+
+\begin{acnfigure}
+  \acnfig{lecture-03/noise-rise}
+  \caption{Uplink noise rise $-10\log_{10}(1-\eta_{\mathrm{UL}})$ from \cref{eq:load}.}
+  \label{fig:noise}
+\end{acnfigure}
+
+\subsection{HSDPA peak rate}\label{sec:hsdpa}
+With $n_{\mathrm{c}}$ codes of spreading factor SF and $b$ bits per symbol, the symbol-level
+rate of the HS-DSCH is
+\begin{equation}\label{eq:hsdpa}
+  R_{\mathrm{peak}} = n_{\mathrm{c}}\,\frac{W}{\mathrm{SF}}\,b\,r_{\mathrm{c}},
+\end{equation}
+where $r_\mathrm{c}$ is the effective code rate. For $n_\mathrm{c} = 15$, $\mathrm{SF}=16$, 16QAM
+($b=4$) and $r_\mathrm{c}\to1$: $15\times240\,\text{ksymbol/s}\times4 = \qty{14.4}{\mega\bit\per\second}$;
+the highest standardised UE category reaches \qty{14.0}{\mega\bit\per\second}. 64QAM gives
+\qty{21.6}{\mega\bit\per\second} (21.1 in practice), and two MIMO layers or two carriers double
+it (\cref{fig:hspa}). These are peak values for one user alone in a cell with excellent SINR;
+average cell throughput is several times lower.
+
+\begin{acnfigure}
+  \acnfig{lecture-03/hspa-rates}
+  \caption{Peak downlink rates along the WCDMA/HSPA evolution (R99 shown with its practical
+  384\,kbit/s; categories with the highest standardised rate).}
+  \label{fig:hspa}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+\Cref{fig:umts} shows the UMTS network. Compared with GSM (Lecture~1, Figure~3) three things
+changed: the RAN uses new nodes and interfaces (NodeB, RNC, Iub, Iur); the core attaches to the
+RAN only through Iu, which has a CS and a PS flavour; and the PS user plane is a GTP-U tunnel
+that starts at the RNC. The core network itself is recognisably the GSM/GPRS core.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-03/umts-architecture}}
+  \caption{UMTS architecture with the UTRAN, the circuit-switched and the packet-switched
+  core domains. Dashed: MAP signalling to the HLR.}
+  \label{fig:umts}
+\end{acnfigure}
+
+\begin{acnfigure}
+  \acnfig{lecture-03/ovsf-tree}
+  \caption{OVSF code tree. Assigning $(1,1,1,1)$ blocks its parent $(1,1)$ and the root, but
+  its sibling $(1,1,-1,-1)$ remains usable; all codes of one SF are mutually orthogonal.}
+  \label{fig:ovsf}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+\begin{procedurebox}{PS service request and RAB establishment}\label{proc:rab}
+\begin{steps}
+  \item The idle UE sends \msg{RRC Connection Request} on the random access channel.
+  \item The RNC performs admission control, sets up a radio link in the NodeB (NBAP) and
+        answers \msg{RRC Connection Setup}; the UE confirms with \msg{RRC Connection Setup Complete}.
+  \item The UE sends a NAS \msg{Service Request} to the SGSN, carried in an RRC
+        \msg{Initial Direct Transfer} and the RANAP \msg{Initial UE Message}.
+  \item The SGSN may run UMTS AKA; it then sends RANAP \msg{Security Mode Command} with CK and
+        IK to the RNC, which starts ciphering and integrity protection towards the UE.
+  \item The SGSN requests the bearer with RANAP \msg{RAB Assignment Request}, including QoS and its
+        GTP-U tunnel endpoint.
+  \item The RNC configures the radio bearer with \msg{RRC Radio Bearer Setup}; the UE answers
+        \msg{Radio Bearer Setup Complete}; the RNC returns \msg{RAB Assignment Response} with its own
+        tunnel endpoint. User data now flows over the radio bearer and the Iu-PS tunnel.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-03/rab-setup}}
+  \caption{RRC connection and RAB set-up for a packet service (\cref{proc:rab}).}
+  \label{fig:rab}
+\end{acnfigure}
+
+Note the layering: NAS messages (Service Request) travel transparently from UE to SGSN;
+access-stratum signalling (RRC) ends in the RNC; RANAP connects the two worlds. This split
+between \emph{non-access stratum} and \emph{access stratum} remains in LTE and 5G.
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Voice pole capacity}\label{ex:pole}
+\textbf{Problem.} AMR voice, $R=\qty{12.2}{\kilo\bit\per\second}$,
+$(E_\mathrm{b}/N_0)_{\mathrm{req}} = \qty{5}{\dB}$, activity $\nu=0.67$, other-cell interference
+ratio $i=0.65$. Find the pole capacity and the number of users at 50\% load.
+
+\textbf{Solution.} $W/((E_\mathrm{b}/N_0)R\nu) = 3.84\times10^6/(3.162\times12\,200\times0.67) = 148.6$.
+\Cref{eq:pole}: $N_{\mathrm{pole}} = (1+148.6)/1.65 = 90.6$. Each user loads the cell by
+$(1+i)L = 1.65/149.6 = 1.10\%$, so 50\% load corresponds to about 45 users, with a noise
+rise of \qty{3}{\dB}.
+
+\textbf{Interpretation.} 45 voice users per 5\,MHz carrier and sector, i.e.\ 9 per MHz -- a
+substantial gain over GSM's roughly 94 channels in 10\,MHz with reuse (Lecture~1).
+\end{examplebox}
+
+\begin{examplebox}{Mixing services}\label{ex:mix}
+\textbf{Problem.} In the cell of \cref{ex:pole}, one \qty{384}{\kilo\bit\per\second} data user
+needs $(E_\mathrm{b}/N_0) = \qty{1.5}{\dB}$ with $\nu = 1$. How many voice users does it replace?
+
+\textbf{Solution.} $W/((E_\mathrm{b}/N_0)R\nu) = 3.84\times10^6/(1.413\times384\,000) = 7.08$, so
+$L = 1/8.08 = 0.124$ and its load contribution is $1.65\times0.124 = 20.4\%$. One voice user
+contributes $1.10\%$: the data user replaces about 18 voice users.
+
+\textbf{Interpretation.} Resource consumption in CDMA scales with $R\cdot E_\mathrm{b}/N_0$, which
+is why high-rate packet data on dedicated channels was so costly in Release~99.
+\end{examplebox}
+
+\begin{examplebox}{OVSF code budget}\label{ex:ovsf}
+\textbf{Problem.} HSDPA reserves 15 codes of SF\,16. What fraction of the downlink code tree is
+left for everything else?
+
+\textbf{Solution.} SF\,16 has 16 codes; 15 are used, leaving one SF\,16 branch, i.e.\ $1/16 =
+6.25\%$ of the tree, which must hold common channels (pilot, broadcast, paging), the HS-SCCH
+control channels and any Release~99 dedicated channels.
+
+\textbf{Interpretation.} In practice operators configure 5--10 HS-PDSCH codes and keep the rest
+for voice -- code space, not power, often limits the downlink.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{Mobile generations up to 3.5G (indicative peak values).}\label{tab:gen}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y Y Y@{}}
+\toprule
+\rowcolor{white} & GSM/GPRS & EDGE & UMTS R99 & HSPA (Rel-5/6) \\
+\midrule
+Multiple access   & TDMA/FDMA       & TDMA/FDMA         & WCDMA            & WCDMA + shared channel \\
+Carrier           & 200\,kHz        & 200\,kHz          & 5\,MHz           & 5\,MHz \\
+Peak DL           & 171\,kbit/s     & 474\,kbit/s       & 384\,kbit/s (2\,Mbit/s theor.) & 14\,Mbit/s \\
+Handover          & Hard            & Hard              & Soft + hard      & Soft (DCH); serving-cell change (HS-DSCH) \\
+Scheduling        & BSC/PCU         & BSC/PCU           & RNC, 10--80\,ms  & NodeB, 2\,ms \\
+Core              & CS + PS         & CS + PS           & CS + PS (Iu)     & CS + PS (Iu) \\
+Authentication    & One-way (triplet) & One-way         & Mutual AKA (quintet) & Mutual AKA \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{The CS/PS split and why LTE removed it} Running two core domains means two sets of
+nodes, two mobility management procedures (location area and routing area updates), two
+charging systems and two sets of interconnection agreements. Every innovation (for example a
+new QoS scheme) had to be done twice. Once HSPA proved that a shared packet channel can carry
+voice-quality traffic, the economic case for a single, packet-only core became overwhelming:
+LTE's EPC (Lecture~9) has no CS domain, and voice is carried by IMS over IP. The price is
+complexity elsewhere -- QoS bearers must now guarantee what a circuit guaranteed for free, and
+legacy voice requires fallback procedures (CS fallback, SRVCC) during the transition.
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item UMTS = new radio (WCDMA, 5\,MHz, 3.84\,Mchip/s) + evolved GSM/GPRS core, joined by Iu.
+  \item The RNC terminates RLC/MAC/RRC, ciphering and integrity; SRNC/DRNC roles enable soft
+        handover across RNCs over Iur.
+  \item CDMA capacity is interference-limited: $\eta_{\mathrm{UL}} = (1+i)\sum L_j$, noise rise
+        $1/(1-\eta_{\mathrm{UL}})$, plan for 50--75\% load.
+  \item Processing gain $W/R$ lets low-rate users operate at negative SINR; high-rate users cost
+        proportionally more.
+  \item HSPA moved scheduling and HARQ to the NodeB with a 2\,ms TTI -- the template for LTE.
+  \item Mutual authentication (AKA) and integrity protection fixed the main GSM security gaps.
+  \item Two core domains doubled cost and complexity; LTE kept only the packet domain and moved
+        voice to IMS.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{RNC versus BSC}\label{exr:rnc}
+List three functions performed by the UMTS RNC that the GSM BSC did not perform, and explain
+which design choice of WCDMA made each necessary.
+\end{exercisebox}
+
+\begin{exercisebox}{1}{Why Iur?}\label{exr:iur}
+GSM has no interface between BSCs. Explain why UMTS needs Iur, and what would happen to soft
+handover at an RNC border without it.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Load budget}\label{exr:load}
+Using the parameters of \cref{ex:pole}, how many voice users can be admitted if the noise rise
+must not exceed \qty{4}{\dB}? How does the answer change if $i$ drops to 0.4 (better isolated cells)?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{HSDPA rate}\label{exr:hsdpa}
+A cell configures 10 HS-PDSCH codes. Compute the symbol-level peak rate for QPSK, 16QAM and
+64QAM, and the rate with code rate $r_\mathrm{c}=0.75$ for 16QAM.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Cell breathing}\label{exr:breath}
+Assume a path-loss exponent of 3.5. By what factor does the cell radius shrink when the load
+grows from 50\% to 75\%, if the UE transmit power is the limiting factor? Derive the general
+expression for the radius ratio as a function of the two load factors.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Mixed traffic}\label{exr:mixed}
+A cell must carry $N_\mathrm{v}$ voice users (parameters of \cref{ex:pole}) and $N_\mathrm{d}$
+users at 64\,kbit/s with $E_\mathrm{b}/N_0 = 2$\,dB and $\nu=1$, at a total load of 60\%.
+Derive the linear constraint between $N_\mathrm{v}$ and $N_\mathrm{d}$ and plot (or tabulate) the
+admissible region.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:rnc}}
+(1) Macro-diversity combining and soft-handover control -- needed because all cells use the same
+frequency. (2) Outer-loop power control (setting the SIR target from frame error rates) --
+needed because CDMA is interference-limited and power control is the main resource control.
+(3) Ciphering and integrity protection, terminating RLC/MAC/RRC -- moved from BTS/SGSN to keep
+security and retransmission in one place despite soft handover across many NodeBs. Admission
+control based on load (\cref{eq:load}) is a fourth, because capacity is soft.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:iur}}
+In soft handover a UE may be connected to cells of two RNCs. Without Iur the SRNC could not
+receive the uplink frames decoded by the other RNC's NodeB, nor send downlink data through it;
+the UE would have to perform a hard handover at every RNC border, losing macro-diversity exactly
+where links are weakest. Iur lets the DRNC forward frames to the SRNC, which keeps the Iu
+connection unchanged until a relocation is worthwhile.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:load}}
+Noise rise 4\,dB: $1-\eta = 10^{-0.4} = 0.398$, so $\eta_{\max} = 0.602$. With
+$(1+i)L = 1.10\%$, $N = 0.602/0.0110 = 54$ users. With $i = 0.4$: $(1+i)L = 1.4/149.6 = 0.936\%$,
+$N = 64$ users -- better cell isolation (sectorisation, antenna tilt) translates directly into
+capacity.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:hsdpa}}
+Per code: $W/16 = 240$\,ksymbol/s; 10 codes: 2.4\,Msymbol/s. QPSK: 4.8\,Mbit/s; 16QAM:
+9.6\,Mbit/s; 64QAM: 14.4\,Mbit/s. 16QAM with $r_\mathrm{c} = 0.75$: $9.6\times0.75 =
+7.2$\,Mbit/s.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:breath}}
+The extra noise rise between loads $\eta_1$ and $\eta_2$ is
+$\Delta = 10\log_{10}\frac{1-\eta_1}{1-\eta_2}$\,dB. With a fixed UE power the tolerable path
+loss drops by $\Delta$; for $L_\mathrm{p}\propto d^{n}$, $d_2/d_1 = 10^{-\Delta/(10n)} =
+\left(\frac{1-\eta_2}{1-\eta_1}\right)^{1/n}$. For $\eta_1=0.5$, $\eta_2=0.75$: $\Delta = 3.01$\,dB
+and $d_2/d_1 = 0.5^{1/3.5} = 0.820$: the radius shrinks by 18\% and the area by 33\%.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:mixed}}
+Data user: $W/((E_\mathrm{b}/N_0)R) = 3.84\times10^6/(1.585\times64\,000) = 37.9$,
+$L_\mathrm{d} = 1/38.9 = 0.0257$. Constraint:
+$1.65\,(N_\mathrm{v}\times0.00668 + N_\mathrm{d}\times0.0257) \le 0.60$, i.e.\
+$0.0110\,N_\mathrm{v} + 0.0424\,N_\mathrm{d} \le 0.60$. Corner points: $(N_\mathrm{v},N_\mathrm{d}) =
+(54,0)$, $(0,14)$; e.g.\ 30 voice users leave room for 6 data users. One 64\,kbit/s user costs
+about 3.9 voice users.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+Holma and Toskala \cite{holma2010wcdma} is the standard reference for WCDMA and HSPA radio
+planning, including the load equations of \cref{sec:load}. The UTRAN architecture is in
+\cite{ts25401}, RANAP in \cite{ts25413}, HSDPA in \cite{ts25308} and 3G security in
+\cite{ts33102}. IMS is specified in \cite{ts23228} on top of SIP \cite{rfc3261}; the general
+3GPP architecture is in \cite{ts23002}.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

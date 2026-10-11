@@ -1,0 +1,30 @@
+% 5G control-plane protocol stack: UE, gNB, AMF and SMF
+\begin{tikzpicture}[x=1cm,y=0.62cm,
+  L/.style={stacklayer,minimum width=1.9cm},
+  La/.style={stacklayeralt,minimum width=1.9cm},
+  hd/.style={font=\ACNheadfont\scriptsize\bfseries,text=acnnavy}]
+  % UE
+  \node[hd] at (0,8.3) {UE};
+  \node[L,fill=acnsand,draw=acnamber] at (0,7) {NAS-SM};
+  \node[L,fill=acnsand,draw=acnamber] at (0,6) {NAS-MM};
+  \foreach \t/\y in {RRC/5,PDCP/4,RLC/3,MAC/2,PHY/1}{\node[L] at (0,\y) {\t};}
+  % gNB
+  \node[hd] at (3.85,8.3) {gNB};
+  \foreach \t/\y in {RRC/5,PDCP/4,RLC/3,MAC/2,PHY/1}{\node[L] at (2.9,\y) {\t};}
+  \foreach \t/\y in {NGAP/5,SCTP/4,IP/3,L2/2,L1/1}{\node[La,minimum width=1.6cm] at (4.85,\y) {\t};}
+  % AMF
+  \node[hd] at (7.75,8.3) {AMF};
+  \node[L,fill=acnsand,draw=acnamber] at (7.75,6) {NAS-MM};
+  \foreach \t/\y in {NGAP/5,SCTP/4,IP/3,L2/2,L1/1}{\node[La] at (7.75,\y) {\t};}
+  % SMF
+  \node[hd] at (11.0,8.3) {SMF};
+  \node[L,fill=acnsand,draw=acnamber] at (11.0,7) {NAS-SM};
+  \foreach \t/\y in {{SBI (JSON)}/5,{HTTP/2}/4,TCP/3,IP/2,{L2/L1}/1}{\node[La] at (11.0,\y) {\t};}
+  % interfaces
+  \draw[acngray,densely dashed] (1.45,0.4) -- (1.45,7.6); \node[iflabel] at (1.45,0) {Uu};
+  \draw[acngray,densely dashed] (6.3,0.4) -- (6.3,7.6); \node[iflabel] at (6.3,0) {N2};
+  \draw[acngray,densely dashed] (9.4,0.4) -- (9.4,7.6); \node[iflabel] at (9.4,0) {N11};
+  % NAS peers
+  \draw[<->,acnamber,line width=0.8pt] (0.95,6) -- node[caplabel,above,text=acnamber]{\bil{N1: NAS-MM (transparent to the gNB)}{\lr{N1}: NAS-MM (شفاف برای gNB)}} (6.8,6);
+  \draw[<->,acnamber,line width=0.8pt,densely dashed] (0.95,7) -- node[caplabel,above,text=acnamber]{\bil{N1: NAS-SM (relayed by the AMF)}{\lr{N1}: NAS-SM (بازپخش توسط AMF)}} (10.05,7);
+\end{tikzpicture}

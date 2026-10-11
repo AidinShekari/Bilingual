@@ -1,0 +1,22 @@
+% LTE user-plane protocol stack end to end
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \tikzset{L/.style={stacklayer,minimum width=1.9cm},LU/.style={stacklayeralt,minimum width=1.9cm}}
+  % UE
+  \node[L] at (0,3.3) {IP}; \node[L] at (0,2.75) {PDCP}; \node[L] at (0,2.2) {RLC}; \node[L] at (0,1.65) {MAC}; \node[L] at (0,1.1) {PHY};
+  \node[font=\ACNheadfont\small\bfseries,text=acnnavy] at (0,4.0) {UE};
+  % eNB
+  \node[L,minimum width=1.6cm] at (2.9,2.75) {PDCP}; \node[L,minimum width=1.6cm] at (2.9,2.2) {RLC}; \node[L,minimum width=1.6cm] at (2.9,1.65) {MAC}; \node[L,minimum width=1.6cm] at (2.9,1.1) {PHY};
+  \node[LU,minimum width=1.6cm] at (4.6,2.75) {GTP-U}; \node[LU,minimum width=1.6cm] at (4.6,2.2) {UDP}; \node[LU,minimum width=1.6cm] at (4.6,1.65) {IP}; \node[LU,minimum width=1.6cm] at (4.6,1.1) {L1/L2};
+  \node[font=\ACNheadfont\small\bfseries,text=acnnavy] at (3.75,4.0) {eNB};
+  % SGW
+  \foreach \l [count=\k] in {GTP-U,UDP,IP,L1/L2}{\node[LU,minimum width=1.5cm] at (7.0,3.3-0.55*\k) {\l}; \node[LU,minimum width=1.5cm] at (8.55,3.3-0.55*\k) {\l};}
+  \node[font=\ACNheadfont\small\bfseries,text=acnnavy] at (7.78,4.0) {S-GW};
+  % PGW
+  \node[L,minimum width=1.5cm] at (11.0,3.3) {IP};
+  \foreach \l [count=\k] in {GTP-U,UDP,IP,L1/L2}{\node[LU,minimum width=1.5cm] at (11.0,3.3-0.55*\k) {\l};}
+  \node[font=\ACNheadfont\small\bfseries,text=acnnavy] at (11.0,4.0) {P-GW};
+  \draw[up,<->] (0.95,0.5) -- node[iflabel,below]{LTE-Uu} (2.1,0.5);
+  \draw[up,<->] (5.4,0.5) -- node[iflabel,below]{S1-U} (6.25,0.5);
+  \draw[up,<->] (9.3,0.5) -- node[iflabel,below]{S5/S8} (10.25,0.5);
+  \draw[densely dashed,acngray] (0,3.6) -- (0,3.9); \draw[densely dashed,acngray] (11,3.6) -- (11,3.9);
+\end{tikzpicture}

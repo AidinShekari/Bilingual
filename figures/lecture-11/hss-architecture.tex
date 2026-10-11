@@ -1,0 +1,28 @@
+% HSS functional view: HLR/AuC + IMS functions, front-end/back-end split, interfaces
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[zone,minimum width=6.4cm,minimum height=5.0cm] (hz) at (0,0) {};
+  \node[zonelabel,anchor=north] at (hz.north) {HSS};
+  \node[nf,minimum width=2.6cm] (fe1) at (-1.45,1.25) {\bil{front-end}{بخش جلویی}\\[-1pt]{\tiny S6a/S6d, Gr, C/D}};
+  \node[nf,minimum width=2.6cm] (fe2) at (1.45,1.25) {\bil{front-end}{بخش جلویی}\\[-1pt]{\tiny Cx, Sh, SWx}};
+  \node[nfalt,minimum width=2.6cm] (auc) at (-1.45,-0.15) {AuC\\[-1pt]{\tiny $K$, OPc, SQN}};
+  \node[nfalt,minimum width=2.6cm] (logic) at (1.45,-0.15) {\bil{HLR / IMS logic}{منطق HLR / IMS}};
+  \node[nfgray,minimum width=5.6cm] (db) at (0,-1.6) {\bil{subscriber data store (replicated)}{مخزن دادهٔ مشترک (تکثیرشده)}};
+  \draw[link] (fe1) -- (auc); \draw[link] (fe2) -- (logic);
+  \draw[link] (auc) -- (auc|-db.north); \draw[link] (logic) -- (logic|-db.north);
+  \draw[link] (fe1) -- (logic);
+  % peers
+  \node[nf] (mme) at (-6.0,2.2) {MME};
+  \node[nf] (sgsn) at (-6.0,0.7) {SGSN};
+  \node[nfgray] (msc) at (-6.0,-0.8) {MSC/VLR};
+  \node[nf] (cscf) at (6.0,2.2) {I/S-CSCF};
+  \node[nfgray] (as) at (6.0,0.7) {AS};
+  \node[nfgray] (aaa) at (6.0,-0.8) {3GPP AAA};
+  \draw[cp] (mme.east) -- node[iflabel,pos=0.35]{S6a} ($(fe1.west)+(0,0.3)$);
+  \draw[cp] (sgsn.east) -- node[iflabel,pos=0.35]{S6d / Gr} (fe1.west);
+  \draw[cp] (msc.east) -- node[iflabel,pos=0.35]{C / D (MAP)} ($(fe1.west)+(0,-0.3)$);
+  \draw[cp] (cscf.west) -- node[iflabel,pos=0.35]{Cx} ($(fe2.east)+(0,0.3)$);
+  \draw[cp] (as.west) -- node[iflabel,pos=0.35]{Sh} (fe2.east);
+  \draw[cp] (aaa.west) -- node[iflabel,pos=0.35]{SWx} ($(fe2.east)+(0,-0.3)$);
+  \node[caplabel] at (-6.0,-1.9) {\bil{2G/3G/4G mobility}{تحرک نسل ۲ تا ۴}};
+  \node[caplabel] at (6.0,-1.9) {\bil{IMS and non-3GPP access}{IMS و دسترسی غیر \lr{3GPP}}};
+\end{tikzpicture}

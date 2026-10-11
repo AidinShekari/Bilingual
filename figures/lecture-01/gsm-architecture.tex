@@ -1,0 +1,35 @@
+% GSM/GPRS reference architecture (shared by EN and FA editions)
+\begin{tikzpicture}[x=1cm,y=1cm,node distance=1cm]
+  % --- zones
+  \node[zone,minimum width=5.6cm,minimum height=3.2cm] (bssz) at (3.05,-0.25) {};
+  \node[zonelabel,anchor=north west] at (bssz.north west) {BSS};
+  \node[zone,minimum width=5.0cm,minimum height=1.9cm,fill=acnsky!40] (nssz) at (9.55,0.95) {};
+  \node[zonelabel,anchor=north east] at (nssz.north east) {\bil{NSS -- circuit switched}{NSS -- سوئیچ مداری}};
+  \node[zone,minimum width=5.0cm,minimum height=1.6cm,fill=acnmint!50] (gprsz) at (9.55,-1.35) {};
+  \node[zonelabel,anchor=south east] at (gprsz.south east) {\bil{GPRS core -- packet switched}{هستهٔ GPRS -- سوئیچ بسته‌ای}};
+  % --- nodes
+  \node[ue] (ms) at (-0.6,-0.25) {MS\\[-1pt]{\tiny ME + SIM}};
+  \node[nf] (bts) at (1.6,-0.25) {BTS};
+  \node[nf] (bsc) at (4.3,-0.25) {BSC\\[-1pt]{\tiny + PCU}};
+  \node[nf] (msc) at (8.4,0.95) {MSC\\[-1pt]{\tiny + VLR}};
+  \node[nf] (gmsc) at (10.8,0.95) {GMSC};
+  \node[nfalt] (sgsn) at (8.4,-1.35) {SGSN};
+  \node[nfalt] (ggsn) at (10.8,-1.35) {GGSN};
+  \node[nfgray] (hlr) at (9.6,3.1) {HLR\\[-1pt]{\tiny + AuC}};
+  \node[nfgray] (eir) at (6.6,3.1) {EIR};
+  \node[nfgray,minimum width=1.3cm] (pstn) at (13.2,0.95) {PSTN\\[-1pt]{\tiny ISDN}};
+  \node[nfgray,minimum width=1.3cm] (pdn) at (13.2,-1.35) {PDN\\[-1pt]{\tiny Internet}};
+  % --- interfaces
+  \draw[link,decorate,decoration={snake,amplitude=1.2pt,segment length=6pt}] (ms) -- node[iflabel,above=2pt]{Um} (bts);
+  \draw[link] (bts) -- node[iflabel,above]{Abis} (bsc);
+  \draw[link] (bsc.east) -- ++(0.6,0) |- node[iflabel,pos=0.75,above]{A} (msc.west);
+  \draw[link,draw=acnteal] (bsc.east) -- ++(0.6,0) |- node[iflabel,pos=0.75,below]{Gb} (sgsn.west);
+  \draw[link] (msc) -- node[iflabel,above]{E} (gmsc);
+  \draw[link] (gmsc) -- (pstn);
+  \draw[link,draw=acnteal] (sgsn) -- node[iflabel,above]{Gn} (ggsn);
+  \draw[link,draw=acnteal] (ggsn) -- node[iflabel,above]{Gi} (pdn);
+  \draw[link,cp] (msc.north) -- node[iflabel,left]{D} (hlr.south west);
+  \draw[link,cp] (gmsc.north) -- node[iflabel,right]{C} (hlr.south east);
+  \draw[link,cp] (msc.north west) -- node[iflabel,left]{F} (eir.south);
+  \draw[link,cp] (sgsn.north east) .. controls (9.6,-0.3) and (9.6,1.9) .. node[iflabel,pos=0.2,right]{Gr} (hlr.south);
+\end{tikzpicture}

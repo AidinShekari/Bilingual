@@ -1,0 +1,337 @@
+% =====================================================================
+%  Lecture 25 -- Network Evolution: a Grand Synthesis    (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{25}
+\ACNset{title}{Network Evolution: a Grand Synthesis}
+\ACNset{shorttitle}{Network evolution}
+\ACNset{titleother}{تکامل شبکه: یک جمع‌بندی بزرگ}
+\ACNset{part}{Part V -- Planes and outlook (Lectures 23--26)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Advanced}
+\ACNset{prereq}{Lectures 1--24}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Trace} the evolution of radio access, core architecture, signalling, security and QoS from 2G to 5G.
+  \item \textbf{Map} network functions across generations (MSC/VLR, MME, AMF; HLR, HSS, UDM; GGSN, P-GW, UPF).
+  \item \textbf{Decompose} capacity growth into spectrum, spectral efficiency and densification.
+  \item \textbf{Quantify} long-term trends in peak rate, latency and cost per bit with simple growth models.
+  \item \textbf{Identify} the design principles that recur in every generation and will shape the next one.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+This lecture draws on the whole course: GSM, GPRS and the 2G/3G core (Lectures~1--4), LTE and the EPC (Lectures~5--13), and the 5G system,
+SDN, NFV and SBA (Lectures~14--24). No new protocol is introduced; the aim is to connect what you already know into one picture.
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+Generation & \fa{نسل} & A family of standards meeting a set of ITU requirements (IMT-2000, IMT-Advanced, IMT-2020). \\
+Flat architecture & \fa{معماری تخت} & Fewer nodes on the user path; radio control in the base station. \\
+All-IP & \fa{تمام‌IP} & Voice and data carried as IP packets, no circuit-switched domain. \\
+CP/UP separation & \fa{جداسازی صفحهٔ کنترل و کاربر} & Independent scaling and placement of control and user plane. \\
+Spectral efficiency & \fa{بازدهی طیفی} & Throughput per hertz per cell (bit/s/Hz/cell). \\
+Densification & \fa{متراکم‌سازی} & More cells per unit area. \\
+Area traffic capacity & \fa{ظرفیت ترافیکی ناحیه} & Total throughput per unit area (bit/s/m$^2$). \\
+Cost per bit & \fa{هزینه به ازای بیت} & Network cost divided by carried traffic. \\
+Softwarisation & \fa{نرم‌افزاری‌شدن} & Network functions as software on general-purpose infrastructure. \\
+Backward compatibility & \fa{سازگاری با گذشته} & Interworking of a new generation with installed ones. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+Each generation of mobile networks was designed to fix the bottleneck of the previous one: 2G digitised voice and added security and roaming;
+3G brought packet data at useful rates; 4G removed the circuit domain and flattened the network; 5G made the network programmable and
+service-specific. Seen one at a time, the generations look like a sequence of unrelated protocol stacks. Seen together, they show a small set of
+persistent ideas -- separation of concerns, mobility anchors, subscriber databases, tunnelling, mutual authentication -- implemented with ever
+more general technology \cite{itu2015m2083,ts23501}. Recognising these ideas is what lets an engineer understand a new system quickly, and
+predict where it will go.
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{Five dimensions of evolution}
+\begin{itemize}
+  \item \textbf{Radio access}: FDMA/TDMA (GSM), CDMA (UMTS), OFDMA with MIMO (LTE), flexible-numerology OFDM with massive MIMO and mmWave (NR).
+  \item \textbf{Core}: circuit switching with MSC/VLR and SS7/MAP; an overlaid packet core (SGSN/GGSN); the all-IP EPC with Diameter and GTP;
+        the service-based 5GC on cloud infrastructure.
+  \item \textbf{Mobility}: hierarchical location and routing areas, anchors in the GGSN, P-GW and UPF; handover decisions moving from the BSC and RNC
+        into the base station.
+  \item \textbf{Security}: one-way GSM authentication (A3/A8) to mutual UMTS AKA, EPS-AKA with key hierarchy, and 5G-AKA/EAP-AKA$'$ with concealed
+        identities (SUCI) and home control.
+  \item \textbf{QoS}: from circuit guarantees through PDP contexts and EPS bearers to per-flow QoS with standardised 5QIs and slicing.
+\end{itemize}
+
+\subsection{Flattening the path}
+The user-plane path has steadily shrunk (\cref{fig:arch}). In GPRS and UMTS a packet passed through a base station, a radio controller (BSC/PCU
+or RNC), an SGSN and a GGSN. LTE moved radio control into the eNB and removed the controller; the S-GW and P-GW remained. In 5G a single UPF can
+serve as the whole core user plane, and it can be placed close to the radio.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-25/arch-evolution}}
+  \caption{User-plane path of packet data from 2.5G to 5G (simplified).}
+  \label{fig:arch}
+\end{acnfigure}
+
+\subsection{Functions that survive}
+Names change, functions persist. The visitor location and mobility function (MSC/VLR, SGSN, MME, AMF), the subscriber database (HLR/AuC, HSS,
+UDM/AUSF), the mobility anchor and gateway to data networks (GGSN, P-GW, UPF with SMF) and policy control (PCRF, PCF) appear in every
+generation, each time with cleaner interfaces and better separation between control and user plane.
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{From circuits to packets to services}
+2G was designed around a 64\,kbit/s circuit per call. GPRS added a packet core in parallel, reusing the radio with dynamic time-slot
+allocation. UMTS kept two domains (CS and PS) with a common radio network. LTE dropped the CS domain: voice became an IMS service over VoLTE,
+with CS fallback and SRVCC for interworking. 5G keeps IMS for voice (VoNR) but restructures the core as services consumed over HTTP/2 -- the
+network itself becomes a set of APIs.
+
+\subsection{Signalling protocols}
+SS7 and MAP connected the 2G/3G core; Diameter replaced MAP in the EPC (S6a, Gx, Rx); GTPv2-C carried session control; 5G uses REST-style
+service-based interfaces with OAuth-based authorisation, and PFCP for user-plane control. Each step moved towards protocols used in the wider IT
+industry, lowering development cost and enabling cloud deployment.
+
+\subsection{Security lessons}
+GSM authenticated only the subscriber, allowing false base stations; UMTS added network authentication and integrity protection; LTE separated
+keys per layer and per node; 5G encrypts the permanent identity (SUCI), gives the home network the final authentication decision and protects
+inter-operator signalling with the SEPP. Each fix answered an attack that became practical on the previous generation.
+
+\subsection{Coexistence}
+No generation replaces its predecessor at once. Networks run several in parallel for a decade or more, with interworking functions (N26 between
+AMF and MME, EN-DC in non-standalone 5G, CS fallback) and gradual spectrum refarming. Backward compatibility is a constant design constraint and a
+large part of the cost of every new system.
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{Peak-rate growth}\label{sec:peak}
+\paragraph{Model} An exponential trend $R(t) = R_0\, e^{k (t - t_0)}$ fitted through two points $(t_0, R_0)$ and $(t_1, R_1)$ has
+\begin{equation}\label{eq:growth}
+  k = \frac{\ln (R_1/R_0)}{t_1 - t_0}, \qquad T_2 = \frac{\ln 2}{k} .
+\end{equation}
+\paragraph{Example} From GSM data (9.6\,kbit/s, 1991) to the IMT-2020 requirement (20\,Gbit/s, specified 2017--2018) \cite{itu2017m2410}:
+$k = \ln(2.08\times10^{6})/27 = 0.539$ per year, a factor 1.71 per year, doubling every 1.29 years (\cref{fig:peak}).
+\paragraph{Limitation} Peak rates are specification values under ideal conditions; user-experienced rates grow more slowly and depend on load and
+coverage.
+
+\begin{acnfigure}
+  \acnfig{lecture-25/peak-rates}
+  \caption{Specified downlink peak rates of 3GPP technologies and the exponential fit of \cref{eq:growth}.}
+  \label{fig:peak}
+\end{acnfigure}
+
+\subsection{Decomposing capacity}\label{sec:cap}
+\paragraph{Model} The area traffic capacity is the product of cell density $n$ (cells/km$^2$), bandwidth $B$ and spectral efficiency $\eta$:
+\begin{equation}\label{eq:area}
+  C_A = n\, B\, \eta ,
+\end{equation}
+so the growth between two deployments is the product of the three ratios.
+\paragraph{Example} LTE baseline: $n = 4$, $B = 20$\,MHz, $\eta = 1.5$\,bit/s/Hz: $C_A = 120$\,Mbit/s/km$^2$. 5G deployment: $n = 16$, $B = 100$\,MHz,
+$\eta = 6$: $C_A = 9.6$\,Gbit/s/km$^2$ -- a factor $4\times5\times4 = 80$ (\cref{fig:cap}). For comparison, IMT-2020 requires 10\,Mbit/s/m$^2$
+($10$\,Tbit/s/km$^2$) in the indoor hotspot scenario \cite{itu2017m2410}.
+
+\begin{acnfigure}
+  \acnfig{lecture-25/capacity-decomp}
+  \caption{Area-capacity growth from the LTE baseline to the 5G deployment of \cref{sec:cap}.}
+  \label{fig:cap}
+\end{acnfigure}
+
+\subsection{Latency along the path}\label{sec:path}
+\paragraph{Model} The one-way user-plane latency through $h$ nodes is
+\begin{equation}\label{eq:path}
+  T = \sum_{i=1}^{h} \left( t_{\mathrm{proc},i} + \frac{d_i}{v} \right) ,
+\end{equation}
+with processing time $t_{\mathrm{proc},i}$, link length $d_i$ and propagation speed $v \approx 2\times10^{8}$\,m/s in fibre.
+\paragraph{Example} Four nodes with 0.5\,ms each and 400\,km of fibre (2\,ms) give 4\,ms; two nodes (gNB and edge UPF) with 0.25\,ms each and 20\,km give
+0.6\,ms. Flattening and edge placement together remove most of the core latency.
+
+\subsection{Cost per bit}\label{sec:cost}
+\paragraph{Model} If traffic grows by a factor $1+g$ per year and revenue by $1+r$, the cost per bit must fall by $(1+r)/(1+g)$ per year to keep margins
+constant; it halves every
+\begin{equation}\label{eq:cost}
+  T_{1/2} = \frac{\ln 2}{\ln (1+g) - \ln (1+r)} \ \text{years}.
+\end{equation}
+\paragraph{Example} With $g = 30\,\%$ and flat revenue, $T_{1/2} = 2.64$ years. This pressure, more than peak rate, explains the industry's move to
+commodity hardware, automation and software-defined networks.
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+\Cref{fig:arch} shows the user path; the control side evolved in parallel from MSC/VLR and SGSN to the MME and then to the AMF and SMF of the
+service-based core. \Cref{tab:map} maps the functions across generations.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Corresponding functions across generations.}\label{tab:map}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y Y@{}}
+\toprule
+\rowcolor{white} Function & 2G/3G & 4G (EPC) & 5G (5GC) \\
+\midrule
+Mobility and access control & MSC/VLR, SGSN & MME & AMF \\
+Subscriber data and authentication & HLR/AuC & HSS & UDM, AUSF \\
+Session control & SGSN, GGSN & MME, S-GW/P-GW control & SMF \\
+User-plane anchor & GGSN & P-GW (S-GW) & UPF \\
+Policy & -- (static) & PCRF & PCF \\
+Radio control & BSC, RNC & eNB & gNB (CU-CP) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+
+\begin{procedurebox}{Analysing a new mobile system}\label{proc:analyse}
+\begin{steps}
+  \item Identify the subscriber database, the mobility function, the session function and the user-plane anchor.
+  \item Draw the user path and count the nodes and tunnels (\cref{eq:path}).
+  \item Identify the authentication method and which identities travel in clear.
+  \item Identify the QoS unit (circuit, bearer, flow) and where it is enforced.
+  \item Locate the interworking with the previous generation.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{Planning a capacity increase}\label{proc:cap}
+\begin{steps}
+  \item Measure current traffic and forecast growth.
+  \item Compute the required factor and split it into spectrum, efficiency and density (\cref{eq:area}).
+  \item Price each lever (licences, new equipment, sites and backhaul).
+  \item Choose the cheapest combination and check the cost-per-bit target (\cref{eq:cost}).
+\end{steps}
+\end{procedurebox}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Densification needed}\label{ex:dens}
+\textbf{Problem.} A hotspot must carry 10\,Tbit/s/km$^2$ with $B = 400$\,MHz and $\eta = 10$\,bit/s/Hz. How many cells per km$^2$ are needed?
+
+\textbf{Solution.} $n = 10^{13}/(4\times10^{8}\times10) = 2500$ cells/km$^2$, one cell per 400\,m$^2$ -- an inter-site distance of about 20\,m, i.e.\ indoor
+small cells.
+\end{examplebox}
+
+\begin{examplebox}{Extrapolating the trend}\label{ex:extra}
+\textbf{Problem.} If the fit of \cref{sec:peak} continued, when would peak rates reach 1\,Tbit/s, a figure mentioned in 6G visions \cite{saad2020vision}?
+
+\textbf{Solution.} $\ln(10^{12}/2\times10^{10})/0.539 = 7.3$ years after 2018, i.e.\ around 2025. That has not happened, showing that the trend is not a
+law: further growth needs wider bandwidths that exist only above 100\,GHz (Lecture~26).
+\end{examplebox}
+
+\begin{examplebox}{Cost pressure}\label{ex:cost}
+\textbf{Problem.} Traffic grows 25\,\% per year and revenue 2\,\%. By how much must cost per bit fall each year, and when does it halve?
+
+\textbf{Solution.} $1.02/1.25 = 0.816$: an 18.4\,\% fall per year; $T_{1/2} = \ln 2/(\ln 1.25 - \ln 1.02) = 3.41$ years.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{Generations at a glance.}\label{tab:cmp}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y Y Y@{}}
+\toprule
+\rowcolor{white} & 2G (GSM) & 3G (UMTS) & 4G (LTE) & 5G (NR) \\
+\midrule
+Multiple access & TDMA/FDMA & WCDMA & OFDMA / SC-FDMA & OFDMA, flexible numerology \\
+Core & CS (+ GPRS) & CS + PS & All-IP EPC & Service-based 5GC \\
+Signalling & SS7/MAP & SS7/MAP & Diameter, GTPv2-C & HTTP/2 SBI, PFCP \\
+Authentication & One-way & Mutual AKA & EPS-AKA & 5G-AKA, EAP-AKA$'$, SUCI \\
+QoS unit & Circuit & PDP context & EPS bearer & QoS flow, slice \\
+Voice & CS & CS & VoLTE (IMS) & VoNR (IMS) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Same ideas, better tools} Every generation keeps the same functional roles but rebuilds them with more general technology: from
+dedicated switches to IP routers to cloud software.
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item Functions persist across generations; their names, protocols and placement change.
+  \item The user path flattened from four nodes (GPRS/UMTS) to one UPF in 5G.
+  \item Capacity $C_A = nB\eta$: growth comes from spectrum, efficiency and densification together.
+  \item Peak rate grew about 1.7 times per year from 1991 to 2018, but trends are not laws.
+  \item Cost per bit must halve every $\ln 2/(\ln(1+g) - \ln(1+r))$ years -- the driver of softwarisation.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Mapping}\label{exr:map}
+Name the 4G and 5G counterparts of: (a) VLR; (b) HLR; (c) GGSN; (d) RNC.
+\end{exercisebox}
+
+\begin{exercisebox}{1}{Why packets?}\label{exr:why}
+Give two reasons why mobile networks moved from circuit to packet switching for all traffic.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Growth rate}\label{exr:cagr}
+LTE Rel-8 offered 300\,Mbit/s (2008) and LTE-Advanced 3\,Gbit/s (2011). Compute $k$ and the doubling time for this interval and compare with \cref{sec:peak}.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Capacity levers}\label{exr:cap}
+An operator needs 20 times more area capacity. Spectrum can grow by 2.5 and efficiency by 2. What densification is needed?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Path latency}\label{exr:path}
+Compare with \cref{eq:path}: (a) UMTS path with NodeB, RNC, SGSN and GGSN (1\,ms each, 300\,km fibre); (b) 5G with gNB and a UPF 30\,km away (0.3\,ms each).
+\end{exercisebox}
+
+\begin{exercisebox}{3}{The next bottleneck}\label{exr:next}
+Using the five dimensions of evolution, argue which bottleneck of 5G a sixth generation is most likely to address, with a quantitative argument.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:map}}
+(a) MME / AMF; (b) HSS / UDM (with AUSF); (c) P-GW / UPF with SMF; (d) none as a separate node -- eNB / gNB (CU-CP).
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:why}}
+Statistical multiplexing uses capacity far better for bursty traffic, and a single IP network for voice and data lowers cost and allows Internet services
+to be offered directly.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:cagr}}
+$k = \ln 10/3 = 0.768$ per year, $T_2 = 0.90$ years -- faster than the long-term 1.29 years, because carrier aggregation and MIMO added bandwidth and layers
+in a single step.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:cap}}
+$20/(2.5\times2) = 4$: four times as many cells per unit area.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:path}}
+(a) $4\times1 + 300\,\text{km}/(2\times10^{5}\,\text{km/s}) = 4 + 1.5 = 5.5$\,ms. (b) $2\times0.3 + 0.15 = 0.75$\,ms.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:next}}
+Example argument: the peak-rate trend stalled because bandwidth below 100\,GHz is exhausted; $C = B\log_2(1+\mathrm{SNR})$ grows linearly in $B$ but only
+logarithmically in SNR, so the next tenfold step needs tens of gigahertz of spectrum (sub-THz), plus new ways to reduce cost per bit (AI-driven
+automation) and to cover the unconnected (non-terrestrial networks).
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+ITU-R M.2083 \cite{itu2015m2083} and M.2410 \cite{itu2017m2410} define the IMT-2020 vision and requirements; TS~23.002 \cite{ts23002}, TS~23.401
+\cite{ts23401} and TS~23.501 \cite{ts23501} describe the architectures of the successive generations. Eberspächer et al.\ \cite{eberspaecher2009gsm},
+Holma and Toskala \cite{holma2010wcdma}, Sesia et al.\ \cite{sesia2011lte} and Dahlman et al.\ \cite{dahlman2020nr} cover GSM, UMTS, LTE and NR;
+Rommer et al.\ \cite{rommer2020core} cover the 5G core.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

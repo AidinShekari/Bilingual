@@ -1,0 +1,33 @@
+% NSA option 3x (EN-DC with EPC) versus SA option 2 (gNB with 5GC)
+\begin{tikzpicture}[x=1cm,y=1cm]
+  % NSA
+  \node[zone,minimum width=6.6cm,minimum height=4.6cm] (z1) at (0,0) {};
+  \node[zonelabel,anchor=north] at (z1.north) {\bil{NSA option 3x (EN-DC)}{NSA گزینهٔ \lr{3x} (EN-DC)}};
+  \node[nf] (mme) at (-1.6,1.1) {MME};
+  \node[nfalt] (sgw) at (1.6,1.1) {S-GW};
+  \node[nf] (enb) at (-1.6,-0.6) {eNB\\[-2pt]{\tiny \bil{master}{اصلی}}};
+  \node[nf,fill=acnmint,draw=acnteal] (gnb) at (1.6,-0.6) {en-gNB\\[-2pt]{\tiny \bil{secondary}{ثانویه}}};
+  \node[ue] (ue) at (0,-1.85) {UE};
+  \draw[cp] (enb) -- node[iflabel,left]{S1-MME} (mme);
+  \draw[up] (gnb) -- node[iflabel,right]{S1-U} (sgw);
+  \draw[cp] (mme) -- node[iflabel,above]{S11} (sgw);
+  \draw[cp] (enb) -- node[iflabel,above]{X2} (gnb);
+  \draw[link] (ue) -- node[iflabel,left]{LTE} (enb);
+  \draw[link] (ue) -- node[iflabel,right]{NR} (gnb);
+  \node[caplabel] at (0,0.25) {EPC};
+  % SA
+  \begin{scope}[xshift=7.4cm]
+  \node[zone,minimum width=6.6cm,minimum height=4.6cm] (z2) at (0,0) {};
+  \node[zonelabel,anchor=north] at (z2.north) {\bil{SA option 2}{SA گزینهٔ 2}};
+  \node[nf] (amf) at (-1.6,1.1) {AMF};
+  \node[nf] (smf) at (0,1.1) {SMF};
+  \node[nfalt] (upf) at (1.6,1.1) {UPF};
+  \node[nf,fill=acnmint,draw=acnteal] (gnb2) at (0,-0.6) {gNB};
+  \node[ue] (ue2) at (0,-1.85) {UE};
+  \draw[cp] (gnb2) -- node[iflabel,left]{N2} (amf);
+  \draw[up] (gnb2) -- node[iflabel,right]{N3} (upf);
+  \draw[cp] (amf) -- (smf); \draw[cp] (smf) -- node[iflabel,above]{N4} (upf);
+  \draw[link] (ue2) -- node[iflabel,right]{NR} (gnb2);
+  \node[caplabel] at (0,0.25) {5GC};
+  \end{scope}
+\end{tikzpicture}

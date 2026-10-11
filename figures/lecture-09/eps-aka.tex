@@ -1,0 +1,16 @@
+% EPS-AKA and NAS security mode
+\begin{tikzpicture}
+  \SeqActors[3.9]{UE/USIM,eNB,MME,HSS}
+  \SeqMsg{0}{2}{Attach Request (IMSI {\bil{or}{یا}} GUTI)}
+  \SeqMsg{2}{3}{S6a AIR (IMSI, SN id)}
+  \SeqSelf{3}{\bil{RAND, XRES, AUTN, $K_{\mathrm{ASME}}$}{RAND، XRES، AUTN، $K_{\mathrm{ASME}}$}}
+  \SeqMsg{3}{2}{AIA ($n\times$ EPS AV)}
+  \SeqMsg{2}{0}{Authentication Request (RAND, AUTN, KSI)}
+  \SeqSelf{0}{\bil{verify AUTN, compute RES, $K_{\mathrm{ASME}}$}{بررسی AUTN، محاسبهٔ RES و $K_{\mathrm{ASME}}$}}
+  \SeqMsg{0}{2}{Authentication Response (RES)}
+  \SeqSelf{2}{RES $\stackrel{?}{=}$ XRES}
+  \SeqMsg{2}{0}{NAS Security Mode Command (EEA, EIA)}
+  \SeqMsg{0}{2}{NAS Security Mode Complete}
+  \SeqNote{0}{2}{\bil{NAS ciphered and integrity-protected; later $K_{\mathrm{eNB}}$ sent to eNB for AS security}{NAS رمزنگاری و حفاظت یکپارچگی می‌شود؛ سپس $K_{\mathrm{eNB}}$ برای امنیت AS به eNB می‌رود}}
+  \SeqEnd
+\end{tikzpicture}

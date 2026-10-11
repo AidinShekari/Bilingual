@@ -1,0 +1,396 @@
+% =====================================================================
+%  Lecture 16 -- Network Functions Virtualisation (NFV)   (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{16}
+\ACNset{title}{Network Functions Virtualisation (NFV)}
+\ACNset{shorttitle}{NFV}
+\ACNset{titleother}{مجازی‌سازی کارکردهای شبکه (NFV)}
+\ACNset{part}{Part III -- Software-driven architectures (Lectures 15--18)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Intermediate}
+\ACNset{prereq}{Lectures 11 and 15; operating systems (processes, virtual memory); basic probability}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Explain} why operators moved network functions from dedicated appliances to software on
+        shared infrastructure.
+  \item \textbf{Describe} the ETSI NFV architectural framework: VNFs, NFVI and the MANO functions with their
+        reference points.
+  \item \textbf{Compare} virtual machines and containers, and \textbf{explain} cloud-native network functions.
+  \item \textbf{Trace} the VNF lifecycle, including scaling and healing.
+  \item \textbf{Compute} availability of virtualised stacks, scaling needs and per-packet processing budgets.
+  \item \textbf{Relate} NFV to SDN and to the virtualised EPC and the cloud-native 5G core.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+You should know what an operating system kernel, a process and virtual memory are, and how series and
+parallel availability are combined (Lecture~11). SDN (Lecture~15) is the natural companion of NFV.
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+NFV & \fa{مجازی‌سازی کارکردهای شبکه} & Running network functions as software on general-purpose servers. \\
+VNF / VNFC & \fa{کارکرد شبکهٔ مجازی / مؤلفه} & A virtualised network function / one of its components. \\
+NFVI & \fa{زیرساخت NFV} & Compute, storage, network hardware and the virtualisation layer. \\
+MANO & \fa{مدیریت و هماهنگ‌سازی} & NFV orchestrator, VNF manager and virtualised infrastructure manager. \\
+VNFD / NSD & \fa{توصیفگر VNF / خدمت شبکه} & Templates describing a VNF / a network service. \\
+Hypervisor & \fa{ابرناظر} & Software that runs virtual machines on a host. \\
+Container & \fa{کانتینر} & Isolated process group sharing the host kernel. \\
+CNF & \fa{کارکرد شبکهٔ ابرزاد} & Cloud-native network function built from containers/microservices. \\
+SR-IOV / DPDK & \fa{فناوری‌های شتاب I/O} & Direct NIC access for VMs / user-space packet processing. \\
+Service function chain & \fa{زنجیرهٔ کارکرد خدمت} & Ordered sequence of functions a flow traverses. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+Until the 2010s every network function -- MME, HSS, gateway, firewall, load balancer -- was a dedicated
+box: specialised hardware, a proprietary operating system and the function software, sold together.
+Adding capacity meant buying and installing more boxes; introducing a service meant integrating yet another
+appliance; each type had its own spares, tools and lifecycle. In 2012 a group of operators proposed, in a
+white paper that launched the ETSI NFV Industry Specification Group, to run these functions as software
+on standard servers in data centres, managed by common orchestration \cite{etsinfv002}.
+
+The promised benefits are those of cloud computing: shared hardware and lower cost, capacity that follows
+demand (elastic scaling), faster introduction of services, and automation. The costs are equally real:
+packet processing on general-purpose CPUs is harder than on ASICs, and availability now depends on a stack
+of hardware, virtualisation and software layers operated by different teams. The virtualised EPC was the
+first large mobile application; the 5G core was designed from the start as cloud-native software
+(Lectures~18--19).
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{The ETSI NFV framework}
+The framework (\cref{fig:framework}) \cite{etsinfv002} has three domains:
+\begin{itemize}
+  \item \textbf{VNFs}, each with an element manager (EM) for its application-level configuration.
+  \item \textbf{NFVI}: physical compute, storage and network resources, abstracted by a virtualisation layer
+        into virtual resources.
+  \item \textbf{MANO} \cite{etsinfvman001}: the \emph{NFV orchestrator} (NFVO) manages network services and
+        global resources; the \emph{VNF manager} (VNFM) manages the lifecycle of VNF instances; the
+        \emph{virtualised infrastructure manager} (VIM, e.g.\ an OpenStack or Kubernetes control plane)
+        manages the NFVI resources.
+\end{itemize}
+Named reference points (Os-Ma, Or-Vnfm, Vi-Vnfm, Or-Vi, Ve-Vnfm, Nf-Vi, Vn-Nf, Vl-Ha) define who talks to whom,
+so that components from different vendors can be combined.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-16/nfv-framework}}
+  \caption{ETSI NFV architectural framework with its main reference points \cite{etsinfv002}.}
+  \label{fig:framework}
+\end{acnfigure}
+
+\subsection{Descriptors and network services}
+A VNF is delivered as a package containing software images and a \emph{VNF descriptor} (VNFD): its components
+(VNFCs), their resource needs, internal virtual links, connection points, scaling aspects and lifecycle
+scripts. A \emph{network service} combines VNFs and the virtual links between them, described by a network
+service descriptor (NSD) and, where traffic must traverse functions in order, a forwarding graph. Descriptors
+make deployment declarative: the orchestrator turns a template into running instances.
+
+\subsection{Virtual machines and containers}
+A \emph{virtual machine} runs a complete guest operating system on a hypervisor; it gives strong isolation and
+supports any OS, at the cost of memory and boot time. A \emph{container} isolates a group of processes with kernel
+namespaces and control groups while sharing the host kernel; it starts in seconds and has little overhead
+(\cref{fig:stacks}). \emph{Cloud-native network functions} (CNFs) are built as sets of containerised
+microservices, keep session state in separate data stores so that instances are disposable, and are deployed,
+scaled and healed by a container orchestrator such as Kubernetes.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-16/virt-stacks}}
+  \caption{From appliances to virtual machines and containers.}
+  \label{fig:stacks}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{Lifecycle management}
+The VNFM drives a VNF through the lifecycle operations of the MANO specifications \cite{etsinfvman001}:
+\emph{onboarding} (the package is validated and its images stored), \emph{instantiation}, \emph{scaling} out/in
+(adding or removing VNFC instances) or up/down (changing their resources), \emph{healing} (replacing failed
+instances), \emph{update/upgrade}, and \emph{termination}. Scaling and healing can be triggered by the VNF or EM,
+by the VNFM from performance and fault data, or by the NFVO for a whole network service (\cref{fig:scale}).
+
+\subsection{High-performance data planes}
+Gateways and UPFs must forward millions of packets per second. Plain virtual switching through the kernel and
+hypervisor cannot keep up, so NFVI nodes for user-plane functions use:
+\begin{itemize}
+  \item \textbf{DPDK}: polling-mode drivers and packet processing in user space, avoiding interrupts and kernel
+        copies;
+  \item \textbf{SR-IOV}: the NIC presents virtual functions that are passed directly to VMs or containers;
+  \item \textbf{CPU pinning and NUMA awareness}: dedicated cores on the socket attached to the NIC, huge pages for
+        packet buffers;
+  \item \textbf{Hardware offload}: smart NICs or programmable switches (Lecture~15) for encapsulation, classification
+        or encryption.
+\end{itemize}
+These techniques trade some of NFV's flexibility (portability, overcommitment) for performance; the per-packet
+budget of \cref{sec:cycles} explains why they are needed.
+
+\subsection{Resilience in a virtualised world}
+In an appliance, redundancy was built into the box (redundant boards, synchronised state). In NFV, resilience is a
+property of the software design: instances are spread across hosts and sites (anti-affinity rules), state is
+replicated or externalised, and failed instances are healed by the orchestrator. Common-mode failures move up the
+stack: a faulty hypervisor update or orchestrator bug can affect every function at once.
+
+\subsection{NFV in mobile networks}
+The virtualised EPC (vEPC) packaged MME, S/P-GW, HSS and PCRF as VNFs, initially as ``lift and shift'' of
+appliance software into VMs. The 5G core takes the next step: network functions are defined as services
+(Lecture~18), implemented as CNFs and deployed on Kubernetes-based platforms, with the user plane at edge sites.
+In the RAN, virtualised and Cloud RAN run the baseband (CU and DU) on servers with acceleration hardware.
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{Availability of a virtualised stack}\label{sec:avail}
+\paragraph{Model} A VNF instance needs its host hardware, the virtualisation layer and its own software, with
+availabilities $a_{\mathrm{hw}}$, $a_{\mathrm{v}}$ and $a_{\mathrm{sw}}$ (independent). In series, and with $k$
+independent redundant instances of which one suffices,
+\begin{equation}\label{eq:series}
+  A_1 = a_{\mathrm{hw}}\,a_{\mathrm{v}}\,a_{\mathrm{sw}}, \qquad
+  A_{k} = 1-(1-A_1)^{k}.
+\end{equation}
+\paragraph{Example} $a_{\mathrm{hw}} = 0.999$, $a_{\mathrm{v}} = 0.9995$, $a_{\mathrm{sw}} = 0.999$: $A_1 = 0.9975$, i.e.\ 21.9\,h
+of downtime per year -- worse than each component. Two instances on independent hosts: $A_2 = 1 - (0.0025)^2 =
+0.999994$, about 197\,s per year, provided failover is instantaneous.
+\paragraph{Interpretation} Redundancy at the instance level more than compensates for the less reliable layers,
+but only if failures are independent (different hosts, racks, sites) and state survives the failover.
+
+\subsection{Elastic scaling}\label{sec:scale}
+\paragraph{Model} An instance serves $\mu$ requests/s; the operator keeps utilisation at most $\rho_{\mathrm{t}}$. For
+offered load $\lambda$ the number of instances is
+\begin{equation}\label{eq:scale}
+  n = \left\lceil \frac{\lambda}{\rho_{\mathrm{t}}\,\mu} \right\rceil .
+\end{equation}
+If load can grow at rate $g$ (requests/s per second) and a new instance takes $T_\mathrm{i}$ to become ready, the
+spare capacity must cover the growth during instantiation:
+\begin{equation}\label{eq:headroom}
+  n\mu - \lambda \ge g\,T_\mathrm{i}
+  \quad\Longleftrightarrow\quad
+  \rho \le 1 - \frac{g\,T_\mathrm{i}}{n\mu}.
+\end{equation}
+\paragraph{Example} $\lambda = 40\,000$\,s$^{-1}$, $\mu = 5000$\,s$^{-1}$, $\rho_{\mathrm{t}} = 0.7$: $n = \lceil 11.4\rceil = 12$. With
+$g = 100$\,s$^{-2}$ and $T_\mathrm{i} = 60$\,s the headroom must be 6000\,s$^{-1}$, so $\rho \le 1 - 6000/60\,000 = 0.9$: the
+70\,\% target is safe. Containers ($T_\mathrm{i}$ of seconds) allow much higher utilisation than VMs (minutes).
+
+\subsection{Per-packet processing budget}\label{sec:cycles}
+\paragraph{Model} At line rate $R$ with packets of $L$ bytes (plus 20 bytes of Ethernet preamble and inter-frame
+gap), one core at clock $f$ has
+\begin{equation}\label{eq:cycles}
+  c = \frac{f}{R/\bigl(8(L+20)\bigr)}
+\end{equation}
+cycles per packet.
+\paragraph{Example} $f = 2.5$\,GHz, $R = 10$\,Gbit/s, $L = 64$: $14.88$\,Mpps and $c = 168$ cycles -- less than the cost
+of a single cache miss to main memory in the worst case. At 100\,Gbit/s only 17 cycles remain (\cref{fig:cycles}).
+\paragraph{Interpretation} Line-rate small-packet forwarding needs many cores in parallel, batching, cache-friendly
+data structures and offload; real traffic with larger average packets relaxes the budget considerably.
+
+\begin{acnfigure}
+  \acnfig{lecture-16/cycles}
+  \caption{Cycles available per packet on one 2.5\,GHz core at line rate (\cref{eq:cycles}).}
+  \label{fig:cycles}
+\end{acnfigure}
+
+\subsection{Placement as bin packing}\label{sec:pack}
+\paragraph{Model} VNFCs with CPU demands $d_j$ must be placed on servers of capacity $C$. The number of servers is at
+least
+\begin{equation}\label{eq:binpack}
+  m \ge \left\lceil \frac{\sum_j d_j}{C} \right\rceil ,
+\end{equation}
+and finding the minimum is the NP-hard bin-packing problem; heuristics such as first-fit decreasing come close.
+Anti-affinity (replicas on different servers) and latency constraints (user plane at the edge) add constraints that
+can increase $m$.
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+An operator's NFV deployment typically consists of a few central data centres (control-plane functions,
+subscriber databases, OSS) and many edge sites (user-plane functions, RAN baseband), all managed by a common
+orchestration layer. SDN controllers (Lecture~15) configure the data-centre fabrics and the transport between sites,
+so that the virtual links of network services are realised end to end. \Cref{fig:framework} shows the functional
+view; physically, MANO components themselves run as virtualised applications on the same infrastructure.
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+
+\begin{procedurebox}{Instantiating a network service}\label{proc:inst}
+\begin{steps}
+  \item The operator (OSS) requests instantiation of a network service from the NFVO, referencing an onboarded NSD.
+  \item The NFVO checks resources, selects VIMs/sites and asks the VNFM of each VNF to instantiate it.
+  \item The VNFM requests a resource grant from the NFVO, then asks the VIM to create VMs or containers, networks and
+        storage according to the VNFD.
+  \item The VIM allocates the resources on the NFVI and boots the images; the VNFM configures the instances and
+        informs the EM.
+  \item The NFVO creates the virtual links between the VNFs (possibly through an SDN controller) and reports the
+        service as instantiated.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{Automatic scale-out}\label{proc:scale}
+\begin{steps}
+  \item The VNF or EM reports load above a threshold defined in the VNFD (or the VNFM detects it from metrics).
+  \item The VNFM decides the scaling step and obtains a grant from the NFVO.
+  \item The VIM allocates resources and starts a new VNFC instance.
+  \item The VNFM configures it and adds it to the VNF's internal load distribution; traffic shifts to it.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-16/scale-out}}
+  \caption{Simplified VNF scale-out (\cref{proc:scale}).}
+  \label{fig:scale}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Redundancy design}\label{ex:avail}
+\textbf{Problem.} With the component availabilities of \cref{sec:avail}, compare one instance, two instances on the same
+host, and two instances on different hosts.
+
+\textbf{Solution.} One: $A_1 = 0.9975$ (21.9\,h/year). Same host: hardware and hypervisor are shared, so
+$A = a_{\mathrm{hw}}a_{\mathrm{v}}\,[1-(1-a_{\mathrm{sw}})^2] = 0.9985$ (13.1\,h/year): only software failures are covered.
+Different hosts: $A_2 = 0.999994$ (197\,s/year). Anti-affinity is essential.
+\end{examplebox}
+
+\begin{examplebox}{Scaling a signalling function}\label{ex:scale}
+\textbf{Problem.} An AMF-like function must handle a busy hour of $40\,000$ procedures/s; each instance handles 5000/s.
+How many instances are needed at 70\,\% target utilisation, and what is the utilisation after one instance fails?
+
+\textbf{Solution.} $n = 12$ (\cref{eq:scale}); utilisation $40\,000/60\,000 = 67\,\%$. After a failure: $40\,000/55\,000 = 73\,\%$ --
+still below saturation, and the orchestrator heals the instance in the meantime.
+\end{examplebox}
+
+\begin{examplebox}{Packing VNFCs}\label{ex:pack}
+\textbf{Problem.} VNFCs need 6, 5, 5, 4, 4, 3, 3 and 2 cores; servers have 16 cores. Find the lower bound and a first-fit
+decreasing placement.
+
+\textbf{Solution.} $\sum d_j = 32$, so $m \ge 2$. First-fit decreasing: server 1 gets 6, 5, 5 (16 cores); server 2 gets
+4, 4, 3, 3, 2 (16 cores). Two servers, which is optimal -- but with no spare capacity for healing.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{Physical appliances, VM-based VNFs and cloud-native CNFs.}\label{tab:cmp}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y Y@{}}
+\toprule
+\rowcolor{white} & Appliance & VNF (VMs) & CNF (containers) \\
+\midrule
+Hardware          & Dedicated, vendor-specific & Shared COTS servers & Shared COTS servers \\
+Isolation         & Physical                   & Hypervisor          & Kernel namespaces, cgroups \\
+Start-up time     & Hours to days (install)    & Minutes             & Seconds \\
+Scaling           & Buy and install boxes      & Add VMs (scale out/up) & Add pods automatically \\
+State handling    & Inside the box             & Often inside the VM & Externalised data stores \\
+Lifecycle         & Vendor-specific tools      & MANO (NFVO, VNFM, VIM) & Kubernetes + operators, CI/CD \\
+Data-plane speed  & ASIC line rate             & Needs DPDK, SR-IOV  & Needs DPDK, SR-IOV, offload \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{NFV and SDN} The two are complementary and independent: NFV changes \emph{where} functions run (software on
+shared servers), SDN changes \emph{how} forwarding is controlled (programmable devices, central control). Together
+they allow a network service -- functions and the links between them -- to be created by software.
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item NFV runs network functions as software on shared infrastructure, managed by MANO (NFVO, VNFM, VIM).
+  \item Descriptors (VNFD, NSD) make deployment declarative; lifecycle operations include scale and heal.
+  \item Containers and cloud-native design (stateless instances, external state) underpin the 5G core.
+  \item Series availability drops with each layer; independent redundant instances restore it: $A_k = 1-(1-A_1)^k$.
+  \item Scaling: $n = \lceil\lambda/(\rho_{\mathrm{t}}\mu)\rceil$ with headroom $gT_\mathrm{i}$; packet budget $c = 8f(L+20)/R$ cycles.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Who does what?}\label{exr:mano}
+Which MANO component (NFVO, VNFM, VIM) is responsible for: (a) creating a virtual machine; (b) deciding to add a
+VNFC instance; (c) connecting several VNFs into a network service; (d) keeping an inventory of NFVI resources?
+\end{exercisebox}
+
+\begin{exercisebox}{1}{VM or container?}\label{exr:vmct}
+Give one argument for running a virtualised HSS in VMs and one for running it as containers.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Same-host redundancy}\label{exr:host}
+Using \cref{eq:series}, compute the annual downtime of three instances placed on three different hosts that share one
+power and network domain with availability 0.9999. Which term dominates?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Packet budget}\label{exr:cycles}
+A UPF core runs at 3\,GHz and needs 400 cycles per packet. What throughput can one core sustain with 64-byte and with
+800-byte packets? How many cores for 100\,Gbit/s at 800 bytes?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Scaling lag}\label{exr:lag}
+Load ramps at $g = 200$\,s$^{-2}$. Instances serve $\mu = 4000$\,s$^{-1}$. Compare the maximum safe utilisation for
+$n = 10$ instances when a new instance takes 120\,s (VM) or 10\,s (container) to become ready. Discuss what else limits
+the speed of scaling.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Placement with anti-affinity}\label{exr:pack}
+The VNFCs of \cref{ex:pack} consist of two replicas of a 6-core component (A), two of a 5-core component (B) and the rest
+(4, 4, 3, 3, 2) without constraints; replicas of the same component must be on different servers, and each server must
+keep 2 cores free for healing. Find a placement with the fewest 16-core servers.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:mano}}
+(a) VIM; (b) VNFM (possibly at the request of the EM/VNF or NFVO); (c) NFVO; (d) VIM (with a global view kept by the NFVO).
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:vmct}}
+VMs: strong isolation for a security-critical database holding subscriber keys, and support for an existing vendor image.
+Containers: fast scaling and healing, smaller footprint and integration with cloud-native tooling, if the HSS software
+is designed with external, replicated state.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:host}}
+Three independent instances: $1-(0.0025)^3 \approx 1-1.6\times10^{-8}$. Shared domain in series: $A = 0.9999\times(1-1.6\times10^{-8})
+\approx 0.99990$, i.e.\ about 53\,min/year, almost all due to the shared domain. Independence of failure domains matters more
+than the number of instances.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:cycles}}
+One core: $3\times10^9/400 = 7.5$\,Mpps. 64-byte packets: $7.5\times10^6\times84\times8 = 5.0$\,Gbit/s; 800-byte packets:
+$7.5\times10^6\times820\times8 = 49$\,Gbit/s (on the wire). For 100\,Gbit/s at 800 bytes: $100/49 = 2.03$, i.e.\ 3 cores
+(more with headroom).
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:lag}}
+Capacity $n\mu = 40\,000$\,s$^{-1}$. VM: headroom $200\times120 = 24\,000$, so $\rho \le 0.4$; container: $200\times10 = 2000$, so
+$\rho \le 0.95$. Other limits: detection delay of the monitoring loop, image download, warm-up (caches, state
+synchronisation), load-balancer reconfiguration and the availability of free hardware at the site.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:pack}}
+Usable capacity is 14 cores per server; total demand 32, so at least 3 servers. Placement: server 1: A (6) + B (5) + 3 = 14;
+server 2: A (6) + B (5) + 3 = 14; server 3: 4 + 4 + 2 = 10. Anti-affinity holds (each server has one replica of A and B at most)
+and 2 cores remain free on each: three servers.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+The NFV architectural framework is ETSI GS NFV 002 \cite{etsinfv002} and management and orchestration ETSI GS NFV-MAN 001
+\cite{etsinfvman001}. Kreutz et al.\ \cite{kreutz2015sdn} discuss the relationship between SDN and NFV; Rommer et al.\
+\cite{rommer2020core} describe the cloud-native 5G core; Kleinrock \cite{kleinrock1975queueing} covers the queueing models used
+for dimensioning.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

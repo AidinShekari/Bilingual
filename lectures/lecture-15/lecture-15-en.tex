@@ -1,0 +1,409 @@
+% =====================================================================
+%  Lecture 15 -- Software-Defined Networking (SDN)        (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{15}
+\ACNset{title}{Software-Defined Networking (SDN)}
+\ACNset{shorttitle}{SDN}
+\ACNset{titleother}{شبکه‌سازی نرم‌افزارمحور (SDN)}
+\ACNset{part}{Part III -- Software-driven architectures (Lectures 15--18)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Intermediate}
+\ACNset{prereq}{IP routing and switching; Lecture 13 (CUPS); M/M/1 queue (Lecture 12)}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Explain} the separation of control and data planes and the motivation for logically
+        centralised control.
+  \item \textbf{Describe} the SDN layers and interfaces (northbound, southbound) and the OpenFlow
+        switch model: flow tables, pipeline, groups and meters.
+  \item \textbf{Trace} reactive and proactive flow installation and \textbf{compute} their latency and
+        table requirements.
+  \item \textbf{Explain} data-plane programmability with P4.
+  \item \textbf{Analyse} controller placement and controller load.
+  \item \textbf{Identify} SDN principles in mobile networks (CUPS, PFCP, transport and slicing).
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+You should know how IP routers and Ethernet switches forward packets (longest-prefix match, MAC learning)
+and that routing protocols such as OSPF and BGP compute forwarding tables in a distributed way. From the
+course, you need CUPS and PFCP (Lecture~13) and the M/M/1 delay formula (Lecture~12).
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+Control plane & \fa{صفحهٔ کنترل} & Logic that decides how traffic is forwarded. \\
+Data plane & \fa{صفحهٔ داده} & Per-packet forwarding according to installed state. \\
+SDN controller & \fa{کنترل‌گر SDN} & Logically centralised software that programs the data plane. \\
+Southbound API & \fa{API جنوبی} & Controller--device interface (OpenFlow, P4Runtime, NETCONF). \\
+Northbound API & \fa{API شمالی} & Controller--application interface (e.g.\ REST). \\
+Flow table & \fa{جدول جریان} & Prioritised match--action rules in a switch. \\
+Packet-In / Flow-Mod & \fa{پیام‌های OpenFlow} & Switch-to-controller packet report / rule installation. \\
+Reactive / proactive & \fa{واکنشی / پیش‌کنشی} & Rules installed on first packet / in advance. \\
+P4 & \fa{زبان P4} & Language for programming protocol-independent packet processors. \\
+TCAM & \fa{حافظهٔ آدرس‌پذیر محتوایی سه‌حالته} & Hardware memory for wildcard matching. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+In a traditional network every router runs its own control software: it exchanges routing messages with
+its neighbours, computes paths and fills its forwarding table. Control and forwarding are bundled in each
+box, and each vendor implements the protocols in its own closed software. This design is robust, but it
+makes the network hard to change: a new forwarding behaviour needs a new protocol, a standard and years
+of implementation, and network-wide policies (traffic engineering, isolation, access control) must be
+expressed indirectly through many per-box configurations.
+
+Software-defined networking (SDN) separates the two planes \cite{mckeown2008openflow,kreutz2015sdn}.
+Forwarding devices become simple, programmable match--action engines; a logically centralised controller
+with a global view computes their state and installs it over an open interface. Network behaviour becomes
+software that can be written, tested and deployed like other software. Mobile networks adopted the same
+idea: CUPS and PFCP (Lecture~13) are SDN applied to packet gateways, and the 5G core with its UPF is built on
+it. This lecture opens Part~III, which covers the software technologies -- SDN, NFV, service-based
+architecture -- on which 5G networks rest.
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{Three principles}
+\begin{enumerate}
+  \item \textbf{Separation of control and data planes}: devices forward; controllers decide.
+  \item \textbf{Logically centralised control}: one (possibly distributed and replicated) controller
+        has a global view of topology and state.
+  \item \textbf{Programmability}: open interfaces let software applications define network behaviour.
+\end{enumerate}
+
+\subsection{Layers and interfaces}
+RFC~7426 describes SDN in terms of planes -- forwarding, operational, control, management and application --
+and the abstraction layers between them \cite{rfc7426}. In the common simplified view
+(\cref{fig:arch}) applications use a \emph{northbound} API (often REST) of the controller, and the controller
+programs devices through a \emph{southbound} API: OpenFlow \cite{onf2015openflow} for flow tables, P4Runtime
+for P4-programmed devices, or NETCONF/YANG for configuration.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-15/sdn-architecture}}
+  \caption{SDN layers: applications, controller and data plane with northbound and southbound APIs.}
+  \label{fig:arch}
+\end{acnfigure}
+
+\subsection{The OpenFlow switch}
+\begin{definitionbox}{Flow entry}
+A flow entry consists of match fields (ingress port and packet header fields from Ethernet to transport
+layer), a priority, counters, instructions (apply or write actions, go to another table), idle and hard
+timeouts, and an opaque cookie \cite{onf2015openflow}. A packet is matched against the entries of a table;
+the highest-priority match wins.
+\end{definitionbox}
+A switch contains a pipeline of flow tables (\cref{fig:table}), a \emph{group table} (for multicast,
+load balancing with \emph{select} groups and fast failover) and a \emph{meter table} (rate limiting). If no
+entry matches (\emph{table miss}), the table-miss entry decides: drop, continue, or send the packet to the
+controller. The switch talks to the controller over a TCP connection (port 6653, optionally TLS).
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-15/flow-table}}
+  \caption{OpenFlow pipeline with multiple flow tables, and the fields of a flow entry.}
+  \label{fig:table}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{OpenFlow messages}
+\begin{itemize}
+  \item \textbf{Controller-to-switch}: Features (capabilities), Flow-Mod (add, modify, delete entries),
+        Group-Mod, Meter-Mod, Packet-Out (send a packet from a port), Multipart/Stats (read counters), Barrier
+        (ensure earlier messages are processed).
+  \item \textbf{Asynchronous}: Packet-In (a packet sent to the controller, by default with its first 128 bytes
+        and a buffer identifier), Flow-Removed (an entry expired), Port-Status (a port changed).
+  \item \textbf{Symmetric}: Hello, Echo (liveness), Error.
+\end{itemize}
+
+\subsection{Reactive and proactive control}
+In \emph{reactive} mode the first packet of a new flow misses, the switch sends a Packet-In, and the
+controller computes a path and installs entries along it before releasing the packet with Packet-Out
+(\cref{fig:reactive}). Fine-grained control is possible, but every new flow pays a controller round trip,
+and the controller load grows with the flow arrival rate. In \emph{proactive} mode the controller installs
+(usually wildcard) rules in advance, from its knowledge of topology and policy; no packet waits, the
+controller is off the critical path, but rules must be aggregated to fit the tables. Practical deployments
+mix both: proactive rules for the bulk of traffic, reactive handling for exceptions.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-15/reactive-flow}}
+  \caption{Reactive flow set-up: table miss, Packet-In, Flow-Mod along the path, Packet-Out.}
+  \label{fig:reactive}
+\end{acnfigure}
+
+\subsection{Data-plane programmability: P4}
+OpenFlow fixes the header fields a switch can match; adding a new protocol requires a new version of the
+specification and of the hardware. P4 \cite{bosshart2014p4} goes one step further: the program defines the
+headers, the parser state machine, the match--action tables and the control flow, and a compiler maps it to a
+programmable target (switch ASIC, smart NIC, software switch) organised as a parser, ingress and egress
+match--action pipelines and a deparser (\cref{fig:p4}). The controller then fills the tables at run time
+through P4Runtime. P4 has been used, for example, to implement GTP-U encapsulation and UPF functions directly
+in switch hardware.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-15/p4-pipeline}}
+  \caption{Protocol-independent switch architecture programmed with P4.}
+  \label{fig:p4}
+\end{acnfigure}
+
+\subsection{Distributed controllers and consistency}
+A single controller is a single point of failure and a bottleneck. Production controllers run as clusters
+that replicate state with consensus protocols and partition switches among instances; a switch connects to
+several controllers with master/slave (later primary/secondary) roles. Updating many switches is not atomic:
+during an update some packets may see old rules on one switch and new ones on the next, causing loops or
+policy violations. \emph{Consistent update} techniques tag packets with a configuration version at the ingress
+and install the new version on all switches before flipping the tags, so that each packet sees either the old
+or the new configuration, never a mix.
+
+\subsection{SDN in mobile networks}
+\begin{itemize}
+  \item \textbf{Gateways}: CUPS (Lecture~13) separates SGW/PGW control from user-plane functions; PFCP plays the
+        role of a southbound protocol with rules (PDR, FAR, QER, URR) that resemble OpenFlow entries.
+  \item \textbf{5G core}: the SMF controls UPFs over N4 with PFCP (Lecture~23).
+  \item \textbf{Transport}: SDN controllers configure backhaul and fronthaul paths, segment routing and transport
+        slices.
+  \item \textbf{RAN}: the O-RAN architecture opens RAN control to software applications through a RAN intelligent
+        controller -- the SDN idea applied to radio resource management.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{Reactive flow-set-up latency}\label{sec:setup}
+\paragraph{Model} The first packet of a flow waits for the switch--controller round trip $\tau$ and the
+controller's processing. With $S$ switches each generating $\lambda_s$ new flows per second and a controller
+modelled as an M/M/1 server of rate $\mu$,
+\begin{equation}\label{eq:setup}
+  T_{\mathrm{setup}} \approx \tau + \frac{1}{\mu - S\lambda_s}, \qquad S\lambda_s < \mu .
+\end{equation}
+\paragraph{Example} $\tau = 2$\,ms, $S = 100$, $\lambda_s = 1000$\,s$^{-1}$, $\mu = 1.5\times10^5$\,s$^{-1}$:
+$T_{\mathrm{setup}} = 2 + 0.02 = 2.02$\,ms. At $S\lambda_s = 1.49\times10^5$ the queueing term rises to 1\,ms
+(\cref{fig:setup}).
+\paragraph{Interpretation} For moderate load the propagation delay to the controller dominates, which argues for
+controllers close to the switches; near saturation the queueing term explodes and Packet-In storms (e.g.\ during
+a scan or a failure) can overload the controller -- one reason to prefer proactive rules.
+
+\begin{acnfigure}
+  \acnfig{lecture-15/setup-delay}
+  \caption{Controller queueing delay versus Packet-In rate (\cref{eq:setup}).}
+  \label{fig:setup}
+\end{acnfigure}
+
+\subsection{Flow-table occupancy}\label{sec:little}
+\paragraph{Model} With exact-match (per-flow) rules, new flows arrive at rate $\lambda$ and each entry stays
+for the flow duration plus the idle timeout, $\bar T$ on average. By Little's law the mean number of entries is
+\begin{equation}\label{eq:little}
+  \bar N = \lambda\,\bar T .
+\end{equation}
+\paragraph{Example} $\lambda = 2000$\,s$^{-1}$, mean flow duration 10\,s, idle timeout 10\,s: $\bar N = 40\,000$
+entries -- far more than the few thousand TCAM entries of many switches. Per-flow reactive control does not
+scale to such switches; wildcard rules, aggregation, or larger exact-match tables (hash-based) are needed.
+
+\subsection{Controller placement}\label{sec:place}
+\paragraph{Model} For switches $v\in V$ and controller locations $C$, with $d(v,c)$ the latency between them,
+the average and worst-case switch--controller latencies are
+\begin{equation}\label{eq:place}
+  \bar L(C) = \frac{1}{|V|}\sum_{v\in V}\min_{c\in C} d(v,c), \qquad
+  L_{\max}(C) = \max_{v\in V}\min_{c\in C} d(v,c).
+\end{equation}
+Minimising $\bar L$ for $|C| = k$ is the $k$-median problem; minimising $L_{\max}$ is the $k$-centre problem.
+\paragraph{Example} Five switches on a line, 1\,ms apart: one controller at the centre gives $\bar L = 1.2$\,ms
+($L_{\max} = 2$\,ms); at an end, $\bar L = 2$\,ms. Two controllers at the second and fourth switches give
+$\bar L = 0.6$\,ms and $L_{\max} = 1$\,ms.
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+In a data centre, the SDN controller programs the leaf--spine fabric and the virtual switches in the
+servers; in a WAN, it computes traffic-engineered paths between sites; in a mobile operator, SDN controllers
+manage transport networks and, through the core's control functions, the user-plane nodes. The controller is
+itself a distributed application deployed in redundant instances, often on the virtualised infrastructure
+of Lecture~16.
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+
+\begin{procedurebox}{Reactive flow installation}\label{proc:reactive}
+\begin{steps}
+  \item The first packet of a new flow arrives at switch 1 and misses all entries; the table-miss entry sends
+        it to the controller as Packet-In (header and buffer identifier).
+  \item The controller identifies source and destination, checks policy and computes a path with its topology
+        view.
+  \item It sends Flow-Mod messages to all switches on the path (destination side first, to avoid further
+        misses), optionally followed by a Barrier.
+  \item It sends Packet-Out to switch 1 to release the buffered packet along the new path.
+  \item Subsequent packets match the new entries and are forwarded at line rate; entries expire after the idle
+        timeout and Flow-Removed reports their counters.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{Topology discovery}\label{proc:lldp}
+\begin{steps}
+  \item On connection, each switch reports its ports (Features reply).
+  \item The controller sends, via Packet-Out, a link-discovery frame (LLDP) on every port of every switch.
+  \item A neighbouring switch receives the frame and, by a pre-installed rule, returns it as Packet-In with its
+        ingress port.
+  \item From (sending switch, port) and (receiving switch, port) the controller learns each link; it repeats
+        periodically and updates the topology on Port-Status events.
+\end{steps}
+\end{procedurebox}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Set-up delay budget}\label{ex:setup}
+\textbf{Problem.} A campus network has 100 switches; each sees 1000 new flows per second. The controller handles
+$1.5\times10^5$ Packet-In/s and is 1\,ms away (one way). What delay does the first packet of a flow see, and what
+fraction of short web flows (10 packets, 20\,ms) is it?
+
+\textbf{Solution.} $\tau = 2$\,ms, queueing 0.02\,ms (\cref{eq:setup}): about 2\,ms, i.e.\ 10\,\% of the flow's duration.
+The controller runs at 67\,\% load; a 50\,\% increase in flow rate would saturate it.
+\end{examplebox}
+
+\begin{examplebox}{Table size}\label{ex:table}
+\textbf{Problem.} A top-of-rack switch with 4000 TCAM entries sees 2000 new flows/s, each lasting 10\,s on average,
+idle timeout 10\,s. Can reactive per-flow rules be used? What if the idle timeout is 1\,s?
+
+\textbf{Solution.} $\bar N = 2000\times20 = 40\,000 > 4000$: no. With 1\,s idle timeout, $\bar N = 22\,000$: still no.
+Rules must be aggregated, e.g.\ per destination prefix (proactive), which needs entries per destination rather
+than per flow.
+\end{examplebox}
+
+\begin{examplebox}{Placement}\label{ex:place}
+\textbf{Problem.} Verify the values of the line example in \cref{sec:place}.
+
+\textbf{Solution.} Centre (switch 3): distances 2, 1, 0, 1, 2; mean 1.2\,ms, max 2\,ms. End (switch 1): 0, 1, 2, 3, 4; mean
+2\,ms, max 4\,ms. Controllers at 2 and 4: 1, 0, 1, 0, 1; mean 0.6\,ms, max 1\,ms.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{Traditional distributed control versus SDN.}\label{tab:cmp}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
+\toprule
+\rowcolor{white} & Distributed control (OSPF, BGP) & SDN \\
+\midrule
+Control location   & In every device                 & Logically centralised controller \\
+View               & Local, built by protocol exchange & Global topology and state \\
+New behaviour      & New protocol, standard, firmware & New controller application \\
+Failure handling   & Local, fast, autonomous          & Needs controller or pre-installed backups \\
+Scalability limit  & Protocol convergence, table size & Controller capacity, control-channel latency \\
+Policy expression  & Indirect (metrics, filters per box) & Direct, network-wide \\
+Vendor coupling    & Hardware and software bundled    & Open interfaces, merchant silicon \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Not a replacement for routing} SDN does not abolish distributed protocols: many deployments keep BGP or
+IS-IS for basic reachability and fast local failover, and use the controller for policy and optimisation on top
+(hybrid SDN).
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item SDN separates control from forwarding, centralises control logically and makes the network programmable.
+  \item OpenFlow switches: prioritised flow tables in a pipeline, groups, meters; Packet-In, Flow-Mod, Packet-Out.
+  \item Reactive control costs $T_{\mathrm{setup}} \approx \tau + 1/(\mu - S\lambda_s)$ per new flow; proactive control
+        needs aggregated rules.
+  \item Table occupancy follows Little's law, $\bar N = \lambda\bar T$; per-flow rules rarely fit TCAMs.
+  \item P4 makes the parser and pipeline programmable; controller placement is a $k$-median/$k$-centre problem.
+  \item CUPS/PFCP and the 5G UPF apply SDN to the mobile core.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Which plane?}\label{exr:planes}
+Classify as control or data plane: (a) OSPF shortest-path computation; (b) TTL decrement; (c) installing a
+Flow-Mod; (d) matching a packet against a TCAM; (e) LLDP-based topology discovery.
+\end{exercisebox}
+
+\begin{exercisebox}{1}{Reactive or proactive?}\label{exr:proactive}
+For each case choose reactive or proactive control and justify: (a) a data-centre fabric with
+destination-based forwarding; (b) a campus network where guests must authenticate before their first flow
+is allowed; (c) a mobile backhaul network.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Control-channel bandwidth}\label{exr:packetin}
+A controller receives $10^5$ Packet-In messages per second, each carrying 128 bytes of packet plus 32 bytes of
+OpenFlow and TCP/IP overhead (amortised). Compute the control-channel bandwidth. How does it change if the
+switch sends whole 1500-byte packets instead of buffering them?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Timeouts}\label{exr:little}
+Using \cref{eq:little}, find the idle timeout that keeps the mean occupancy at 15\,000 entries for 1000 new
+flows/s with mean duration 8\,s. What is the price of a very short idle timeout?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Placement on a ring}\label{exr:place}
+Six switches form a ring with 1\,ms links. Compute $\bar L$ and $L_{\max}$ for one controller, and for two
+controllers placed optimally. What happens to the worst case if one of the two controllers fails?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Consistent update}\label{exr:consistent}
+A path change moves traffic from route A--B--D to A--C--D. Show how updating switch A before installing rules on C
+can drop packets, and describe a version-tagging update that avoids both drops and mixing. How many rules does it
+need temporarily?
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:planes}}
+(a) control; (b) data; (c) control (the act of installing; the entry is then used by the data plane); (d) data;
+(e) control.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:proactive}}
+(a) Proactive: destinations are known, traffic volume is huge, and per-flow set-up delay is unacceptable.
+(b) Reactive for the first flow of each guest (the controller must see it to apply authentication), then
+proactive rules for authorised hosts. (c) Proactive: paths are planned and must survive controller outages.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:packetin}}
+$10^5\times160$\,bytes $= 16$\,MB/s $= 128$\,Mbit/s. With whole packets: $10^5\times1532\times8 = 1.23$\,Gbit/s -- ten times
+more, and the controller must also store or forward them. Buffering in the switch saves control-channel capacity.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:little}}
+$15\,000 = 1000\,(8 + T_{\mathrm{idle}}) \Rightarrow T_{\mathrm{idle}} = 7$\,s. A very short idle timeout evicts entries of
+flows that pause briefly; their next packet misses again and causes another Packet-In, increasing controller load
+and latency.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:place}}
+One controller: distances 0, 1, 1, 2, 2, 3; $\bar L = 9/6 = 1.5$\,ms, $L_{\max} = 3$\,ms. Two opposite controllers: 0, 1, 1, 0,
+1, 1; $\bar L = 4/6 = 0.67$\,ms, $L_{\max} = 1$\,ms. If one fails, the survivor serves all with $L_{\max} = 3$\,ms -- the
+placement must be evaluated for failure cases too.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:consistent}}
+If A forwards to C before C has a rule for the flow, C misses and drops (or sends to the controller). Order matters:
+install on C first, then switch A ("make before break"). For general updates: install the new rules on C and D
+matching version tag 2 (while version-1 rules remain), then make A stamp tag 2 on new packets; once old packets
+have drained, delete version-1 rules. Temporarily the affected switches hold both versions -- up to twice the
+rules.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+McKeown et al.\ \cite{mckeown2008openflow} introduced OpenFlow, whose current switch specification is published by the ONF
+\cite{onf2015openflow}; Kreutz et al.\ \cite{kreutz2015sdn} survey SDN comprehensively; RFC~7426 \cite{rfc7426} defines
+SDN layers and terminology; Bosshart et al.\ \cite{bosshart2014p4} present P4. For the mobile context see TS~23.214
+\cite{ts23214} and TS~29.244 \cite{ts29244}.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

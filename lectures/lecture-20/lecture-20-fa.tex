@@ -1,0 +1,416 @@
+% =====================================================================
+%  Lecture 20 -- 5G Procedures                             (Persian edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-fa}
+
+\ACNset{number}{20}
+\ACNset{title}{رویه‌های سامانهٔ نسل پنجم}
+\ACNset{shorttitle}{رویه‌های نسل پنجم}
+\ACNset{titleother}{5G System Procedures}
+\ACNset{part}{بخش چهارم -- سامانه و رویه‌های نسل پنجم (درس‌های ۱۴ و ۱۹ تا ۲۲)}
+\ACNset{time}{۷ تا ۹ ساعت (۳٫۵ ساعت مطالعه، ۴ تا ۵ ساعت تمرین)}
+\ACNset{level}{پیشرفته}
+\ACNset{prereq}{درس‌های ۹، ۱۲، ۱۸ و ۱۹}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{اهداف یادگیری}
+پس از مطالعهٔ این درس باید بتوانید:
+\begin{objectives}
+  \item ثبت‌نام اولیه، شامل \lr{5G-AKA}، امنیت \acro{NAS} و بازیابی اشتراک را \textbf{دنبال کنید}.
+  \item مقادیر تأیید و سلسله‌مراتب کلید \lr{5G-AKA} را در سطح ورودی‌ها و هدفشان \textbf{استخراج کنید}.
+  \item برقراری نشست \acro{PDU} را در میان \acro{AMF}، \acro{SMF}، \acro{PCF}، \acro{UPF} و \acro{RAN} \textbf{دنبال کنید}.
+  \item درخواست خدمت آغازشده از \acro{UE} و از شبکه، \lr{RRC\_INACTIVE} و تحویل \lr{Xn/N2} را \textbf{توضیح دهید}.
+  \item تأخیر رویه، بار سیگنالینگ \acro{AMF} و بافرهای هدایت تحویل را \textbf{تخمین بزنید}.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{دانش پیش‌نیاز}
+این درس از معماری و هویت‌های \lr{5GC} در درس ۱۹، \acro{SBI} و \acro{NRF} درس ۱۸، رویه‌های \lr{EPS-AKA} و \acro{EPC} در درس‌های ۹ و
+۱۲ (برای مقایسه) و قواعد \acro{PFCP} درس ۱۳ استفاده می‌کند. رویه‌ها به شکل ساده‌شده و مطابق \lr{TS 23.502} \cite{ts23502}
+ارائه می‌شوند؛ گام‌های اختیاری (رومینگ، همکاری، بسیاری از حالت‌های خطا) حذف شده‌اند.
+
+\paragraph{واژه‌های کلیدی} واژگان این درس همراه با معادل انگلیسی آن‌ها:
+\begin{keyterms}
+ثبت‌نام & \lr{Registration} & رویه‌ای که \acro{UE} را به \lr{5GC} می‌شناساند (اولیه، تحرکی، دوره‌ای). \\
+احراز هویت و توافق کلید ۵G & \lr{5G-AKA} & احراز هویت با تأیید \lr{RES*} توسط شبکهٔ خانگی. \\
+تابع لنگر امنیتی & \lr{SEAF} & لنگر امنیتی در شبکهٔ خدمت‌دهنده (هم‌مکان با \acro{AMF}). \\
+فرمان حالت امنیتی \acro{NAS} & \lr{NAS SMC} & فعال‌سازی رمزنگاری و یکپارچگی \acro{NAS}. \\
+برقراری نشست \acro{PDU} & \lr{PDU session establishment} & ایجاد یک نشست، جریان‌های کیفیت خدمات و تونل‌های آن. \\
+انتقال پیام \lr{N1N2} & \lr{N1N2 message transfer} & خدمت \acro{AMF} که پیام‌های \acro{SMF} را به \acro{UE} (\lr{N1}) و \acro{RAN} (\lr{N2}) می‌برد. \\
+درخواست خدمت & \lr{Service request} & گذار از \lr{CM-IDLE} به \lr{CM-CONNECTED}. \\
+حالت غیرفعال \acro{RRC} & \lr{RRC\_INACTIVE} & حالت معلق در سطح \acro{RAN} با حفظ زمینهٔ هسته. \\
+تغییر مسیر & \lr{Path switch} & جابه‌جایی تونل \lr{N3} به \acro{gNB} مقصد پس از تحویل \lr{Xn}. \\
+پارامتر ضدحمله به پایین‌برداری & \lr{ABBA} & پارامتر ضد پایین‌آوردن امنیت که در $K_{\mathrm{AMF}}$ گنجانده می‌شود. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{مقدمه و انگیزه}
+یک معماری تنها از طریق رویه‌هایش ملموس می‌شود: تبادل‌های مرتبی که \acro{UE} را به شبکه می‌شناسانند، سیگنالینگ آن را ایمن
+می‌کنند، به آن یک نشست داده می‌دهند و آن نشست را هنگامی که \acro{UE} می‌خوابد و حرکت می‌کند زنده نگه می‌دارند. در \lr{5GC} این
+رویه‌ها سه نوع سیگنالینگ را ترکیب می‌کنند: \acro{NAS} میان \acro{UE} و \acro{AMF} (\lr{TS 24.501} \cite{ts24501})، \acro{NGAP}
+میان \acro{RAN} و \acro{AMF} (\lr{TS 38.413} \cite{ts38413}) و عملیات خدمت میان \acro{NF}ها (درس ۱۸)، به‌علاوهٔ \acro{PFCP} به
+سوی \acro{UPF}.
+
+فهم رویه‌ها برای عیب‌یابی (یک اتصال کجا شکست خورد؟)، برای اندازه‌گذاری (هر \acro{NF} چند پیام پردازش می‌کند؟) و برای مهندسی
+تأخیر (تا نخستین بسته چقدر طول می‌کشد؟) ضروری است. این درس چهار رویهٔ محوری را دنبال و هزینهٔ آن‌ها را کمّی می‌کند.
+
+% ---------------------------------------------------------------------
+\section{مفاهیم بنیادی}
+
+\subsection{انواع ثبت‌نام}
+\begin{itemize}
+  \item \textbf{ثبت‌نام اولیه}: \acro{UE} در \lr{RM-DEREGISTERED} است و برای نخستین بار (یا پس از غیبتی طولانی) ثبت‌نام می‌کند.
+  \item \textbf{به‌روزرسانی ثبت‌نام تحرکی}: \acro{UE} وارد ناحیهٔ ردیابی‌ای خارج از ناحیهٔ ثبت‌نام خود می‌شود، یا قابلیت‌ها یا
+        برش‌های درخواستی‌اش تغییر می‌کند.
+  \item \textbf{به‌روزرسانی ثبت‌نام دوره‌ای}: با انقضای زمان‌سنج دوره‌ای، برای تأیید دسترس‌پذیری.
+  \item \textbf{ثبت‌نام اضطراری}: خدمت محدود برای تماس‌های اضطراری.
+\end{itemize}
+
+\subsection{لنگرهای امنیتی}
+\lr{5G-AKA} \cite{ts33501} از یک جنبهٔ مهم با \lr{EPS-AKA} تفاوت دارد: \emph{شبکهٔ خانگی} احراز هویت را تأیید می‌کند. \acro{SEAF}
+شبکهٔ خدمت‌دهنده برای نخستین بررسی یک پاسخ مورد انتظار درهم‌سازی‌شده (\lr{HXRES*}) را بررسی می‌کند، اما \acro{AUSF} در شبکهٔ
+خانگی خود \lr{RES*} را پیش از آزادکردن کلید لنگر $K_{\mathrm{SEAF}}$ و \acro{SUPI} بررسی می‌کند. بنابراین یک شبکهٔ میزبان نمی‌تواند
+بدون اثبات ادعا کند که مشترکی حضور داشته است -- پاسخی به نگرانی‌های تقلب در رومینگ.
+
+\subsection{نقش‌ها در برقراری نشست}
+\acro{AMF} فقط سیگنالینگ نشست را رله می‌کند: یک \acro{SMF} را برمی‌گزیند و پیام‌های \lr{N1} (\acro{NAS} \acro{SM}) و \lr{N2}
+(برقراری منبع \acro{NGAP}) را برای آن حمل می‌کند. \acro{SMF} مالک نشست است: سیاست را از \acro{PCF} می‌گیرد، \acro{UPF} را از طریق
+\lr{N4} انتخاب و برنامه‌ریزی می‌کند و از \acro{AMF} می‌خواهد پذیرش \acro{NAS} را به \acro{UE} و درخواست منبع را به \acro{RAN} در یک
+\emph{انتقال پیام \lr{N1N2}} واحد تحویل دهد.
+
+% ---------------------------------------------------------------------
+\section{توضیحات فنی تفصیلی}
+
+\subsection{ثبت‌نام اولیه}
+\acro{UE} یک \lr{Registration Request} با \acro{SUCI} خود (یا یک \lr{5G-GUTI} اگر داشته باشد)، برش‌های درخواستی (\acro{NSSAI}) و
+قابلیت‌ها می‌فرستد (\cref{fig:reg}) \cite{ts23502}. \acro{RAN} یک \acro{AMF} را (از \acro{GUAMI} در \lr{5G-S-TMSI} یا بر اساس بار)
+برمی‌گزیند و پیام را در یک \lr{NGAP Initial UE Message} هدایت می‌کند. اگر \acro{UE} یک \lr{5G-GUTI} از \acro{AMF} دیگری داده باشد،
+\acro{AMF} جدید زمینه را از \acro{AMF} قدیمی می‌گیرد (\lr{Namf\_Communication\_UEContextTransfer}). سپس \acro{AMF} \acro{UE} را
+احراز هویت می‌کند (\lr{5G-AKA}، \cref{sec:aka})، امنیت \acro{NAS} را فعال می‌کند، نزد \acro{UDM} ثبت می‌شود
+(\lr{Nudm\_UECM\_Registration})، اشتراک دسترسی و تحرک را بازیابی می‌کند (\lr{Nudm\_SDM\_Get}) و در تغییرات آن مشترک می‌شود، یک انجمن
+سیاست \acro{AM} با \acro{PCF} می‌سازد و در صورت نیاز از \acro{NSSF} انتخاب برش می‌خواهد. \lr{Registration Accept} حامل
+\lr{5G-GUTI} جدید، ناحیهٔ ثبت‌نام و \acro{NSSAI} مجاز است؛ \acro{UE} با \lr{Registration Complete} تأیید می‌کند.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-20/registration}}
+  \caption{ثبت‌نام اولیه با \lr{5G-AKA} (ساده‌شده) \cite{ts23502,ts33501}.}
+  \label{fig:reg}
+\end{acnfigure}
+
+\subsection{\lr{5G-AKA}}\label{sec:aka}
+\acro{UDM} یک بردار احراز هویت با همان توابع $f_1$ تا $f_5$ درس ۱۱ تولید می‌کند، اما مقادیر ویژهٔ نسل پنجم را استخراج می‌کند که به
+\emph{نام شبکهٔ خدمت‌دهنده} (\acro{SNN}، به شکل \lr{\nolinkurl{5G:mnc<MNC>.mcc<MCC>.3gppnetwork.org}}) گره خورده‌اند \cite{ts33501}:
+\begin{subequations}\label{eq:aka}
+\begin{align}
+  \mathrm{XRES}^{*} &= \KDF\bigl(\mathrm{CK}\concat\mathrm{IK},\ \mathrm{SNN},\ \mathrm{RAND},\ \mathrm{XRES}\bigr)\ \text{(128 bits)}, \label{eq:xres}\\
+  \mathrm{HXRES}^{*} &= \mathrm{SHA\text{-}256}\bigl(\mathrm{RAND}\concat\mathrm{XRES}^{*}\bigr)\ \text{(truncated to 128 bits)}, \label{eq:hxres}\\
+  K_{\mathrm{AUSF}} &= \KDF\bigl(\mathrm{CK}\concat\mathrm{IK},\ \mathrm{SNN},\ \mathrm{SQN}\xor\mathrm{AK}\bigr), \label{eq:kausf}
+\end{align}
+\end{subequations}
+و سپس
+\[
+\begin{aligned}
+  K_{\mathrm{SEAF}} &= \KDF(K_{\mathrm{AUSF}}, \mathrm{SNN}), \qquad
+  K_{\mathrm{AMF}} = \KDF(K_{\mathrm{SEAF}}, \mathrm{SUPI}, \mathrm{ABBA}),\\
+  K_{\mathrm{gNB}} &= \KDF(K_{\mathrm{AMF}}, \text{UL NAS COUNT}, \ldots).
+\end{aligned}
+\]
+\acro{AUSF} مقدار \lr{XRES*} را نگه می‌دارد و فقط \lr{HXRES*} را
+به \acro{SEAF} می‌دهد: \acro{SEAF} می‌تواند بررسی کند که $\mathrm{SHA\text{-}256}(\mathrm{RAND}\concat\mathrm{RES}^*)$ تطابق دارد، اما خود
+نمی‌تواند \lr{RES*} را محاسبه کند، پس باید \lr{RES*} را برای تصمیم نهایی به شبکهٔ خانگی بفرستد.
+
+\subsection{برقراری نشست \lr{PDU}}
+\acro{UE} یک \lr{PDU Session Establishment Request} (با شناسهٔ نشست \acro{PDU} جدید، \acro{DNN}، \lr{S-NSSAI}، نوع نشست و حالت
+\acro{SSC}) درون یک پیام \lr{UL NAS Transport} می‌فرستد (\cref{fig:pdu}). \acro{AMF} یک \acro{SMF} را برمی‌گزیند (کشف \acro{NRF}
+بر اساس \acro{DNN} و برش) و \lr{Nsmf\_PDUSession\_CreateSMContext} را فرا می‌خواند. \acro{SMF} دادهٔ اشتراک مدیریت نشست را از
+\acro{UDM} بازیابی می‌کند، یک انجمن سیاست \acro{SM} با \acro{PCF} می‌سازد (که قواعد \acro{PCC} را برمی‌گرداند)، یک \acro{UPF}
+برمی‌گزیند و نشست \lr{N4} (\lr{PDR}ها، \lr{FAR}ها، \lr{QER}ها، \lr{URR}ها) را برقرار و نقطهٔ پایانی تونل فراسو را دریافت می‌کند.
+سپس \lr{Namf\_Communication\_N1N2MessageTransfer} را با پذیرش \acro{NAS} (قواعد کیفیت خدمات، نشانی \acro{IP}) برای \acro{UE} و
+اطلاعات برقراری منبع \lr{N2} (جریان‌ها و نمایه‌های کیفیت خدمات، نقطهٔ پایانی تونل \acro{UPF}) برای \acro{gNB} فرا می‌خواند.
+\acro{gNB} حامل‌های دادهٔ رادیویی را با \lr{RRC Reconfiguration} پیکربندی می‌کند و نقطهٔ پایانی تونل فروسوی خود را برمی‌گرداند که
+\acro{SMF} با یک اصلاح \lr{N4} در \acro{UPF} نصب می‌کند. اکنون جریان‌های کیفیت خدمات در هر دو جهت فعال‌اند.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-20/pdu-session}}
+  \caption{برقراری نشست \acro{PDU} (ساده‌شده) \cite{ts23502}.}
+  \label{fig:pdu}
+\end{acnfigure}
+
+\subsection{درخواست خدمت و فراخوانی}
+یک \acro{UE} در \lr{CM-IDLE} با دادهٔ فراسو یک \lr{Service Request} (با \lr{5G-S-TMSI} خود) در برقراری \acro{RRC} می‌فرستد؛
+\acro{AMF} صفحهٔ کاربر نشست‌های \acro{PDU} منتخب را از طریق \acro{SMF}ها (\lr{UpdateSMContext}، اصلاح \lr{N4}) و \acro{RAN}
+(\lr{N2 Initial Context Setup}) دوباره فعال می‌کند. برای دادهٔ فروسو، \acro{UPF} بافر می‌کند (یا با پیکربندی \lr{FAR}، \acro{SMF}
+بافر می‌کند) و از طریق \lr{N4} به \acro{SMF} اطلاع می‌دهد؛ \acro{SMF} \lr{N1N2MessageTransfer} را فرا می‌خواند؛ \acro{AMF}
+\acro{UE} را در ناحیهٔ ثبت‌نامش فراخوانی می‌کند؛ \acro{UE} با یک \lr{Service Request} پاسخ می‌دهد. یک \acro{UE} در
+\lr{RRC\_INACTIVE} بیشتر این‌ها را رد می‌کند: زمینهٔ هسته و تونل‌های \lr{N3} حفظ می‌شوند، \acro{RAN} درون ناحیهٔ اعلان خود
+فراخوانی می‌کند و اتصال \acro{RRC} را به‌صورت محلی از سر می‌گیرد، پس هیچ سیگنالینگ هسته‌ای لازم نیست مگر آنکه \acro{UE} از ناحیه
+خارج شده باشد.
+
+\subsection{تحویل}
+با یک واسط \lr{Xn} میان \acro{gNB}ها، مبدأ تصمیم می‌گیرد، مقصد را از طریق \lr{Xn} آماده می‌کند، به \acro{UE} فرمان می‌دهد و دادهٔ
+بافرشده را هدایت می‌کند؛ سپس مقصد یک \lr{N2 Path Switch Request} می‌فرستد تا \acro{AMF} و \acro{SMF} تونل \lr{N3} را به مقصد ببرند،
+با نشانگرهای پایان روی مسیر قدیم (\cref{fig:xn}). بدون \lr{Xn} (یا وقتی \acro{AMF} یا \acro{UPF} باید تغییر کند)، یک \emph{تحویل
+\lr{N2}} از طریق \acro{AMF}(ها) آماده می‌شود که جابه‌جایی \acro{AMF} و تحویل میان‌سامانه‌ای به \acro{LTE} را نیز پوشش می‌دهد.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-20/xn-handover}}
+  \caption{تحویل \lr{Xn} با تغییر مسیر (ساده‌شده).}
+  \label{fig:xn}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{مدل‌های ریاضی}
+
+\subsection{تأخیر رویه}\label{sec:lat}
+\paragraph{مدل} یک رویه زنجیره‌ای از تبادل‌های ترتیبی است؛ شاخه‌های موازی فقط یک بار شمرده می‌شوند. با $n_{\mathrm{N}}$ رفت‌وبرگشت
+\acro{UE}--\acro{AMF} با طول $T_{\mathrm{N}}$ (شامل رادیو و \acro{RAN}) و $n_{\mathrm{S}}$ تبادل ترتیبی هسته با طول $T_{\mathrm{S}}$،
+\begin{equation}\label{eq:latency}
+  T_{\mathrm{proc}} \approx n_{\mathrm{N}}\,T_{\mathrm{N}} + n_{\mathrm{S}}\,T_{\mathrm{S}} .
+\end{equation}
+\paragraph{مثال} ثبت‌نام اولیه (\cref{fig:reg}) حدود ۶ رفت‌وبرگشت \acro{UE}--\acro{AMF} (ثبت‌نام، احراز هویت، حالت امنیتی، پذیرش
+به‌علاوهٔ \acro{RRC}) و ۸ تبادل ترتیبی \acro{SBI} دارد. با $T_{\mathrm{N}} = 15$ و $T_{\mathrm{S}} = 3$ میلی‌ثانیه:
+$T_{\mathrm{proc}} \approx 90 + 24 = 114$ میلی‌ثانیه. رفت‌وبرگشت‌های رادیویی غالب‌اند؛ بهینه‌سازی هسته عمدتاً وقتی کمک می‌کند که
+\acro{NF}ها دور از هم یا پربار باشند.
+
+\subsection{بار سیگنالینگ در \lr{AMF}}\label{sec:load}
+\paragraph{مدل} اگر رویهٔ نوع $k$ برای هر \acro{UE} در ساعت $r_k$ بار رخ دهد و در \acro{AMF} $m_k$ پیام (شمارش \acro{NAS}، \acro{NGAP}
+و \acro{SBI}) هزینه داشته باشد، یک \acro{AMF} که به $N$ \acro{UE} خدمت می‌دهد این تعداد پیام در ثانیه را پردازش می‌کند:
+\begin{equation}\label{eq:load}
+  \Lambda = \frac{N}{3600}\sum_k r_k\, m_k \quad \text{messages/s}.
+\end{equation}
+\paragraph{مثال} مقادیر تصویری برای $N = 10^6$: ثبت‌نام ۰٫۵ در ساعت با ۱۴ پیام، درخواست خدمت ۲۰ در ساعت با ۶، تحویل \lr{Xn} ۲ در ساعت
+با ۴ و برقراری نشست \acro{PDU} ۰٫۲ در ساعت با ۱۰: $\Lambda = 10^6\times137/3600 = 3.8\times10^4$ پیام در ثانیه، که ۸۸٪ آن
+درخواست خدمت است (\cref{fig:load}). اگر ۷۰٪ گذارهای بیکار به فعال از \lr{RRC\_INACTIVE} استفاده کنند (بدون پیام هسته)، $\Lambda$ به
+$1.5\times10^4$ پیام در ثانیه کاهش می‌یابد.
+\paragraph{تفسیر} نشست‌های کوتاه و پرتکرار -- گوشی‌ها و دستگاه‌های \acro{IoT} که برای چند بسته بیدار می‌شوند -- بر سیگنالینگ هسته
+غالب‌اند؛ \lr{RRC\_INACTIVE} اساساً یک قابلیت کاهش سیگنالینگ است.
+
+\begin{acnfigure}
+  \acnfig{lecture-20/amf-load}
+  \caption{بار پیام \acro{AMF} به تفکیک نوع رویه برای مدل تصویری \cref{sec:load}.}
+  \label{fig:load}
+\end{acnfigure}
+
+\subsection{بافر هدایت در طول تحویل}\label{sec:fwd}
+\paragraph{مدل} از لحظه‌ای که مبدأ ارسال را متوقف می‌کند تا لحظه‌ای که تغییر مسیر کامل شود، دادهٔ فروسو با نرخ $R$ از طریق \lr{Xn}
+هدایت و در مقصد تا آماده‌شدن \acro{UE} بافر می‌شود. با وقفهٔ $T_{\mathrm{s}}$،
+\begin{equation}\label{eq:fwd}
+  B = R\,T_{\mathrm{s}} .
+\end{equation}
+\paragraph{مثال} $R = 100$ مگابیت بر ثانیه و $T_{\mathrm{s}} = 20$ میلی‌ثانیه: $B = 2$ مگابیت $= 250$ کیلوبایت برای هر \acro{UE}. برای یک
+سلول \acro{eMBB} با چند کاربر سریع، مقصد به چند مگابایت بافر نیاز دارد؛ برای \acro{URLLC}، تحویل با پشتهٔ پروتکل فعال دوگانه وقفه را
+به‌کلی حذف می‌کند.
+
+\subsection{امنیت احراز هویت}\label{sec:sec}
+\paragraph{مدل} مهاجمی بدون $K$ که \lr{RES*} (۱۲۸ بیت) را حدس بزند در هر تلاش با احتمال $2^{-128}$ موفق می‌شود؛ مهاجمی که \lr{HXRES*}
+را دیده است باید یک درهم‌سازی بریده‌شدهٔ ۱۲۸ بیتی را معکوس کند. تعداد مورد انتظار تلاش‌ها برای جست‌وجوی کامل روی $b$ بیت
+\begin{equation}\label{eq:brute}
+  \E[A] = 2^{b-1}
+\end{equation}
+است.
+\paragraph{مثال} $b = 128$: $1.7\times10^{38}$ تلاش -- ناشدنی؛ امنیت \lr{5G-AKA} بر محرمانگی $K$ و تازگی \acro{SQN} تکیه دارد، نه بر طول
+مقادیر تأیید.
+
+% ---------------------------------------------------------------------
+\section{معماری شبکه و نمودارها}
+شکل‌های این درس \emph{نمودارهای توالی پیام}‌اند: خطوط عمر عمودی برای \acro{UE}، \acro{RAN} و \acro{NF}ها و پیکان‌های افقی برای
+پیام‌ها. آن‌ها از انتقال (\acro{SCTP} برای \acro{NGAP}، \lr{HTTP/2} برای \acro{SBI}، \acro{UDP} برای \acro{PFCP})، از \acro{SCP}های میانی
+و از موازی‌کاری انتزاع می‌گیرند. در یک ردگیری واقعی همان رویه به‌صورت ده‌ها بسته روی چند واسط ظاهر می‌شود؛ خواندن کارآمد ردگیری‌ها
+یعنی نگاشت دوبارهٔ آن‌ها به این نمودارها.
+
+% ---------------------------------------------------------------------
+\section{رویه‌های گام‌به‌گام}
+
+\begin{procedurebox}{ثبت‌نام اولیه}\label{proc:reg}
+\begin{steps}
+  \item \acro{UE} $\to$ \acro{AMF}: \lr{Registration Request} (\acro{SUCI}، \acro{NSSAI} درخواستی، قابلیت‌ها) از طریق برقراری
+        \acro{RRC} و \lr{NGAP Initial UE Message}.
+  \item \acro{AMF} $\to$ \acro{AUSF} $\to$ \acro{UDM}: درخواست احراز هویت؛ \acro{UDM} \acro{SUCI} را آشکار و یک بردار محیط خانگی ۵G
+        برمی‌گرداند.
+  \item \acro{AMF} (\acro{SEAF}) $\to$ \acro{UE}: \lr{Authentication Request}؛ \acro{UE} \acro{AUTN} را بررسی و \lr{RES*} را برمی‌گرداند؛
+        \acro{SEAF} \lr{HXRES*} را بررسی می‌کند؛ \acro{AUSF} \lr{RES*} را بررسی و \acro{SUPI} و $K_{\mathrm{SEAF}}$ را برمی‌گرداند.
+  \item \lr{NAS Security Mode Command/Complete}؛ \acro{AMF} کلیدهای $K_{\mathrm{AMF}}$ و \acro{NAS} را استخراج می‌کند.
+  \item \acro{AMF} نزد \acro{UDM} ثبت می‌شود و دادهٔ اشتراک را بازیابی می‌کند؛ انجمن سیاست \acro{AM} را می‌سازد؛ برش‌ها را انتخاب
+        می‌کند.
+  \item \lr{Registration Accept} (\lr{5G-GUTI}، ناحیهٔ ثبت‌نام، \acro{NSSAI} مجاز)؛ \lr{Registration Complete}.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{برقراری نشست \lr{PDU}}\label{proc:pdu}
+\begin{steps}
+  \item \acro{UE} $\to$ \acro{AMF}: \lr{PDU Session Establishment Request} (\acro{DNN}، \lr{S-NSSAI}، نوع، حالت \acro{SSC}) در
+        \lr{UL NAS Transport}.
+  \item \acro{AMF} یک \acro{SMF} را برمی‌گزیند و \lr{CreateSMContext} را فرا می‌خواند؛ \acro{SMF} اشتراک \acro{SM} را می‌گیرد و انجمن
+        سیاست \acro{SM} را می‌سازد.
+  \item \acro{SMF} یک \acro{UPF} برمی‌گزیند و \lr{N4 Session Establishment} را با قواعد می‌فرستد؛ نقطهٔ پایانی تونل فراسو را دریافت
+        می‌کند.
+  \item \acro{SMF} $\to$ \acro{AMF}: \lr{N1N2MessageTransfer} (\lr{N1}: پذیرش با قواعد کیفیت خدمات و نشانی \acro{IP}؛ \lr{N2}:
+        جریان‌های کیفیت خدمات، \acro{TEID} فراسو).
+  \item \acro{AMF} $\to$ \acro{gNB}: \lr{PDU Session Resource Setup}؛ \acro{gNB} حامل‌های داده را پیکربندی و \acro{TEID} فروسو را
+        برمی‌گرداند.
+  \item \acro{AMF} $\to$ \acro{SMF}: \lr{UpdateSMContext}؛ \acro{SMF} $\to$ \acro{UPF}: اصلاح \lr{N4} با \acro{TEID} فروسو.
+\end{steps}
+\end{procedurebox}
+
+% ---------------------------------------------------------------------
+\section{مثال‌های حل‌شده}
+
+\begin{examplebox}{چه کسی چه چیزی را در \lr{5G-AKA} بررسی می‌کند}\label{ex:aka}
+\textbf{مسئله.} \acro{AMF} یک شبکهٔ میزبان \lr{RES*} را از \acro{UE} دریافت می‌کند. توضیح دهید چه بررسی‌هایی می‌تواند انجام دهد و
+چرا به \acro{AUSF} نیاز دارد.
+
+\textbf{حل.} \acro{SEAF} \lr{HXRES*} و \acro{RAND} را دارد؛ $\mathrm{SHA\text{-}256}(\mathrm{RAND}\concat\mathrm{RES}^*)$ (بریده‌شده) را
+محاسبه و با \lr{HXRES*} مقایسه می‌کند (\cref{eq:hxres}) -- این پاسخ‌های نادرست را به‌صورت محلی غربال می‌کند. نمی‌تواند \lr{XRES*} را
+استخراج کند (\acro{CK} و \acro{IK} را ندارد) و تا وقتی \acro{AUSF} \lr{RES*} را با \lr{XRES*} مقایسه نکرده، \acro{SUPI} یا
+$K_{\mathrm{SEAF}}$ را دریافت نمی‌کند. بدین ترتیب شبکهٔ خانگی احراز هویت را تأیید می‌کند.
+\end{examplebox}
+
+\begin{examplebox}{زمان تا نخستین بسته}\label{ex:first}
+\textbf{مسئله.} پس از روشن‌شدن، یک \acro{UE} ثبت‌نام و سپس یک نشست \acro{PDU} برقرار می‌کند. نشست \acro{PDU} ۳ رفت‌وبرگشت
+\acro{UE}--\acro{AMF} (درخواست، بازپیکربندی \acro{RRC} همراه با پذیرش) و ۶ تبادل ترتیبی \lr{SBI/N4} دارد. با مقادیر
+\cref{sec:lat}، نخستین بسته کی می‌تواند جریان یابد؟
+
+\textbf{حل.} ثبت‌نام ۱۱۴ میلی‌ثانیه؛ نشست \acro{PDU} $3\times15 + 6\times3 = 63$ میلی‌ثانیه؛ مجموع حدود ۱۸۰ میلی‌ثانیه (به‌علاوهٔ
+جست‌وجوی سلول و دریافت اطلاعات سامانه که معمولاً طولانی‌ترند). سوارکردن درخواست نشست \acro{PDU} روی ثبت‌نام (در برخی حالت‌ها
+مجاز) یا برقراری پیشاپیش نشست‌ها آن را کوتاه می‌کند.
+\end{examplebox}
+
+\begin{examplebox}{اندازه‌گذاری با \lr{RRC\_INACTIVE}}\label{ex:inactive}
+\textbf{مسئله.} یک نمونهٔ \acro{AMF} $2\times10^4$ پیام در ثانیه را پردازش می‌کند. برای بار \cref{sec:load} با و بدون
+\lr{RRC\_INACTIVE} و بهره‌وری هدف ۷۰٪ چند نمونه لازم است؟
+
+\textbf{حل.} بدون: $3.8\times10^4/(0.7\times2\times10^4) = 2.7 \to 3$ نمونه؛ با: $1.47\times10^4/1.4\times10^4 = 1.05 \to 2$ نمونه (به‌علاوهٔ
+افزونگی در هر دو حالت).
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{مقایسهٔ فناوری‌ها}
+\begin{table}[htbp]
+\centering\small
+\caption{مقایسهٔ رویه‌های \acro{EPS} و \acro{5GS}.}\label{tab:cmp}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
+\toprule
+\rowcolor{white} & \acro{EPS} & \acro{5GS} \\
+\midrule
+اتصال / ثبت‌نام       & اتصال همیشه یک حامل پیش‌فرض می‌سازد     & ثبت‌نام بدون نشست؛ نشست‌های \acro{PDU} جداگانه \\
+احراز هویت           & \lr{EPS-AKA}، تصمیم در شبکهٔ خدمت‌دهنده   & \lr{5G-AKA} یا \lr{EAP-AKA$'$}، تأیید خانگی \\
+هویت                 & \acro{IMSI} ممکن است آشکار فرستاده شود     & \acro{SUCI} (پنهان‌شده) \\
+برقراری نشست         & \acro{MME} $\to$ \lr{S-GW} $\to$ \lr{P-GW} (\lr{GTPv2-C}) & \acro{AMF} رله می‌کند؛ \acro{SMF} \acro{PCF} و \acro{UPF} را هدایت می‌کند (\acro{SBI}، \acro{PFCP}) \\
+بهینه‌سازی بیکاری    & فقط \lr{ECM-IDLE}                         & \lr{CM-IDLE} و \lr{RRC\_INACTIVE} \\
+تغییر مسیر تحویل     & \acro{MME} $\to$ \lr{S-GW} (\lr{S11})      & \acro{AMF} $\to$ \acro{SMF} $\to$ \acro{UPF} (\acro{SBI}، \lr{N4}) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{همیشه‌روشن در برابر به‌وقت نیاز} اتصال \acro{EPS} همیشه یک حامل پیش‌فرض می‌ساخت («\acro{IP} همیشه‌روشن»)؛ نسل پنجم ثبت‌نام
+را از برقراری نشست جدا می‌کند. یک دستگاه می‌تواند بدون مصرف منابع صفحهٔ کاربر ثبت‌نام کند (مثلاً برای پیامک یا نشستی در آینده) و
+نشست‌ها برای هر \acro{DNN} و برش به‌وقت نیاز ایجاد می‌شوند.
+
+% ---------------------------------------------------------------------
+\section{نکته‌های کلیدی}
+\begin{takeawaybox}
+\begin{itemize}
+  \item ثبت‌نام = شناسایی (\lr{SUCI/5G-GUTI}) + \lr{5G-AKA} + \lr{NAS SMC} + ثبت و اشتراک در \acro{UDM} + سیاست + پذیرش.
+  \item \lr{5G-AKA} کلیدها را به نام شبکهٔ خدمت‌دهنده گره می‌زند؛ \acro{SEAF} \lr{HXRES*} را بررسی می‌کند و \acro{AUSF} خانگی
+        \lr{RES*} را تأیید می‌کند.
+  \item نشست \acro{PDU}: \acro{AMF} رله می‌کند، \acro{SMF} \acro{PCF} و \acro{UPF} را هماهنگ می‌کند، انتقال \lr{N1N2} پذیرش \acro{NAS}
+        و برقراری \lr{N2} را با هم تحویل می‌دهد.
+  \item درخواست‌های خدمت بر بار \acro{AMF} غالب‌اند؛ \lr{RRC\_INACTIVE} بیشتر آن‌ها را از هسته حذف می‌کند.
+  \item تأخیر $\approx n_{\mathrm{N}}T_{\mathrm{N}} + n_{\mathrm{S}}T_{\mathrm{S}}$؛ بار $= (N/3600)\sum r_k m_k$؛ بافر هدایت $= RT_{\mathrm{s}}$.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{تمرین‌ها}
+
+\begin{exercisebox}{1}{ترتیب گام‌ها}\label{exr:order}
+چرا امنیت \acro{NAS} باید پیش از ارسال \lr{Registration Accept} توسط \acro{AMF} فعال شود؟ در غیر این صورت یک مهاجم چه می‌توانست
+بکند؟
+\end{exercisebox}
+
+\begin{exercisebox}{1}{انتقال پیام \lr{N1N2}}\label{exr:n1n2}
+توضیح دهید چرا \acro{SMF} پذیرش \acro{NAS} و اطلاعات منبع \lr{N2} را در یک عملیات خدمت به \acro{AMF} می‌فرستد و نه در دو عملیات.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{تأخیر}\label{exr:latency}
+یک به‌روزرسانی ثبت‌نام تحرکی به ۲ رفت‌وبرگشت \acro{UE}--\acro{AMF} و ۴ تبادل ترتیبی \acro{SBI} (انتقال زمینه از \acro{AMF} قدیمی،
+به‌روزرسانی \acro{UDM}، به‌روزرسانی سیاست، بازیابی اشتراک) نیاز دارد. تأخیر آن را با $T_{\mathrm{N}} = 15$ و $T_{\mathrm{S}} = 3$
+میلی‌ثانیه، و با $T_{\mathrm{S}} = 12$ میلی‌ثانیه اگر \acro{AMF} قدیمی در یک مرکز دادهٔ دور باشد، محاسبه کنید.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{بافر هدایت}\label{exr:fwd}
+یک سلول ۵ کاربر دارد که هر کدام ۳۰۰ مگابیت بر ثانیه دریافت می‌کنند و قطاری همه را هم‌زمان به سلول همسایه می‌برد؛ وقفه ۳۰ میلی‌ثانیه
+است. \acro{gNB} مقصد به چه بافری نیاز دارد؟ چه چیزی آن را کاهش می‌دهد؟
+\end{exercisebox}
+
+\begin{exercisebox}{3}{سیگنالینگ \lr{IoT}}\label{exr:iot}
+$10^6$ دستگاه \acro{IoT} برای هر \acro{AMF} هر ۱۵ دقیقه یک گزارش کوچک می‌فرستند. هر گزارش اگر دستگاه به \lr{CM-IDLE} برگردد به یک
+درخواست خدمت (۶ پیام \acro{AMF}) نیاز دارد، یا اگر در \lr{RRC\_INACTIVE} بماند (ازسرگیری در \acro{RAN}) به هیچ. بار \acro{AMF} را در
+هر دو حالت محاسبه کنید و بررسی کنید \lr{RRC\_INACTIVE} در عوض چه هزینه‌ای برای \acro{RAN} دارد.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{احراز هویت در رومینگ}\label{exr:roam}
+یک شبکهٔ میزبان ادعا می‌کند به یک مشترک رومینگ ۲ ساعت خدمت داده و برای اپراتور خانگی صورت‌حساب صادر می‌کند. با \lr{EPS-AKA} و با
+\lr{5G-AKA}، شبکهٔ خانگی چه شاهدی دارد که مشترک واقعاً در شبکهٔ میزبان احراز هویت شده است؟ پاسخ خود را به \cref{eq:aka} مرتبط کنید.
+\end{exercisebox}
+
+\subsection*{پاسخ‌ها}
+\addcontentsline{toc}{subsection}{پاسخ‌ها}
+
+\begin{solutionbox}{\ref{exr:order}}
+\lr{Registration Accept} حامل \lr{5G-GUTI} جدید، برش‌های مجاز و ناحیهٔ ثبت‌نام است. بدون حفاظت یکپارچگی یک مهاجم می‌توانست این‌ها
+را تغییر دهد (مثلاً خدمات \acro{UE} را محدود یا آن را به افشای خود وادار کند) و بدون رمزنگاری پیوند \acro{GUTI}--\acro{SUCI} آشکار
+می‌شد و حریم هویت را تضعیف می‌کرد. رویهٔ حالت امنیتی همچنین قابلیت‌های امنیتی \acro{UE} را تأیید و از حملات پایین‌برداری جلوگیری
+می‌کند.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:n1n2}}
+پذیرش \acro{NAS} و برقراری منبع \acro{RAN} به هم تعلق دارند: \acro{RAN} باید برای جریان‌های کیفیت خدماتی که به \acro{UE} اعلام
+می‌شود حامل رادیویی بسازد، و \acro{AMF} می‌تواند هر دو را در یک پیام \acro{NGAP} (\lr{PDU Session Resource Setup} با \lr{NAS PDU}
+درون آن) تحویل دهد. یک عملیات آن‌ها را سازگار نگه می‌دارد و یک رفت‌وبرگشت صرفه‌جویی می‌کند؛ اگر \acro{RAN} منابع را رد کند،
+\acro{AMF} می‌تواند شکست را بدون آنکه \acro{UE} هرگز پذیرشی ناسازگار ببیند به \acro{SMF} گزارش دهد.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:latency}}
+$2\times15 + 4\times3 = 42$ میلی‌ثانیه؛ با $T_{\mathrm{S}} = 12$ میلی‌ثانیه: $30 + 48 = 78$ میلی‌ثانیه. \acro{NF}های دور هسته می‌توانند بر
+رویه‌هایی با تبادل‌های ترتیبی بسیار غالب شوند -- استدلالی به سود انتخاب \acro{NF} آگاه از مکان.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:fwd}}
+$B = 5\times300\times10^6\times0.03/8 = 5.6$ مگابایت. راه‌های کاهش: وقفهٔ کوتاه‌تر (تحویل بدون \acro{RACH} یا شرطی، مقصد آماده)، پشتهٔ
+پروتکل فعال دوگانه (بدون وقفه)، یا کاهش حجم هدایت‌شده با کندکردن \acro{TCP}؛ در قطارها، یک رلهٔ متحرک یا تحویل گروهی کمک می‌کند.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:iot}}
+گزارش‌ها: $10^6/900 = 1111$\,s$^{-1}$. \lr{CM-IDLE}: $1111\times6 = 6667$ پیام \acro{AMF} در ثانیه؛ \lr{RRC\_INACTIVE}: هیچ برای گزارش‌ها
+(فقط به‌روزرسانی‌های دوره‌ای ناحیهٔ اعلان \acro{RAN} که آن‌ها نیز در \acro{RAN} رسیدگی می‌شوند). \acro{RAN} باید زمینه‌ها و حالت امنیتی
+همهٔ \acro{UE}های غیرفعال را نگه دارد (حافظه) و فراخوانی و ازسرگیری \acro{RAN} را انجام دهد؛ وقتی \acro{UE} از ناحیهٔ اعلان \acro{RAN}
+خارج می‌شود، یک به‌روزرسانی مبتنی بر \acro{RAN} لازم است.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:roam}}
+با \lr{EPS-AKA}، شبکهٔ خدمت‌دهنده خود \acro{RES} را با \acro{XRES} مقایسه می‌کند؛ شبکهٔ خانگی فقط می‌داند بردارهای احراز هویت فرستاده
+است -- نمی‌تواند ثابت کند \acro{UE} پاسخ داده است. با \lr{5G-AKA}، \acro{AUSF} \lr{RES*} را دریافت و با \lr{XRES*} مقایسه می‌کند
+(\cref{eq:xres})؛ \lr{RES*} را فقط یک \acro{USIM} دارای $K$ می‌تواند در پاسخ به آن \acro{RAND} و گره‌خورده به آن نام شبکهٔ خدمت‌دهنده
+محاسبه کند. بدین ترتیب شبکهٔ خانگی شاهد رمزنگاشتی دارد که مشترک در آن زمان در آن شبکه احراز هویت شده است.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{مطالعهٔ بیشتر}
+رویه‌ها در \lr{TS 23.502} \cite{ts23502} مشخص شده‌اند، با \acro{NAS} در \lr{TS 24.501} \cite{ts24501}، \acro{NGAP} در
+\lr{TS 38.413} \cite{ts38413} و امنیت (\lr{5G-AKA}، سلسله‌مراتب کلید، \acro{SUCI}) در \lr{TS 33.501} \cite{ts33501}؛ عملیات
+\acro{SBI} به‌کاررفته در \lr{TS 29.500} \cite{ts29500} و \acro{NRF} در \lr{TS 29.510} \cite{ts29510} آمده‌اند. \lr{RRC\_INACTIVE} و
+تحویل در سمت \acro{RAN} در \lr{TS 38.300} \cite{ts38300} آمده‌اند. رومر و همکاران \cite{rommer2020core} رویه‌ها را به‌تفصیل مرور
+می‌کنند.
+
+\begin{latin}
+\printbibliography[heading=subbibliography,title={References}]
+\end{latin}
+\end{document}

@@ -1,0 +1,29 @@
+% S-GW and P-GW functions on the user-plane path
+\begin{tikzpicture}[x=1cm,y=1cm,
+  fl/.style={font=\ACNheadfont\scriptsize,text=acnnavy,inner sep=1pt}]
+  \node[ue] (ue) at (-1.2,0) {UE};
+  \node[nf] (enb) at (1.4,0) {eNB};
+  \node[nfalt,minimum width=2.2cm,minimum height=1.0cm] (sgw) at (5.0,0) {S-GW};
+  \node[nfalt,minimum width=2.2cm,minimum height=1.0cm] (pgw) at (9.6,0) {P-GW};
+  \node[nfgray,minimum width=1.6cm] (pdn) at (13.2,0) {PDN\\[-1pt]{\tiny Internet, IMS}};
+  \node[nf] (mme) at (5.0,2.4) {MME};
+  \node[nf] (pcrf) at (9.6,2.4) {PCRF};
+  \node[nfgray] (ocs) at (12.4,2.4) {OCS / OFCS};
+  \draw[link,decorate,decoration={snake,amplitude=1.2pt,segment length=6pt}] (ue) -- (enb);
+  \draw[up] (enb) -- node[iflabel,above]{S1-U} (sgw);
+  \draw[up] (sgw) -- node[iflabel,above]{S5 / S8} (pgw);
+  \draw[up] (pgw) -- node[iflabel,above]{SGi} (pdn);
+  \draw[cp] (mme) -- node[iflabel,right]{S11} (sgw);
+  \draw[cp] (pcrf) -- node[iflabel,right]{Gx} (pgw);
+  \draw[cp] (ocs.south) -- node[iflabel,right]{Gy / Gz} (pgw.north east);
+  \foreach \y/\e/\f in {-0.85/{mobility anchor (inter-eNB)}/{لنگر تحرک (میان eNB)},
+                        -1.25/{DL buffering, DDN}/{بافر فروسو، DDN},
+                        -1.65/{inter-RAT anchor (S4/S12)}/{لنگر میان‌فناوری (S4/S12)},
+                        -2.05/{lawful intercept, charging}/{شنود قانونی، صورت‌حساب}}{
+    \node[fl,anchor=west] at (3.4,\y) {$\bullet$ \bil{\e}{\f}};}
+  \foreach \y/\e/\f in {-0.85/{IP address allocation}/{تخصیص نشانی IP},
+                        -1.25/{PCEF: gating, QoS, APN-AMBR}/{PCEF: دروازه‌بانی، QoS، APN-AMBR},
+                        -1.65/{DL TFT to bearer mapping}/{نگاشت DL TFT به حامل},
+                        -2.05/{charging, DPI, NAT}/{صورت‌حساب، DPI، NAT}}{
+    \node[fl,anchor=west] at (8.0,\y) {$\bullet$ \bil{\e}{\f}};}
+\end{tikzpicture}

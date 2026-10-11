@@ -1,0 +1,19 @@
+% From study item to change request
+\begin{tikzpicture}[x=1cm,y=1cm,
+  bx/.style={nf,minimum width=2.6cm,minimum height=0.9cm,font=\ACNheadfont\scriptsize\bfseries},
+  ar/.style={->,acngray,line width=0.9pt},
+  lb/.style={font=\ACNheadfont\tiny,text=acngray,fill=white,inner sep=1pt}]
+  \node[bx] (si) at (0,1.4) {\bil{study item}{مورد مطالعه}};
+  \node[bx,fill=acnmint,draw=acnteal] (tr) at (4.0,1.4) {\bil{technical report}{گزارش فنی (TR)}};
+  \node[bx] (wi) at (8.0,1.4) {\bil{work item}{مورد کاری}};
+  \node[bx,fill=acnmint,draw=acnteal] (ts) at (12.8,1.4) {\bil{draft TS (v1, v2)}{پیش‌نویس TS (\lr{v1}، \lr{v2})}};
+  \node[bx,fill=acnsand,draw=acnamber] (cc) at (12.8,-0.4) {\bil{TS under change control}{TS تحت کنترل تغییر}};
+  \node[bx] (cr) at (8.0,-0.4) {\bil{change request}{درخواست تغییر (CR)}};
+  \node[bx] (wgag) at (4.0,-0.4) {\bil{WG agreement}{توافق گروه کاری}};
+  \node[bx] (tsg) at (0,-0.4) {\bil{TSG approval}{تصویب TSG}};
+  \draw[ar] (si) -- (tr); \draw[ar] (tr) -- node[lb,above]{\bil{conclusion}{نتیجه}} (wi); \draw[ar] (wi) -- (ts);
+  \draw[ar] (ts) -- node[lb,right]{\bil{TSG approval}{تصویب TSG}} (cc);
+  \draw[ar] (cc) -- node[lb,above]{\bil{need for change}{نیاز به تغییر}} (cr);
+  \draw[ar] (cr) -- (wgag); \draw[ar] (wgag) -- (tsg);
+  \draw[ar] (tsg.south) -- ++(0,-0.55) -| node[lb,pos=0.25,below]{\bil{new version x.(y+1).0}{نسخهٔ جدید \lr{x.(y+1).0}}} (cc.south);
+\end{tikzpicture}

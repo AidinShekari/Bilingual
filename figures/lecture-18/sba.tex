@@ -1,0 +1,28 @@
+% 5G system: service-based control plane and reference points to RAN and UPF
+\begin{tikzpicture}[x=1cm,y=1cm,
+  fn/.style={nf,minimum width=1.45cm,minimum height=0.7cm,font=\ACNheadfont\scriptsize\bfseries},
+  sbi/.style={font=\ACNheadfont\tiny\itshape,text=acnteal,fill=white,inner sep=0.8pt}]
+  % bus
+  \draw[acnteal,line width=2.2pt] (-0.4,1.6) -- (14.0,1.6);
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acnteal,anchor=west] at (14.05,1.6) {SBI};
+  % top row
+  \foreach \x/\n/\s in {0.6/NSSF/Nnssf,2.4/NEF/Nnef,4.2/NRF/Nnrf,6.0/PCF/Npcf,7.8/UDM/Nudm,9.6/UDR/Nudr,11.4/AF/Naf,13.2/NWDAF/Nnwdaf}{
+    \node[fn] (\n) at (\x,2.9) {\n};
+    \draw[acnteal,line width=0.8pt] (\n.south) -- node[sbi,pos=0.45]{\s} (\x,1.6);}
+  % bottom row
+  \foreach \x/\n/\s in {0.6/AUSF/Nausf,2.4/AMF/Namf,4.2/SMF/Nsmf,6.0/CHF/Nchf,7.8/SCP/{},9.6/SEPP/{}}{
+    \node[fn] (\n) at (\x,0.3) {\n};
+    \draw[acnteal,line width=0.8pt] (\n.north) -- node[sbi,pos=0.55]{\s} (\x,1.6);}
+  \node[caplabel,anchor=north] at (9.6,-0.15) {N32 \bil{to other PLMN}{به PLMN دیگر}};
+  % RAN and UPF
+  \node[ue] (ue) at (-0.4,-1.9) {UE};
+  \node[nf,minimum width=1.5cm] (gnb) at (2.4,-1.9) {(R)AN};
+  \node[nfalt,minimum width=1.5cm] (upf) at (6.0,-1.9) {UPF};
+  \node[nfgray,minimum width=1.5cm] (dn) at (9.6,-1.9) {DN};
+  \draw[link] (ue) -- (gnb);
+  \draw[up] (gnb) -- node[iflabel,above]{N3} (upf);
+  \draw[up] (upf) -- node[iflabel,above]{N6} (dn);
+  \draw[cp] (gnb) -- node[iflabel,left]{N2} (AMF);
+  \draw[cp] (upf) -- node[iflabel,right,pos=0.4]{N4} (SMF);
+  \draw[cp] (ue.north) to[out=70,in=200] node[iflabel,left,pos=0.4]{N1} (AMF.west);
+\end{tikzpicture}

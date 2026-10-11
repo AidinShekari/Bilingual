@@ -1,0 +1,13 @@
+% Diameter peer connection lifecycle
+\begin{tikzpicture}
+  \SeqActors[6.0]{\bil{peer A (e.g. MME)}{هم‌تای A (مثلاً MME)},\bil{peer B (e.g. DRA)}{هم‌تای B (مثلاً DRA)}}
+  \SeqNote{0}{1}{\bil{TCP or SCTP connection, port 3868 (TLS/DTLS optional)}{اتصال TCP یا SCTP، درگاه 3868 (TLS/DTLS اختیاری)}}
+  \SeqMsg{0}{1}{CER (Origin-Host, Origin-Realm, Auth-Application-Id)}
+  \SeqMsg{1}{0}{CEA (Result-Code 2001, \bil{common applications}{کاربردهای مشترک})}
+  \SeqNote{0}{1}{\bil{state OPEN: application messages}{حالت OPEN: پیام‌های کاربردی}}
+  \SeqMsg{0}{1}{DWR (\bil{after $T_\mathrm{w}$ without traffic}{پس از $T_\mathrm{w}$ بدون ترافیک})}
+  \SeqMsg{1}{0}{DWA}
+  \SeqMsg{0}{1}{DPR (Disconnect-Cause)}
+  \SeqMsg{1}{0}{DPA}
+  \SeqEnd
+\end{tikzpicture}

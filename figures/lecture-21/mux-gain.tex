@@ -1,0 +1,14 @@
+% Statistical multiplexing gain of a shared pool versus dedicated slice capacity (Gaussian loads)
+\begin{tikzpicture}
+\begin{axis}[acnplot,height=5.6cm,
+  xlabel={\bil{number of slices $n$}{تعداد برش‌ها $n$}},
+  ylabel={\bil{gain $G = \sum_i C_i / C_{\mathrm{shared}}$}{بهره $G = \sum_i C_i / C_{\mathrm{shared}}$}},
+  xmin=1,xmax=16,ymin=1,ymax=1.8,legend pos=north west]
+  \addplot[acnnavy,domain=1:16,samples=16,mark=*,mark size=1.2pt] {x*(100+2.326*30)/(x*100+2.326*sqrt(x)*30)};
+  \addlegendentry{$\sigma/\mu = 0.3$}
+  \addplot[acnteal,dashed,domain=1:16,samples=16,mark=square*,mark size=1.2pt] {x*(100+2.326*60)/(x*100+2.326*sqrt(x)*60)};
+  \addlegendentry{$\sigma/\mu = 0.6$}
+  \addplot[acnamber,dashdotted,domain=1:16,samples=16,mark=triangle*,mark size=1.4pt] {x*(100+2.326*10)/(x*100+2.326*sqrt(x)*10)};
+  \addlegendentry{$\sigma/\mu = 0.1$}
+\end{axis}
+\end{tikzpicture}
