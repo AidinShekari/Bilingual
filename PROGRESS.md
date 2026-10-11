@@ -28,7 +28,7 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 20 | 5G Procedures | done | done | yes |
 | 21 | Network Slicing | done | done | yes |
 | 22 | Quality of Service (QoS) | done | done | yes |
-| 23 | | | | |
+| 23 | The 5G User Plane | done | done | yes |
 | 24 | | | | |
 | 25 | | | | |
 | 26 | | | | |

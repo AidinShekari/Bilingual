@@ -1,0 +1,19 @@
+% UPF packet processing with PFCP rules
+\begin{tikzpicture}[x=1cm,y=1cm,
+  st/.style={nf,minimum width=2.2cm,minimum height=0.95cm,font=\ACNheadfont\scriptsize\bfseries},
+  ar/.style={->,acngray,line width=0.9pt},
+  nt/.style={font=\ACNheadfont\tiny,text=acngray,align=center,text width=2.3cm,anchor=north}]
+  \node[font=\ACNheadfont\scriptsize,text=acngray] (in) at (-1.9,0) {\bil{packet in}{بستهٔ ورودی}};
+  \node[st] (pdr) at (0.6,0) {PDR\\[-1pt]{\tiny \bil{match}{تطابق}}};
+  \node[st,fill=acnmint,draw=acnteal] (qer) at (3.4,0) {QER\\[-1pt]{\tiny \bil{gate, rate}{دروازه، نرخ}}};
+  \node[st,fill=acnmint,draw=acnteal] (urr) at (6.2,0) {URR\\[-1pt]{\tiny \bil{count, report}{شمارش، گزارش}}};
+  \node[st,fill=acnsand,draw=acnamber] (far) at (9.0,0) {FAR\\[-1pt]{\tiny \bil{forward / buffer / drop}{هدایت / بافر / دورریختن}}};
+  \node[font=\ACNheadfont\scriptsize,text=acngray] (out) at (11.6,0) {\bil{packet out}{بستهٔ خروجی}};
+  \draw[ar] (in) -- (pdr); \draw[ar] (pdr) -- (qer); \draw[ar] (qer) -- (urr); \draw[ar] (urr) -- (far); \draw[ar] (far) -- (out);
+  \node[nt] at (0.6,-0.6) {\bil{TEID, UE IP, SDF filter, QFI; highest precedence wins}{TEID، IP کاربر، فیلتر SDF، QFI؛ بالاترین تقدم}};
+  \node[nt] at (3.4,-0.6) {\bil{MBR/GBR, AMBR, gating}{MBR/GBR، AMBR، دروازه‌بانی}};
+  \node[nt] at (6.2,-0.6) {\bil{volume, time, events $\to$ SMF / CHF}{حجم، زمان، رویداد $\to$ SMF / CHF}};
+  \node[nt] at (9.0,-0.6) {\bil{outer header, N3/N9/N6, BAR}{سرآیند بیرونی، \lr{N3/N9/N6}، BAR}};
+  \node[nfgray,minimum width=4.0cm] (smf) at (4.8,1.6) {SMF \bil{(rules via PFCP, N4)}{(قواعد از طریق PFCP، \lr{N4})}};
+  \draw[ar,dashed] (smf) -- (pdr.north); \draw[ar,dashed] (smf) -- (far.north);
+\end{tikzpicture}
