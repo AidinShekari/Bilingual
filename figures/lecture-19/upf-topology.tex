@@ -1,0 +1,22 @@
+% UPF topologies: uplink classifier with local and central PDU session anchors
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[ue] (ue) at (0,0) {UE};
+  \node[nf] (gnb) at (2.0,0) {gNB};
+  \node[nfalt,minimum width=2.0cm] (ulcl) at (4.6,0) {UPF\\[-1pt]{\tiny UL CL}};
+  \node[nfalt,minimum width=2.0cm] (psa1) at (7.6,1.1) {UPF\\[-1pt]{\tiny \bil{PSA 1 (local)}{PSA 1 (محلی)}}};
+  \node[nfalt,minimum width=2.0cm] (psa2) at (7.6,-1.6) {UPF\\[-1pt]{\tiny \bil{PSA 2 (central)}{PSA 2 (مرکزی)}}};
+  \node[nfgray,minimum width=1.8cm] (ldn) at (10.6,1.1) {\bil{local DN}{DN محلی}\\[-1pt]{\tiny \bil{edge apps}{کاربردهای لبه}}};
+  \node[nfgray,minimum width=1.8cm] (dn) at (10.6,-1.6) {DN\\[-1pt]{\tiny \bil{Internet}{اینترنت}}};
+  \node[nf] (smf) at (6.1,2.6) {SMF};
+  \draw[link,decorate,decoration={snake,amplitude=1.2pt,segment length=6pt}] (ue) -- (gnb);
+  \draw[up] (gnb) -- node[iflabel,above]{N3} (ulcl);
+  \draw[up] (ulcl) -- node[iflabel,above,sloped]{N9} (psa1);
+  \draw[up] (ulcl) -- node[iflabel,below,sloped]{N9} (psa2);
+  \draw[up] (psa1) -- node[iflabel,above]{N6} (ldn);
+  \draw[up] (psa2) -- node[iflabel,above]{N6} (dn);
+  \draw[cp] (smf) -- node[iflabel,left]{N4} (ulcl);
+  \draw[cp] (smf) -- node[iflabel,above]{N4} (psa1);
+  \draw[cp] (smf.east) .. controls +(2.4,0) and +(0.6,0.8) .. node[iflabel,right,pos=0.7]{N4} (psa2.north east);
+  \node[zone,fit=(gnb)(ulcl)(psa1)(ldn),inner sep=4pt,fill=none,draw=acnteal,dashed] {};
+  \node[caplabel,text=acnteal,anchor=south west] at (1.2,1.95) {\bil{edge site}{سایت لبه}};
+\end{tikzpicture}

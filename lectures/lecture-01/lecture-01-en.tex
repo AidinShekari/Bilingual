@@ -1,0 +1,717 @@
+% =====================================================================
+%  Lecture 01 -- GSM, GPRS and EDGE                      (English edition)
+%  Companion: lecture-01-fa.tex.  Build: make lecture LECTURE=01
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{01}
+\ACNset{title}{GSM, GPRS and EDGE}
+\ACNset{shorttitle}{GSM, GPRS and EDGE}
+\ACNset{titleother}{جی‌اس‌ام، جی‌پی‌آراس و اج}
+\ACNset{part}{Part I -- 2G/3G foundations (Lectures 1--4)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Introductory to intermediate}
+\ACNset{prereq}{Decibels, basic digital modulation, TDMA/FDMA, the OSI model}
+\ACNset{gen}{2}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}\label{sec:objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Draw} the GSM reference architecture, name every network element
+        (MS, BTS, BSC, MSC, VLR, GMSC, HLR, AuC, EIR) and state the interface
+        between each pair (Um, Abis, A, C, D, E, F).
+  \item \textbf{Derive} the GSM radio timing (bit period, burst, TDMA frame and
+        26-multiframe) from the 270.833\,kbit/s gross rate and \textbf{compute}
+        the 22.8\,kbit/s gross rate of a full-rate traffic channel.
+  \item \textbf{Explain} the GSM challenge--response authentication with the
+        triplet $(\text{RAND},\text{SRES},K_c)$ and identify its security weaknesses.
+  \item \textbf{Describe} the GPRS overlay (PCU, SGSN, GGSN, Gb, Gn, Gi, Gr) and the
+        PDP context, and \textbf{trace} a PDP context activation step by step.
+  \item \textbf{Calculate} per-user GPRS/EDGE throughput from the coding scheme and the
+        number of timeslots, and \textbf{evaluate} the trade-off between robustness and rate.
+  \item \textbf{Relate} cluster size, path-loss exponent and co-channel interference
+        through the first-tier $C/I$ model.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}\label{sec:prereq}
+The lecture assumes the decibel arithmetic of the prerequisites review
+($x_{\mathrm{dB}} = 10\log_{10}x$), the notion of a modulation symbol and of
+bandwidth, and the difference between frequency-division (FDMA) and time-division
+(TDMA) multiple access. If you are unsure about any of these, revise them before
+continuing; every quantitative result below is built from them.
+
+\paragraph{Key terms} The table lists the vocabulary used throughout the lecture with
+its Persian equivalent, so that both editions can be read side by side.
+\begin{keyterms}
+Mobile Station (MS) & \fa{ایستگاه موبایل} & Handset = mobile equipment (ME) + SIM card. \\
+Base Transceiver Station (BTS) & \fa{ایستگاه فرستنده‌گیرندهٔ پایه} & Radio site: transmitters, receivers and antennas of one or more cells. \\
+Base Station Controller (BSC) & \fa{کنترل‌گر ایستگاه پایه} & Manages radio resources and handovers of many BTSs. \\
+Mobile Switching Centre (MSC) & \fa{مرکز سوئیچ موبایل} & Circuit switch for calls; also runs mobility signalling. \\
+Home Location Register (HLR) & \fa{ثبات مکان خانگی} & Permanent subscriber database of the home operator. \\
+Visitor Location Register (VLR) & \fa{ثبات مکان مهمان} & Temporary copy of data for subscribers in an MSC area. \\
+Authentication Centre (AuC) & \fa{مرکز احراز هویت} & Stores the secret key $K_i$ and generates triplets. \\
+Timeslot (TS) & \fa{شیار زمانی} & One of the eight TDMA positions on a carrier. \\
+Burst & \fa{بُرست} & The radio waveform transmitted in one timeslot. \\
+PDP context & \fa{زمینهٔ PDP} & Packet session state: address, APN, QoS, tunnel IDs. \\
+SGSN / GGSN & \fa{گره‌های پشتیبان GPRS} & Serving and gateway packet nodes of the GPRS core. \\
+Coding scheme (CS/MCS) & \fa{طرح کدگذاری} & Combination of modulation and channel-code rate. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}\label{sec:intro}
+In the 1980s Western Europe operated several incompatible analogue cellular systems.
+A handset bought in one country was useless across the border, every system needed
+its own equipment industry, and analogue FM voice offered no protection against
+eavesdropping. The engineering problem that GSM\footnote{Originally \emph{Groupe
+Spécial Mobile}, later \emph{Global System for Mobile communications}.} set out to
+solve was therefore not only a radio problem; it was a \emph{system} problem:
+\begin{itemize}
+  \item \textbf{Interoperability.} Standardised, open interfaces would let an operator
+        buy base stations from one vendor and switches from another.
+  \item \textbf{Roaming.} A subscriber identity independent of the handset (the SIM)
+        and a home database reachable from any visited network.
+  \item \textbf{Spectral efficiency and capacity.} Digital speech coding, channel
+        coding and TDMA let several users share one carrier and tolerate more
+        interference, so frequencies can be reused more tightly.
+  \item \textbf{Security.} Authentication of the subscriber and encryption of the radio link.
+\end{itemize}
+GSM was designed for circuit-switched voice. When data demand grew in the 1990s,
+the same radio network was extended with a packet-switched overlay: \emph{GPRS}
+(General Packet Radio Service), and later \emph{EDGE} (Enhanced Data rates for GSM
+Evolution), which raised the bit rate per timeslot with a higher-order modulation.
+Studying these three steps in one lecture shows a pattern that recurs throughout the
+course: \textbf{each generation reuses what it can and adds the minimum new
+machinery needed for the new problem.}
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}\label{sec:fundamentals}
+
+\subsection{Cells, frequency reuse and multiple access}
+A mobile network divides its service area into \emph{cells}, each served by one
+set of antennas. Because spectrum is scarce, the same carrier frequencies are
+\emph{reused} in cells that are far enough apart. GSM combines two multiple-access
+methods:
+\begin{itemize}
+  \item \textbf{FDMA:} the band is divided into carriers spaced \qty{200}{\kilo\hertz}
+        apart. In the primary GSM-900 band, the uplink occupies \qtyrange{890}{915}{\mega\hertz}
+        and the downlink \qtyrange{935}{960}{\mega\hertz}, giving 124 usable carrier pairs
+        with a duplex spacing of \qty{45}{\mega\hertz} \cite{ts45002}.
+  \item \textbf{TDMA:} each carrier is divided in time into frames of eight
+        timeslots; a full-rate voice user occupies one timeslot in every frame.
+\end{itemize}
+
+\begin{definitionbox}{Physical and logical channel}
+A \emph{physical channel} is a timeslot number on a carrier (or a hopping sequence of
+carriers). A \emph{logical channel} is a type of information --- traffic (TCH) or
+control (BCCH, CCCH, SDCCH, SACCH, FACCH) --- that is mapped onto a physical channel
+according to a fixed multiframe structure.
+\end{definitionbox}
+
+\subsection{Separating identity from equipment}
+GSM separates the \emph{subscriber} from the \emph{device}. The subscriber is
+identified by the IMSI (International Mobile Subscriber Identity: mobile country
+code, mobile network code and a subscriber number, at most 15 digits) stored on the
+SIM together with a 128-bit secret key $K_i$. The device is identified by its IMEI.
+To avoid sending the IMSI over the air, the VLR assigns a temporary identity, the
+TMSI, which is used instead whenever possible \cite{ts23003}.
+
+\subsection{Circuit switching versus packet switching}
+Voice in GSM is \emph{circuit switched}: when a call is set up, a timeslot on the
+radio, a channel on the Abis and A links and a path through the MSC are reserved
+for the whole call, whether or not anybody is speaking. Data in GPRS is
+\emph{packet switched}: radio blocks are assigned only when the user has data to
+send, and many users share the same timeslots. This difference is the reason GPRS
+needs new nodes rather than just new software in the MSC, and it is analysed in
+depth in Lecture~2.
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}\label{sec:technical}
+
+\subsection{The GSM network elements}
+\paragraph{Mobile Station (MS)} The MS is the mobile equipment plus the SIM. The SIM
+runs the authentication algorithm A3 and the key-generation algorithm A8 so that
+$K_i$ never leaves the card.
+
+\paragraph{Base Transceiver Station (BTS)} The BTS contains the radio transceivers
+(TRX) of one or more cells. It performs modulation (GMSK), channel coding,
+interleaving, encryption with A5 and the radio measurements that feed handover
+decisions. It is intentionally simple: decisions are taken by the BSC.
+
+\paragraph{Base Station Controller (BSC)} One BSC controls tens to hundreds of BTSs.
+It allocates radio channels, manages power control and decides most handovers
+between its own cells. Together the BTSs and their BSC form the \emph{Base Station
+Subsystem} (BSS). Speech transcoding between the 13\,kbit/s radio codec and the
+64\,kbit/s PCM format of the core is performed in a transcoder unit (TRAU), usually
+located at the MSC site to save transmission capacity.
+
+\paragraph{Mobile Switching Centre (MSC) and VLR} The MSC is a telephone exchange
+extended with mobility functions: it sets up and releases calls, controls inter-BSC
+handovers, and runs location updating and authentication. The VLR (in practice
+integrated in the MSC) caches the subscription data and security triplets of every
+subscriber currently in its area.
+
+\paragraph{Gateway MSC (GMSC)} Calls arriving from the fixed network (PSTN/ISDN) are
+routed to a GMSC, which interrogates the HLR to find where the called subscriber is.
+
+\paragraph{HLR, AuC and EIR} The HLR stores the permanent subscription profile and the
+address of the VLR currently serving the subscriber. The AuC holds $K_i$ and computes
+authentication triplets. The EIR holds lists of white, grey and black-listed IMEIs.
+
+\subsection{Interfaces}
+\begin{table}[htbp]
+\centering\small
+\caption{Main GSM interfaces and their protocols \cite{ts23002}.}\label{tab:interfaces}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l l l Y@{}}
+\toprule
+\rowcolor{white}Interface & Between & Main protocol & Role \\
+\midrule
+Um   & MS -- BTS        & LAPDm, RR, MM, CC      & Radio interface, TDMA/FDMA, GMSK \\
+Abis & BTS -- BSC       & LAPD over E1/T1        & Transport of traffic and BTS control \\
+A    & BSC -- MSC       & BSSAP over SS7         & Call and mobility signalling, 64\,kbit/s circuits \\
+B    & MSC -- VLR       & MAP                    & Internal in practice (MSC/VLR combined) \\
+C    & GMSC -- HLR      & MAP                    & Routing interrogation for incoming calls \\
+D    & VLR -- HLR       & MAP                    & Location updating, subscriber data \\
+E    & MSC -- MSC       & MAP + ISUP             & Inter-MSC handover, call routing \\
+F    & MSC -- EIR       & MAP                    & IMEI check \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The value of an open interface is economic as well as technical: because the A
+interface is fully standardised, an operator can connect any vendor's BSS to any
+vendor's MSC. The Abis interface was standardised too, but in practice it often
+contains vendor-specific operation and maintenance extensions.
+
+\subsection{The radio interface Um}
+GSM uses Gaussian Minimum Shift Keying (GMSK) with a bandwidth--time product of
+$BT = 0.3$. GMSK is a constant-envelope modulation, so the handset power amplifier
+can run near saturation, which saves battery. One bit is carried per symbol, at a
+gross rate of $13/48\,\mathrm{MHz} \approx \qty{270.833}{\kilo\bit\per\second}$. The
+time structure derived from this rate is drawn in \cref{fig:tdma} and computed in
+\cref{sec:models}.
+
+A normal burst carries two blocks of 57 data bits, a 26-bit training sequence in the
+middle (the receiver uses it to estimate the multipath channel for its equaliser),
+two stealing flags, tail bits and a guard period of 8.25 bit durations that absorbs
+timing uncertainty and power ramping. Frequency hopping (up to 217 hops per second,
+one hop per TDMA frame) averages fading and interference across carriers.
+
+\subsection{Mobility: location areas and the TMSI}
+Cells are grouped into \emph{location areas} (LAs). An idle MS listens to the
+broadcast channel and performs a \emph{location update} only when it enters a new
+LA, or periodically. When a call arrives, the network pages the MS in all cells of
+its current LA. The size of an LA is a trade-off between update signalling (small
+LAs) and paging load (large LAs); this trade-off is quantified in Lectures~4 and~12.
+
+\subsection{Security: authentication and ciphering}
+GSM authentication is a \emph{challenge--response} protocol \cite{ts43020}. The AuC
+draws a 128-bit random number RAND and computes
+\begin{subequations}\label{eq:a3a8}
+\begin{align}
+  \text{SRES} &= \mathrm{A3}(K_i,\text{RAND}), \qquad &&\text{(32 bits)} \label{eq:a3}\\
+  K_c &= \mathrm{A8}(K_i,\text{RAND}), \qquad &&\text{(64 bits)} \label{eq:a8}
+\end{align}
+\end{subequations}
+and sends the triplet $(\text{RAND},\text{SRES},K_c)$ to the VLR. The VLR sends only
+RAND to the MS; the SIM repeats the computation of \cref{eq:a3} and returns its
+result. If it matches SRES, the subscriber is authentic and both sides now share
+$K_c$, which keys the A5 stream cipher on the radio link. Note what this design
+achieves and what it does not:
+\begin{itemize}
+  \item $K_i$ never travels over any interface, and RAND is useless without $K_i$.
+  \item Authentication is \emph{one-way}: the network is not authenticated to the MS,
+        so a false base station can impersonate the network.
+  \item Encryption ends at the BTS; Abis, A and the core links are not protected by A5.
+  \item $K_c$ has only 64 bits, and the A5/1 and A5/2 ciphers have published
+        cryptanalytic attacks; A5/2 has been withdrawn and A5/3 (based on KASUMI)
+        was added later.
+\end{itemize}
+UMTS (Lecture~3) and LTE (Lectures~9 and~11) fix these weaknesses with mutual
+authentication, integrity protection and longer keys.
+
+\subsection{GPRS: a packet overlay}
+GPRS adds packet switching while reusing the GSM radio carriers, sites and
+subscriber databases \cite{ts23060}. Three new functions are needed:
+\begin{itemize}
+  \item \textbf{Packet Control Unit (PCU)} in the BSS, which implements the
+        packet-oriented RLC/MAC layer and schedules radio blocks among users.
+  \item \textbf{Serving GPRS Support Node (SGSN)}, the packet counterpart of the MSC:
+        mobility management (routing areas), authentication, ciphering (in GPRS,
+        ciphering runs between MS and SGSN at the LLC layer) and charging.
+  \item \textbf{Gateway GPRS Support Node (GGSN)}, the border router to external
+        packet data networks: it allocates the user IP address and anchors the session.
+\end{itemize}
+The SGSN connects to the BSS over \iface{Gb} (originally Frame Relay), to the GGSN
+over \iface{Gn} using the GPRS Tunnelling Protocol (GTP), and to the HLR over
+\iface{Gr} using MAP. The GGSN connects to the Internet or a corporate network over
+\iface{Gi}. The idea of a \emph{tunnel} between a serving node and a gateway node is
+the single most durable concept introduced by GPRS: it survives as the S5/S8
+interface of LTE and the N9 interface of 5G.
+
+On the radio side, GPRS defines packet data channels (PDCH). A PDCH is an ordinary
+timeslot dedicated to packet traffic; data is sent in \emph{radio blocks} of four
+consecutive bursts (one block every \qty{20}{\milli\second} on average). Four coding
+schemes trade protection for rate:
+CS-1 (\qty{9.05}{\kilo\bit\per\second}), CS-2 (13.4), CS-3 (15.6) and CS-4
+(\qty{21.4}{\kilo\bit\per\second}) per timeslot. A multislot-capable MS can use
+several timeslots at once.
+
+\subsection{GPRS mobility management states}
+A GPRS MS is in one of three mobility-management states:
+\textbf{IDLE} (not attached; the network does not know the MS),
+\textbf{STANDBY} (attached; location known per routing area; must be paged before
+data can be delivered) and \textbf{READY} (location known per cell; data can be sent
+immediately). A timer moves the MS from READY back to STANDBY after a period of
+inactivity. The same idea --- keep the device reachable cheaply while idle, and
+spend signalling only when traffic flows --- reappears as ECM-IDLE/CONNECTED in LTE and
+CM-IDLE/CONNECTED in 5G.
+
+\subsection{EDGE: higher-order modulation on the same carrier}
+EDGE keeps the GSM symbol rate ($270.833$\,ksymbol/s), the \qty{200}{\kilo\hertz}
+carrier and the TDMA structure, but introduces 8-PSK, which carries three bits per
+symbol instead of one. Enhanced GPRS (EGPRS) defines nine modulation and coding
+schemes: MCS-1 to MCS-4 use GMSK and MCS-5 to MCS-9 use 8-PSK, from
+\qty{8.8}{\kilo\bit\per\second} up to \qty{59.2}{\kilo\bit\per\second} per timeslot.
+Two mechanisms make the higher rates usable:
+\begin{itemize}
+  \item \textbf{Link adaptation:} the network selects the MCS from channel-quality
+        measurements, moving to a robust scheme when the user is at the cell edge.
+  \item \textbf{Incremental redundancy:} if a block is received in error, the
+        retransmission carries different puncturing of the same coded bits, and
+        the receiver combines both copies. This is an early form of the hybrid ARQ
+        used in HSPA, LTE and NR.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}\label{sec:models}
+
+\subsection{GSM radio timing}\label{sec:timing}
+\paragraph{Engineering problem} Every timing parameter of GSM --- the burst length,
+the frame duration, the maximum cell radius --- follows from one number, the gross
+bit rate. We derive them to see where the familiar values come from.
+
+\paragraph{System model and assumptions} One carrier, GMSK with one bit per symbol,
+gross rate $R = f_{\mathrm{ref}}/48$ with reference clock $f_{\mathrm{ref}} = \qty{13}{\mega\hertz}$.
+A timeslot lasts 156.25 bit periods and a TDMA frame contains eight timeslots.
+
+\paragraph{Derivation} The bit period and the derived durations are
+\begin{align}
+  T_{\mathrm{b}} &= \frac{1}{R} = \frac{48}{13\times10^{6}}\ \mathrm{s}
+     \approx \qty{3.692}{\micro\second}, \label{eq:tb}\\
+  T_{\mathrm{slot}} &= 156.25\,T_{\mathrm{b}} = \frac{15}{26}\ \mathrm{ms}
+     \approx \qty{576.9}{\micro\second}, \label{eq:tslot}\\
+  T_{\mathrm{frame}} &= 8\,T_{\mathrm{slot}} = \frac{60}{13}\ \mathrm{ms}
+     \approx \qty{4.615}{\milli\second}, \label{eq:tframe}\\
+  T_{26} &= 26\,T_{\mathrm{frame}} = \qty{120}{\milli\second}. \label{eq:t26}
+\end{align}
+\paragraph{Gross rate of a full-rate traffic channel} In each 26-multiframe a
+full-rate TCH uses 24 frames for traffic, one for the SACCH and leaves one idle.
+Each traffic burst carries $2\times 57 = 114$ coded bits, so
+\begin{equation}\label{eq:tchrate}
+  R_{\mathrm{TCH/F}} = \frac{114\ \mathrm{bit}\times 24}{T_{26}}
+  = \frac{2736\ \mathrm{bit}}{0.120\ \mathrm{s}} = \qty{22.8}{\kilo\bit\per\second}.
+\end{equation}
+The 13\,kbit/s speech codec output is protected by channel coding that expands it to
+exactly this 22.8\,kbit/s.
+
+\paragraph{Physical interpretation} The ratio
+$R_{\mathrm{TCH/F}}/R = 22.8/270.833 \approx 8.4\%$ is close to $1/8$ minus the share of
+the frame spent on training sequence, tail bits, guard time and signalling. GSM
+therefore spends roughly a quarter of its gross capacity on overhead --- a figure to
+remember when comparing it with OFDM systems in Lectures~6 and~14.
+
+\paragraph{Spectral efficiency} With $B = \qty{200}{\kilo\hertz}$ the gross
+spectral efficiency is $\eta = R/B \approx \qty{1.35}{bit/s/Hz}$. The Shannon bound
+\cite{shannon1948mathematical}
+\begin{equation}\label{eq:shannon}
+  C = B\log_2\!\left(1+\SNR\right)
+\end{equation}
+with $C$ the capacity in bit/s, $B$ the bandwidth in Hz and $\SNR$ the linear
+signal-to-noise ratio, shows that $1.35$\,bit/s/Hz could in principle be carried at
+$\SNR = 2^{1.354}-1 \approx 1.56$ ($\approx\qty{1.9}{\dB}$). GSM operates at a far
+higher SNR (around \qty{9}{\dB} carrier-to-interference) because it uses simple,
+robust modulation and coding rather than capacity-approaching codes. \Cref{eq:shannon}
+assumes an ideal band-limited additive white Gaussian noise (AWGN) channel and
+unlimited coding complexity; it is an upper bound, not a prediction of throughput.
+
+\subsection{Timing advance and the maximum cell radius}
+\paragraph{Problem} The BTS expects each burst to arrive inside its timeslot. A
+distant MS sees the downlink late and its uplink arrives late again, so it must
+transmit early by the round-trip delay.
+\paragraph{Model} Line-of-sight propagation at speed $c$; the timing advance (TA) is
+signalled in steps of one bit period, $\mathrm{TA}\in\{0,1,\dots,63\}$.
+\paragraph{Derivation} A round-trip delay of $2d/c$ must be compensated by
+$\mathrm{TA}\cdot T_{\mathrm{b}}$, so one TA step corresponds to a distance
+\begin{equation}\label{eq:tastep}
+  \Delta d = \frac{c\,T_{\mathrm{b}}}{2} = \frac{\qty{2.998e8}{\metre\per\second}\times\qty{3.692}{\micro\second}}{2}
+  \approx \qty{553}{\metre},
+  \qquad d_{\max} = 63\,\Delta d \approx \qty{34.9}{\kilo\metre}.
+\end{equation}
+\paragraph{Interpretation and limits} The familiar ``35\,km'' limit of a GSM cell is a
+consequence of the 6-bit TA field, not of the link budget. Extended-range cells
+overcome it by using two adjacent timeslots per user, at the cost of capacity. The
+same reasoning, with a finer step, gives the LTE timing advance in Lecture~8.
+
+\subsection{Co-channel interference and the cluster size}\label{sec:reuse}
+\paragraph{Problem} How tightly can carriers be reused? Smaller reuse distance means
+more carriers per cell but stronger interference.
+\paragraph{Model and assumptions} Hexagonal cells of radius $R_{\mathrm{c}}$, clusters
+of $N = i^2 + ij + j^2$ cells ($i,j$ non-negative integers), power-law path loss
+$\Prx \propto d^{-n}$ with exponent $n$, a user at the cell edge, and only the six
+first-tier co-channel cells at reuse distance $D = R_{\mathrm{c}}\sqrt{3N}$ \cite{rappaport2002wireless}.
+\paragraph{Derivation} The wanted signal is $C \propto R_{\mathrm{c}}^{-n}$ and each of the
+six interferers contributes approximately $D^{-n}$, hence
+\begin{equation}\label{eq:ci}
+  \frac{C}{I} \approx \frac{R_{\mathrm{c}}^{-n}}{6\,D^{-n}}
+  = \frac{1}{6}\left(\frac{D}{R_{\mathrm{c}}}\right)^{n}
+  = \frac{\left(\sqrt{3N}\right)^{n}}{6}.
+\end{equation}
+\paragraph{Interpretation} \Cref{eq:ci} grows with both $N$ and $n$: a large cluster
+puts interferers further away, and a steep path loss attenuates them faster. Since
+GSM tolerates a $C/I$ of roughly \qty{9}{\dB}, \cref{fig:reuse} suggests that $N=4$
+($13.8$\,dB for $n=4$) is comfortable, and $N=3$ is feasible for $n=4$ but marginal
+for $n=3.5$. In practice operators combined tight reuse with frequency hopping and
+power control, which average and reduce interference.
+\paragraph{Limitations} The model ignores shadow fading (which varies $C/I$ by several dB),
+sectorisation (which removes some interferers), and the fact that not all
+interferers are active at once. It is a planning first estimate, not a guarantee.
+
+\begin{acnfigure}
+  \acnfig{lecture-01/reuse-ci}
+  \caption{First-tier $C/I$ from \cref{eq:ci} versus cluster size for two path-loss
+  exponents. The horizontal line marks the approximate GSM protection ratio.}
+  \label{fig:reuse}
+\end{acnfigure}
+
+\subsection{Packet throughput with multiple timeslots}
+For a user allocated $n_{\mathrm{TS}}$ timeslots with per-timeslot rate $r_{\mathrm{CS}}$,
+the peak radio-link-control (RLC) data rate is
+\begin{equation}\label{eq:gprsrate}
+  R_{\mathrm{user}} = n_{\mathrm{TS}}\; r_{\mathrm{CS}}\;(1-p_{\mathrm{BLER}}),
+\end{equation}
+where $p_{\mathrm{BLER}}$ is the block error ratio and the factor $(1-p_{\mathrm{BLER}})$ assumes
+every erroneous block is retransmitted once successfully (a simple ARQ model). Higher
+coding schemes increase $r_{\mathrm{CS}}$ but, at a given $C/I$, also increase
+$p_{\mathrm{BLER}}$; the best scheme maximises the product. \Cref{fig:rates} shows the
+peak values.
+
+\begin{acnfigure}
+  \acnfig{lecture-01/gprs-rates}
+  \caption{Peak per-user RLC data rate versus number of timeslots ($p_{\mathrm{BLER}}=0$)
+  for two GPRS and two EGPRS schemes. Real throughput is lower because of
+  retransmissions, sharing among users and higher-layer overhead.}
+  \label{fig:rates}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}\label{sec:architecture}
+\Cref{fig:arch} combines the circuit-switched GSM network and the GPRS packet
+overlay. Two observations are worth making. First, the BSS is shared: the same BTS
+carries voice timeslots towards the MSC and packet timeslots towards the SGSN, and
+the BSC splits them. Second, the HLR is shared: a single subscription record serves
+both domains, which is why GPRS could be launched without re-provisioning subscribers.
+
+\begin{acnfigure}
+  \acnfig{lecture-01/gsm-architecture}
+  \caption{GSM network with the GPRS overlay. Solid grey: transport links;
+  teal: packet-switched links; dashed blue: MAP signalling towards the HLR and EIR.}
+  \label{fig:arch}
+\end{acnfigure}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-01/tdma-hierarchy}}
+  \caption{GSM time structure. A 26-multiframe (\qty{120}{\milli\second}) contains 24
+  traffic frames, one SACCH frame and one idle frame; each TDMA frame contains eight
+  timeslots; a normal burst carries 114 data bits.}
+  \label{fig:tdma}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}\label{sec:procedures}
+
+\begin{procedurebox}{Authentication and start of ciphering}\label{proc:auth}
+\begin{steps}
+  \item The MS sends a \msg{Location Updating Request} (or call set-up request)
+        identifying itself with its TMSI, or with its IMSI if no TMSI is valid.
+  \item If the VLR has no unused triplet, it requests a batch from the HLR/AuC with MAP
+        \msg{Send Authentication Info}; the AuC returns several triplets.
+  \item The MSC/VLR sends \msg{Authentication Request} containing only RAND.
+  \item The SIM computes SRES$'$ and $K_c$ from \cref{eq:a3a8} and the MS returns SRES$'$.
+  \item The VLR compares SRES$'$ with SRES. On a match it orders ciphering by sending
+        $K_c$ to the BSS in a BSSMAP \msg{Cipher Mode Command}.
+  \item The BTS sends \msg{Ciphering Mode Command}; the MS starts A5 with $K_c$ and
+        answers \msg{Ciphering Mode Complete}. From now on Um is encrypted.
+  \item The VLR may allocate a new TMSI, sent encrypted, so the IMSI is protected next time.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-01/gsm-authentication}}
+  \caption{Message sequence of GSM authentication and ciphering (\cref{proc:auth}).}
+  \label{fig:auth}
+\end{acnfigure}
+
+\begin{procedurebox}{GPRS attach and PDP context activation}\label{proc:pdp}
+\begin{steps}
+  \item \textbf{GPRS attach.} The MS sends \msg{Attach Request} to the SGSN. The SGSN
+        authenticates the MS (triplets from the HLR over Gr), registers itself in the
+        HLR with \msg{Update GPRS Location}, receives the subscription with
+        \msg{Insert Subscriber Data} and returns \msg{Attach Accept} with a P-TMSI.
+        The MS is now in READY state but has no IP address.
+  \item \textbf{Session request.} The MS sends \msg{Activate PDP Context Request}
+        with an NSAPI (identifier of the context), the requested access point name
+        (APN) and QoS.
+  \item \textbf{Gateway selection.} The SGSN checks the subscription and resolves the
+        APN with DNS to the address of a GGSN.
+  \item \textbf{Tunnel set-up.} The SGSN sends GTP-C \msg{Create PDP Context Request};
+        the GGSN allocates an IP address (or obtains one from a RADIUS/DHCP server)
+        and returns its tunnel endpoint identifier (TEID).
+  \item \textbf{Completion.} The SGSN sends \msg{Activate PDP Context Accept} with the
+        IP address. User packets now flow: MS--SGSN over LLC/SNDCP, SGSN--GGSN inside a
+        GTP-U tunnel identified by TEIDs.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-01/pdp-activation}}
+  \caption{GPRS attach followed by PDP context activation (\cref{proc:pdp}).
+  Dashed blue: signalling; solid teal: user plane.}
+  \label{fig:pdp}
+\end{acnfigure}
+
+The procedure illustrates a principle that the course will meet again in LTE (the
+default bearer, Lecture~9) and 5G (the PDU session, Lecture~20): \emph{being
+attached} (known to the network) and \emph{having connectivity} (an IP address and a
+tunnel) are separate states, established by separate procedures. LTE later merged
+them for the first PDN connection to reduce delay.
+
+% ---------------------------------------------------------------------
+\section{Worked examples}\label{sec:examples}
+
+\begin{examplebox}{Capacity of a GSM-900 operator}\label{ex:capacity}
+\textbf{Problem.} An operator owns \qty{10}{\mega\hertz} of paired GSM-900 spectrum and
+plans with cluster size $N=4$. How many full-rate voice channels does a cell offer?
+
+\textbf{Solution.} Number of carriers: $\floor{\qty{10}{\mega\hertz}/\qty{200}{\kilo\hertz}} = 50$;
+one is kept as a guard, so 49 are usable. Per cell: $\floor{49/4} = 12$ carriers,
+i.e.\ $12\times 8 = 96$ timeslots. Reserving one timeslot for the broadcast/common
+control channel and one for SDCCH signalling leaves about $94$ traffic channels.
+
+\textbf{Interpretation.} 94 simultaneous calls per cell is the hard limit of circuit
+switching. How much \emph{traffic} (in erlangs) these channels carry at a given
+blocking probability is computed with the Erlang-B formula in Lecture~2.
+\end{examplebox}
+
+\begin{examplebox}{Timing advance}\label{ex:ta}
+\textbf{Problem.} The BTS measures that an MS's bursts arrive \qty{55}{\micro\second}
+late. Which TA value is signalled and how far is the MS?
+
+\textbf{Solution.} The round trip lasts $\qty{55}{\micro\second}$, so
+$\mathrm{TA} = \mathrm{round}(55/3.692) = 15$ and
+$d \approx 15\times\qty{553}{\metre} \approx \qty{8.3}{\kilo\metre}$.
+(Directly: $d = c\,\tau/2 = 3\times10^8\times55\times10^{-6}/2 = \qty{8.25}{\kilo\metre}$.)
+
+\textbf{Interpretation.} The TA quantisation error is up to half a step, $\approx\qty{277}{\metre}$;
+TA therefore also gives the network a coarse estimate of the user's distance, the
+basis of early cell-ID+TA positioning.
+\end{examplebox}
+
+\begin{examplebox}{Choosing a GPRS coding scheme}\label{ex:cs}
+\textbf{Problem.} At a given $C/I$ a user observes $p_{\mathrm{BLER}} = 0.05$ with CS-2
+and $p_{\mathrm{BLER}} = 0.45$ with CS-4. With four timeslots, which scheme gives the
+higher throughput according to \cref{eq:gprsrate}?
+
+\textbf{Solution.}
+\begin{align*}
+  R_{\mathrm{CS\text{-}2}} &= 4\times13.4\times(1-0.05) = \qty{50.9}{\kilo\bit\per\second},\\
+  R_{\mathrm{CS\text{-}4}} &= 4\times21.4\times(1-0.45) = \qty{47.1}{\kilo\bit\per\second}.
+\end{align*}
+\textbf{Interpretation.} CS-2 wins despite its lower nominal rate. Link adaptation is
+precisely the selection of the scheme that maximises this product; the same logic
+reappears with CQI and MCS tables in LTE (Lecture~7).
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}\label{sec:comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{GSM, GPRS and EDGE compared. Rates are peak RLC rates per timeslot or per
+user with eight timeslots; achievable user rates are lower.}\label{tab:compare}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y Y@{}}
+\toprule
+\rowcolor{white} & GSM (circuit data) & GPRS & EDGE (EGPRS) \\
+\midrule
+Switching          & Circuit                 & Packet                     & Packet \\
+Modulation         & GMSK                    & GMSK                       & GMSK and 8-PSK \\
+Bits per symbol    & 1                       & 1                          & 1 or 3 \\
+Rate per timeslot  & 9.6 or 14.4\,kbit/s     & 9.05--21.4\,kbit/s         & 8.8--59.2\,kbit/s \\
+Peak (8 TS)        & --                      & 171.2\,kbit/s              & 473.6\,kbit/s \\
+Resource use       & Reserved for the call   & Shared, on demand          & Shared, on demand \\
+Retransmission     & None (FEC only)         & ARQ in RLC                 & ARQ + incremental redundancy \\
+Core nodes         & MSC, GMSC               & SGSN, GGSN                 & SGSN, GGSN (unchanged) \\
+Charging basis     & Time                    & Volume                     & Volume \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Trade-offs} GPRS made data cheap (volume-based charging, no idle circuit)
+but introduced queuing delay and variable throughput; round-trip times of several
+hundred milliseconds were typical. EDGE tripled the peak rate with a software and
+transceiver upgrade, but 8-PSK is not constant-envelope, so it needs more linear power
+amplifiers, and its high schemes are only usable close to the BTS. Neither changed
+the fundamental limit: data rides on 200\,kHz carriers designed for voice. Breaking
+that limit required a new radio interface, WCDMA in 3G (Lecture~3).
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}\label{sec:takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item GSM is a \emph{system} standard: open interfaces (A, Um) and a separable
+        identity (SIM/IMSI) enabled multi-vendor networks and roaming.
+  \item All GSM timing follows from $R = \qty{270.833}{\kilo\bit\per\second}$: bit
+        $\qty{3.69}{\micro\second}$, slot $\qty{577}{\micro\second}$, frame $\qty{4.615}{\milli\second}$,
+        26-multiframe $\qty{120}{\milli\second}$; a full-rate TCH carries 22.8\,kbit/s gross.
+  \item The 6-bit timing advance limits a normal cell to about \qty{35}{\kilo\metre}.
+  \item Authentication uses triplets $(\text{RAND},\text{SRES},K_c)$; it is one-way, and
+        encryption stops at the BTS.
+  \item GPRS adds PCU, SGSN and GGSN; the PDP context and the GTP tunnel are the
+        ancestors of the LTE bearer and the 5G PDU session.
+  \item EDGE raises the bit rate per symbol (8-PSK) and adds incremental redundancy,
+        an early hybrid ARQ.
+  \item The first-tier model $C/I \approx (\sqrt{3N})^n/6$ links reuse, path loss and
+        interference; it is a first planning estimate.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}\label{sec:exercises}
+
+\begin{exercisebox}{1}{Architecture}\label{exr:arch}
+Explain why the HLR stores the address of the VLR but not the cell in which the
+subscriber is located. What would be the signalling consequence of storing the cell?
+\end{exercisebox}
+
+\begin{exercisebox}{1}{Security}\label{exr:sec}
+List two attacks made possible by the one-way authentication of GSM and say which
+later mechanism (Lecture~11) prevents each.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Half-rate channel}\label{exr:halfrate}
+A half-rate traffic channel uses a timeslot in every second traffic frame. Using
+\cref{eq:tchrate}, compute its gross bit rate, and explain how it doubles the voice
+capacity of the cell in \cref{ex:capacity}.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Reuse planning}\label{exr:reuse}
+Using \cref{eq:ci}, find the smallest valid cluster size $N$ that guarantees
+$C/I\ge\qty{12}{\dB}$ for (a) $n=4$ and (b) $n=3$.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{EDGE throughput}\label{exr:edge}
+A user has five timeslots. With MCS-9 the block error ratio is 0.30; with MCS-7
+(\qty{44.8}{\kilo\bit\per\second} per timeslot) it is 0.08. Which scheme should link
+adaptation choose, and what is the expected throughput?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Overhead budget}\label{exr:overhead}
+Starting from \cref{eq:tb,eq:tframe}, compute what fraction of the gross bit rate of
+one timeslot is used by (i) guard period, (ii) tail bits and stealing flags, (iii)
+training sequence, (iv) SACCH and idle frames. Compare the total with the cyclic-prefix
+overhead of LTE ($\approx 7\%$) and discuss why the comparison is not entirely fair.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Generalising the C/I model}\label{exr:ci3}
+Extend \cref{eq:ci} to a cell divided into three \ang{120} sectors, where only two
+first-tier interferers fall into the main lobe of the sector antenna. Derive the new
+expression and the gain in dB, and discuss which assumptions of the original model
+the result inherits.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:arch}}
+The cell changes every few minutes for a moving user; if the HLR tracked it, every
+cell change of every subscriber in the world would generate signalling to the home
+network, often internationally. Storing only the VLR address limits HLR updates to
+changes of MSC area, and the location area kept in the VLR limits radio paging to a
+group of cells. This two-level hierarchy (HLR $\to$ VLR $\to$ LA) is the core of GSM
+mobility management.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:sec}}
+(1) A false base station can request the IMSI in clear and track the user (IMSI
+catching); 5G conceals the permanent identity with SUCI, and LTE/UMTS reduce the
+exposure. (2) A false base station can accept the MS without authentication and
+order no ciphering or a weak cipher, then relay traffic (man-in-the-middle). UMTS/LTE
+mutual authentication with the AUTN token (Lecture~11) lets the USIM verify that the
+challenge was produced by its home network, and integrity protection of signalling
+prevents tampering with the security-mode command.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:halfrate}}
+A half-rate channel gets 12 of the 24 traffic frames per 26-multiframe, so
+$R_{\mathrm{TCH/H}} = 114\times 12/0.120 = \qty{11.4}{\kilo\bit\per\second}$. Two half-rate
+users share one timeslot, so the 94 timeslots of \cref{ex:capacity} can carry up to
+188 calls, at the price of a lower-rate (lower-quality) speech codec.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:reuse}}
+We need $(\sqrt{3N})^n/6 \ge 10^{1.2} = 15.85$, i.e.\ $(3N)^{n/2}\ge 95.1$.
+(a) $n=4$: $(3N)^2\ge 95.1 \Rightarrow N\ge 3.25$; the smallest valid $N$ is 4
+($C/I=\qty{13.8}{\dB}$). (b) $n=3$: $(3N)^{1.5}\ge95.1 \Rightarrow 3N\ge 20.8 \Rightarrow N\ge 6.94$;
+the smallest valid $N$ is 7 ($C/I = 10\log_{10}(21^{1.5}/6) = \qty{12.05}{\dB}$).
+Valid sizes are $N = i^2+ij+j^2 \in\{1,3,4,7,9,12,\dots\}$.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:edge}}
+$R_{\mathrm{MCS\text{-}9}} = 5\times59.2\times0.70 = \qty{207.2}{\kilo\bit\per\second}$ and
+$R_{\mathrm{MCS\text{-}7}} = 5\times44.8\times0.92 = \qty{206.1}{\kilo\bit\per\second}$.
+The two are practically equal; MCS-9 is marginally better on throughput, but MCS-7
+gives fewer retransmissions and therefore lower delay and jitter. With incremental
+redundancy the effective MCS-9 throughput would be higher than the simple model
+predicts, because failed blocks still contribute soft information.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:overhead}}
+Per 156.25-bit slot: guard $8.25/156.25 = 5.3\%$; tail and flags $(6+2)/156.25 = 5.1\%$;
+training $26/156.25 = 16.6\%$; data $114/156.25 = 73.0\%$. Of the 26 frames, 2 do not
+carry traffic, so the useful fraction is $0.730\times24/26 = 67.4\%$:
+$270.833/8\times0.674 = \qty{22.8}{\kilo\bit\per\second}$, consistent with \cref{eq:tchrate}.
+Total overhead $\approx 33\%$. LTE's cyclic prefix costs about $7\%$, but LTE also
+spends resources on reference signals, control region and guard bands; a fair
+comparison must count all of them (Lecture~7).
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:ci3}}
+With two interferers, $C/I \approx (\sqrt{3N})^n/2$, which is three times (\qty{4.8}{\dB})
+better than \cref{eq:ci}. For $N=4$, $n=4$: $10\log_{10}(144/2) = \qty{18.6}{\dB}$. The
+result still assumes ideal hexagons, equal powers, no shadowing and a worst-case
+user at the cell edge; in addition it assumes ideal antenna patterns with no
+back-lobe leakage. Sectorisation trades trunking efficiency (each sector has fewer
+channels) for interference reduction.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}\label{sec:reading}
+The architecture of all 3GPP systems is summarised in \cite{ts23002}; the GSM radio
+structure is specified in \cite{ts45002} and security functions in \cite{ts43020}.
+GPRS stage-2 procedures are in \cite{ts23060} and layer-3 messages in \cite{ts24008}.
+The textbook by Eberspächer et al.\ \cite{eberspaecher2009gsm} remains the most
+complete single description of GSM and GPRS, and Rappaport \cite{rappaport2002wireless}
+derives the cellular reuse model used in \cref{sec:reuse}. MAP is specified in
+\cite{ts29002}; identities in \cite{ts23003}.
+
+\nocite{shannon1948mathematical}
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+
+\end{document}

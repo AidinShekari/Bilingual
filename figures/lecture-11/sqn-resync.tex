@@ -1,0 +1,15 @@
+% Sequence-number re-synchronisation (synch failure) during EPS-AKA
+\begin{tikzpicture}
+  \SeqActors[5.2]{UE (USIM),MME,HSS (AuC)}
+  \SeqMsg{1}{2}{AIR (IMSI)}
+  \SeqMsg{2}{1}{AIA (RAND, AUTN, XRES, $K_{\mathrm{ASME}}$)}
+  \SeqMsg{1}{0}{Authentication Request (RAND, AUTN)}
+  \SeqSelf{0}{\bil{MAC ok, but SQN not fresh}{MAC درست، ولی SQN تازه نیست}}
+  \SeqMsg{0}{1}{Authentication Failure (\bil{synch failure, AUTS}{شکست همگامی، AUTS})}
+  \SeqMsg{1}{2}{AIR (Re-Synchronization-Info = RAND $\Vert$ AUTS)}
+  \SeqSelf{2}{\bil{verify MAC-S; set SQN$_{\mathrm{HE}}$ := SQN$_{\mathrm{MS}}$}{بررسی MAC-S؛ SQN$_{\mathrm{HE}}$ := SQN$_{\mathrm{MS}}$}}
+  \SeqMsg{2}{1}{AIA (\bil{fresh vectors}{بردارهای تازه})}
+  \SeqMsg{1}{0}{Authentication Request (RAND$'$, AUTN$'$)}
+  \SeqMsg{0}{1}{Authentication Response (RES)}
+  \SeqEnd
+\end{tikzpicture}

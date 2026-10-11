@@ -1,0 +1,11 @@
+% Controller queueing delay versus Packet-In rate
+\begin{tikzpicture}
+\begin{semilogyaxis}[acnplot,height=5.4cm,
+  xlabel={\bil{Packet-In rate $S\lambda_s$ [$10^3$ s$^{-1}$]}{نرخ Packet-In $S\lambda_s$ [$10^3$ s$^{-1}$]}},
+  ylabel={$T_{\mathrm{setup}}-\tau$ [ms]},xmin=0,xmax=150,ymin=0.005,ymax=10,legend pos=north west]
+  \addplot[acnnavy,domain=0:149.9,samples=200] {1/(150-x)};
+  \addlegendentry{$\mu = 1.5\times10^5$ s$^{-1}$}
+  \addplot[acnteal,dashed,domain=0:99.9,samples=200] {1/(100-x)};
+  \addlegendentry{$\mu = 10^5$ s$^{-1}$}
+\end{semilogyaxis}
+\end{tikzpicture}

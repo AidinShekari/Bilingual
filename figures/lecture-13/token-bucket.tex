@@ -1,0 +1,16 @@
+% Token-bucket envelope b + rT for APN-AMBR policing
+\begin{tikzpicture}
+\begin{axis}[acnplot,
+  xlabel={\bil{interval length $T$ [s]}{طول بازه $T$ [s]}},
+  ylabel={\bil{maximum data $A(T)$ [Mbit]}{بیشینهٔ داده $A(T)$ [Mbit]}},
+  xmin=0,xmax=5,ymin=0,ymax=60,legend pos=south east]
+  \addplot[acnnavy,domain=0:5] {8+10*x};
+  \addlegendentry{$b = 8$ Mbit, $r = 10$ Mbit/s}
+  \addplot[acnteal,dashed,domain=0:5] {10*x};
+  \addlegendentry{\bil{rate $r$ only ($b = 0$)}{فقط نرخ $r$ ($b = 0$)}}
+  \addplot[acnamber,dashdotted,domain=0:5] {40*x};
+  \addlegendentry{\bil{source peak 40 Mbit/s}{اوج منبع 40 Mbit/s}}
+  \draw[acngray,densely dashed] (axis cs:0.2667,0) -- (axis cs:0.2667,10.67);
+  \node[caplabel,anchor=west] at (axis cs:0.3,3) {$T^\ast = b/(R-r)$};
+\end{axis}
+\end{tikzpicture}

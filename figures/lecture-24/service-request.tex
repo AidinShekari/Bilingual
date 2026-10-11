@@ -1,0 +1,20 @@
+% UE-triggered service request from CM-IDLE (simplified, after TS 23.502 4.2.3.2)
+\begin{tikzpicture}
+  \SeqActors[3.1]{UE,gNB,AMF,SMF,UPF}
+  \SeqMsg{0}{1}{\bil{random access (Msg1--Msg2)}{دسترسی تصادفی (\lr{Msg1--Msg2})}}
+  \SeqMsg{0}{1}{RRC Setup Request}
+  \SeqMsg{1}{0}{RRC Setup}
+  \SeqMsg{0}{1}{RRC Setup Complete [Service Request]}
+  \SeqMsg{1}{2}{Initial UE Message [Service Request]}
+  \SeqSelf{2}{\bil{NAS integrity check}{بررسی یکپارچگی NAS}}
+  \SeqMsg{2}{3}{Nsmf\_PDUSession\_UpdateSMContext}
+  \SeqMsg{3}{4}{N4 Session Modification}
+  \SeqMsg{3}{2}{\bil{N2 SM info (UL tunnel, QoS)}{\lr{N2} SM info (تونل فراسو، QoS)}}
+  \SeqMsg{2}{1}{Initial Context Setup Request}
+  \SeqMsg{1}{0}{\ACNlatin{AS Security Mode Command / Complete}}
+  \SeqMsg{1}{0}{RRC Reconfiguration (DRBs)}
+  \SeqMsg{1}{2}{Initial Context Setup Response (DL TEID)}
+  \SeqMsg{2}{3}{Nsmf\_PDUSession\_UpdateSMContext}
+  \SeqMsg{3}{4}{\bil{N4 Session Modification (DL tunnel)}{\lr{N4} Session Modification (تونل فروسو)}}
+  \SeqEnd
+\end{tikzpicture}

@@ -1,0 +1,16 @@
+% Registration-area size trade-off: update cost versus paging cost (example values of Sec. 6.3)
+\begin{tikzpicture}
+\begin{axis}[acnplot,height=5.6cm,
+  xlabel={\bil{side of a square registration area $a$ [km]}{ضلع ناحیهٔ ثبت مربعی $a$ [km]}},
+  ylabel={\bil{cost per UE per hour}{هزینه به ازای UE در ساعت}},
+  xmin=0.5,xmax=8,ymin=0,ymax=400,legend pos=north east]
+  \addplot[acnnavy,dashed,domain=0.5:8,samples=150] {10*4*20/(pi*x)};
+  \addlegendentry{\bil{updates $w_u R_u$}{به‌روزرسانی $w_u R_u$}}
+  \addplot[acnteal,dash dot,domain=0.5:8,samples=150] {5*x^2};
+  \addlegendentry{\bil{paging $w_p \lambda_p n$}{فراخوانی $w_p \lambda_p n$}}
+  \addplot[acnamber,line width=1.2pt,domain=0.5:8,samples=150] {10*4*20/(pi*x)+5*x^2};
+  \addlegendentry{\bil{total $C(a)$}{کل $C(a)$}}
+  \addplot[only marks,mark=*,mark size=1.8pt,acnblue,forget plot] coordinates {(2.94,129.9)};
+  \node[caplabel,anchor=south,text=acnblue] at (axis cs:2.94,140) {$a^{*} = 2.94$};
+\end{axis}
+\end{tikzpicture}

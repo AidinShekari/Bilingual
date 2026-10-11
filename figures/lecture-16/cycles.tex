@@ -1,0 +1,15 @@
+% CPU cycles available per packet on one 2.5 GHz core at line rate
+\begin{tikzpicture}
+\begin{loglogaxis}[acnplot,height=5.6cm,
+  xlabel={\bil{packet size $L$ [bytes]}{اندازهٔ بسته $L$ [bytes]}},
+  ylabel={\bil{cycles per packet}{چرخه به ازای هر بسته}},
+  xmin=64,xmax=1500,ymin=10,ymax=5000,legend pos=north west,
+  xtick={64,128,256,512,1024,1500},xticklabels={64,128,256,512,1024,1500}]
+  \addplot[acnnavy,domain=64:1500,samples=40] {2.5e9*(x+20)*8/10e9};
+  \addlegendentry{10 Gbit/s}
+  \addplot[acnteal,dashed,domain=64:1500,samples=40] {2.5e9*(x+20)*8/25e9};
+  \addlegendentry{25 Gbit/s}
+  \addplot[acnblue,densely dotted,domain=64:1500,samples=40] {2.5e9*(x+20)*8/100e9};
+  \addlegendentry{100 Gbit/s}
+\end{loglogaxis}
+\end{tikzpicture}

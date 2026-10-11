@@ -1,0 +1,17 @@
+% NR numerologies: slots within 1 ms for mu = 0..3
+\begin{tikzpicture}[x=11cm,y=1cm,
+  sl/.style={draw=acnnavy,fill=acnsky,line width=0.4pt},
+  sl2/.style={draw=acnteal,fill=acnmint,line width=0.4pt}]
+  \foreach \m/\y in {0/3,1/2,2/1,3/0}{
+    \pgfmathtruncatemacro\n{2^\m}
+    \pgfmathsetmacro\w{1/\n}
+    \foreach \k in {1,...,\n}{
+      \pgfmathsetmacro\xa{(\k-1)*\w}
+      \ifodd\k \fill[acnsky] (\xa,\y) rectangle ++(\w,0.6); \else \fill[acnmint] (\xa,\y) rectangle ++(\w,0.6); \fi
+      \draw[acnnavy,line width=0.4pt] (\xa,\y) rectangle ++(\w,0.6);}
+    \pgfmathtruncatemacro\scs{15*\n}
+    \node[caplabel,anchor=east] at (-0.01,\y+0.3) {$\mu=\m$: \scs\,kHz};
+    \node[caplabel,anchor=west] at (1.01,\y+0.3) {\n~\bil{slot(s)}{شکاف}};
+  }
+  \draw[acngray,|-|] (0,-0.35) -- node[caplabel,below]{1 ms \bil{subframe = 14 symbols $\times$ $2^\mu$}{زیرقاب = 14 نماد $\times$ $2^\mu$}} (1,-0.35);
+\end{tikzpicture}

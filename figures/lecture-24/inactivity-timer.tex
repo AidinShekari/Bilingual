@@ -1,0 +1,15 @@
+% Inactivity-timer trade-off for Poisson bursts with rate lambda = 1/60 per second
+\begin{tikzpicture}
+\begin{axis}[acnplot,height=5.6cm,
+  xlabel={\bil{inactivity timer $T$ [s]}{زمان‌سنج بی‌کاری $T$ [s]}},
+  ylabel={\bil{value}{مقدار}},
+  xmin=0,xmax=120,ymin=0,ymax=100,legend pos=north east]
+  \addplot[acnnavy,domain=0:120,samples=121] {60*exp(-x/60)};
+  \addlegendentry{\bil{state transitions per hour}{گذار حالت در ساعت}}
+  \addplot[acnteal,dashed,domain=0:120,samples=121] {100*(1-exp(-x/60))};
+  \addlegendentry{\bil{connected tail time [\%]}{زمان دنبالهٔ متصل [\%]}}
+  \addplot[only marks,mark=*,mark size=1.6pt,acnamber,forget plot] coordinates {(10,50.8) (10,15.4) (30,36.4) (30,39.3)};
+  \draw[acngray,densely dotted] (axis cs:10,0) -- (axis cs:10,100);
+  \draw[acngray,densely dotted] (axis cs:30,0) -- (axis cs:30,100);
+\end{axis}
+\end{tikzpicture}

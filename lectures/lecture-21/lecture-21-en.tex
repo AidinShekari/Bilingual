@@ -1,0 +1,355 @@
+% =====================================================================
+%  Lecture 21 -- Network Slicing                          (English edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-en}
+
+\ACNset{number}{21}
+\ACNset{title}{Network Slicing}
+\ACNset{shorttitle}{Network slicing}
+\ACNset{titleother}{برش‌بندی شبکه}
+\ACNset{part}{Part IV -- 5G system and procedures (Lectures 14, 19--22)}
+\ACNset{time}{6--8 hours (3 h reading, 3--5 h exercises)}
+\ACNset{level}{Advanced}
+\ACNset{prereq}{Lectures 2 (Erlang B), 16, 19 and 20; normal distribution}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{Learning objectives}
+After studying this lecture you should be able to:
+\begin{objectives}
+  \item \textbf{Define} a network slice and \textbf{decode} the S-NSSAI and the NSSAI sets used in signalling.
+  \item \textbf{Trace} slice selection at registration and slice-specific PDU session set-up.
+  \item \textbf{Explain} how slices are realised in the RAN, transport and core, and the isolation options.
+  \item \textbf{Describe} slice management: lifecycle, templates and the roles of operator and tenant.
+  \item \textbf{Quantify} the statistical-multiplexing cost of isolation, RAN resource partitions and slice
+        admission control.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{Prerequisite knowledge}
+You need the 5GC architecture and procedures (Lectures~19--20), the virtualisation concepts of Lecture~16, and the Erlang-B formula
+of Lecture~2. The multiplexing model uses the normal distribution: for a Gaussian load with mean $\mu$ and standard deviation $\sigma$,
+the capacity exceeded with probability $\epsilon$ is $\mu + z_{1-\epsilon}\sigma$ ($z_{0.99} = 2.326$).
+
+\paragraph{Key terms} The vocabulary of this lecture with its Persian equivalents:
+\begin{keyterms}
+Network slice & \fa{برش شبکه} & Logical network providing specific capabilities and characteristics. \\
+S-NSSAI & \fa{شناسهٔ برش} & Single network slice selection assistance information (SST + SD). \\
+SST / SD & \fa{نوع برش / متمایزکننده} & Slice/service type and optional slice differentiator. \\
+NSSAI & \fa{مجموعهٔ S-NSSAIها} & Configured, requested, allowed and rejected sets. \\
+NSSF & \fa{تابع انتخاب برش} & NF that selects allowed slices and the AMF set. \\
+NSSAA & \fa{احراز هویت ویژهٔ برش} & Slice-specific authentication by a third-party AAA server. \\
+NSAC & \fa{کنترل پذیرش برش} & Limits on UEs or PDU sessions per slice. \\
+Isolation & \fa{جداسازی} & Degree to which one slice is protected from another. \\
+Tenant & \fa{مستأجر} & Customer (e.g.\ enterprise) for whom a slice is operated. \\
+Slice template & \fa{الگوی برش} & Standardised description of slice attributes (e.g.\ latency, throughput). \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{Introduction and motivation}
+The three IMT-2020 scenarios (Lecture~14) make conflicting demands: an eMBB service wants throughput and tolerates delay, a URLLC
+service wants guaranteed latency and reliability, an mMTC service wants huge numbers of cheap, rarely active connections. Building three
+separate networks would be uneconomic; running all on one network with best-effort sharing would fail the most demanding customers.
+\emph{Network slicing} runs several logical networks on one physical infrastructure, each with its own capabilities, policies and,
+where needed, its own network functions \cite{ts23501,foukas2017slicing}.
+
+Slicing is also a business concept: an operator can offer a slice to an enterprise, a public-safety agency or a vertical industry as a
+product with guaranteed characteristics, managed through standard interfaces \cite{ts28530}. It is made possible by the technologies of
+Part~III: virtualisation creates dedicated instances cheaply, SDN programs the transport, and the SBA lets NFs be selected per slice.
+
+% ---------------------------------------------------------------------
+\section{Fundamental concepts}
+
+\subsection{Identifying slices}
+A slice is identified by an \emph{S-NSSAI} (\cref{fig:snssai}): an 8-bit \emph{slice/service type} (SST) and an optional 24-bit
+\emph{slice differentiator} (SD) that distinguishes several slices of the same type (e.g.\ two enterprises' URLLC slices) \cite{ts23003}.
+Standardised SST values include 1 (eMBB), 2 (URLLC), 3 (massive IoT) and 4 (V2X), with further values added in later releases;
+operators may also define their own. A UE handles sets of S-NSSAIs:
+\begin{itemize}
+  \item \textbf{configured NSSAI}: provisioned in the UE per PLMN;
+  \item \textbf{requested NSSAI}: sent in the Registration Request;
+  \item \textbf{allowed NSSAI}: returned by the network for the registration area (at most 8 S-NSSAIs);
+  \item \textbf{rejected NSSAI}: requested slices refused, with a cause (e.g.\ not available in this area).
+\end{itemize}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-21/snssai}}
+  \caption{S-NSSAI structure and the NSSAI sets exchanged at registration.}
+  \label{fig:snssai}
+\end{acnfigure}
+
+\subsection{What a slice consists of}
+An end-to-end slice spans the RAN, the transport network and the core (\cref{fig:slices}). Some functions are typically shared (AMF,
+NSSF, NRF, UDM, the RAN nodes), others may be slice-specific (SMF, UPF, PCF, application functions). A UE can use up to eight slices
+simultaneously, but all through the same AMF; each PDU session belongs to exactly one slice.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-21/slices}}
+  \caption{Three end-to-end slices sharing RAN and common control functions, with slice-specific SMFs and UPFs.}
+  \label{fig:slices}
+\end{acnfigure}
+
+\subsection{Isolation}
+Isolation can be achieved at several levels: \emph{logical} (separate policies and QoS on shared NFs), \emph{virtual} (dedicated NF
+instances on shared infrastructure) or \emph{physical} (dedicated hardware, spectrum or sites). Stronger isolation protects a slice from
+others' load, faults and security incidents, but forfeits the statistical-multiplexing gain of sharing (\cref{sec:mux}). The right level
+depends on the service-level agreement: a public-safety slice may need dedicated UPFs and reserved radio resources, while a consumer video
+slice can share almost everything.
+
+% ---------------------------------------------------------------------
+\section{Detailed technical explanation}
+
+\subsection{Slice selection}
+At registration the AMF checks the requested NSSAI against the subscribed S-NSSAIs from the UDM and, if necessary, asks the NSSF, which
+returns the allowed NSSAI for the UE's location and possibly a different AMF set better suited to the slices (\cref{fig:sel}). The AMF may
+then re-route the registration to an AMF of that set. When the UE requests a PDU session for an S-NSSAI and DNN, the AMF discovers an SMF
+serving that slice through the NRF, and the SMF selects a UPF of the slice. Slice information is also given to the RAN, which may use it
+for resource allocation and mobility decisions.
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-21/selection}}
+  \caption{Slice selection at registration and slice-specific PDU session set-up (simplified).}
+  \label{fig:sel}
+\end{acnfigure}
+
+\subsection{Slice-specific authentication and admission control}
+Release~16 added \emph{network slice-specific authentication and authorisation} (NSSAA): after primary authentication, access to a slice can
+additionally depend on credentials verified by an AAA server of the slice tenant (e.g.\ an enterprise), so that the tenant controls which
+devices use its slice. Release~17 added \emph{network slice admission control} (NSAC): the network can limit the number of registered UEs
+and of PDU sessions per slice, enforcing the capacity sold to a tenant \cite{ts23501}.
+
+\subsection{Slicing in the RAN and transport}
+The RAN is shared; slices are realised by scheduling policies: minimum, maximum and dedicated shares of physical resource blocks per slice,
+slice-aware admission control and priority, and possibly separate bandwidth parts or carriers. The transport network maps slices to
+virtual private networks, segment-routing policies or hard-isolated channels with guaranteed bandwidth and latency. Without these,
+a core slice alone guarantees nothing end to end.
+
+\subsection{Slice management}
+3GPP management specifications describe slices as managed objects: a \emph{network slice} composed of \emph{network slice subnets} (RAN,
+transport, core), with a lifecycle of preparation, commissioning, operation and decommissioning \cite{ts28530}. Customers' requirements are
+expressed with slice templates -- for example the GSMA's generic network slice template lists attributes such as throughput, latency,
+availability, number of devices and isolation -- which the operator's orchestration translates into NF instances, policies and RAN and
+transport configuration, using NFV MANO (Lecture~16) and SDN controllers (Lecture~15).
+
+% ---------------------------------------------------------------------
+\section{Mathematical models}
+
+\subsection{The cost of isolation}\label{sec:mux}
+\paragraph{Model} Slice $i$ has a Gaussian load with mean $\mu_i$ and standard deviation $\sigma_i$, independent of the others. To keep the
+probability of overload below $\epsilon$, dedicated capacity per slice and shared capacity for all slices are
+\begin{equation}\label{eq:dedicated}
+  C_i = \mu_i + z\,\sigma_i, \qquad
+  C_{\mathrm{shared}} = \sum_i \mu_i + z\sqrt{\sum_i \sigma_i^2},
+\end{equation}
+with $z = z_{1-\epsilon}$. The \emph{multiplexing gain} of sharing is
+\begin{equation}\label{eq:gain}
+  G = \frac{\sum_i C_i}{C_{\mathrm{shared}}} \ge 1 .
+\end{equation}
+\paragraph{Example} Three slices with $\mu = 100$, $\sigma = 30$ (in any capacity unit), $\epsilon = 1\,\%$ ($z = 2.326$): dedicated $3\times169.8 =
+509.3$, shared $300 + 2.326\sqrt3\times30 = 420.9$; $G = 1.21$ -- isolation costs 21\,\% more capacity (\cref{fig:mux}).
+\paragraph{Interpretation} The gain grows with the number of slices and with the burstiness $\sigma/\mu$; it vanishes for constant loads.
+Isolation is therefore expensive exactly for bursty services -- the economic argument for sharing what can be shared and isolating only what
+the SLA requires. Correlated loads (e.g.\ all slices peaking in the same hour) reduce the gain.
+
+\begin{acnfigure}
+  \acnfig{lecture-21/mux-gain}
+  \caption{Multiplexing gain of a shared pool versus dedicated slice capacity (\cref{eq:gain}, $\epsilon = 1\,\%$).}
+  \label{fig:mux}
+\end{acnfigure}
+
+\subsection{RAN resource partitions}\label{sec:prb}
+\paragraph{Model} A cell has $N$ resource blocks; slice $i$ is guaranteed a minimum share $\rho_i$ and, with a robust modulation and coding
+scheme, a rate $r_i$ per resource block. Its guaranteed throughput is
+\begin{equation}\label{eq:prb}
+  R_i^{\min} = \lfloor\rho_i N\rfloor\, r_i ,
+\end{equation}
+while unused guaranteed resources may be lent to other slices unless they are \emph{dedicated}.
+\paragraph{Example} $N = 273$ (100\,MHz at 30\,kHz), URLLC minimum 20\,\% ($54$ resource blocks), $r = 0.5$\,Mbit/s per block: $R^{\min} = 27$\,Mbit/s,
+sufficient for many control flows, with the rest of the cell available to eMBB when URLLC is idle.
+
+\subsection{Slice admission control}\label{sec:nsac}
+\paragraph{Model} If a tenant's slice is limited to $c$ simultaneous PDU sessions and sessions arrive as a Poisson stream with offered load
+$A$ Erlang, the probability that a new session is rejected is the Erlang-B formula of Lecture~2:
+\begin{equation}\label{eq:block}
+  B(A, c) = \frac{A^{c}/c!}{\sum_{k=0}^{c} A^{k}/k!} .
+\end{equation}
+\paragraph{Example} $A = 40$\,E: with $c = 50$, $B = 1.9\,\%$; with $c = 60$, $B = 0.07\,\%$. A quota of $c = 53$ is the smallest giving $B \le 1\,\%$.
+The quota is part of the contract: it protects other slices and defines what the tenant pays for.
+
+% ---------------------------------------------------------------------
+\section{Network architecture and diagrams}
+\Cref{fig:slices} shows a common deployment pattern: shared RAN with per-slice scheduling policies, transport VPNs per slice, shared AMF and
+subscriber data, and per-slice SMF and UPF -- the URLLC slice's UPF placed at the edge, the eMBB slice's UPFs centrally. An enterprise slice may
+additionally have a UPF on the enterprise premises (Lecture~19) and NSSAA towards the enterprise's AAA server. The management system keeps the
+mapping from each slice to its subnets and resources.
+
+% ---------------------------------------------------------------------
+\section{Step-by-step procedures}
+
+\begin{procedurebox}{Registration with slice selection}\label{proc:sel}
+\begin{steps}
+  \item The UE sends a Registration Request with the requested NSSAI (from its configured NSSAI).
+  \item The AMF retrieves the subscribed S-NSSAIs from the UDM.
+  \item If it cannot decide alone, the AMF queries the NSSF with requested and subscribed NSSAI and the UE's TAI; the NSSF returns the allowed
+        NSSAI and possibly a target AMF set.
+  \item If another AMF set is needed, the registration is re-routed; slices requiring NSSAA are authorised with the tenant's AAA server.
+  \item Registration Accept returns allowed and rejected NSSAI; the UE uses only allowed S-NSSAIs in PDU session requests.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{Commissioning an enterprise slice}\label{proc:commission}
+\begin{steps}
+  \item The tenant's requirements are captured in a slice template (throughput, latency, devices, area, isolation, availability).
+  \item The operator's management system decomposes the slice into RAN, transport and core subnets and checks feasibility.
+  \item NFV orchestration instantiates slice-specific SMF/UPF (e.g.\ an on-premises UPF); SDN controllers set up transport paths; RAN policies
+        reserve resource shares in the covered cells.
+  \item Subscriptions of the tenant's devices are updated with the new S-NSSAI; the NSSF configuration and NSAC quotas are updated.
+  \item The slice is activated and its performance is monitored against the SLA.
+\end{steps}
+\end{procedurebox}
+
+% ---------------------------------------------------------------------
+\section{Worked examples}
+
+\begin{examplebox}{Decoding S-NSSAIs}\label{ex:snssai}
+\textbf{Problem.} A UE's allowed NSSAI contains (SST 1), (SST 2, SD \texttt{0x00A1B2}) and (SST 2, SD \texttt{0x00C3D4}). Interpret it.
+
+\textbf{Solution.} One default eMBB slice without differentiator and two URLLC slices distinguished by their SDs -- for example two different
+enterprise or industrial customers. The UE can open PDU sessions in all three slices simultaneously through the same AMF.
+\end{examplebox}
+
+\begin{examplebox}{Isolation cost}\label{ex:mux}
+\textbf{Problem.} Using \cref{eq:dedicated}, how much capacity does an operator save by sharing UPF capacity among the three slices of \cref{sec:mux}
+instead of dedicating it, and what does the URLLC tenant risk?
+
+\textbf{Solution.} $509.3 - 420.9 = 88.4$ units (17\,\% of the dedicated total). The URLLC slice then competes with the others during joint
+peaks; if its SLA requires guaranteed performance independent of others' traffic, its share must be reserved (logical isolation with
+priority) or dedicated (virtual isolation).
+\end{examplebox}
+
+\begin{examplebox}{Dimensioning a quota}\label{ex:nsac}
+\textbf{Problem.} A logistics company expects 40\,E of simultaneous sessions in its slice and accepts 1\,\% blocking. What NSAC quota should be
+configured and how does the blocking change if its load grows by 12.5\,\%?
+
+\textbf{Solution.} $c = 53$ (\cref{sec:nsac}). At $A = 45$\,E with $c = 50$ the blocking would be 5.4\,\%; with $c = 53$ it is 3.1\,\% -- still well above
+1\,\% -- the quota (and price) must be renegotiated as the tenant grows.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{Technology comparison}
+\begin{table}[htbp]
+\centering\small
+\caption{Ways of differentiating service in mobile networks.}\label{tab:cmp}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y Y@{}}
+\toprule
+\rowcolor{white} & QoS classes (4G/5G) & Dedicated core (DECOR, 4G) & Network slicing (5G) \\
+\midrule
+Granularity    & Per flow/bearer                & Per UE (core selection)      & Per PDU session, end to end \\
+Scope          & Packet treatment               & Core NFs                     & RAN, transport, core, management \\
+Isolation      & None (priorities)              & Core instances               & Logical to physical \\
+Per-UE use     & Many flows                     & One dedicated core           & Up to 8 slices \\
+Customer view  & Not exposed                    & Not exposed                  & Product with SLA, tenant management \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Slicing and QoS} Slices and QoS flows (Lecture~22) are complementary: a slice defines \emph{which} network and resources serve a
+session; QoS flows define how packets \emph{within} it are treated. A URLLC slice still uses QoS flows with appropriate 5QIs.
+
+% ---------------------------------------------------------------------
+\section{Key takeaways}
+\begin{takeawaybox}
+\begin{itemize}
+  \item A slice is an end-to-end logical network identified by S-NSSAI = SST (8 bits) + optional SD (24 bits).
+  \item NSSAI sets: configured, requested, allowed (max.\ 8), rejected; NSSF selects slices and AMF sets.
+  \item Slices combine shared and dedicated NFs; RAN and transport must also be sliced for end-to-end guarantees.
+  \item Isolation costs multiplexing gain: $G = \sum(\mu_i + z\sigma_i)/(\sum\mu_i + z\sqrt{\sum\sigma_i^2})$.
+  \item RAN partitions give $R_i^{\min} = \lfloor\rho_i N\rfloor r_i$; NSAC quotas are dimensioned with Erlang B.
+  \item NSSAA and NSAC let tenants control access and operators enforce contracted capacity.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{Exercises}
+
+\begin{exercisebox}{1}{Slices or QoS?}\label{exr:slqos}
+For each requirement, say whether a separate slice or a QoS flow within an existing slice is the better tool: (a) prioritising video calls
+over downloads for consumers; (b) a police network that must keep working when the public network is congested; (c) a factory whose data must
+not leave its premises.
+\end{exercisebox}
+
+\begin{exercisebox}{1}{Isolation levels}\label{exr:iso}
+Give an example of logical, virtual and physical isolation in the core and in the RAN.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{Bursty slices}\label{exr:gain}
+Repeat the calculation of \cref{sec:mux} with $\sigma = 60$. What is the gain, and what does it mean for slices carrying bursty traffic?
+\end{exercisebox}
+
+\begin{exercisebox}{2}{RAN share}\label{exr:prb}
+A URLLC slice is guaranteed 15\,\% of 273 resource blocks with a robust MCS of 0.2\,Mbit/s per block. Compute its guaranteed rate. How many 64\,kbit/s
+control streams fit, and what happens to unused blocks if the share is ``minimum'' rather than ``dedicated''?
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Quota design}\label{exr:nsac}
+Show that the smallest quota with $B \le 1\,\%$ at $A = 40$\,E is $c = 53$ (use the recursion $B(A,k) = A B(A,k-1)/(k + A B(A,k-1))$). Then estimate the quota
+needed for $A = 80$\,E and compare the ratio $c/A$; explain the trend.
+\end{exercisebox}
+
+\begin{exercisebox}{3}{Designing a slice}\label{exr:design}
+A hospital wants a slice for 200 connected devices (monitors, imaging) with 10\,ms latency, 99.99\,\% availability inside its campus, and data that must
+stay on site. Propose the S-NSSAI, the shared and dedicated components, the UPF placement, RAN measures and admission/authorisation features.
+\end{exercisebox}
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\begin{solutionbox}{\ref{exr:slqos}}
+(a) QoS flows (different 5QIs) in the consumer slice. (b) A slice with reserved RAN resources, priority and preemption (and possibly dedicated core NFs)
+-- isolation from public load is the requirement. (c) A slice with an on-premises UPF and local breakout (possibly NSSAA), since the requirement is about
+where the user plane terminates, not packet priority.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:iso}}
+Core: logical -- shared SMF/UPF with per-slice policies; virtual -- dedicated SMF/UPF instances on shared servers; physical -- dedicated servers or site.
+RAN: logical -- per-slice priority in a shared scheduler; virtual -- reserved/dedicated PRB shares or a separate bandwidth part; physical -- a dedicated
+carrier or dedicated small cells.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:gain}}
+Dedicated $3\times(100 + 2.326\times60) = 718.7$; shared $300 + 2.326\sqrt3\times60 = 541.7$; $G = 1.33$. The burstier the traffic, the more capacity
+isolation wastes: bursty best-effort slices should share; isolation should be reserved for slices whose SLA demands it.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:prb}}
+$\lfloor0.15\times273\rfloor = 40$ blocks (41 if rounded), $R^{\min} = 40\times0.2 = 8$\,Mbit/s: 125 streams of 64\,kbit/s (fewer with headroom). With a
+\emph{minimum} share, unused blocks are lent to other slices and reclaimed when URLLC traffic appears (possible short scheduling delay); with a
+\emph{dedicated} share they stay idle, giving the strongest guarantee at a capacity cost.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:nsac}}
+The recursion gives $B(40,52) = 1.1\,\%$ and $B(40,53) = 0.82\,\%$, hence $c = 53$ ($c/A = 1.33$). For $A = 80$\,E the recursion gives $c = 96$ ($c/A = 1.2$):
+larger pools need relatively less headroom -- the same economy of scale as in trunk dimensioning (Lecture~2) and the multiplexing gain of \cref{sec:mux}.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:design}}
+S-NSSAI: SST 2 (URLLC) or an operator-specific SST, with an SD identifying the hospital. Shared: AMF, NSSF, UDM. Dedicated: SMF and a UPF on the hospital campus
+(local breakout, data on site), possibly redundant UPFs for 99.99\,\%. RAN: indoor small cells with a minimum or dedicated PRB share and slice priority; latency
+via 30\,kHz numerology or mini-slots. Access: NSSAA with the hospital's AAA server; NSAC quota of about 200 UEs; transport path with guaranteed bandwidth. Monitoring
+of latency and availability against the SLA.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{Further reading}
+Slicing in the 5G system is specified in TS~23.501 \cite{ts23501} (clause 5.15) with procedures in TS~23.502 \cite{ts23502}; S-NSSAI encoding in TS~23.003
+\cite{ts23003}; management concepts in TS~28.530 \cite{ts28530}; service requirements in TS~22.261 \cite{ts22261}. Foukas et al.\ \cite{foukas2017slicing} survey
+slicing architectures and research questions; Rommer et al.\ \cite{rommer2020core} cover slicing in the 5G core.
+
+\printbibliography[heading=subbibliography,title={\ACNstrRefs}]
+\end{document}

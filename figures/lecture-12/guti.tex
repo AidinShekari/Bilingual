@@ -1,0 +1,20 @@
+% Structure of the GUTI (TS 23.003)
+\begin{tikzpicture}[x=1cm,y=1cm,
+  fld/.style={draw=acnnavy,fill=acnsky,font=\ACNheadfont\scriptsize\bfseries,text=acnnavy,
+    minimum height=0.7cm,inner sep=1pt,anchor=south west,align=center},
+  fldalt/.style={fld,fill=acnmint,draw=acnteal},
+  br/.style={decorate,decoration={brace,amplitude=4pt,mirror},acngray,line width=0.6pt}]
+  \node[fld,minimum width=2.0cm] at (0,0) {MCC\\[-2pt]{\tiny 3 digits}};
+  \node[fld,minimum width=2.0cm] at (2.0,0) {MNC\\[-2pt]{\tiny 2--3 digits}};
+  \node[fld,minimum width=2.6cm] at (4.0,0) {MMEGI\\[-2pt]{\tiny 16 bits}};
+  \node[fldalt,minimum width=1.6cm] at (6.6,0) {MMEC\\[-2pt]{\tiny 8 bits}};
+  \node[fldalt,minimum width=4.2cm] at (8.2,0) {M-TMSI\\[-2pt]{\tiny 32 bits}};
+  % braces below
+  \draw[br] (0,-0.1) -- node[caplabel,below=4pt]{PLMN ID} (4.0,-0.1);
+  \draw[br] (4.0,-0.1) -- node[caplabel,below=4pt]{MMEI} (8.2,-0.1);
+  \draw[br] (0,-0.85) -- node[caplabel,below=4pt]{GUMMEI \bil{(identifies an MME worldwide)}{(شناسایی سراسری MME)}} (8.2,-0.85);
+  \draw[br] (0,-1.6) -- node[caplabel,below=4pt]{GUTI \bil{(temporary UE identity)}{(هویت موقت UE)}} (12.4,-1.6);
+  % brace above
+  \draw[decorate,decoration={brace,amplitude=4pt},acnteal,line width=0.6pt] (6.6,0.8) --
+     node[caplabel,above=4pt,text=acnteal]{S-TMSI (40 bits) -- \bil{paging, RRC}{فراخوانی، RRC}} (12.4,0.8);
+\end{tikzpicture}

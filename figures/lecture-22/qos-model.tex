@@ -1,0 +1,32 @@
+% 5G QoS model: QoS rules in the UE, SDAP mapping to DRBs, QFI on N3, PDRs in the UPF
+\begin{tikzpicture}[x=1cm,y=1cm,
+  bx/.style={nf,minimum height=2.8cm,minimum width=2.4cm,anchor=north,font=\ACNheadfont\scriptsize\bfseries},
+  fl/.style={line width=1.6pt,->},
+  lb/.style={font=\ACNheadfont\tiny,text=acngray,align=center}]
+  \node[bx,ue] (ue) at (0,1.6) {};
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acnnavy,anchor=north] at (0,1.55) {UE};
+  \node[lb,anchor=north] at (0,1.15) {\bil{QoS rules (UL)}{قواعد QoS (فراسو)}};
+  \node[bx] (gnb) at (4.2,1.6) {};
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acnnavy,anchor=north] at (4.2,1.55) {gNB};
+  \node[lb,anchor=north] at (4.2,1.15) {SDAP: \ACNlatin{QFI $\to$ DRB}};
+  \node[bx,nfalt] (upf) at (8.4,1.6) {};
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acnnavy,anchor=north] at (8.4,1.55) {UPF};
+  \node[lb,anchor=north] at (8.4,1.15) {\bil{PDRs (DL), QERs}{PDRها (فروسو)، QERها}};
+  \node[nfgray,minimum height=2.8cm,minimum width=1.4cm,anchor=north] (dn) at (11.4,1.6) {DN};
+  % flows
+  \foreach \y/\c/\q in {0.25/acnblue/{QFI 1},-0.25/acnteal/{QFI 2},-0.75/acnamber/{QFI 3}}{
+    \draw[fl,\c] (0.9,\y) -- (3.3,\y);
+    \draw[fl,\c] (5.1,\y) -- (7.5,\y);
+    \draw[fl,\c] (9.3,\y) -- (10.7,\y);
+    \node[lb,text=\c,anchor=south] at (6.3,\y) {\q};}
+  % DRBs
+  \draw[acngray,rounded corners=3pt,densely dashed] (1.0,0.5) rectangle (3.2,-0.5);
+  \draw[acngray,rounded corners=3pt,densely dashed] (1.0,-0.55) rectangle (3.2,-1.0);
+  \node[lb,anchor=north] at (2.1,-1.05) {\bil{DRB 1 carries QFI 1, 2; DRB 2 carries QFI 3}{DRB 1 حامل QFI 1 و 2؛ DRB 2 حامل QFI 3}};
+  % N3 tunnel
+  \draw[acnup,line width=0.6pt,rounded corners=4pt] (5.0,0.55) rectangle (7.6,-1.05);
+  \node[lb,anchor=north] at (6.3,-1.1) {\bil{one N3 tunnel per PDU session}{یک تونل \lr{N3} برای هر نشست PDU}};
+  \node[lb,anchor=south] at (2.1,0.55) {Uu};
+  \node[lb,anchor=south] at (6.3,0.6) {N3 (GTP-U + QFI)};
+  \node[lb,anchor=south] at (10.0,0.55) {N6};
+\end{tikzpicture}

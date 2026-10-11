@@ -1,0 +1,20 @@
+% S-NSSAI structure and NSSAI sets
+\begin{tikzpicture}[x=1cm,y=1cm,
+  fld/.style={draw=acnnavy,fill=acnsky,font=\ACNheadfont\scriptsize\bfseries,text=acnnavy,minimum height=0.75cm,
+    inner sep=1pt,anchor=south west,align=center},
+  set/.style={draw=acnteal,fill=acnmint,rounded corners=3pt,font=\ACNheadfont\scriptsize,text=acnnavy,
+    minimum width=2.6cm,minimum height=0.8cm,align=center}]
+  \node[font=\ACNheadfont\scriptsize\bfseries,text=acnnavy,anchor=west] at (0,1.1) {S-NSSAI};
+  \node[fld,minimum width=2.4cm] at (0,0) {SST\\[-1pt]{\tiny 8 bits}};
+  \node[fld,minimum width=5.6cm,fill=acnmist,draw=acngray] at (2.4,0) {SD (\bil{optional}{اختیاری})\\[-1pt]{\tiny 24 bits}};
+  \node[caplabel,anchor=north west,align=left] at (0,-0.15) {\ACNlatin{SST: 1 eMBB, 2 URLLC, 3 MIoT, 4 V2X}};
+  \node[caplabel,anchor=north east] at (8.0,-0.15) {\bil{SD differentiates slices of the same type}{SD برش‌های هم‌نوع را متمایز می‌کند}};
+  % sets
+  \node[set] (cfg) at (9.8,1.2) {\bil{configured NSSAI}{NSSAI پیکربندی‌شده}\\[-1pt]{\tiny \bil{stored in UE}{ذخیره در UE}}};
+  \node[set] (req) at (12.8,1.2) {\bil{requested NSSAI}{NSSAI درخواستی}\\[-1pt]{\tiny \bil{in Registration Request}{در درخواست ثبت‌نام}}};
+  \node[set,fill=acnsky,draw=acnnavy] (all) at (11.3,-0.4) {\bil{allowed NSSAI}{NSSAI مجاز}\\[-1pt]{\tiny \bil{max. 8 S-NSSAIs}{حداکثر ۸ S-NSSAI}}};
+  \node[set,fill=acnsand,draw=acnamber] (rej) at (14.3,-0.4) {\bil{rejected NSSAI}{NSSAI ردشده}\\[-1pt]{\tiny \bil{with cause}{همراه با علت}}};
+  \draw[->,acngray] (cfg) -- (req);
+  \draw[->,acngray] (req) -- (all);
+  \draw[->,acngray] (req) -- (rej);
+\end{tikzpicture}

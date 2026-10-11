@@ -1,0 +1,22 @@
+% Simplified E-UTRAN initial attach (TS 23.401 clause 5.3.2.1)
+\begin{tikzpicture}
+  \SeqActors[3.1]{UE,eNB,MME,HSS,S-GW,P-GW}
+  \SeqMsg{0}{2}{Attach Request + PDN Connectivity Req.}
+  \SeqNote{0}{3}{\bil{authentication (AIR/AIA, EPS-AKA) and NAS security mode}{احراز هویت (AIR/AIA، EPS-AKA) و حالت امنیتی NAS}}
+  \SeqMsg{2}{3}{ULR}
+  \SeqMsg{3}{2}{ULA (\bil{subscription}{اشتراک})}
+  \SeqMsg{2}{4}{Create Session Request}
+  \SeqMsg{4}{5}{Create Session Request}
+  \SeqSelf{5}{\bil{IP address; Gx (opt.)}{نشانی IP؛ Gx (اختیاری)}}
+  \SeqMsg{5}{4}{Create Session Response}
+  \SeqMsg{4}{2}{Create Session Response}
+  \SeqMsg{2}{1}{Initial Context Setup Req. (Attach Accept)}
+  \SeqMsg{1}{0}{RRC Connection Reconfiguration}
+  \SeqMsg{0}{1}{RRC Reconfiguration Complete}
+  \SeqMsg{1}{2}{Initial Context Setup Response}
+  \SeqMsg{0}{2}{Attach Complete}
+  \SeqMsg{2}{4}{Modify Bearer Request (eNB TEID)}
+  \SeqMsg{4}{2}{Modify Bearer Response}
+  \SeqNote{0}{5}{\bil{default bearer active: uplink and downlink user data}{حامل پیش‌فرض فعال: دادهٔ کاربر فراسو و فروسو}}
+  \SeqEnd
+\end{tikzpicture}

@@ -1,0 +1,21 @@
+% LTE X2-based handover without MME/S-GW change
+\begin{tikzpicture}
+  \SeqActors[3.0]{UE,\bil{source eNB}{eNB مبدأ},\bil{target eNB}{eNB مقصد},MME,S-GW}
+  \SeqMsg{0}{1}{Measurement Report (A3)}
+  \SeqSelf{1}{\bil{HO decision}{تصمیم تحویل}}
+  \SeqMsg{1}{2}{X2AP Handover Request}
+  \SeqSelf{2}{\bil{admission control}{کنترل پذیرش}}
+  \SeqMsg{2}{1}{Handover Request Ack}
+  \SeqMsg{1}{0}{RRC Conn. Reconfiguration}
+  \SeqMsg{1}{2}{SN Status Transfer}
+  \SeqMsg[up]{1}{2}{\bil{forwarded DL data}{دادهٔ فروسوی ارسال‌شده}}
+  \SeqNote{0}{2}{\bil{UE detaches, synchronises, RACH to target (interruption)}{قطع از مبدأ، همگام‌سازی، RACH به مقصد (وقفه)}}
+  \SeqMsg{0}{2}{RRC Reconfiguration Complete}
+  \SeqMsg{2}{3}{S1AP Path Switch Request}
+  \SeqMsg{3}{4}{Modify Bearer Request}
+  \SeqMsg[up]{4}{1}{End Marker}
+  \SeqMsg{4}{3}{Modify Bearer Response}
+  \SeqMsg{3}{2}{Path Switch Request Ack}
+  \SeqMsg{2}{1}{UE Context Release}
+  \SeqEnd
+\end{tikzpicture}

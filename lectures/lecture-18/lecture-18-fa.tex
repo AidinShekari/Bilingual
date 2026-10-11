@@ -1,0 +1,438 @@
+% =====================================================================
+%  Lecture 18 -- 5G Service-Based Architecture (SBA)       (Persian edition)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\providecommand\ACNroot{../..}
+\input{\ACNroot/templates/lecture-fa}
+
+\ACNset{number}{18}
+\ACNset{title}{معماری سرویس‌محور نسل پنجم (\lr{SBA})}
+\ACNset{shorttitle}{معماری سرویس‌محور}
+\ACNset{titleother}{5G Service-Based Architecture (SBA)}
+\ACNset{part}{بخش سوم -- معماری‌های نرم‌افزارمحور (درس‌های ۱۵ تا ۱۸)}
+\ACNset{time}{۶ تا ۸ ساعت (۳ ساعت مطالعه، ۳ تا ۵ ساعت تمرین)}
+\ACNset{level}{متوسط}
+\ACNset{prereq}{درس‌های ۱۰، ۱۴ و ۱۶؛ مبانی \lr{HTTP}، \lr{REST} و \lr{JSON}}
+\ACNset{gen}{5}
+
+\begin{document}
+\ACNcover
+
+% ---------------------------------------------------------------------
+\section{اهداف یادگیری}
+پس از مطالعهٔ این درس باید بتوانید:
+\begin{objectives}
+  \item اصول معماری سرویس‌محور -- خدمات \acro{NF}، تولیدکنندگان و مصرف‌کنندگان، درخواست/پاسخ و اشتراک/اعلان -- را
+        \textbf{توضیح دهید}.
+  \item پشتهٔ پروتکلی واسط‌های سرویس‌محور (\lr{HTTP/2}، \acro{TLS}، \acro{JSON}، \lr{OpenAPI}) و قراردادهای نام‌گذاری و
+        \acro{URI} خدمات \acro{NF} را \textbf{توصیف کنید}.
+  \item ثبت، کشف، مجوزدهی و فراخوانی خدمت را از طریق \acro{NRF} \textbf{دنبال کنید}.
+  \item ارتباط مستقیم و غیرمستقیم (\acro{SCP}) را \textbf{مقایسه کنید} و نقش \acro{SEPP} در رومینگ را \textbf{توضیح دهید}.
+  \item نیاز به اتصال، بار کشف و تأخیر سیگنالینگ سرویس‌محور را \textbf{کمّی کنید}.
+  \item \acro{SBA} را با طراحی نقطه‌به‌نقطهٔ \lr{Diameter/GTP-C} در \acro{EPC} \textbf{مقایسه کنید}.
+\end{objectives}
+
+% ---------------------------------------------------------------------
+\section{دانش پیش‌نیاز}
+به واسط‌های مبتنی بر \lr{Diameter} در \acro{EPC} (درس ۱۰) برای مقایسه، نمای کلی نسل پنجم در درس ۱۴، اصول ابرزاد درس ۱۶ و
+آشنایی با متدهای \acro{HTTP} (\lr{GET, POST, PUT, PATCH, DELETE})، کدهای وضعیت، \acro{URI}ها و \acro{JSON} نیاز دارید.
+
+\paragraph{واژه‌های کلیدی} واژگان این درس همراه با معادل انگلیسی آن‌ها:
+\begin{keyterms}
+معماری / واسط سرویس‌محور & \lr{SBA / SBI} & معماری‌ای که در آن \acro{NF}ها خدمات را روی یک واسط مشترک عرضه می‌کنند. \\
+خدمت کارکرد شبکه & \lr{NF service} & قابلیتی که یک \acro{NF} عرضه می‌کند (مثلاً \lr{Nsmf\_PDUSession}). \\
+تولیدکننده / مصرف‌کننده & \lr{Producer / consumer} & \acro{NF} عرضه‌کننده / استفاده‌کنندهٔ یک خدمت. \\
+تابع مخزن شبکه & \lr{NRF} & مخزن ثبت، کشف و توکن‌های دسترسی \acro{NF}ها. \\
+پراکسی ارتباط خدمت & \lr{SCP} & پراکسی برای ارتباط غیرمستقیم و کشف واگذارشده. \\
+پراکسی حفاظت لبهٔ امنیت & \lr{SEPP} & پراکسی لبه که سیگنالینگ \acro{SBI} میان \acro{PLMN}ها را ایمن می‌کند (\lr{N32}). \\
+\lr{OpenAPI} & \lr{OpenAPI} & توصیف ماشین‌خوان یک \acro{API} از نوع \acro{REST}. \\
+جریان \lr{HTTP/2} & \lr{HTTP/2 stream} & یک تبادل درخواست/پاسخ که روی یک اتصال چندگانه‌سازی می‌شود. \\
+\lr{OAuth 2.0} & \lr{OAuth 2.0} & چارچوب مجوزدهی؛ \acro{NRF} توکن دسترسی صادر می‌کند \cite{rfc6749}. \\
+نمایهٔ \acro{NF} & \lr{NF profile} & توصیف یک نمونهٔ \acro{NF} که در \acro{NRF} ذخیره می‌شود. \\
+\end{keyterms}
+
+% ---------------------------------------------------------------------
+\section{مقدمه و انگیزه}
+\acro{EPC} به‌صورت مجموعه‌ای از جعبه‌ها طراحی شد که با واسط‌های نقطه‌به‌نقطه به هم وصل‌اند: \lr{S6a} میان \acro{MME} و
+\acro{HSS}، \lr{S11} میان \acro{MME} و \lr{S-GW}، \lr{Gx} میان \lr{P-GW} و \acro{PCRF}، هر یک با پروتکل خود (\lr{Diameter}،
+\lr{GTPv2-C}) و پیکربندی همتای خود. افزودن یک کارکرد یا یک مصرف‌کننده به معنای تعریف واسطی جدید و پیکربندی همهٔ همتاها
+بود. در یک هستهٔ ابرزاد که نمونه‌ها با بار می‌آیند و می‌روند، این سختی به گلوگاه تبدیل می‌شود.
+
+هستهٔ نسل پنجم الگوهای نرم‌افزارهای مقیاس وب را می‌پذیرد: هر کارکرد شبکه \emph{خدماتی} را از طریق یک \emph{واسط
+سرویس‌محور} (\acro{SBI}) مشترک مبتنی بر \lr{HTTP/2} و \acro{JSON} عرضه می‌کند؛ هر \acro{NF} مجاز می‌تواند از آن‌ها استفاده کند؛
+\acro{NF}ها نزد یک تابع مخزن (\acro{NRF}) ثبت می‌شوند و در زمان اجرا یکدیگر را کشف می‌کنند \cite{ts23501,ts29500}. این درس با
+نشان‌دادن اینکه \acro{SDN}، \acro{NFV} و فناوری وب چگونه در صفحهٔ کنترل نسل پنجم گرد هم می‌آیند بخش سوم را می‌بندد؛ سپس بخش
+چهارم از این خدمات برای ساختن رویه‌های نسل پنجم استفاده می‌کند.
+
+% ---------------------------------------------------------------------
+\section{مفاهیم بنیادی}
+
+\subsection{کارکردهای شبکه و خدمات}
+صفحهٔ کنترل هستهٔ نسل پنجم از \acro{NF}هایی تشکیل شده که به \acro{SBI} وصل‌اند (\cref{fig:sba})؛ صفحهٔ کاربر (\acro{UPF}) و
+شبکهٔ دسترسی نقاط مرجع کلاسیک (\lr{N2, N3, N4, N6}) را حفظ می‌کنند. \Cref{tab:nfs} \acro{NF}های اصلی را فهرست می‌کند.
+
+\begin{table}[htbp]
+\centering\small
+\caption{کارکردهای اصلی هستهٔ نسل پنجم و خدمات نمونه \cite{ts23501}.}\label{tab:nfs}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y l@{}}
+\toprule
+\rowcolor{white}\acro{NF} & نقش & خدمت نمونه \\
+\midrule
+\acro{AMF}  & مدیریت دسترسی و تحرک، خاتمهٔ \acro{NAS}            & \lr{Namf\_Communication} \\
+\acro{SMF}  & مدیریت نشست، کنترل \acro{UPF}                        & \lr{Nsmf\_PDUSession} \\
+\acro{UPF}  & هدایت صفحهٔ کاربر (روی \acro{SBI} نیست)              & -- (\lr{N4/PFCP}) \\
+\acro{AUSF} & کارساز احراز هویت                                    & \lr{Nausf\_UEAuthentication} \\
+\lr{UDM / UDR} & مدیریت / مخزن دادهٔ اشتراک                         & \lr{Nudm\_SDM, Nudm\_UECM} \\
+\acro{PCF}  & کنترل سیاست                                          & \lr{Npcf\_SMPolicyControl} \\
+\acro{NRF}  & مخزن \acro{NF}: ثبت، کشف، توکن‌ها                    & \lr{Nnrf\_NFDiscovery} \\
+\acro{NSSF} & انتخاب برش شبکه                                      & \lr{Nnssf\_NSSelection} \\
+\acro{NEF}  & عرضهٔ قابلیت‌های شبکه به \acro{AF}های بیرونی         & \lr{Nnef\_EventExposure} \\
+\acro{CHF}  & صورت‌حساب                                            & \lr{Nchf\_ConvergedCharging} \\
+\acro{NWDAF} & تحلیل داده‌های شبکه                                 & \lr{Nnwdaf\_AnalyticsInfo} \\
+\lr{SCP, SEPP} & ارتباط غیرمستقیم، امنیت میان \acro{PLMN}ها        & -- (پراکسی‌ها) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-18/sba}}
+  \caption{سامانهٔ نسل پنجم با صفحهٔ کنترل سرویس‌محور (\acro{SBI}) و نقاط مرجع به \acro{RAN} و \acro{UPF}.}
+  \label{fig:sba}
+\end{acnfigure}
+
+\subsection{تولیدکنندگان، مصرف‌کنندگان و الگوهای تعامل}
+یک \acro{NF} \emph{تولیدکننده} خدمتی را عرضه می‌کند؛ یک \acro{NF} \emph{مصرف‌کننده} از آن استفاده می‌کند. نام خدمات به شکل
+\lr{\emph{N\textless nf\textgreater\_\allowbreak\textless Service\textgreater\_\allowbreak\textless Operation\textgreater}} است، مثلاً
+\lr{Nsmf\_\allowbreak PDUSession\_\allowbreak CreateSMContext}. دو الگوی تعامل وجود دارد:
+\begin{itemize}
+  \item \textbf{درخواست/پاسخ}: مصرف‌کننده عملیاتی را درخواست و نتیجه را دریافت می‌کند؛
+  \item \textbf{اشتراک/اعلان}: مصرف‌کننده در رویدادها مشترک می‌شود (مثلاً \acro{AMF} برای تغییرات اشتراک در \acro{UDM} مشترک
+        می‌شود) و تولیدکننده اعلان‌ها را به یک \acro{URI} بازگشتی که مصرف‌کننده داده است می‌فرستد.
+\end{itemize}
+خدمات از \acro{NF}هایی که از آن‌ها استفاده می‌کنند جدا هستند: یک مصرف‌کنندهٔ جدید می‌تواند بدون تغییر تولیدکننده از خدمتی
+موجود استفاده کند -- دستاورد معماری اصلی نسبت به واسط‌های نقطه‌به‌نقطه.
+
+\subsection{پشتهٔ پروتکلی}
+\acro{SBI}ها از \lr{HTTP/2} \cite{rfc9113} روی \acro{TCP} با \acro{TLS}، بدنه‌های \acro{JSON} و \acro{API}هایی استفاده می‌کنند که
+در اسناد \lr{OpenAPI 3.0} همراه با مشخصات منتشر می‌شوند \cite{ts29500,ts29501}. منابع با \acro{URI}هایی به شکل
+\lr{\nolinkurl{{apiRoot}/<api-name>/<version>/<resource>}} شناسایی می‌شوند، مثلاً
+\lr{\nolinkurl{{apiRoot}/nsmf-pdusession/v1/sm-contexts}}. متدهای \acro{HTTP} به عملیات نگاشت می‌شوند (\cref{tab:http})؛
+خطاها به‌صورت کدهای وضعیت \acro{HTTP} همراه با توصیف مسئله به‌صورت \acro{JSON} برگردانده می‌شوند.
+
+\begin{table}[htbp]
+\centering\small
+\caption{استفاده از متدهای \acro{HTTP} روی واسط‌های سرویس‌محور \cite{ts29501}.}\label{tab:http}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y l@{}}
+\toprule
+\rowcolor{white}متد & معنا & پاسخ معمول \\
+\midrule
+\lr{POST}   & ایجاد یک منبع در یک مجموعه یا فراخوانی یک عملیات سفارشی & \lr{201 Created (Location), 200 OK} \\
+\lr{GET}    & خواندن یک منبع یا پرس‌وجوی یک مجموعه                   & \lr{200 OK} \\
+\lr{PUT}    & ایجاد یا جایگزینی منبعی با \acro{URI} انتخاب‌شده توسط کارخواه & \lr{201 Created, 200/204} \\
+\lr{PATCH}  & تغییر جزئی یک منبع (\lr{JSON Patch} / \lr{merge patch})  & \lr{200 OK, 204 No Content} \\
+\lr{DELETE} & حذف یک منبع                                           & \lr{204 No Content} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{توضیحات فنی تفصیلی}
+
+\subsection{\lr{NRF}}
+\acro{NRF} سه خدمت فراهم می‌کند \cite{ts29510}:
+\begin{itemize}
+  \item \textbf{\lr{Nnrf\_NFManagement}}: یک نمونهٔ \acro{NF} \emph{نمایهٔ \acro{NF}} خود (شناسهٔ نمونه، نوع، \acro{PLMN}، برش‌های
+        پشتیبانی‌شده، خدمات و نقاط پایانی آن‌ها، ظرفیت، اولویت) را با \lr{PUT} ثبت می‌کند، با ضربان‌های دوره‌ای زنده نگه
+        می‌دارد، با \lr{PATCH} به‌روز و با \lr{DELETE} از ثبت خارج می‌کند؛ \acro{NF}ها می‌توانند در تغییرات نمایه‌های دیگر مشترک
+        شوند.
+  \item \textbf{\lr{Nnrf\_NFDiscovery}}: یک مصرف‌کننده تولیدکنندگان را بر اساس نوع \acro{NF} هدف و معیارها (برش، \acro{DNN}،
+        \acro{TAI}، بازهٔ \acro{SUPI}، \ldots) پرس‌وجو می‌کند؛ پاسخ شامل نمایه‌های منطبق و دورهٔ اعتباری است که در آن می‌توان آن‌ها
+        را نهان کرد.
+  \item \textbf{\lr{Nnrf\_AccessToken}}: \acro{NRF} به‌عنوان کارساز مجوزدهی \lr{OAuth 2.0} عمل می‌کند و توکن‌های دسترسی (اعطای
+        اعتبارنامهٔ کارخواه) صادر می‌کند که تولیدکننده پیش از خدمت‌دهی به یک درخواست بررسی می‌کند \cite{rfc6749}.
+\end{itemize}
+
+\subsection{ارتباط مستقیم و غیرمستقیم}
+در ارتباط \emph{مستقیم} مصرف‌کننده درخواست‌ها را مستقیم به تولیدکننده می‌فرستد، یا بر اساس پیکربندی (گزینهٔ \lr{A}) یا پس از
+کشف از طریق \acro{NRF} (گزینهٔ \lr{B}). در ارتباط \emph{غیرمستقیم} (انتشار ۱۶) درخواست‌ها از یک \emph{پراکسی ارتباط خدمت}
+(\acro{SCP}) می‌گذرند: مصرف‌کننده یا خود تولیدکننده را کشف می‌کند (گزینهٔ \lr{C}) یا کشف و انتخاب را به \acro{SCP} واگذار می‌کند
+(گزینهٔ \lr{D}) (\cref{fig:comm}). \acro{SCP} نقشی شبیه یک عامل مسیریابی \lr{Diameter} یا یک شبکهٔ خدمت (\lr{service mesh})
+دارد: توازن بار، مسیریابی، رسیدگی به اضافه‌بار و مشاهده‌پذیری در یک جا، به بهای یک گام اضافی.
+
+\begin{acnfigure}
+  \resizebox{0.9\linewidth}{!}{\acnfig{lecture-18/comm-options}}
+  \caption{ارتباط مستقیم (گزینه‌های \lr{A/B}) و ارتباط غیرمستقیم از طریق \acro{SCP} (گزینه‌های \lr{C/D}).}
+  \label{fig:comm}
+\end{acnfigure}
+
+\subsection{تاب‌آوری: مجموعه‌های \lr{NF} و پیوند}
+نمونه‌های \acro{NF} که زمینه را به اشتراک می‌گذارند (مثلاً از طریق یک مخزن دادهٔ مشترک) می‌توانند یک \emph{مجموعهٔ \acro{NF}}
+تشکیل دهند؛ هر نمونه از مجموعه می‌تواند به درخواست‌های یک \acro{UE} خدمت دهد، پس یک نمونهٔ خراب بدون از دست رفتن نشست جایگزین
+می‌شود. \emph{نشانگرهای پیوند} به مصرف‌کنندگان و \acro{SCP}ها می‌گویند درخواست‌ها یا اعلان‌های بعدی برای یک زمینهٔ معین به کدام
+نمونه یا مجموعه برود. این همتای \acro{SBA} برای طراحی نمونه‌های بی‌حالت کارکردهای ابرزاد است (درس ۱۶).
+
+\subsection{رومینگ و \lr{SEPP}}
+میان \acro{PLMN}ها، \acro{NF}ها هرگز مستقیم گفت‌وگو نمی‌کنند: هر \acro{PLMN} یک \emph{پراکسی حفاظت لبهٔ امنیت} (\acro{SEPP})
+در مرز خود دارد و \acro{SEPP}ها از طریق \lr{N32} به هم وصل‌اند. \acro{SEPP}ها امنیت را روی \lr{N32-c} مذاکره و پیام‌های
+هدایت‌شده را روی \lr{N32-f} محافظت می‌کنند، یا با \acro{TLS} سرتاسری میان \acro{SEPP}ها یا با حفاظت لایهٔ کاربرد وقتی فراهم‌کنندگان
+میانی \acro{IPX} باید بتوانند فیلدهای منتخبی را بخوانند یا تغییر دهند \cite{ts33501}. بدین ترتیب \acro{SEPP} نقش عامل لبهٔ
+\lr{Diameter} در \acro{EPC} را با امنیت قوی‌تر بازی می‌کند.
+
+\subsection{عملیات خدمت در عمل}
+چند نمونه از عملیات منبع‌محور (ساده‌شده) \cite{ts29510}:
+\begin{itemize}
+  \item ثبت: \lr{\nolinkurl{PUT {apiRoot}/nnrf-nfm/v1/nf-instances/{nfInstanceId}}} همراه با نمایهٔ \acro{NF}؛
+  \item کشف: \lr{\nolinkurl{GET {apiRoot}/nnrf-disc/v1/nf-instances?target-nf-type=SMF&requester-nf-type=AMF}}؛
+  \item ایجاد نشست: \lr{\nolinkurl{POST {apiRoot}/nsmf-pdusession/v1/sm-contexts}} با بدنهٔ \acro{JSON} شامل \acro{SUPI}،
+        \acro{DNN}، \lr{S-NSSAI} و پیام \lr{N1}؛ \acro{SMF} با \lr{201} و \acro{URI} زمینهٔ \acro{SM} جدید پاسخ می‌دهد.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{مدل‌های ریاضی}
+
+\subsection{هم‌روندی روی اتصال‌های \lr{HTTP/2}}\label{sec:inflight}
+\paragraph{مدل} یک مصرف‌کننده $\lambda$ درخواست در ثانیه به یک تولیدکننده می‌فرستد؛ هر درخواست به مدت زمان پاسخ $R$ (رفت‌وبرگشت
+شبکه به‌علاوهٔ پردازش) معلق است. بنا به قانون لیتل تعداد درخواست‌های هم‌روند
+\begin{equation}\label{eq:inflight}
+  N_{\mathrm{inflight}} = \lambda R
+\end{equation}
+است. با \lr{HTTP/1.1} بدون خط لوله، هر درخواست معلق به اتصال خود نیاز دارد؛ با \lr{HTTP/2} یک اتصال واحد تا بیشینهٔ تعداد
+جریان‌های هم‌روند همتا را حمل می‌کند (توصیه می‌شود دست‌کم ۱۰۰ باشد \cite{rfc9113}).
+\paragraph{مثال} $\lambda = 10^4$\,s$^{-1}$ و $R = 5$ میلی‌ثانیه: $N_{\mathrm{inflight}} = 50$ -- پنجاه اتصال \lr{HTTP/1.1} یا یک
+اتصال \lr{HTTP/2} (در عمل چند اتصال، برای افزونگی و پخش بار).
+
+\subsection{بار کشف و نهان‌سازی}\label{sec:cache}
+\paragraph{مدل} بدون نهان‌سازی، هر درخواست یک کشف را برمی‌انگیزد و \acro{NRF} کل نرخ درخواست $\lambda$ را می‌بیند. اگر هر یک از
+$C$ مصرف‌کننده نتایج کشف را برای $K$ نوع هدف به مدت دورهٔ اعتبار $T$ نهان کند، \acro{NRF} تقریباً این نرخ را می‌بیند:
+\begin{equation}\label{eq:cache}
+  \lambda_{\mathrm{NRF}} \approx \frac{C\,K}{T}.
+\end{equation}
+\paragraph{مثال} $C = 100$، $K = 5$ و $T = 60$ ثانیه: ۸٫۳ کشف در ثانیه به‌جای $10^4$ در ثانیه (\cref{fig:nrfload}).
+\paragraph{تفسیر} نهان‌سازی \acro{NRF} را به یک فهرست سبک تبدیل می‌کند، اما نمایه‌های نهان‌شده کهنه می‌شوند: یک مصرف‌کننده ممکن است
+تا انقضای نهان یا رسیدن یک اعلان به ارسال درخواست به یک نمونهٔ پربار یا خراب ادامه دهد. دورهٔ اعتبار بار \acro{NRF} را با زمان
+واکنش معاوضه می‌کند.
+
+\begin{acnfigure}
+  \acnfig{lecture-18/nrf-load}
+  \caption{بار کشف \acro{NRF} بر حسب دورهٔ اعتبار نهان (\cref{eq:cache}).}
+  \label{fig:nrfload}
+\end{acnfigure}
+
+\subsection{تأخیر ارتباط غیرمستقیم}\label{sec:indirect}
+\paragraph{مدل} فرض کنید $T_{\mathrm{dir}}$ زمان پاسخ یک درخواست مستقیم باشد. مسیریابی از طریق یک \acro{SCP} دو گام شبکه با تأخیر
+یک‌طرفهٔ $d$ در هر جهت و پردازش \acro{SCP} برابر $t_{\mathrm{s}}$ می‌افزاید؛ با کشف واگذارشده، \acro{SCP} گاه‌به‌گاه (با احتمال
+$p_{\mathrm{m}}$ عدم یافتن در نهان) از \acro{NRF} پرس‌وجو می‌کند که $T_{\mathrm{NRF}}$ هزینه دارد:
+\begin{equation}\label{eq:indirect}
+  T_{\mathrm{ind}} \approx T_{\mathrm{dir}} + 2d + t_{\mathrm{s}} + p_{\mathrm{m}}\,T_{\mathrm{NRF}} .
+\end{equation}
+\paragraph{مثال} $T_{\mathrm{dir}} = 3$ میلی‌ثانیه، $d = 0.25$ میلی‌ثانیه، $t_{\mathrm{s}} = 0.5$ میلی‌ثانیه، $p_{\mathrm{m}} = 0.05$ و
+$T_{\mathrm{NRF}} = 2$ میلی‌ثانیه: $T_{\mathrm{ind}} = 4.1$ میلی‌ثانیه. یک ثبت‌نام که به ده تبادل ترتیبی \acro{SBI} نیاز دارد حدود
+۱۱ میلی‌ثانیه طولانی‌تر می‌شود.
+
+\subsection{فشرده‌سازی سرآیند}\label{sec:hpack}
+\paragraph{مدل} \lr{HTTP/2} سرآیندها را با \acro{HPACK} فشرده می‌کند: نخستین درخواست روی یک اتصال سرآیندهای $H_1$ بایتی می‌فرستد؛
+درخواست‌های بعدی بیشتر به مدخل‌های جدول ارجاع می‌دهند و $h$ بایت هزینه دارند. اندازهٔ میانگین سرآیند روی $n$ درخواست
+\begin{equation}\label{eq:hpack}
+  \bar H_n = \frac{H_1 + (n-1)\,h}{n} \;\xrightarrow{\;n\to\infty\;}\; h
+\end{equation}
+است.
+\paragraph{مثال} $H_1 = 400$ بایت، $h = 20$ بایت و $n = 100$: $\bar H = 23.8$ بایت برای هر درخواست -- دلیلی برای نگه‌داشتن
+اتصال‌های طولانی‌مدت میان \acro{NF}ها.
+
+% ---------------------------------------------------------------------
+\section{معماری شبکه و نمودارها}
+در یک استقرار، نمونه‌های \acro{NF} به‌صورت کانتینر در یک یا چند مرکز داده اجرا می‌شوند؛ هر نوع \acro{NF} تکثیر و در \acro{NRF}
+(که خود افزونه است) ثبت می‌شود؛ \acro{SCP}ها یا یک شبکهٔ خدمت آن‌ها را به هم وصل می‌کنند؛ \acro{SEPP}ها در مرز قرار دارند؛
+\acro{AMF}ها و \acro{UPF}ها از طریق \lr{N2} و \lr{N3} به \acro{RAN} وصل‌اند. برخلاف \acro{EPC}، جدول همتای ثابتی وجود ندارد: اینکه
+چه کسی با چه کسی گفت‌وگو کند در زمان اجرا و بر اساس دید \acro{NRF}، برش و موقعیت \acro{UE} تعیین می‌شود (\cref{fig:sba}).
+
+% ---------------------------------------------------------------------
+\section{رویه‌های گام‌به‌گام}
+
+\begin{procedurebox}{ثبت و کشف \lr{NF}}\label{proc:register}
+\begin{steps}
+  \item یک نمونهٔ جدید \acro{SMF} آغاز می‌شود و \lr{PUT} را با نمایهٔ \acro{NF} خود به \acro{NRF} می‌فرستد
+        (\lr{Nnrf\_NFManagement\_NFRegister})؛ \acro{NRF} آن را ذخیره و با \lr{201} و فاصلهٔ ضربان پاسخ می‌دهد.
+  \item \acro{SMF} ضربان‌های دوره‌ای می‌فرستد؛ اگر متوقف شوند، \acro{NRF} آن را معلق علامت می‌زند و به مشترکان اطلاع می‌دهد.
+  \item یک \acro{AMF} که برای یک نشست \acro{PDU} به \acro{SMF} نیاز دارد یک \lr{GET} کشف با نوع هدف \acro{SMF}، \acro{DNN} و
+        \lr{S-NSSAI} می‌فرستد.
+  \item \acro{NRF} نمایه‌های منطبق را با دورهٔ اعتبار برمی‌گرداند؛ \acro{AMF} یکی را (اولویت، ظرفیت، مجاورت) برمی‌گزیند و نتیجه را
+        نهان می‌کند.
+\end{steps}
+\end{procedurebox}
+
+\begin{procedurebox}{فراخوانی مجاز خدمت}\label{proc:invoke}
+\begin{steps}
+  \item \acro{AMF} یک توکن دسترسی برای دامنهٔ «\lr{nsmf-pdusession}» از \acro{NRF} درخواست می‌کند (\lr{Nnrf\_AccessToken}).
+  \item \acro{NRF} \acro{AMF} را احراز هویت می‌کند (گواهی کارخواه \acro{TLS}) و یک توکن امضاشده برمی‌گرداند.
+  \item \acro{AMF} \lr{POST} را با توکن در سرآیند \lr{Authorization} به منبع \lr{sm-contexts} در \acro{SMF} می‌فرستد.
+  \item \acro{SMF} امضا، دامنه و مخاطب توکن را بررسی، زمینهٔ \acro{SM} را ایجاد و با \lr{201} و \acro{URI} آن پاسخ می‌دهد؛ عملیات
+        بعدی از آن \acro{URI} استفاده می‌کنند.
+\end{steps}
+\end{procedurebox}
+
+\begin{acnfigure}
+  \resizebox{\linewidth}{!}{\acnfig{lecture-18/nrf-flow}}
+  \caption{ثبت، کشف، توکن و فراخوانی خدمت (\cref{proc:register,proc:invoke}).}
+  \label{fig:nrf}
+\end{acnfigure}
+
+% ---------------------------------------------------------------------
+\section{مثال‌های حل‌شده}
+
+\begin{examplebox}{اتصال‌های میان \lr{NF}ها}\label{ex:inflight}
+\textbf{مسئله.} یک \acro{AMF} $2\times10^4$ درخواست در ثانیه با میانگین زمان پاسخ ۸ میلی‌ثانیه به مجموعه‌ای از \acro{SMF}ها
+می‌فرستد. چند درخواست معلق است و اگر هر اتصال ۱۰۰ جریان هم‌روند مجاز کند و اتصال‌ها حداکثر ۵۰٪ بهره‌وری داشته باشند، چند
+اتصال \lr{HTTP/2} لازم است؟
+
+\textbf{حل.} $N = 2\times10^4\times0.008 = 160$. با ۵۰ جریان به‌کاررفته در هر اتصال، دست‌کم $\lceil160/50\rceil = 4$ اتصال، که برای
+افزونگی میان نمونه‌های \acro{SMF} پخش می‌شوند.
+\end{examplebox}
+
+\begin{examplebox}{اندازه‌گذاری \lr{NRF}}\label{ex:cache}
+\textbf{مسئله.} یک هسته ۱۰۰۰ نمونهٔ مصرف‌کننده دارد که هر کدام ۵ نوع هدف را با اعتبار ۳۰۰ ثانیه کشف می‌کنند، به‌علاوهٔ ۵۰۰
+نمونهٔ \acro{NF} که هر ۱۰ ثانیه یک ضربان می‌فرستند. \acro{NRF} چه باری می‌بیند؟
+
+\textbf{حل.} کشف $1000\times5/300 = 16.7$\,s$^{-1}$؛ ضربان‌ها $500/10 = 50$\,s$^{-1}$؛ مجموع حدود ۶۷ درخواست در ثانیه -- کم، اما
+حیاتی: \acro{NRF} باید بسیار دسترس‌پذیر باشد، چون پس از انقضای نهان‌ها نشست‌های جدید بدون آن جایابی نمی‌شوند.
+\end{examplebox}
+
+\begin{examplebox}{\lr{SCP} یا مستقیم؟}\label{ex:scp}
+\textbf{مسئله.} با اعداد \cref{sec:indirect}، ارتباط غیرمستقیم رویه‌ای با ۶ تبادل ترتیبی \acro{SBI} را چقدر طولانی می‌کند؟ اپراتور
+چه به دست می‌آورد؟
+
+\textbf{حل.} $6\times1.1 = 6.6$ میلی‌ثانیه. دستاوردها: مصرف‌کنندگان به منطق کشف یا مدیریت اتصال برای هر تولیدکننده نیاز ندارند؛
+توازن بار، تلاش مجدد، کنترل اضافه‌بار و پایش متمرکز می‌شوند؛ تولیدکنندگان را می‌توان به‌طور شفاف مقیاس داد یا جابه‌جا کرد.
+\end{examplebox}
+
+% ---------------------------------------------------------------------
+\section{مقایسهٔ فناوری‌ها}
+\begin{table}[htbp]
+\centering\small
+\caption{سیگنالینگ نقطه‌به‌نقطهٔ \acro{EPC} در برابر \acro{SBA} نسل پنجم.}\label{tab:cmp}
+\rowcolors{2}{acnmist}{white}
+\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
+\toprule
+\rowcolor{white} & \acro{EPC} (\lr{Diameter}، \lr{GTPv2-C}) & \acro{SBA} در \lr{5GC} \\
+\midrule
+مدل واسط         & نقاط مرجع نقطه‌به‌نقطه                 & خدمات روی یک گذرگاه مشترک؛ هر مصرف‌کنندهٔ مجاز \\
+انتقال           & \lr{SCTP/TCP} (\lr{Diameter})، \acro{UDP} (\lr{GTP-C}) & \acro{TCP} + \acro{TLS}، \lr{HTTP/2} \\
+کدگذاری          & \acro{AVP}ها / \acro{IE}های دودویی      & \acro{JSON}، تعریف‌شده با \lr{OpenAPI} \\
+کشف همتا         & پیکربندی ایستا، \acro{DNS}، \acro{DRA}ها & ثبت و کشف در \acro{NRF} \\
+تعامل            & درخواست/پاسخ                           & درخواست/پاسخ، اشتراک/اعلان \\
+پراکسی مسیریابی  & \acro{DRA}                              & \acro{SCP} (اختیاری) \\
+لبهٔ رومینگ      & \acro{DEA} (\lr{Diameter})، دیواره‌های آتش \acro{GTP} & \acro{SEPP} با امنیت \lr{N32} \\
+مجوزدهی          & ضمنی (همتای پیکربندی‌شده)              & توکن‌های \lr{OAuth 2.0} از \acro{NRF} \\
+توسعه‌پذیری      & \acro{AVP}/\acro{IE} جدید، کاربردهای جدید & خدمات/عملیات جدید، نسخه‌های \acro{API} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{همه‌چیز سرویس‌محور نیست} \lr{N1} (\acro{NAS})، \lr{N2} (\acro{NGAP})، \lr{N4} (\acro{PFCP}) و صفحهٔ کاربر (\lr{N3}، \lr{N9}
+با \lr{GTP-U}) پروتکل‌های نقطه‌به‌نقطه را حفظ می‌کنند، چون \acro{RAN}، \acro{UE} یا هدایت پرنرخ را درگیر می‌کنند که \acro{HTTP} در
+آن‌ها سودی ندارد.
+
+% ---------------------------------------------------------------------
+\section{نکته‌های کلیدی}
+\begin{takeawaybox}
+\begin{itemize}
+  \item \acro{NF}های صفحهٔ کنترل \lr{5GC} خدمات (\lr{Nnf\_Service\_Operation}) را روی یک \acro{SBI} مشترک عرضه می‌کنند:
+        \lr{HTTP/2}، \acro{TLS}، \acro{JSON}، \lr{OpenAPI}.
+  \item درخواست/پاسخ و اشتراک/اعلان؛ تولیدکنندگان از مصرف‌کنندگان جدا هستند.
+  \item \acro{NRF} به ثبت، کشف و توکن‌های \lr{OAuth 2.0} رسیدگی می‌کند؛ \acro{SCP} ارتباط غیرمستقیم را ممکن می‌کند؛ \acro{SEPP}
+        رومینگ را ایمن می‌کند.
+  \item قانون لیتل هم‌روندی را اندازه می‌گیرد ($\lambda R$)؛ نهان‌سازی بار \acro{NRF} را در $CK/T$ نگه می‌دارد؛ یک \acro{SCP} برای هر
+        تبادل حدود $2d + t_{\mathrm{s}}$ می‌افزاید.
+  \item \lr{N1}، \lr{N2}، \lr{N4} و صفحهٔ کاربر نقطه‌به‌نقطه می‌مانند.
+\end{itemize}
+\end{takeawaybox}
+
+% ---------------------------------------------------------------------
+\section{تمرین‌ها}
+
+\begin{exercisebox}{1}{تولیدکنندگان و مصرف‌کنندگان}\label{exr:pc}
+در برقراری نشست \acro{PDU}، \acro{AMF} عملیات \lr{Nsmf\_PDUSession\_CreateSMContext} و \acro{SMF} عملیات \lr{Nudm\_SDM\_Get} و
+\lr{Npcf\_SMPolicyControl\_Create} را فرا می‌خوانند. تولیدکننده و مصرف‌کننده را در هر مورد مشخص کنید.
+\end{exercisebox}
+
+\begin{exercisebox}{1}{کدام متد؟}\label{exr:method}
+متد \acro{HTTP} را برگزینید برای: (الف) خواندن برش‌های مشترک‌شدهٔ یک \acro{UE}؛ (ب) ایجاد یک زمینهٔ \acro{SM}؛ (ج) ثبت یک نمایهٔ
+\acro{NF} با شناسهٔ نمونهٔ معلوم آن؛ (د) تغییر مقدار بار در یک نمایهٔ \acro{NF}؛ (هـ) آزادکردن یک انجمن سیاست.
+\end{exercisebox}
+
+\begin{exercisebox}{2}{اتصال‌ها}\label{exr:conn}
+یک \acro{UDM} از ۴۰ نمونهٔ مصرف‌کننده $5\times10^4$ درخواست در ثانیه با زمان پاسخ ۴ میلی‌ثانیه دریافت می‌کند. هم‌روندی را محاسبه
+و تعداد اتصال‌های لازم را با \lr{HTTP/1.1} (بدون خط لوله) و \lr{HTTP/2} (۱۰۰ جریان در هر اتصال، یک اتصال برای هر نمونهٔ
+مصرف‌کننده) مقایسه کنید. آیا یک اتصال \lr{HTTP/2} برای هر مصرف‌کننده کافی است؟
+\end{exercisebox}
+
+\begin{exercisebox}{2}{دورهٔ اعتبار نهان}\label{exr:validity}
+اپراتوری می‌خواهد بار کشف \acro{NRF} با ۲۰۰۰ مصرف‌کننده و ۶ نوع هدف زیر ۵۰ در ثانیه باشد. کمینهٔ دورهٔ اعتبار چیست؟ عیب انتخاب
+مقداری بسیار بزرگ‌تر چیست؟
+\end{exercisebox}
+
+\begin{exercisebox}{3}{بودجهٔ تأخیر}\label{exr:budget}
+یک رویهٔ ثبت‌نام ۱۲ تبادل ترتیبی \acro{SBI} با $T_{\mathrm{dir}} = 2.5$ میلی‌ثانیه دارد. بودجهٔ صفحهٔ کنترل برای ثبت‌نام در هسته ۵۰
+میلی‌ثانیه است. با \cref{eq:indirect} و $d = 0.5$ میلی‌ثانیه، $t_{\mathrm{s}} = 0.8$ میلی‌ثانیه، $p_{\mathrm{m}} = 0.1$ و
+$T_{\mathrm{NRF}} = 3$ میلی‌ثانیه بررسی کنید آیا ارتباط غیرمستقیم جا می‌شود. اگر \acro{NF}ها در دو مرکز داده با فاصلهٔ ۳۰۰ کیلومتر
+باشند چه تغییری می‌کند؟
+\end{exercisebox}
+
+\begin{exercisebox}{3}{نقد طراحی}\label{exr:critique}
+دو استدلال موافق و دو استدلال مخالف استفاده از \lr{HTTP/2 + JSON} به‌جای یک پروتکل دودویی مانند \lr{Diameter} برای سیگنالینگ
+هسته بیاورید و توضیح دهید چرا \lr{N2} و \lr{N4} سرویس‌محور نشدند.
+\end{exercisebox}
+
+\subsection*{پاسخ‌ها}
+\addcontentsline{toc}{subsection}{پاسخ‌ها}
+
+\begin{solutionbox}{\ref{exr:pc}}
+\lr{CreateSMContext}: \acro{SMF} تولیدکننده، \acro{AMF} مصرف‌کننده. \lr{SDM\_Get}: \acro{UDM} تولیدکننده، \acro{SMF} مصرف‌کننده.
+\lr{SMPolicyControl\_Create}: \acro{PCF} تولیدکننده، \acro{SMF} مصرف‌کننده.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:method}}
+(الف) \lr{GET}؛ (ب) \lr{POST} (به مجموعهٔ \lr{sm-contexts})؛ (ج) \lr{PUT} (به \lr{nf-instances/\{id\}})؛ (د) \lr{PATCH}؛ (هـ)
+\lr{DELETE} (یا \lr{POST} به یک عملیات سفارشی «\lr{delete}» هرجا \acro{API} آن را تعریف کرده باشد).
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:conn}}
+$N = 5\times10^4\times0.004 = 200$ درخواست هم‌روند. \lr{HTTP/1.1}: ۲۰۰ اتصال. \lr{HTTP/2}: برای هر مصرف‌کننده $200/40 = 5$ جریان
+هم‌روند -- یک اتصال برای هر مصرف‌کننده از نظر ظرفیت کافی است، اما برای افزونگی و پخش بار میان نمونه‌های \acro{UDM} دو اتصال
+توصیه می‌شود.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:validity}}
+$CK/T \le 50 \Rightarrow T \ge 2000\times6/50 = 240$ ثانیه. اعتبار بسیار بزرگ‌تر باعث می‌شود مصرف‌کنندگان دیر متوجه
+تولیدکنندگان جدید یا حذف‌شده شوند؛ برای به‌روزرسانی به اعلان‌های \acro{NRF} یا پاسخ‌های خطا تکیه می‌کنند و توازن بار روی نمونه‌های
+تازه مقیاس‌یافته به تأخیر می‌افتد.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:budget}}
+برای هر تبادل: $2.5 + 1.0 + 0.8 + 0.3 = 4.6$ میلی‌ثانیه؛ ۱۲ تبادل: ۵۵٫۲ میلی‌ثانیه -- بیش از بودجهٔ ۵۰ میلی‌ثانیه (مستقیم: ۳۰
+میلی‌ثانیه). با ۳۰۰ کیلومتر میان مراکز داده (یک‌طرفه حدود ۱٫۵ میلی‌ثانیه در فیبر)، هر تبادل میان‌سایتی حدود ۳ میلی‌ثانیه
+رفت‌وبرگشت می‌افزاید: رویه باید \acro{NF}های یک \acro{UE} را در یک سایت نگه دارد (کشف آگاه از مکان) یا تبادل‌ها را موازی کند.
+\end{solutionbox}
+
+\begin{solutionbox}{\ref{exr:critique}}
+موافق: ابزارها، کتابخانه‌ها و مهارت‌های فراگیر؛ توسعه‌پذیری و نسخه‌بندی آسان با \lr{OpenAPI}؛ سازگاری طبیعی با سکوهای ابری
+(متعادل‌کننده‌های بار، شبکه‌های خدمت، مشاهده‌پذیری). مخالف: پیام‌های بزرگ‌تر و هزینهٔ تجزیهٔ بیشتر نسبت به \acro{TLV} دودویی؛
+مدیریت اتصال \acro{TCP} و \acro{TLS}؛ آزادی بیشتر (فیلدهای اختیاری، نسخه‌ها) که می‌تواند به هم‌کنش‌پذیری آسیب بزند. \lr{N2} و
+\lr{N4} \acro{RAN} و صفحهٔ کاربر را درگیر می‌کنند که به پروتکل‌های فشرده، کم‌تأخیر، اغلب با پشتیبانی سخت‌افزاری و پیوندهای
+طولانی‌مدت نیاز دارند؛ همتاهای آن‌ها مصرف‌کنندگان عام نیستند، پس جداسازی \acro{SBA} در آنجا سود چندانی ندارد.
+\end{solutionbox}
+
+% ---------------------------------------------------------------------
+\section{مطالعهٔ بیشتر}
+\acro{SBA} در \lr{TS 23.501} \cite{ts23501} و رویه‌های آن در \lr{TS 23.502} \cite{ts23502} تعریف شده‌اند؛ \lr{TS 29.500}
+\cite{ts29500} و \lr{TS 29.501} \cite{ts29501} تحقق فنی و قواعد طراحی \acro{API} را مشخص می‌کنند؛ \lr{TS 29.510} \cite{ts29510}
+\acro{NRF} را مشخص می‌کند؛ \lr{TS 33.501} \cite{ts33501} امنیت \acro{SBA} از جمله \acro{SEPP} را پوشش می‌دهد. \lr{HTTP/2} در
+\lr{RFC 9113} \cite{rfc9113} و \lr{OAuth 2.0} در \lr{RFC 6749} \cite{rfc6749} آمده است. رومر و همکاران \cite{rommer2020core}
+شرحی درسی ارائه می‌دهند.
+
+\begin{latin}
+\printbibliography[heading=subbibliography,title={References}]
+\end{latin}
+\end{document}

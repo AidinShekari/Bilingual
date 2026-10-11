@@ -1,0 +1,31 @@
+% EPC/5GC interworking with combined nodes and N26
+\begin{tikzpicture}[x=1cm,y=1cm,
+  cb/.style={nf,minimum width=2.5cm,minimum height=0.7cm,font=\ACNheadfont\scriptsize\bfseries,fill=acnmint,draw=acnteal}]
+  \node[cb] (hu) at (5,3.0) {HSS + UDM};
+  \node[cb] (pp) at (5,1.8) {PCF + PCRF};
+  \node[cb] (sm) at (5,0.5) {SMF + PGW-C};
+  \node[cb] (up) at (5,-0.8) {UPF + PGW-U};
+  \node[nf] (mme) at (1.6,1.8) {MME};
+  \node[nfalt] (sgw) at (1.6,-0.2) {S-GW};
+  \node[nf] (enb) at (-1.0,0.8) {eNB};
+  \node[nf] (amf) at (8.4,1.8) {AMF};
+  \node[nf] (gnb) at (11.0,0.5) {gNB};
+  \node[ue] (ue) at (5,-2.2) {UE};
+  \node[caplabel] at (0.3,3.0) {EPC};
+  \node[caplabel] at (9.7,3.0) {5GC};
+  \draw[cp] (mme) -- node[iflabel,above,sloped]{S6a} (hu);
+  \draw[cp] (amf) -- node[iflabel,above,sloped]{N8} (hu);
+  \draw[cp] (mme) -- node[iflabel,left]{S11} (sgw);
+  \draw[cp] (sgw) -- node[iflabel,above,sloped]{S5-C} (sm);
+  \draw[up] (sgw) -- node[iflabel,below,sloped]{S5-U} (up);
+  \draw[cp] (amf) -- node[iflabel,above,sloped]{N11} (sm);
+  \draw[cp] (sm) -- node[iflabel,right]{N4} (up);
+  \draw[cp] (sm) -- node[iflabel,right]{N7} (pp);
+  \draw[up] (gnb) -- node[iflabel,below,sloped]{N3} (up);
+  \draw[cp] (gnb) -- node[iflabel,above,sloped]{N2} (amf);
+  \draw[cp] (enb) -- node[iflabel,above,sloped]{S1-MME} (mme);
+  \draw[up] (enb) -- node[iflabel,below,sloped]{S1-U} (sgw);
+  \draw[cp,line width=1.3pt] (mme.north) .. controls (2.2,4.3) and (7.8,4.3) .. node[iflabel,above]{N26} (amf.north);
+  \draw[link,dashed] (ue) -- (enb.south);
+  \draw[link,dashed] (ue) -- (gnb.south);
+\end{tikzpicture}

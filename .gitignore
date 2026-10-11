@@ -1,0 +1,18 @@
+# LaTeX build products (all builds go to build/)
+build/
+*.aux
+*.log
+*.out
+*.toc
+*.xdv
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+# Python
+__pycache__/
+*.pyc
+.DS_Store
