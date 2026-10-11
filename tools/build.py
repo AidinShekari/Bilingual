@@ -92,8 +92,8 @@ def rewrite_links(node):
         return node
     if node.get("t") == "Link":
         target = node["c"][2][0]
-        if target.startswith(("code/", "assessments/")):
-            return {"t": "Code", "c": [["", [], []], target]}
+        if target.endswith(".md") and not target.startswith(("http://", "https://")):
+            return {"t": "Span", "c": [["", [], []], node["c"][1]]}
     return {key: rewrite_links(value) for key, value in node.items()}
 
 
@@ -177,6 +177,303 @@ def flexible_inline_code(node):
     return {key: flexible_inline_code(value) for key, value in node.items()}
 
 
+# The source transcripts remain archival.  The lecture editions omit their
+# software instructions while retaining mathematical and conceptual material.
+CODE_TOPIC = re.compile(
+    r"\b(?:python|pymc|jupyter(?:lab)?|notebook|colab|conda|pip|numpy|"
+    r"matplotlib|arviz|scipy|script|code|install|environment|software|packages|api|"
+    r"source.code|code.cell|code.block|code/|"
+    r"check_install|\.py\b|\.ipynb\b|\.yml\b|programming|coding|"
+    r"np\.\w+|pm\.\w+|az\.\w+|minimize_scalar|logpmf|default_rng|"
+    r"expected output|run the code|execute the code)\b|"
+    r"کدنویسی|کد|پایتون|نوت.?بوک|برنامه.?نویسی|خروجی مورد انتظار|"
+    r"محیط نرم.?افزاری|نصب|نرم.?افزار|بسته‌ها|اسکریپت|سلول",
+    re.I,
+)
+CODE_ONLY_HEADING = re.compile(
+    r"environment setup|python warm.up|self.study.*code|code reading|"
+    r"probabilistic programming with pymc|"
+    r"نصب محیط نرم.?افزاری|گرم کردن با python|مطالعه.*کد|"
+    r"برنامه.?نویسی احتمالاتی با pymc",
+    re.I,
+)
+
+
+def plain_node(node) -> str:
+    if isinstance(node, list):
+        return " ".join(part for item in node if (part := plain_node(item)).strip())
+    if isinstance(node, dict):
+        kind = node.get("t")
+        if kind == "Str":
+            return node["c"]
+        if kind in ("Code", "Math"):
+            return plain_node(node["c"])
+        return plain_node(node.get("c", []))
+    return str(node) if node is not None else ""
+
+
+def has_code(node) -> bool:
+    if isinstance(node, list):
+        return any(has_code(item) for item in node)
+    return isinstance(node, dict) and (node.get("t") == "Code" or has_code(node.get("c", [])))
+
+
+def clean_inlines(inlines: list) -> list:
+    """Remove only software-specific sentences from mixed prose blocks."""
+    # Bibliographies in the source sometimes use hard lines inside a single
+    # paragraph.  Remove a software-only entry as a whole, not its title only.
+    lines, line = [], []
+    for item in inlines:
+        if item.get("t") == "SoftBreak":
+            lines.append(line)
+            line = []
+        else:
+            line.append(item)
+    lines.append(line)
+    inlines = []
+    for part in lines:
+        value = plain_node(part)
+        if "Martin, O." in value and "Python" in value:
+            continue
+        if inlines:
+            inlines.append({"t": "SoftBreak"})
+        inlines.extend(part)
+    sentences, sentence = [], []
+    for item in inlines:
+        sentence.append(item)
+        if item.get("t") == "Str" and re.search(r"[.!?؟؛]$", item["c"]):
+            sentences.append(sentence)
+            sentence = []
+    if sentence:
+        sentences.append(sentence)
+    kept = []
+    for part in sentences:
+        if CODE_TOPIC.search(plain_node(part)) or has_code(part):
+            formulas = math_nodes(part)
+            if formulas:
+                kept.append(spaced_math(formulas))
+        else:
+            kept.append(part)
+    return [item for part in kept for item in part]
+
+
+def has_math(node) -> bool:
+    if isinstance(node, list):
+        return any(has_math(item) for item in node)
+    return isinstance(node, dict) and (node.get("t") == "Math" or has_math(node.get("c", [])))
+
+
+def math_nodes(node) -> list:
+    if isinstance(node, list):
+        return [formula for item in node for formula in math_nodes(item)]
+    if isinstance(node, dict):
+        if node.get("t") == "Math":
+            expression = node["c"][1]
+            substantive = (node["c"][0]["t"] == "DisplayMath" or
+                           bool(re.search(r"=|<|>|\\sim|\\frac|\\propto|\\leq|\\geq", expression)) or
+                           len(expression) > 18)
+            return [copy.deepcopy(node)] if substantive else []
+        return math_nodes(node.get("c", []))
+    return []
+
+
+def spaced_math(formulas: list) -> list:
+    result = [{"t": "Space"}]
+    for formula in formulas:
+        if len(result) > 1:
+            result.extend([{"t": "Space"}, {"t": "Str", "c": "·"}, {"t": "Space"}])
+        result.append(formula)
+    result.append({"t": "Space"})
+    return result
+
+
+def scrub_software_words(node):
+    if isinstance(node, list):
+        return [scrub_software_words(item) for item in node]
+    if not isinstance(node, dict):
+        return node
+    if node.get("t") == "Code":
+        return {"t": "Str", "c": ""}
+    if node.get("t") == "Str":
+        return {"t": "Str", "c": re.sub(r"(?i)python|pymc|arviz|scipy|programming", "", node["c"])}
+    return {key: scrub_software_words(value) for key, value in node.items()}
+
+
+def clean_blocks(blocks: list) -> list:
+    cleaned, skip_level = [], None
+    for block in blocks:
+        kind = block["t"]
+        if kind == "Header":
+            level = block["c"][0]
+            if skip_level is not None and level > skip_level:
+                continue
+            skip_level = None
+            title = plain_node(block["c"][2])
+            if CODE_ONLY_HEADING.search(title):
+                skip_level = level
+                continue
+            block = copy.deepcopy(block)
+            if "Probabilistic Programming and Hierarchical Models" in title:
+                block["c"][2] = [{"t": "Str", "c": "Week 13: Hierarchical Models"}]
+            elif "برنامه‌نویسی احتمالاتی و مدل‌های سلسله‌مراتبی" in title:
+                block["c"][2] = [{"t": "Str", "c": "هفته‌ی ۱۳: مدل‌های سلسله‌مراتبی"}]
+            elif "written report and code" in title:
+                block["c"][2] = [{"t": "Str", "c": "Final project: written report"}]
+            elif "گزارش کتبی و کد" in title:
+                block["c"][2] = [{"t": "Str", "c": "پروژه‌ی پایانی: گزارش کتبی"}]
+            elif "the model in PyMC" in title:
+                block["c"][2] = [{"t": "Str", "c": "Part B: prior predictive check"}]
+            elif "مدل در PyMC" in title:
+                block["c"][2] = [{"t": "Str", "c": "بخش B: بررسی پیش‌بینی پیشین"}]
+            elif "Setup and verbal theory audit" in title:
+                block["c"][2] = [{"t": "Str", "c": "A0: Verbal theory audit"}]
+            elif "نصب و «ممیزی نظریه‌ی کلامی»" in title:
+                block["c"][2] = [{"t": "Str", "c": "A0: ممیزی نظریه‌ی کلامی"}]
+            elif "checked against ArviZ" in title:
+                block["c"][2] = [{"t": "Str", "c": "Part C: R-hat and ESS diagnostics (30 min)"}]
+            elif "بررسی‌شده با ArviZ" in title:
+                block["c"][2] = [{"t": "Str", "c": "بخش C: تشخیص همگرایی با R-hat و ESS (۳۰ دقیقه)"}]
+            elif "assessments/project_brief.md" in title:
+                block["c"][2] = [{"t": "Str", "c": "پروژه‌ی پایانی: نمای کلی"}]
+            cleaned.append(block)
+            continue
+        if skip_level is not None:
+            formulas = [] if kind == "Table" else math_nodes(block)
+            if formulas:
+                cleaned.append({"t": "Para", "c": spaced_math(formulas)})
+            continue
+        if kind == "CodeBlock":
+            # Mermaid is the source for an actual explanatory figure.
+            if "mermaid" in block["c"][0][1]:
+                cleaned.append(block)
+            continue
+        if kind in ("Para", "Plain"):
+            block = copy.deepcopy(block)
+            block["c"] = clean_inlines(block["c"])
+            if block["c"] and plain_node(block["c"]).strip():
+                cleaned.append(block)
+            continue
+        if kind == "BlockQuote":
+            inner = clean_blocks(block["c"])
+            if inner:
+                cleaned.append({"t": kind, "c": inner})
+            continue
+        if kind == "BulletList":
+            items = []
+            for source_item in block["c"]:
+                item = clean_blocks(source_item)
+                if item and not (CODE_TOPIC.search(plain_node(source_item)) and
+                                 len(plain_node(item).split()) < 12):
+                    items.append(item)
+            if items:
+                cleaned.append({"t": kind, "c": items})
+            continue
+        if kind == "OrderedList":
+            attrs, source_items = block["c"]
+            items = []
+            for source_item in source_items:
+                source_text = plain_node(source_item)
+                if re.search(r"^Implement\.?\s+Write Python functions", source_text, re.I):
+                    item = [{"t": "Para", "c": [{"t": "Str", "c": "Analyze the predicted recall probabilities and binomial variability at selected retention intervals; explain how the two models differ."}]}]
+                elif re.search(r"^پیاده.?سازی\.?\s+توابع Python", source_text):
+                    item = [{"t": "Para", "c": [{"t": "Str", "c": "احتمال‌های پیش‌بینی‌شده‌ی یادآوری و تغییرپذیری دوجمله‌ای را در چند فاصله‌ی نگهداری تحلیل کنید و تفاوت دو مدل را توضیح دهید."}]}]
+                else:
+                    item = clean_blocks(source_item)
+                if item and not (CODE_TOPIC.search(plain_node(source_item)) and
+                                 len(plain_node(item).split()) < 12):
+                    items.append(item)
+            if items:
+                cleaned.append({"t": kind, "c": [attrs, items]})
+            continue
+        if kind == "Table":
+            table = copy.deepcopy(block)
+            if CODE_TOPIC.search(plain_node(table["c"][3])):
+                continue  # a software-mapping table has a software header
+            for body in table["c"][4]:
+                rows = []
+                for row in body[3]:
+                    row_text = plain_node(row)
+                    if re.search(r"\bEnvironment\b.*\bpackages\b|محیط نرم.?افزاری.*بسته‌ها", row_text, re.I):
+                        continue
+                    if re.search(r"probabilistic programming.*برنامه.?نویسی احتمالاتی|Bayesian modeling and computation in Python", row_text, re.I):
+                        continue
+                    if re.search(r"Code \(Task 2\)|کد \(کار 2\)", row_text):
+                        replacement = ("Predictions (Task 2)", "Clear quantitative comparison of model predictions and binomial variability") if "Code (Task 2)" in row_text else ("پیش‌بینی‌ها (کار 2)", "مقایسه‌ی کمی و روشن پیش‌بینی‌های دو مدل و تغییرپذیری دوجمله‌ای")
+                        row[1][0][4] = [{"t": "Plain", "c": [{"t": "Str", "c": replacement[0]}]}]
+                        row[1][-1][4] = [{"t": "Plain", "c": [{"t": "Str", "c": replacement[1]}]}]
+                    for cell in row[1]:
+                        cell_blocks = cell[4]
+                        if (CODE_TOPIC.search(plain_node(cell_blocks)) or has_code(cell_blocks) or
+                                re.search(r"\bimplement\b|پیاده.?سازی", plain_node(cell_blocks), re.I)):
+                            if has_math(cell_blocks):
+                                cell[4] = scrub_software_words(cell_blocks)
+                                continue
+                            value = plain_node(scrub_software_words(cell_blocks))
+                            if "Laptop setup" in value:
+                                value = "Simulate a random walk and compare its predictions with observations"
+                            elif "نصب روی لپ‌تاپ" in value:
+                                value = "شبیه‌سازی گام تصادفی و مقایسه‌ی پیش‌بینی‌های مدل با مشاهده‌ها"
+                            value = re.sub(r"(?i)install(?: the)? course environment;?", "", value)
+                            value = re.sub(r"نصب محیط نرم.?افزاری درس؛?", "", value)
+                            value = re.sub(r"(?i)install check plus a\s*", "", value)
+                            value = re.sub(r"بررسی نصب\s*\+\s*", "", value)
+                            value = re.sub(r"(?i)probabilistic programming\s*(?:and|&|;)?\s*", "", value)
+                            value = re.sub(r"(?i)report\s*\+\s*code", "report", value)
+                            value = re.sub(r"(?i)code reading/interpretation", "model interpretation", value)
+                            value = re.sub(r"(?i),?\s*then with\s*;", ";", value)
+                            value = re.sub(r"و سپس با\s*؛", "؛", value)
+                            value = re.sub(r"(?i)implement an LS fit from scratch", "derive and evaluate an LS fit", value)
+                            value = re.sub(r"(?i)implement NLL minimization", "analyze NLL minimization", value)
+                            value = re.sub(r"(?i)\bimplement\b", "analyze", value)
+                            value = re.sub(r"پیاده‌سازی برازش LS از صفر", "استخراج و ارزیابی برازش LS", value)
+                            value = re.sub(r"پیاده‌سازی کمینه‌سازی NLL", "تحلیل کمینه‌سازی NLL", value)
+                            value = re.sub(r"پیاده.?سازی", "تحلیل", value)
+                            value = re.sub(r"(?i)(?:python|pymc|arviz|jupyter(?:lab)?|notebook|colab|numpy|matplotlib|scipy|miniforge|conda|\bcode\b|\bscript\b|\bsoftware\b|\binstall\b|\benvironment\b|\bpackages\b)", "", value)
+                            value = re.sub(r"برنامه.?نویسی|پایتون|نوت.?بوک|کد|اسکریپت|نصب|نرم.?افزار|محیط نرم.?افزاری|بسته‌ها", "", value)
+                            value = re.sub(r"\s+", " ", value).strip(" ;:,()،")
+                            cell[4] = [{"t": "Plain", "c": [{"t": "Str", "c": value or "Conceptual discussion"}]}]
+                    rows.append(row)
+                body[3][:] = rows
+            if any(body[3] for body in table["c"][4]):
+                cleaned.append(table)
+            continue
+        cleaned.append(block)
+    # A removed example can leave its heading empty; remove such headings.
+    for index in range(len(cleaned) - 1, -1, -1):
+        block = cleaned[index]
+        if block["t"] == "Header":
+            level = block["c"][0]
+            following = index + 1
+            while following < len(cleaned) and cleaned[following]["t"] == "HorizontalRule":
+                following += 1
+            if following == len(cleaned) or (cleaned[following]["t"] == "Header" and cleaned[following]["c"][0] <= level):
+                del cleaned[index]
+    return cleaned
+
+
+def caption_tables(blocks: list, lang: str) -> list:
+    """Give each surviving table a source-derived, centered top caption."""
+    heading = "Course information" if lang == "en" else "اطلاعات درس"
+    for block in blocks:
+        if block["t"] == "Header":
+            heading = plain_node(block["c"][2]).strip()
+        elif block["t"] == "Table" and not block["c"][1][1]:
+            block["c"][1] = [None, [{"t": "Plain", "c": [{"t": "Str", "c": heading}]}]]
+    return blocks
+
+
+def keep_heading_families(blocks: list) -> list:
+    """Reserve room when a parent heading is followed immediately by a child."""
+    result = []
+    for index, block in enumerate(blocks):
+        if block["t"] == "Header" and index + 1 < len(blocks):
+            following = blocks[index + 1]
+            if following["t"] == "Header" and following["c"][0] > block["c"][0]:
+                result.append({"t": "RawBlock", "c": ["latex", r"\Needspace{11\baselineskip}"]})
+        result.append(block)
+    return result
+
+
 def extract(ast: dict, lang: str) -> dict:
     blocks = ast["blocks"]
     selected = []
@@ -212,6 +509,7 @@ def extract(ast: dict, lang: str) -> dict:
             # Bilingual code-cell references are shared between editions.
             selected.append(copy.deepcopy(block))
     output = copy.deepcopy(ast)
+    selected = keep_heading_families(caption_tables(clean_blocks(selected), lang))
     output["blocks"] = flexible_inline_code(directionalize(rewrite_links(selected), lang))
     return output
 
@@ -320,6 +618,21 @@ def latex_body(ast: dict, lang: str, landscape_wide: bool = True) -> str:
         for index in range(0, len(parts), 2):
             parts[index] = re.sub(r"\\\((.*?)\\\)", break_long_inline_math, parts[index], flags=re.S)
     body = "".join(parts)
+    # Keep the scientific examples while removing a package name embedded in
+    # an otherwise useful discussion of hierarchical model applications.
+    body = re.sub(r"\s*\(the HDDM\s+package\)", "", body)
+    body = re.sub(r"\s*\(بسته‌ی\s*\\lr\{HDDM\)\}", "", body)
+    # Labs describe mathematical procedures and model checks.  Rephrase
+    # software-oriented verbs while preserving Marr's technical term.
+    body = re.sub(r"\bImplement\b", "Formulate and evaluate", body)
+    body = re.sub(r"\bimplement\b", "formulate and evaluate", body)
+    body = body.replace("Formulate and evaluate, simulate and verify", "Formulate, simulate and verify")
+    body = re.sub(r"(سطح(?:وح)?\s+)پیاده‌سازی", lambda match: match.group(1) + "\ue010", body)
+    body = body.replace("پیاده‌سازی", "صورت‌بندی")
+    body = body.replace("\ue010", "پیاده‌سازی")
+    # The caption package prints a stray LT marker with xepersian/longtable in
+    # this engine.  A local declaration centers even wrapped captions safely.
+    body = body.replace(r"\caption{", r"\caption{\centering ")
     def prepare_listing(match):
         listing = match.group(0)
         lines = listing.count("\n") - 1
@@ -371,14 +684,15 @@ def write_all() -> None:
                 ast["blocks"] = ast["blocks"][1:]
             title = metadata_title(fa if lang == "fa" else en, lang)
             content = latex_body(ast, lang, landscape_wide=False)
-            if stem == "blueprint":
-                content = "\\begin{landscape}\n" + content + "\n\\end{landscape}\n"
             out = LATEX / "frontmatter" / f"{stem}-{lang}.tex"
             out.write_text(content, encoding="utf-8")
             front.append((title, stem))
         main = []
         for title, stem in front[:2]:
-            main.append(f"\\chapter*{{{title}}}\\addcontentsline{{toc}}{{chapter}}{{{title}}}\\input{{frontmatter/{stem}-{lang}}}\n")
+            chapter = f"\\chapter*{{{title}}}\\addcontentsline{{toc}}{{chapter}}{{{title}}}\\input{{frontmatter/{stem}-{lang}}}\n"
+            if stem == "blueprint":
+                chapter = "\\begin{landscape}\n" + chapter + "\\end{landscape}\n"
+            main.append(chapter)
         for en, fa, weeks in CHAPTERS:
             title = metadata_title(fa if lang == "fa" else en, lang)
             main.append(f"\\chapter{{{title}}}\n")
@@ -393,7 +707,7 @@ def write_all() -> None:
                 body = latex_body(ast, lang)
                 (LATEX / "chapters" / lang / f"week{week:02d}.tex").write_text(body, encoding="utf-8")
                 title = metadata_title(fa if lang == "fa" else en, lang)
-                week_title = extract_title(read_ast(week_source(week)), lang)
+                week_title = plain_node(ast["blocks"][0]["c"][2]).strip()
                 wrapper = standalone(lang, f"\\chapter{{{title}}}\\input{{chapters/{lang}/week{week:02d}}}", week_title)
                 (LATEX / f"week{week:02d}-{lang}.tex").write_text(wrapper, encoding="utf-8")
 

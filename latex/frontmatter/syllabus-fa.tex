@@ -1,8 +1,9 @@
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering طرح درس: مدل‌سازی شناختی (\lr{Cognitive Modeling)}}\tabularnewline
 \toprule\noalign{}
+\endfirsthead
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
@@ -12,14 +13,12 @@
 \textbf{شکل برگزاری} & 16 هفته × (1 ساعت درس + 2 ساعت \lr{lab} عملی) \\
 \textbf{مخاطبان} & دانشجویان کارشناسی ارشد و سال آخر کارشناسی در علوم
 شناختی، روان‌شناسی، علوم کامپیوتر و هوش مصنوعی \\
-\textbf{پیش‌نیازها} & روش‌های آماری در علوم شناختی؛ روش‌های آزمایشی در
-روان‌شناسی شناختی. فرض بر این است که دانشجو با احتمال، آمار و برنامه‌نویسی
-مقدماتی آشناست؛ آشنایی با آمار بیزی لازم \emph{نیست}. \\
+\textbf{پیش‌نیازها} &
+روش‌های آماری در علوم شناختی؛ روش‌های آزمایشی در روان‌شناسی شناختی. فرض بر این است که دانشجو با احتمال، آمار و مقدماتی آشناست؛ آشنایی با آمار بیزی لازم نیست . \\
 \textbf{مدرس} & \emph{{[}نام، اتاق، ایمیل، ساعت حضور{]}} \\
 \textbf{دستیار آموزشی} & \emph{{[}نام، ایمیل، ساعت‌های \lr{lab{]}}} \\
 \textbf{صفحه‌ی درس} & \emph{{[}لینک سامانه‌ی آموزشی \lr{(LMS){]}}} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -28,15 +27,9 @@
 مدل‌های شناختی توصیف‌های صریح، ریاضی یا محاسباتی، از فرایندهایی هستند که
 پشت رفتار قرار دارند. در این درس یاد می‌گیریم چنین مدل‌هایی را بسازیم، روی
 داده‌های آزمایشی برازش \lr{(fit)} کنیم، ارزیابی کنیم، و تفسیر کنیم که
-درباره‌ی ذهن چه می‌گویند. مسیر درس از شهود به فرمول، از فرمول به کد، و از
-کد به تفسیر است: از منطق یک مدل، با گذر از برآورد کمترین مربعات
-\lr{(least squares)} و بیشینه درست‌نمایی \lr{(maximum likelihood)}،
-ارزیابی مدل و استنباط بیزی، تا \lr{Markov chain Monte Carlo (MCMC)} و
-مدل‌های سلسله‌مراتبی \lr{(hierarchical).} درس را با مدل‌هایی از حوزه‌های
-حافظه، ادراک، دسته‌بندی \lr{(categorization)}، تصمیم‌گیری و یادگیری، و
-ارتباط آن‌ها با هوش مصنوعی تمام می‌کنیم. هر هفته یک \lr{lab} دوساعته با
-\lr{Python} داریم که در آن دانشجویان یک مدل را روی داده‌ی آزمایشی
-(شبیه‌سازی‌شده یا واقعی) برازش، ارزیابی و تفسیر می‌کنند.
+درباره‌ی ذهن چه می‌گویند. درس را با مدل‌هایی از حوزه‌های حافظه، ادراک،
+دسته‌بندی \lr{(categorization)}، تصمیم‌گیری و یادگیری، و ارتباط آن‌ها با
+هوش مصنوعی تمام می‌کنیم.
 
 \subsection{اهداف یادگیری}
 
@@ -45,7 +38,7 @@
 برای حل یک مسئله‌ی شناختی؛ 3. کاربردهای مدل‌سازی در علوم شناختی و هوش
 مصنوعی.
 
-\textbf{اهداف ویژه.} دانشجویان مهارت‌های زیر را کسب می‌کنند: 1. پیاده‌سازی
+\textbf{اهداف ویژه.} دانشجویان مهارت‌های زیر را کسب می‌کنند: 1. صورت‌بندی
 روش‌های مدل‌سازی روی داده‌های آزمایشی؛ 2. تفسیر نتایج پژوهشی به‌دست‌آمده با
 مدل‌های شناختی.
 
@@ -72,13 +65,27 @@
 
 \subsection{برنامه‌ی هفتگی}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering برنامه‌ی هفتگی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+هفته
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فصل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+درس نظری
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{lab}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+موعد تحویل
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 هفته
@@ -95,8 +102,8 @@
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-1 & 1 & مدل شناختی چیست؟ سطوح تحلیل \lr{Marr}؛ نمادگذاری & نصب محیط
-نرم‌افزاری درس؛ شبیه‌سازی \lr{random walk} & \lr{---} \\
+1 & 1 & مدل شناختی چیست؟ سطوح تحلیل \lr{Marr}؛ نمادگذاری &
+شبیه‌سازی \lr{random walk} & \lr{---} \\
 2 & 1 & کالبدشکافی یک مدل: \lr{SDT} و منحنی‌های فراموشی & \lr{SDT} و
 \lr{ROC/zROC}؛ منحنی فراموشی با نویز دوجمله‌ای & \lr{A0} \\
 3 & 2 & کمترین مربعات، سطح خطا و بهینه‌سازی & جستجوی شبکه‌ای \lr{(grid
@@ -120,10 +127,10 @@ search)}، \lr{Nelder\lr{--}Mead}، \lr{L-BFGS-B}؛ حالت‌های شکست &
 \lr{---} \\
 11 & 5 & \lr{Monte Carlo} و \lr{Metropolis\lr{--}Hastings} & \lr{Metropolis}
 از صفر؛ تنظیم \lr{(tuning)} & \lr{---} \\
-12 & 5 & نمونه‌گیری \lr{Gibbs}؛ تشخیص همگرایی & \lr{Gibbs} از صفر؛
-\lr{R-hat} و \lr{ESS}؛ \lr{ArviZ} & \lr{A4} \\
-13 & 5 & برنامه‌نویسی احتمالاتی؛ مدل‌های سلسله‌مراتبی & \lr{SDT}
-سلسله‌مراتبی در \lr{PyMC} & گزارش پیشرفت \\
+12 & 5 & نمونه‌گیری \lr{Gibbs}؛ تشخیص همگرایی &
+\lr{Gibbs }از صفر؛ \lr{R-hat }و \lr{ESS}؛ & \lr{A4} \\
+13 & 5 & احتمالاتی؛ مدل‌های سلسله‌مراتبی & \lr{SDT }سلسله‌مراتبی در & گزارش
+پیشرفت \\
 14 & 6 & دسته‌بندی \lr{(GCM)} و تصمیم‌گیری \lr{(drift-diffusion)} &
 \lr{GCM} در برابر \lr{prototype}؛ \lr{EZ-diffusion} & \lr{A5} \\
 15 & 6 & یادگیری تقویتی، شناخت بیزی و هوش مصنوعی & برازش و بازیابی
@@ -131,16 +138,17 @@ search)}، \lr{Nelder\lr{--}Mead}، \lr{L-BFGS-B}؛ حالت‌های شکست &
 16 & \lr{---} & جمع‌بندی و اصول مدل‌سازی خوب & \textbf{ارائه‌ی پروژه‌ها} &
 ارائه‌ها \\
 دوره‌ی امتحانات & 1\lr{--}6 & \lr{---} & \textbf{آزمون پایان‌ترم} (120 دقیقه) &
-گزارش + کد (پیش از آزمون) \\
+گزارش + (پیش از آزمون \\
 \end{longtable}
-}
-
-مواد کامل هر هفته در فایل‌های \lr{\nolinkurl{weekNN_*.md}} است.
 
 \subsection{ارزشیابی (از 20)}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}ll@{}}
+\caption{\centering ارزشیابی (از 20)}\tabularnewline
+\toprule\noalign{}
+بخش & نمره \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 بخش & نمره \\
 \midrule\noalign{}
@@ -148,18 +156,14 @@ search)}، \lr{Nelder\lr{--}Mead}، \lr{L-BFGS-B}؛ حالت‌های شکست &
 \bottomrule\noalign{}
 \endlastfoot
 تأیید تمرین‌های \lr{lab} (تمرین‌های هفتگی سر کلاس) & 2.0 \\
-تکالیف \lr{A1} تا \lr{A5} (هرکدام 1.0؛ \lr{A0} الزامی ولی بدون نمره) &
+تکالیف \lr{A1 }تا \lr{A5 (}هرام 1.0؛ \lr{A0 }الزامی ولی بدون نمره &
 5.0 \\
 کوییزهای سر کلاس (حدود 10 کوییز؛ 2 نمره‌ی پایین حذف می‌شود) & 1.0 \\
 آزمون میان‌ترم (هفته‌ی 8) & 3.0 \\
-پروژه‌ی پایانی: پیشنهاد 1.0 · ارائه 2.0 · گزارش + کد 3.0 & 6.0 \\
+پروژه‌ی پایانی: پیشنهاد 1.0 · ارائه 2.0 · گزارش + 3.0 & 6.0 \\
 آزمون پایان‌ترم (جامع، با تأکید بر فصل‌های 4 تا 6) & 3.0 \\
 \textbf{جمع} & \textbf{20.0} \\
 \end{longtable}
-}
-
-جزئیات، روبریک‌ها و قوانین در پوشه‌ی
-\lr{\nolinkurl{assessments/README.md}} آمده است.
 
 \subsection{قوانین (خلاصه)}
 
@@ -167,10 +171,6 @@ search)}، \lr{Nelder\lr{--}Mead}، \lr{L-BFGS-B}؛ حالت‌های شکست &
 \tightlist
 \item
   \textbf{تأخیر در تحویل:} 10\% کسر نمره برای هر روز، حداکثر 3 روز.
-\item
-  \textbf{همکاری:} گفت‌وگو آزاد است، ولی کد و متن را خودتان بنویسید (برای
-  گروه‌های دونفره، پروژه کار مشترک گروه است). گفت‌وگوها و کدهای
-  استفاده‌شده‌ی دیگران را ذکر کنید.
 \item
   \textbf{ابزارهای هوش مصنوعی:} برای رفع اشکال \lr{(debugging)}، توضیح
   مفاهیم و ویرایش زبانی مجاز است. نحوه‌ی استفاده را بنویسید؛ باید بتوانید
@@ -186,29 +186,15 @@ search)}، \lr{Nelder\lr{--}Mead}، \lr{L-BFGS-B}؛ حالت‌های شکست &
   هفته‌ی اول با مدرس تماس بگیرند.
 \end{itemize}
 
-\subsection{نرم‌افزار}
-
-\lr{Python} 3.11 یا بالاتر با کتابخانه‌های \lr{numpy}، \lr{scipy}،
-\lr{pandas}، \lr{matplotlib}، \lr{JupyterLab}، \lr{PyMC} و \lr{ArviZ} که
-در هفته‌ی 1 روی لپ‌تاپ خود دانشجویان نصب می‌شود \lr{(Miniforge/conda-forge}
-توصیه می‌شود؛ \lr{Google Colab} گزینه‌ی جایگزین است). فایل‌های
-\lr{\nolinkurl{environment.yml}} و \lr{\nolinkurl{requirements.txt}} (در
-پوشه‌ی اصلی) و \lr{lab} هفته‌ی 1 را ببینید.
-
 \subsection{منابع}
 
-منابع اصلی (برای ارتباط فصل‌ها با هفته‌ها فایل
-\href{reading_list.md}{\lr{\nolinkurl{reading_list.md}}} را ببینید): -
-\lr{Farrell, S.,} \lr{\&} \lr{Lewandowsky, S.} (2018).
-\emph{\lr{Computational modeling of cognition and behavior.}}
+(2018). \emph{\lr{Computational modeling of cognition and behavior.}}
 \lr{Cambridge University Press.} \textbf{(کتاب اصلی، هفته‌های 1 تا 8)} -
 \lr{Lee, M. D.,} \lr{\&} \lr{Wagenmakers, E.-J.} (2014). \emph{\lr{Bayesian
 cognitive modeling: A practical course.}} \lr{Cambridge University
 Press.} \textbf{(کتاب اصلی، هفته‌های 9 تا 14)} - \lr{Kruschke, J. K.}
 (2014). \emph{\lr{Doing Bayesian data analysis: A tutorial with R, JAGS,
-and Stan}} \lr{(2nd ed.). Academic Press.} - \lr{Martin, O. A., Kumar,
-R.,} \lr{\&} \lr{Lao, J.} (2021). \emph{\lr{Bayesian modeling and computation
-in Python.}} \lr{Chapman and Hall/CRC.} - \lr{Anderson, B.} (2014).
+and Stan}} \lr{(2nd ed.). Academic Press.} - \lr{Anderson, B.} (2014).
 \emph{\lr{Computational neuroscience and cognitive modelling: A
 student's introduction to methods and procedures.}} \lr{SAGE.} -
 \lr{Verguts, T.} (2022). \emph{\lr{Introduction to modeling cognitive

@@ -15,11 +15,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -72,7 +82,6 @@
 \lr{MCSE} & خطای استاندارد \lr{Monte Carlo} & خطای شبیه‌سازی در میانگین
 پسین \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -93,7 +102,7 @@
   می‌کند.
 \item
   الگوریتم \lr{Metropolis} (و \lr{Metropolis\lr{--}Hastings)} را برای یک مدل
-  شناختی یک‌پارامتری و دوپارامتری از صفر \textbf{پیاده‌سازی کنند}.
+  شناختی یک‌پارامتری و دوپارامتری از صفر \textbf{صورت‌بندی کنند}.
 \item
   توزیع پیشنهادی \lr{(proposal)} را با استفاده از نرخ پذیرش، \lr{trace
   plot} و خودهمبستگی \textbf{تنظیم کنند} و دوره‌ی \lr{burn-in} را
@@ -126,18 +135,15 @@
 به‌طرز زیبایی ساده حل می‌کند: یک گام‌زنی تصادفی در فضای پارامتر که به سمت
 مقادیر محتمل‌تر بیشتر از مقادیر کم‌احتمال‌تر حرکت می‌کند، دقیقاً با نسبت‌های
 درست. بعد از مدتی، جاهایی که این گام‌زن به آن‌ها سر می‌زند نمونه‌هایی از
-پسین‌اند. شناخته‌شده‌ترین نسخه، یعنی \textbf{الگوریتم \lr{Metropolis}}، در
-15 خط \lr{Python} جا می‌شود و امروز پیش از استفاده از هر کتابخانه‌ای
-خودتان آن را می‌نویسید.
+پسین‌اند.
 
 \paragraph{این موضوع کجا به کار می‌رود؟}
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{همه‌ی نرم‌افزارهای بیزی امروزی} \lr{(PyMC}، \lr{Stan}،
-  \lr{JAGS}، \lr{BUGS)} روی \lr{MCMC} ساخته شده‌اند. هر مدل سلسله‌مراتبی
-  در مقاله‌های اخیر روان‌شناسی و علوم اعصاب با نسخه‌ای از آن برازش شده است.
+  هر مدل سلسله‌مراتبی در مقاله‌های اخیر روان‌شناسی و علوم اعصاب با نسخه‌ای
+  از آن برازش شده است.
 \item
   \textbf{فیزیک و شیمی} (جایی که الگوریتم \lr{Metropolis} در سال 1953
   برای شبیه‌سازی ذرات ابداع شد)، \textbf{همه‌گیرشناسی} (برآورد پارامترهای
@@ -154,6 +160,8 @@
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{جزوه‌ی درس}
 
@@ -190,11 +198,21 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
 \mathbb{E}[g(\theta)\mid\mathbf{y}] = \int g(\theta)\, p(\theta\mid\mathbf{y})\, d\theta \;\approx\; \frac{1}{S}\sum_{s=1}^{S} g\big(\theta^{(s)}\big).
 \]
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 1. انتگرال‌گیری \lr{Monte Carlo}}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+آنچه می‌خواهیم
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(g(\theta)\) را انتخاب کنید
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+برآورد \lr{Monte Carlo}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 آنچه می‌خواهیم
@@ -215,7 +233,6 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
 \lr{credible interval} & \lr{---} & صدک‌ها (یا \lr{HDI)} نمونه‌ها \\
 پسین حاشیه‌ای \(\theta_1\) & \lr{---} & فقط ستون‌های دیگر را نادیده بگیرید \\
 \end{longtable}
-}
 
 \textbf{خطای استاندارد \lr{Monte Carlo}} میانگین برای نمونه‌های مستقل
 \(\mathrm{SD}(g)/\sqrt{S}\) است، مستقل از تعداد پارامترها. به همین دلیل
@@ -362,12 +379,24 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
 
 انحراف معیار پیشنهادی \(\sigma_{\text{\lr{prop}}}\) کارایی را کنترل می‌کند:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 5. تنظیم و تشخیص مشکلات یک نمونه‌گیر}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\sigma_{\text{\lr{prop}}}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نرخ پذیرش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+رفتار
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{trace plot} چه شکلی است
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(\sigma_{\text{\lr{prop}}}\)
@@ -390,7 +419,6 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
 تقریباً درست & \ensuremath{\approx} 0.2 تا 0.5 & اختلاط \lr{(mixing)} خوب & یک «کرم پشمالو»
 \lr{(fuzzy caterpillar)} \\
 \end{longtable}
-}
 
 نتایج نظری کلاسیک نرخ پذیرش بهینه‌ی حدود 0.44 را برای یک پارامتر پیشنهاد
 می‌کنند که برای پارامترهای زیاد به حدود 0.23 می‌رسد. این‌ها را هدف بدانید،
@@ -485,7 +513,6 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
 \(\mathrm{Beta}(8, 4)\) با میانگین 0.667. پیشنهاد:
 \(\theta' = \theta + \mathcal{N}(0,\allowbreak 0.1)\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
@@ -497,6 +524,29 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
   >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
   >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
   >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}@{}}
+\caption{\centering مثال حل‌شده}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+گام
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\) فعلی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پیشنهاد \(\theta'\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tilde p(\theta)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tilde p(\theta')\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نسبت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(u\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تصمیم
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\) جدید
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 گام
@@ -531,7 +581,6 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
 0.66 \\
 \end{longtable}
 \end{landscape}
-}
 
 \textbf{زنجیره تا اینجا:} 0.50، 0.58، 0.80، \textbf{0.80}، 0.66. گام
 ردشده مقدار 0.80 را در زنجیره \emph{تکرار} می‌کند. این ضروری است: مقادیر
@@ -544,6 +593,8 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
 همگرا می‌شود.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
@@ -569,56 +620,11 @@ Carlo}}{1. انتگرال‌گیری Monte Carlo}}
 \textbf{زمان‌بندی:} بخش \lr{A} 15 دقیقه · بخش \lr{B} 25 دقیقه · بخش
 \lr{C} 35 دقیقه · بخش \lr{D} 30 دقیقه · بخش \lr{E} 15 دقیقه.
 
-\subsubsection{آماده‌سازی}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
 \subsubsection{\texorpdfstring{بخش \lr{A:} انتگرال‌گیری \lr{Monte Carlo}
 (15 دقیقه)}{بخش A: انتگرال‌گیری Monte Carlo (15 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Exact: mean = 0.5926, P(theta > 0.65) = 0.1967
-S =    100: mean = 0.5865 (MC s.e. 0.0065), P(theta > 0.65) = 0.1800
-S =   1000: mean = 0.5935 (MC s.e. 0.0021), P(theta > 0.65) = 0.2160
-S =  10000: mean = 0.5937 (MC s.e. 0.0007), P(theta > 0.65) = 0.2022
-S = 100000: mean = 0.5927 (MC s.e. 0.0002), P(theta > 0.65) = 0.1971
-\end{Verbatim}
-\end{latin}
-
 ده برابر نمونه‌ی بیشتر حدود \(\sqrt{10} \approx 3.2\) برابر خطای
 \lr{Monte Carlo} کمتر می‌دهد.
-
-\subsubsection{\texorpdfstring{بخش \lr{B:} یک نمونه‌گیر \lr{Metropolis}،
-اعتبارسنجی‌شده (25
-دقیقه)}{بخش B: یک نمونه‌گیر Metropolis، اعتبارسنجی‌شده (25 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Acceptance rate: 0.59
-Metropolis: mean = 0.5930, SD = 0.0660, 95% interval = [0.458 0.718]
-Exact:      mean = 0.5926, SD = 0.0663, 95% interval = [0.46  0.719]
-\end{Verbatim}
-\end{latin}
 
 \subsubsection{\texorpdfstring{بخش \lr{C: Metropolis} برای مدل فراموشی
 توانی (35 دقیقه)}{بخش C: Metropolis برای مدل فراموشی توانی (35 دقیقه)}}
@@ -626,62 +632,12 @@ Exact:      mean = 0.5926, SD = 0.0663, 95% interval = [0.46  0.719]
 همان پیشین‌های هفته‌ی 10: \(A \sim \mathrm{Beta}(8, 2)\)،
 \(d \sim \mathrm{Gamma}(2, \text{\lr{scale }} 0.3)\).
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Acceptance rate: 0.49
-    mean     SD   2.5%  97.5%
-A  0.868  0.052  0.762   0.96
-d  0.418  0.048  0.325   0.51
-Week 10 grid posterior means for comparison: A = 0.867, d = 0.417
-\end{Verbatim}
-\end{latin}
-
 \textbf{کمیت‌های مشتق‌شده} مجانی به دست می‌آیند. پسین نیمه‌عمر
 \(t_{1/2} = 2^{1/d} - 1\) (هفته‌ی 2) و یادآوری پیش‌بینی‌شده بعد از 60 روز
 را حساب کنید:
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-half-life (days)       mean = 4.493, 95% interval = [2.889 7.443]
-P(recall) at 60 days   mean = 0.158, 95% interval = [0.113 0.211]
-P(half-life < 3 days | data) = 0.039
-\end{Verbatim}
-\end{latin}
-
 \subsubsection{\texorpdfstring{بخش \lr{D:} تنظیم توزیع پیشنهادی (30
 دقیقه)}{بخش D: تنظیم توزیع پیشنهادی (30 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-too small    proposal SD = [0.002, 0.002]: acceptance = 0.97, lag-10 autocorrelation of d = 0.98, mean of d = 0.473
-about right  proposal SD = [0.04, 0.05]: acceptance = 0.50, lag-10 autocorrelation of d = 0.26, mean of d = 0.416
-too large    proposal SD = [0.5, 1.5]: acceptance = 0.00, lag-10 autocorrelation of d = 0.94, mean of d = 0.420
-\end{Verbatim}
-\end{latin}
 
 \textbf{به این دقت کنید:} زنجیره‌ی «خیلی کوچک» تقریباً همه‌چیز را می‌پذیرد
 ولی می‌خزد \lr{(trace} که آرام سرگردان است و خودهمبستگی‌اش حتی با تأخیر 60
@@ -695,11 +651,10 @@ too large    proposal SD = [0.5, 1.5]: acceptance = 0.00, lag-10 autocorrelation
 \subsubsection{\texorpdfstring{بخش \lr{E:} تفسیر (15
 دقیقه)}{بخش E: تفسیر (15 دقیقه)}}
 
-در \lr{notebook} جواب دهید: 1. آیا خلاصه‌های پسین \lr{Metropolis} برای
-\((A, d)\) با شبکه‌ی هفته‌ی 10 توافق دارند؟ این توافق چه چیزی را ثابت
-می‌کند؟ 2. نیمه‌عمر حافظه‌ی این شرکت‌کننده را، همراه با عدم قطعیت، در یک
-جمله چطور گزارش می‌کنید؟ 3. چرا پیشنهادهای ردشده باید به‌صورت مقادیر
-تکراری در زنجیره ثبت شوند؟
+آیا خلاصه‌های پسین \lr{Metropolis} برای \((A, d)\) با شبکه‌ی هفته‌ی 10
+توافق دارند؟ این توافق چه چیزی را ثابت می‌کند؟ 2. نیمه‌عمر حافظه‌ی این
+شرکت‌کننده را، همراه با عدم قطعیت، در یک جمله چطور گزارش می‌کنید؟ 3. چرا
+پیشنهادهای ردشده باید به‌صورت مقادیر تکراری در زنجیره ثبت شوند؟
 
 \subsubsection{تمرین‌ها (به ترتیب سختی)}
 
@@ -712,10 +667,8 @@ too large    proposal SD = [0.5, 1.5]: acceptance = 0.00, lag-10 autocorrelation
 و \((0.9, 0.1)\). همه‌ی \lr{trace}ها را با هم رسم کنید. بعد از چند تکرار
 از هم قابل تشخیص نیستند؟ (این ایده‌ی پشت \lr{R-hat} است، هفته‌ی 12.)
 
-\textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (مدل نمایی).} \lr{\nolinkurl{log_post_exp}} را با
-پیشین‌های هفته‌ی 10 بنویسید، از آن نمونه بگیرید و پسین را با شبکه مقایسه
-کنید. بعد توزیع پیش‌بینی پسین را از نمونه‌هایتان حساب کنید و نمودار
-\lr{PPC} هفته‌ی 10 را بازتولید کنید.
+بعد توزیع پیش‌بینی پسین را از نمونه‌هایتان حساب کنید و نمودار \lr{PPC}
+هفته‌ی 10 را بازتولید کنید.
 
 \textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} \lr{(Metropolis\lr{--}Hastings} با پیشنهاد نامتقارن).} از
 \(d\) با یک پیشنهاد گام تصادفی \textbf{\lr{log-normal}}،
@@ -750,33 +703,10 @@ too large    proposal SD = [0.5, 1.5]: acceptance = 0.00, lag-10 autocorrelation
 نمی‌توانیم به‌صورت بسته حساب کنیم، ولی می‌توانیم شبیه‌سازی‌اش کنیم و خطای
 استاندارد \lr{Monte Carlo} را گزارش کنیم، مثل \lr{lab} این هفته.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 7 ·
-سلول 7
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{9\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-k =  1 samples: majority-vote accuracy = 0.406 (MCSE 0.003)
-k =  5 samples: majority-vote accuracy = 0.506 (MCSE 0.004)
-k = 15 samples: majority-vote accuracy = 0.671 (MCSE 0.003)
-k = 45 samples: majority-vote accuracy = 0.873 (MCSE 0.002)
-\end{Verbatim}
-\end{latin}
-
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star}
-\lr{\nolinkurl{p_answer}} را طوری عوض کنید که یک جواب \emph{غلط}
-محتمل‌ترین باشد (مثلاً \lr{\nolinkurl{[0.30, 0.35, 0.20, 0.15]}}). حالا
-رأی اکثریت چه می‌کند؟ چرا؟ - \ensuremath{\star}\ensuremath{\star} برای \lr{MCSE} برابر 0.001 به چند سؤال
-شبیه‌سازی‌شده (\lr{\nolinkurl{n_sim}}) نیاز دارید؟ جوابتان را با فرمول
-\(\sqrt{p(1-p)/n}\) بررسی کنید. - \ensuremath{\star}\ensuremath{\star} ارتباط با شناخت: ایده‌ی «خرد جمعی
-درون فرد» \lr{(wisdom of the crowd within)} می‌گوید میانگین گرفتن از
-حدس‌های تکراری یک نفر دقت را بالا می‌برد. کدام فرض این شبیه‌سازی (نمونه‌های
-مستقل) احتمالاً برای حدس‌های تکراری انسان، یا برای یک \lr{LLM} با دمای
-پایین، برقرار نیست؟
+حالا رأی اکثریت چه می‌کند؟ چرا؟ جوابتان را با فرمول \(\sqrt{p(1-p)/n}\)
+بررسی کنید. - \ensuremath{\star}\ensuremath{\star} ارتباط با شناخت: ایده‌ی «خرد جمعی درون فرد» \lr{(wisdom
+of the crowd within)} می‌گوید میانگین گرفتن از حدس‌های تکراری یک نفر دقت
+را بالا می‌برد.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -795,10 +725,7 @@ k = 45 samples: majority-vote accuracy = 0.873 (MCSE 0.002)
   \textbf{محاسبه‌ی نسبت بدون لگاریتم.} درست‌نمایی‌ها سرریز می‌کنند. لگاریتم
   چگالی‌ها را مقایسه کنید.
 \item
-  \textbf{فراموش کردن تکیه‌گاه پیشین.} پیشنهادهای خارج از تکیه‌گاه باید
-  \(\ln\tilde p = -\infty\) بگیرند، وگرنه ممکن است درست‌نمایی در مقادیر
-  ناممکن ارزیابی شود (مثلاً احتمال‌های منفی \lr{\nolinkurl{nan}} تولید
-  می‌کنند).
+  \(\ln\tilde p = -\infty\)
 \item
   \textbf{قضاوت درباره‌ی نمونه‌گیر فقط با نرخ پذیرش.} نرخ 30\% همگرایی را
   تضمین نمی‌کند. به \lr{trace}ها و خودهمبستگی نگاه کنید و چند زنجیره اجرا
@@ -863,10 +790,7 @@ k = 45 samples: majority-vote accuracy = 0.873 (MCSE 0.002)
 \subsection{تکلیف}
 
 این هفته تکلیف نمره‌دار جدیدی نداریم. \textbf{\lr{A4} (تحلیل بیزی با
-شبکه)} در ابتدای درس هفته‌ی 12 تحویل داده می‌شود. \textbf{\lr{A5 (MCMC} از
-صفر)} در هفته‌ی 12 منتشر می‌شود و مستقیماً روی تابع
-\lr{\nolinkurl{metropolis}} امروز ساخته می‌شود، پس \lr{notebook lab} را
-مرتب نگه دارید.
+شبکه)} در ابتدای درس هفته‌ی 12 تحویل داده می‌شود.
 
 \textbf{تمرین اختیاری (بدون نمره):} تمرین 2 (چند نقطه‌ی شروع) بهترین
 آمادگی برای هفته‌ی 12 است.
@@ -891,5 +815,3 @@ k = 45 samples: majority-vote accuracy = 0.873 (MCSE 0.002)
 
 \emph{پیش‌نمایش هفته‌ی 12:} نمونه‌گیری \lr{Gibbs} (بدون هیچ ردی)، و سؤالی
 که هر کاربر \lr{MCMC} باید جواب دهد: آیا زنجیره‌ام همگرا شده است؟
-\lr{R-hat} و اندازه‌ی مؤثر نمونه را خودمان حساب می‌کنیم و بعد با
-\lr{ArviZ} بررسی می‌کنیم.

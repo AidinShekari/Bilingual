@@ -13,11 +13,21 @@ of two-choice decisions.
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -36,8 +46,8 @@ random walk & \RL{\CMfa گام تصادفی} & \RL{\CMfa جمع شدن گام‌
 یک مرز} \\
 verbal theory & \RL{\CMfa نظریه‌ی کلامی} & \RL{\CMfa نظریه‌ای که فقط با کلمات بیان شده
 و پیش‌بینی دقیق نمی‌دهد} \\
-Marr's levels & \RL{\CMfa سطوح تحلیل} Marr & \RL{\CMfa سطح محاسباتی، الگوریتمی و
-پیاده‌سازی} \\
+Marr's levels & \RL{\CMfa سطوح تحلیل} Marr &
+\RL{\CMfa سطح محاسباتی، الگوریتمی و تحلیل} \\
 parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
 فرق می‌کند} \\
 noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شواهد یا در داده} \\
@@ -62,8 +72,6 @@ non-decision time & \RL{\CMfa زمان غیرتصمیمی} & \RL{\CMfa زمان 
 speed--accuracy trade-off & \RL{\CMfa بده‌بستان سرعت و دقت} & \RL{\CMfa سریع‌تر پاسخ
 دادن به قیمت خطای بیشتر} \\
 trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
-probabilistic programming & \RL{\CMfa برنامه‌نویسی احتمالاتی} & \RL{\CMfa تعریف مدل
-با کد و نمونه‌گیری خودکار} (PyMC) \\
 temperature & \RL{\CMfa دما} (temperature) & \RL{\CMfa پارامتر نویز در انتخاب}
 token\RL{\CMfa ؛} \ensuremath{\beta} = 1/T \\
 random seed & seed \RL{\CMfa تصادفی} & \RL{\CMfa عدد شروع مولد اعداد تصادفی برای
@@ -75,7 +83,6 @@ large language model (LLM) & \RL{\CMfa مدل بزرگ زبانی} & \RL{\CMfa �
 token & token \RL{\CMfa (واحد متن)} & \RL{\CMfa کلمه یا بخشی از کلمه که مدل زبانی
 پیش‌بینی می‌کند} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -96,10 +103,6 @@ By the end of this week, students will be able to:
 \item
   \textbf{Explain} how free parameters, a deterministic core and a noise
   model together turn a model into a \emph{data-generating} machine.
-\item
-  \textbf{Implement} and \textbf{simulate} a random walk decision model
-  in Python, and \textbf{verify} the simulation against analytic
-  predictions.
 \item
   \textbf{Interpret} how changes in the model's parameters (drift,
   boundary) map onto psychological constructs (evidence quality,
@@ -188,6 +191,8 @@ examples. They are used every day in research and practice:
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lecture notes}
 
 \paragraph{In plain words}
@@ -205,9 +210,7 @@ bottom line, they make an error. Only three numbers control everything:
 how strongly the steps lean upward (\textbf{drift}, the quality of the
 evidence), how far apart the two lines are (\textbf{boundary
 separation}, how careful the person is), and where the token starts
-(\textbf{starting point}, bias). By running this little machine many
-times we can see a speed--accuracy trade-off appear by itself, without
-programming it in.
+(\textbf{starting point}, bias).
 
 \paragraph{Psychology words in plain language}
 
@@ -256,11 +259,21 @@ A \textbf{cognitive model} is an explicit, usually mathematical or
 computational, description of the processes or representations that are
 assumed to produce behavior. It has three ingredients:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 1. What is a cognitive model?}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Ingredient
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question it answers
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Random walk example
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Ingredient
@@ -282,7 +295,6 @@ conditions? & Drift \(v\), boundary separation \(a\), start point
 responses? & The boundary reached gives the choice; the number of steps
 gives the RT \\
 \end{longtable}
-}
 
 Three related terms are easy to mix up:
 
@@ -343,12 +355,24 @@ interpretable parameters?
 
 \textbf{By purpose:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 3. Kinds of cognitive models}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Example
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Course weeks
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Type
@@ -371,18 +395,27 @@ behavior? & Random walk / drift-diffusion; exemplar model (GCM) & 1,
 \textbf{Normative (rational)} & What \emph{should} an ideal agent do? &
 Bayesian ideal observer for cue combination & 15 \\
 \end{longtable}
-}
 
 The boundaries are fuzzy: an SDT model is partly descriptive and partly
 a process model.
 
 \textbf{By family:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. Kinds of cognitive models}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Family
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Core idea
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Example
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Family
@@ -404,7 +437,6 @@ walk, drift-diffusion, Rescorla--Wagner \\
 Bayesian (probabilistic) & Cognition as probabilistic inference &
 Bayesian observer models \\
 \end{longtable}
-}
 
 \begin{quote}
 \textbf{Watch out:} ``Bayesian modeling'' in this course means two
@@ -420,11 +452,21 @@ about (b).
 David Marr proposed analyzing an information-processing system at three
 complementary levels:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 4. Marr's three levels of analysis}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Level
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Decision example
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Level
@@ -445,7 +487,6 @@ reached \\
 \textbf{Implementational} & How is it realized physically? & Firing
 rates of neurons ramping up to a threshold \\
 \end{longtable}
-}
 
 Normative models usually live at the computational level, process models
 at the algorithmic level, and computational neuroscience models at the
@@ -470,13 +511,27 @@ like the random walk, are stochastic all the way through.
 
 This gives two directions of reasoning:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering 5. A model is a data-generating machine}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Direction
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Given
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Find
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Course weeks
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Direction
@@ -498,7 +553,6 @@ Course weeks
 \textbf{Inverse} & Observed \(\mathbf{y}\) & Plausible
 \(\boldsymbol\theta\) & Parameter estimation / fitting & 3--5, 9--13 \\
 \end{longtable}
-}
 
 The inverse problem is harder. It is what we mean by ``fitting a model
 to data''. Because a model can always be run forwards, we can also test
@@ -721,11 +775,21 @@ symbol, it uses the meaning given here.
 
 \textbf{Data and design}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 8. Course-wide notation}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+First used
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Symbol
@@ -745,15 +809,24 @@ all observations & Wk 1 \\
 \(i\) & Wk 2 \\
 \(j = 1,\dots,J\) & Participant index; number of participants & Wk 5 \\
 \end{longtable}
-}
 
 \textbf{Models and parameters}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 8. Course-wide notation}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+First used
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Symbol
@@ -779,14 +852,21 @@ a simulation & Wk 1 \\
 \(\hat y_i\) & Model prediction for observation \(i\) & Wk 3 \\
 \(\varepsilon_i\) & Noise (error) term & Wk 2 \\
 \end{longtable}
-}
 
 \textbf{Probability}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering 8. Course-wide notation}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Symbol
@@ -801,7 +881,7 @@ Meaning
 \(p(\cdot)\) & Probability mass or density function \\
 \(y \sim \mathcal{D}\) & ``\(y\) is distributed as \(\mathcal{D}\)'' \\
 \(\mathcal{N}(\mu, \sigma)\) & Normal distribution with mean \(\mu\) and
-\textbf{standard deviation} \(\sigma\) (as in scipy and PyMC) \\
+\textbf{standard deviation} \(\sigma\) (as in and ) \\
 \(\mathrm{Bernoulli}(\theta)\), \(\mathrm{Binomial}(n, \theta)\) &
 Bernoulli and binomial distributions with success probability
 \(\theta\) \\
@@ -811,15 +891,24 @@ uniform distributions \\
 \(\mathbb{E}[\cdot]\), \(\mathrm{Var}[\cdot]\) & Expectation and
 variance \\
 \end{longtable}
-}
 
 \textbf{Fitting, evaluation and Bayesian inference}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 8. Course-wide notation}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+First used
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Symbol
@@ -853,15 +942,24 @@ number of draws & Wk 11 \\
 \(\hat R\), ESS & Potential scale reduction factor (R-hat); effective
 sample size & Wk 12 \\
 \end{longtable}
-}
 
 \textbf{Model-specific symbols}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 8. Course-wide notation}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Symbols
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+First used
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Model
@@ -887,7 +985,6 @@ GCM (categorization) & \(w_m\) attention weights; \(c\) sensitivity & Wk
 Reinforcement learning & \(\alpha\) learning rate; \(\beta\) inverse
 temperature; \(Q_t(o)\) value of option \(o\) on trial \(t\) & Wk 15 \\
 \end{longtable}
-}
 
 \textbf{Overloaded symbols (kept because the literature uses them):}
 \(c\) is the SDT criterion except in Week 14, where it is the GCM
@@ -953,8 +1050,12 @@ time \(t_0 = 300\) ms; each step lasts \(\Delta t = 20\) ms.
 \textbf{Step 2: simulate one trial by hand.} Draw uniform random numbers
 \(u_n\). Step up if \(u_n < 0.6\), otherwise step down.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}llll@{}}
+\caption{\centering Worked example}\tabularnewline
+\toprule\noalign{}
+Step \(n\) & \(u_n\) & \(\delta_n\) & \(X_n\) \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 Step \(n\) & \(u_n\) & \(\delta_n\) & \(X_n\) \\
 \midrule\noalign{}
@@ -968,7 +1069,6 @@ Step \(n\) & \(u_n\) & \(\delta_n\) & \(X_n\) \\
 4 & 0.12 & +1 & 5 \\
 5 & 0.48 & +1 & \textbf{6 = a} \ensuremath{\rightarrow} stop \\
 \end{longtable}
-}
 
 The walk hits the upper boundary: a \textbf{correct} response after
 \(T = 5\) steps, so \(\mathrm{RT} = 300 + 5 \times 20 = 400\) ms.
@@ -992,7 +1092,6 @@ P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0
 
 \textbf{Step 5: two manipulations, two signatures.}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
@@ -1000,6 +1099,23 @@ P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\caption{\centering Worked example}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Condition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(v\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(a\) (\(z = a/2\))
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(P_c\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathbb{E}[T]\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathbb{E}[\mathrm{RT}]\) (ms)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Condition
@@ -1022,7 +1138,6 @@ Baseline & 0.2 & 6 & 0.771 & 8.14 & 462.9 \\
 ``Be accurate!'' (more caution) & 0.2 & 10 & 0.884 & 19.18 & 683.6 \\
 Easier stimulus (better evidence) & 0.3 & 6 & 0.865 & 7.30 & 446.0 \\
 \end{longtable}
-}
 
 \textbf{Interpretation.} Accuracy instructions buy about 11 percentage
 points of accuracy at a cost of roughly 220 ms. Easier stimuli give a
@@ -1034,6 +1149,8 @@ vs.~evidence quality).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lab (2 hours)}
 
 \subsubsection{Goals}
@@ -1042,13 +1159,7 @@ vs.~evidence quality).
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Install a working course environment on your own laptop,
-  \emph{including} the Bayesian tools needed in Week 13.
-\item
-  Practice the basic numpy/matplotlib workflow: random numbers,
-  vectorization, plotting.
-\item
-  Implement the random walk model, simulate an experiment, and
+  Formulate and evaluate the random walk model, simulate an experiment, and
   \textbf{verify} the simulation against the analytic formulas.
 \item
   Use the model to \textbf{interpret} a speed--accuracy trade-off.
@@ -1062,157 +1173,14 @@ vs.~evidence quality).
 15 min · Part E 25 min. Exercises not finished in the lab are finished
 at home.
 
-\subsubsection{Part A: Environment setup (35 min)}
-
-We use \textbf{Miniforge}, a free installer for \nolinkurl{conda} that
-uses the community \nolinkurl{conda-forge} channel. It is the most
-reliable way to install PyMC on Windows, macOS and Linux.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Download and install Miniforge from the conda-forge website (choose
-  your operating system; keep the default options).
-\item
-  Save the following file as \nolinkurl{environment.yml} in your course
-  folder:
-\end{enumerate}
-
-\Needspace{16\baselineskip}
-\begin{Verbatim}
-# Cognitive Modeling course environment (same as environment.yml in the course repository)
-name: cogmod
-channels:
-  - conda-forge
-dependencies:
-  - python=3.12
-  - numpy>=1.26
-  - scipy>=1.11
-  - pandas>=2.1
-  - matplotlib>=3.8
-  - jupyterlab
-  - pymc>=6.3    # Bayesian modeling (needed from Week 13)
-  - arviz>=1.3   # MCMC diagnostics
-\end{Verbatim}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
-\item
-  Open the \textbf{Miniforge Prompt} (Windows) or a terminal
-  (macOS/Linux), go to your course folder, and create the environment.
-  This takes 5--15 minutes the first time.
-\end{enumerate}
-
-\Needspace{4\baselineskip}
-\begin{Verbatim}
-conda env create -f environment.yml
-\end{Verbatim}
-
-\Needspace{4\baselineskip}
-\begin{Verbatim}
-conda activate cogmod
-\end{Verbatim}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{3}
-\tightlist
-\item
-  Save this script as \nolinkurl{check_install.py} and run it with
-  \nolinkurl{python check_install.py}. Add \nolinkurl{--sample} to also
-  run a tiny PyMC model; the first run takes about a minute while PyMC
-  compiles.
-\end{enumerate}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/check_install.py} (save and run
-it as a separate script · \RL{\CMfa به‌صورت یک اسکریپت جدا اجرا شود)}
-\end{quote}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{4}
-\tightlist
-\item
-  Start JupyterLab with \nolinkurl{jupyter lab} and create a notebook
-  called \nolinkurl{week01_lab.ipynb}. Run all remaining code in that
-  notebook, one block per cell.
-\end{enumerate}
-
-\begin{quote}
-\textbf{If the check prints a warning like ``g++ not available'':} PyMC
-still works but runs much more slowly. This usually means PyMC was
-installed with \nolinkurl{pip} instead of from the conda-forge
-environment above. The conda-forge installation normally brings the
-compiler that PyMC's backend uses {[}verify on a Windows lab machine
-before Week 1{]}. Recreate the environment with
-\nolinkurl{conda env create -f environment.yml}.
-\end{quote}
-
-\begin{quote}
-\textbf{If installation fails:} do today's lab in \textbf{Google Colab},
-where numpy, scipy, pandas and matplotlib are preinstalled, and fix the
-local install with the instructor before Week 3. The PyMC install must
-work by Week 12.
-\end{quote}
-
-\subsubsection{Part B: Python warm-up (15 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
-\textbf{Expected output:} a proportion close to 0.6 (0.574 with this
-seed) and a running-proportion curve that wobbles at first and then
-settles near the dashed line.
-
-\subsubsection{Part C: Implement, simulate and verify the random walk
+\subsubsection{Part C: Formulate, simulate and verify the random walk
 (30 min)}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
 First, look at what the model does: plot a few evidence trajectories.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
 
 Now simulate a whole experiment and compare the simulation with the
 analytic predictions. \textbf{Always check a simulation against
 something you know}; this habit will save you many times this term.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output (seed 42):}
-
-\Needspace{12\baselineskip}
-\begin{Verbatim}
-Accuracy   simulated 0.764 | analytic 0.771
-Mean steps simulated 8.27  | analytic 8.14
-Mean RT    simulated 465.3 ms | analytic 462.9 ms
-
-Mean RT by response (1 = correct, 0 = error):
-        count   mean
-choice
-0        1180  466.1
-1        3820  465.1
-\end{Verbatim}
 
 \textbf{What to notice:} - The simulation matches the analytic values to
 within sampling noise. - The RT distributions are \textbf{right-skewed}
@@ -1223,17 +1191,10 @@ Advanced box in Lecture §7).
 \subsubsection{Part D: Interpret, the speed--accuracy trade-off (15
 min)}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:} three curves rising from the bottom left
-toward 1.0. Moving along one curve (increasing \(a\)) trades speed for
-accuracy. Moving \emph{between} curves (increasing \(v\)) improves
-accuracy at the same or lower RT. The table reproduces the worked
-example: e.g., \(v = 0.2, a = 10\) gives accuracy 0.884 and mean RT
-683.6 ms.
+Moving along one curve (increasing \(a\)) trades speed for accuracy.
+Moving \emph{between} curves (increasing \(v\)) improves accuracy at the
+same or lower RT. The table reproduces the worked example: e.g.,
+\(v = 0.2, a = 10\) gives accuracy 0.884 and mean RT 683.6 ms.
 
 \textbf{Discuss with your neighbor:} an experimenter finds that a drug
 makes participants slower \emph{and} more accurate. Which parameter
@@ -1243,19 +1204,10 @@ would you suspect changed? What if the drug made them slower and
 \subsubsection{Part E: A first fit, evaluation and interpretation (25
 min)}
 
-Your instructor will give you \nolinkurl{week01_mystery.csv}, the data
-of a ``mystery participant'' (1000 trials, columns \nolinkurl{choice}
-and \nolinkurl{rt}). If you do not have the file, the code below
-generates an equivalent dataset with parameters hidden behind a random
-seed. \textbf{Don't peek}: try to recover them.
+\textbf{Don't peek}: try to recover them.
 
 We assume \(t_0 = 300\) ms and \(\Delta t = 20\) ms are known and
 \(z = a/2\). Only \(v\) and \(a\) are free (\(k = 2\)).
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 7 · \RL{\CMfa سلول}
-7
-\end{quote}
 
 \textbf{Fitting by grid search.} For every combination of \(v\) and
 \(a\) on a grid, compute the predicted accuracy and mean RT and measure
@@ -1263,37 +1215,11 @@ how far they are from the observed values. Each difference is expressed
 in standard-error units so that accuracy and RT are on a comparable
 scale. Week 3 develops this idea properly.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 8 · \RL{\CMfa سلول}
-8
-\end{quote}
-
 \textbf{Evaluating the fit.} We fitted only two summary statistics
 (accuracy and mean RT). A stronger test is whether the model also
 reproduces something we did \emph{not} fit: the \textbf{shape} of the RT
 distribution. We compare RT quantiles of correct responses in the data
 with those of a large simulation at the best-fitting parameters.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 9 · \RL{\CMfa سلول}
-9
-\end{quote}
-
-\textbf{Expected output (fallback dataset). Open only after you have run
-the fit.}
-
-\Needspace{12\baselineskip}
-\begin{Verbatim}
-Observed: accuracy = 0.836, mean RT = 746.4 ms (N = 1000)
-Best fit: v = 0.15, a = 10 (pred. accuracy 0.819, pred. RT 725.7 ms, discrepancy 5.78)
-
-   quantile  observed   model
-0       0.1     440.0   440.0
-1       0.3     520.0   520.0
-2       0.5     640.0   640.0
-3       0.7     800.0   800.0
-4       0.9    1200.0  1160.0
-\end{Verbatim}
 
 The hidden values were \(v^\ast = 0.16\) and \(a^\ast = 10\). The grid
 search recovered \(a\) exactly and \(v\) to within one grid step (0.15).
@@ -1305,13 +1231,12 @@ is why many quantiles match exactly. The model reproduces the shape of
 the distribution well, with only a slight underestimate of the slow tail
 (0.9 quantile).
 
-\textbf{Interpretation questions (write 2--3 sentences each in your
-notebook):} 1. In psychological terms, what do the recovered \(v\) and
-\(a\) say about this participant? 2. The fit used only two numbers from
-the data. Why is the quantile comparison a more convincing check than
-the discrepancy value itself? 3. If this participant were re-tested
-under ``be as fast as possible'' instructions, which parameter should
-change and which should stay the same, according to the model?
+In psychological terms, what do the recovered \(v\) and \(a\) say about
+this participant? 2. The fit used only two numbers from the data. Why is
+the quantile comparison a more convincing check than the discrepancy
+value itself? 3. If this participant were re-tested under ``be as fast
+as possible'' instructions, which parameter should change and which
+should stay the same, according to the model?
 
 \subsubsection{Exercises (increasing difficulty)}
 
@@ -1340,21 +1265,12 @@ verify by simulation (20 000 trials) that correct and error RT
 often show slower errors in difficult, accuracy-stressed conditions. Is
 the simple random walk falsified by such data? What would you change?
 
-\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: across-trial drift variability).}
-Modify \nolinkurl{simulate_trial} so that on every trial the drift is
-drawn as \(v_i \sim \mathcal{N}(v, \eta)\), clipped to
-\([-0.95, 0.95]\). Use \(v = 0.2\), \(\eta = 0.2\), \(a = 8\). Show that
-\textbf{errors are now slower than correct responses} (expected with 20
-000 trials: accuracy \ensuremath{\approx} 0.75, about 12 steps for correct vs.~14 steps for
-error responses), and explain why. \emph{Hint:} which trials are most
-likely to end in an error, and how long do those trials take?
-
-\subsubsection{Lab check-off (counts toward the lab component)}
-
-Show the instructor or TA: (1) the output of
-\nolinkurl{check_install.py} with all packages \nolinkurl{[OK]}, (2)
-your speed--accuracy plot from Part D, and (3) your best-fit parameters
-and quantile plot from Part E.
+\(v_i \sim \mathcal{N}(v, \eta)\) Use \(v = 0.2\), \(\eta = 0.2\),
+\(a = 8\). Show that \textbf{errors are now slower than correct
+responses} (expected with 20 000 trials: accuracy \ensuremath{\approx} 0.75, about 12 steps
+for correct vs.~14 steps for error responses), and explain why.
+\emph{Hint:} which trials are most likely to end in an error, and how
+long do those trials take?
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -1379,26 +1295,11 @@ course. The probability of token \(i\) is a softmax with
 random ones. This is the same rule as the softmax in Week 15, with
 \(\beta = 1/T\).
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 10 · \RL{\CMfa سلول}
-10
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-T = 0.2: P(A, B, C) = [0.993 0.007 0.   ], sampled shares = [0.994 0.006 0.   ]
-T = 1.0: P(A, B, C) = [0.652 0.24  0.108], sampled shares = [0.662 0.235 0.103]
-T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
-\end{Verbatim}
-
-\textbf{Try it (no API needed).} - \ensuremath{\star} Find the largest temperature at
-which ``A'' is still chosen at least 90\% of the time. - \ensuremath{\star} Is the LLM's
-temperature closer to the random walk's \emph{noise} or to its
-\emph{boundary} (Week 1, Part C)? Explain. - \ensuremath{\star}\ensuremath{\star} Discussion: someone says
-``the chatbot gave a different answer when I asked again, so it does not
-know the answer.'' Use this box to explain what else could be going on.
+- \ensuremath{\star} Is the LLM's temperature closer to the random walk's \emph{noise} or
+to its \emph{boundary} (Week 1, Part C)? Explain. - \ensuremath{\star}\ensuremath{\star} Discussion:
+someone says ``the chatbot gave a different answer when I asked again,
+so it does not know the answer.'' Use this box to explain what else
+could be going on.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -1427,10 +1328,6 @@ know the answer.'' Use this box to explain what else could be going on.
   are \emph{inferred} quantities whose values depend on the model's
   assumptions (e.g., that \(t_0\) is known). Change the model and the
   ``same'' parameter may change meaning.
-\item
-  \textbf{Forgetting random seeds.} Unseeded simulations cannot be
-  reproduced, and your results will change every time you run the
-  notebook. Use \nolinkurl{np.random.default_rng(seed)}.
 \item
   \textbf{Not verifying simulations.} A bug in a simulator produces
   wrong conclusions that \emph{look} plausible. Compare against an
@@ -1506,18 +1403,14 @@ interpretable. This is developed fully in Week 7.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Assignment}
 
-\subsubsection{A0: Setup and ``verbal theory audit'' (ungraded,
-required; due at the start of Week 2)}
+\subsubsection{A0: Verbal theory audit}
 
 A0 does not carry points, but it is required: an incomplete A0 must be
 revised before the Week 2 lab check-off can be awarded.
-
-\textbf{Part 1: Environment (required).} Submit the text output of
-\nolinkurl{python check_install.py --sample} showing all packages
-\nolinkurl{[OK]} and the PyMC posterior mean. If PyMC fails, submit the
-error message and the steps you tried; the TA will help.
 
 \textbf{Part 2: Verbal theory audit (max. 1 page).} Choose one verbal
 theory from your earlier courses, for example ``levels of processing'',
@@ -1544,11 +1437,21 @@ theories of reasoning'' or ``interference causes forgetting''.
 
 \textbf{Feedback criteria (pass / revise):}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering A0: Verbal theory audit}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Criterion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pass
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Revise
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Criterion
@@ -1561,8 +1464,6 @@ Revise
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Environment & All packages \nolinkurl{[OK]}, or a clear error report
-with attempted fixes & No output submitted \\
 Underspecification & \ensuremath{\geq} 5 distinct, genuinely unspecified decisions &
 Fewer than 5, or restatements of the theory \\
 Formalization & Two concrete, unambiguous formal choices & Vague (``use
@@ -1571,7 +1472,6 @@ Diverging prediction & A specific prediction plus an experiment that
 distinguishes the choices & No prediction, or a prediction that does not
 depend on the choice \\
 \end{longtable}
-}
 
 The best audits will be discussed briefly at the start of the Week 2
 lecture.
@@ -1599,6 +1499,4 @@ lecture.
   of analysis.
 \end{itemize}
 
-\emph{Preview for Week 2:} we turn signal detection theory and
-forgetting curves into Python models and study how each parameter shapes
-the predictions. Assignment A1 will be released.
+Assignment A1 will be released.

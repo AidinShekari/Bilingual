@@ -15,11 +15,21 @@ Lecture 1 h · Lab 2 h \textbf{Running data:} the Week 2 forgetting data
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -74,7 +84,6 @@ nested models & \RL{\CMfa مدل‌های تودرتو} (nested) & \RL{\CMfa ی�
 trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
 accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -146,10 +155,6 @@ the null.
   Bayes factor can (``the data are 8 times more likely under no
   effect'').
 \item
-  \textbf{Psychology journals and software}: Bayes factors are reported
-  routinely with tools such as JASP and the R package BayesFactor, for
-  t-tests, ANOVAs and correlations as well as for cognitive models.
-\item
   \textbf{Model checking in every Bayesian analysis}: posterior
   predictive checks are a standard step before any result is trusted
   (e.g.~in clinical trials analyzed with Bayesian methods and in
@@ -162,6 +167,8 @@ the null.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lecture notes}
 
@@ -272,8 +279,12 @@ spread), not merely on \(k\).
 \textbf{A common evidence scale} (an adaptation of Jeffreys' classic
 categories, as used by Lee \& Wagenmakers):
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}ll@{}}
+\caption{\centering 2. The marginal likelihood and the Bayes factor}\tabularnewline
+\toprule\noalign{}
+\(\mathrm{BF}_{12}\) & Evidence for \(\mathcal{M}_1\) \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \(\mathrm{BF}_{12}\) & Evidence for \(\mathcal{M}_1\) \\
 \midrule\noalign{}
@@ -286,7 +297,6 @@ categories, as used by Lee \& Wagenmakers):
 30--100 & Very strong \\
 \textgreater{} 100 & Extreme \\
 \end{longtable}
-}
 
 (Values below 1 are read the same way for \(\mathcal{M}_2\).) These
 labels are aids, not thresholds. Report the number.
@@ -375,13 +385,27 @@ reasonable prior widths.
 
 \subsubsection{5. Comparison of model-evaluation methods}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering 5. Comparison of model-evaluation methods}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Penalizes
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Prior needed?
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Week
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Method
@@ -410,7 +434,6 @@ Bayes factor & How much do the data change the odds between models? &
 Prior predictive spread (true flexibility) & \textbf{Yes, and the result
 depends on it} & 10 \\
 \end{longtable}
-}
 
 \begin{quote}
 \textbf{Advanced: Bayes factors vs.~predictive criteria.} The marginal
@@ -459,10 +482,6 @@ and LOO hardly does, and why they can disagree on the same data.
   outcome lands in that narrow range, the focused forecaster wins more.
   The marginal likelihood is the payout.
 \item
-  \textbf{Show prior sensitivity live.} In the lab code, change the
-  width of the prior under \(\mathcal{M}_1\) and watch the BF move. This
-  is more convincing than any warning.
-\item
   \textbf{Keep the two questions apart.} Write ``Is the model good
   enough? \ensuremath{\rightarrow} PPC'' and ``Which model is better? \ensuremath{\rightarrow} BF / CV / AIC'' on the
   board. Students often use a BF to claim a model is \emph{good}; it
@@ -486,6 +505,8 @@ and LOO hardly does, and why they can disagree on the same data.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Worked example}
 
@@ -520,12 +541,24 @@ Step 3.
 
 \textbf{More data:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering Part 1: is recall at chance? A Bayes factor by hand}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(p\) (two-sided binomial test)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathrm{BF}_{01}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reading
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Data
@@ -546,7 +579,6 @@ chance from ``some accuracy'' \\
 70/100 & \textless{} 0.001 & 0.0023 (\(\mathrm{BF}_{10} \approx 430\)) &
 Extreme evidence against chance \\
 \end{longtable}
-}
 
 \textbf{Interpretation.} With 60/100, a \(p\)-value near .05 tempts
 researchers to claim an effect, yet the Bayes factor says the data are
@@ -568,6 +600,8 @@ The BF is the same for everyone; the posterior model probabilities
 depend on the prior odds.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lab (2 hours)}
 
@@ -593,35 +627,7 @@ depend on the prior odds.
 \textbf{Timing:} Part A 35 min · Part B 25 min · Part C 30 min · Part D
 20 min · Part E 10 min.
 
-\subsubsection{Setup}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-exp: posterior mean A = 0.655, rate = 0.049
-pow: posterior mean A = 0.867, rate = 0.417
-\end{Verbatim}
-
 \subsubsection{Part A: posterior predictive checks (35 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-exp: T(observed) = 0.267, mean T(rep) = 0.240, posterior predictive p = 0.302
-pow: T(observed) = 0.267, mean T(rep) = 0.243, posterior predictive p = 0.320
-\end{Verbatim}
 
 \textbf{Interpret:} look at the plots first. For the exponential model,
 the observed recall at the shortest delay (42/50) lies \emph{above} the
@@ -629,32 +635,14 @@ the observed recall at the shortest delay (42/50) lies \emph{above} the
 exponential cannot drop steeply early and then level off. The power
 model's band contains every observed point.
 
-Yet the numerical check with \nolinkurl{T} = mean recall at the three
-longest delays gives unremarkable \(p_B\) values for \textbf{both}
-models (about 0.3). The exponential's misfit is in the \emph{shape}
-(early vs.~middle delays), which this statistic does not look at.
-\textbf{A PPC can only detect the failures its test statistic is
-sensitive to.} Choose statistics that target the features that
-distinguish the theories; in Exercise 2 a ``first drop'' statistic
-exposes the exponential model (\(p_B \approx 0.02\)).
+The exponential's misfit is in the \emph{shape} (early vs.~middle
+delays), which this statistic does not look at. \textbf{A PPC can only
+detect the failures its test statistic is sensitive to.} Choose
+statistics that target the features that distinguish the theories; in
+Exercise 2 a ``first drop'' statistic exposes the exponential model
+(\(p_B \approx 0.02\)).
 
 \subsubsection{Part B: Bayes factor by grid integration (25 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-exp: log p(y|M) = -34.938   (prior mass inside grid = 0.9996)
-pow: log p(y|M) = -22.872   (prior mass inside grid = 0.9991)
-
-BF(pow vs exp) = exp(12.07) = 1.74e+05
-BIC approximation: BF(pow vs exp) = exp(9.98) = 2.16e+04
-\end{Verbatim}
 
 \textbf{Interpret:} \(\mathrm{BF} \approx 1.7 \times 10^5\) is extreme
 evidence for the power model over the exponential. BIC gives the same
@@ -670,41 +658,10 @@ A participant in a hard detection task: 12 hits out of 20 signal trials,
 \(d' \sim \mathcal{N}(0, 1)\), \(c \sim \mathcal{N}(0, 1)\).
 \(\mathcal{M}_0\): \(d' = 0\), \(c \sim \mathcal{N}(0, 1)\).
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-BF01 Savage-Dickey = 1.328;  BF01 direct = 1.328;  posterior mean d' = 0.444
-MLE d' = 0.507
-\end{Verbatim}
-
 The two computations agree, which is a useful check that both are
 implemented correctly.
 
 \subsubsection{Part D: prior sensitivity (20 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{10\baselineskip}
-\begin{Verbatim}
- prior SD of d'   BF01  BF10  posterior mean d'
-           0.25  0.938 1.066              0.144
-           0.50  0.972 1.028              0.313
-           1.00  1.328 0.753              0.444
-           2.00  2.314 0.432              0.496
-           5.00  5.541 0.180              0.513
-          10.00 11.011 0.091              0.515
-\end{Verbatim}
 
 \textbf{What to notice:} as the prior on \(d'\) widens, the posterior
 mean of \(d'\) quickly stabilizes, but \(\mathrm{BF}_{01}\) keeps
@@ -721,9 +678,7 @@ answer clearer.
 
 \subsubsection{Exercises (increasing difficulty)}
 
-\textbf{Exercise 1 \ensuremath{\star}.} Verify by numerical integration
-(\nolinkurl{scipy.integrate.quad}) that
-\(\int_0^1 \binom{10}{7}\theta^7(1-\theta)^3 d\theta = 1/11\).
+\(\int_0^1 \binom{10}{7}\theta^7(1-\theta)^3 d\theta = 1/11\)
 
 \textbf{Exercise 2 \ensuremath{\star}.} In Part A, use a different test statistic: the
 drop in recall from the first to the second interval. Which model, if
@@ -766,33 +721,18 @@ Ullman, 2023{]}. Many such tests have two answer options, so chance is
 first question: \emph{do the data support above-chance performance at
 all, compared with chance?}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-26/40 correct (65%): BF10 = 1.16
-130/200 correct (65%): BF10 = 785.26
-\end{Verbatim}
-
 The same 65\% is no evidence at all with 40 items, and overwhelming
 evidence with 200 items. Above-chance performance is also only the first
 step: the posterior predictive check of this week asks \emph{how} the
 model succeeds and fails. For example, does it fail on exactly the
 altered stories, where a human would not?
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} Repeat with a prior concentrated on
-above-chance values, e.g.~Beta(5, 2) restricted to \(\theta > 0.5\)
-(renormalize the density). How does \(\mathrm{BF}_{10}\) for 26/40
-change? - \ensuremath{\star}\ensuremath{\star} Simulate a ``shortcut'' model that answers correctly on
-90\% of standard stories and 30\% of altered stories (half of each). Its
-overall accuracy is 60\%. Design a posterior predictive check that
-reveals the shortcut. - \ensuremath{\star}\ensuremath{\star} Discussion: is ``above chance on false-belief
-tasks'' a claim at Marr's computational or algorithmic level?
+\(\theta > 0.5\) How does \(\mathrm{BF}_{10}\) for 26/40 change? - \ensuremath{\star}\ensuremath{\star}
+Simulate a ``shortcut'' model that answers correctly on 90\% of standard
+stories and 30\% of altered stories (half of each). Its overall accuracy
+is 60\%. Design a posterior predictive check that reveals the shortcut.
+- \ensuremath{\star}\ensuremath{\star} Discussion: is ``above chance on false-belief tasks'' a claim at
+Marr's computational or algorithmic level?
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -879,14 +819,14 @@ ideally, a prior sensitivity analysis.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Assignment}
 
 \subsubsection{A4: A Bayesian analysis by grid (1.0 point of 20;
 released Week 10, due at the start of the Week 12 lecture)}
 
-\textbf{Data:} the A2 dataset
-(\nolinkurl{rng = np.random.default_rng(2024)}, 9 intervals, \(n = 20\)
-items; see Week 4).
+\(n = 20\)
 
 \textbf{Tasks.}
 

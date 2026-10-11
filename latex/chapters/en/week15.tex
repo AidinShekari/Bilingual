@@ -15,11 +15,21 @@ visual--haptic cue-combination experiment.
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -77,7 +87,6 @@ RLHF / reward model & RLHF / \RL{\CMfa مدل پاداش} & \RL{\CMfa آموزش
 Bradley--Terry model & \RL{\CMfa مدل} Bradley--Terry & \RL{\CMfa مدل انتخاب برای
 مقایسه‌های جفتی} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -170,6 +179,8 @@ to evaluate such claims.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lecture notes}
 
@@ -331,11 +342,20 @@ tests fix these components independently, as in cue combination.
 
 \textbf{Two meanings, one more time:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. Bayesian models of cognition}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Bayesian model of cognition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Bayesian data analysis
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -355,7 +375,6 @@ Can be wrong if\ldots{} & People are not optimal & The model or priors
 are poorly chosen \\
 Examples in this course & Cue combination (today) & Weeks 9--13 \\
 \end{longtable}
-}
 
 You can analyze a Bayesian model of cognition with maximum likelihood,
 and a non-Bayesian model (e.g., Q-learning) with Bayesian data analysis.
@@ -412,10 +431,18 @@ and a non-Bayesian model (e.g., Q-learning) with Bayesian data analysis.
 
 \subsubsection{4. Cognitive models and artificial intelligence}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering 4. Cognitive models and artificial intelligence}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Direction
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Examples
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Direction
@@ -437,7 +464,6 @@ Shared mathematics & Likelihoods and loss functions; gradient-based
 optimization (Week 3); Bayesian inference and MCMC; cross-validation and
 generalization (Week 6) \\
 \end{longtable}
-}
 
 \textbf{Evaluating an AI system as a cognitive model} uses exactly the
 course toolkit: - Does it predict human data \emph{beyond} fitting it,
@@ -472,7 +498,7 @@ The domain changes the model; the logic of modeling stays.
 \item
   \textbf{Do the four Q-learning trials of the worked example on the
   board} with a table: value before, choice, reward, prediction error,
-  value after. It takes ten minutes and demystifies the code.
+  value after.
 \item
   \textbf{For cue combination, use your engineering intuition openly}:
   ``combining two noisy sensors'' is a natural way to present it, and
@@ -502,6 +528,8 @@ The domain changes the model; the logic of modeling stays.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Worked example}
 
 \subsubsection{Part 1: four trials of Q-learning by hand}
@@ -509,7 +537,6 @@ The domain changes the model; the logic of modeling stays.
 Two options; \(\alpha = 0.5\), \(\beta = 3\); initial values
 \(Q(1) = Q(2) = 0.5\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
@@ -520,6 +547,27 @@ Two options; \(\alpha = 0.5\), \(\beta = 3\); initial values
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\caption{\centering Part 1: four trials of Q-learning by hand}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Trial
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(Q(1)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(Q(2)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(P(\text{choose } 1)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Choice
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reward
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\delta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Update
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Trial
@@ -552,7 +600,6 @@ Update
 \(+0.25\) & \(Q(2) = 0.875\) \\
 \end{longtable}
 \end{landscape}
-}
 
 \textbf{Log-likelihood of these four choices:}
 \(\ln 0.5 + \ln 0.679 + \ln(1 - 0.407) + \ln(1 - 0.245) = -0.693 - 0.387 - 0.523 - 0.281 = -1.884\).
@@ -577,6 +624,8 @@ vision alone. Optimal weighting is what makes combining cues worthwhile.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lab (2 hours)}
 
 \subsubsection{Goals}
@@ -598,51 +647,8 @@ vision alone. Optimal weighting is what makes combining cues worthwhile.
 \textbf{Timing:} Part A 20 min · Part B 20 min · Part C 25 min · Part D
 30 min · Part E 25 min.
 
-\subsubsection{Part A: a Q-learning agent in a reversal task (20 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week15.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{4\baselineskip}
-\begin{Verbatim}
-Total reward: 151 / 200;  chose the better option on 91% of trials
-\end{Verbatim}
-
-\subsubsection{Part B: the likelihood and an MLE fit (20 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week15.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-MLE: alpha = 0.491 (true 0.3), beta = 3.80 (true 5.0), NLL = 51.77
-Chance-level NLL (always p = 0.5): 138.63
-\end{Verbatim}
-
 \subsubsection{Part C: parameter recovery and the \ensuremath{\alpha}--\ensuremath{\beta} trade-off (25
 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week15.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output} (about 30--60 s):
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-alpha: r(true, recovered) = 0.90
-beta: r(true, recovered) = 0.17
-corr(recovered alpha, recovered beta) = 0.31 (true values were drawn independently: 0.03)
-\end{Verbatim}
 
 \textbf{Interpret:} with 200 trials and one reversal, \(\alpha\) is
 recovered well (r = 0.90) but \(\beta\) hardly at all (r = 0.17). This
@@ -655,45 +661,11 @@ likelihood.) The recovered \(\alpha\) and \(\beta\) are also correlated
 this imply for a study that correlates \(\beta\) with, say, a clinical
 questionnaire?
 
-\subsubsection{Part D: is it really reinforcement learning? Model
-comparison (30 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week15.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output} (about 1 minute):
-
-\Needspace{9\baselineskip}
-\begin{Verbatim}
-AIC for the Part A participant: {'Q-learning': 107.5, 'WSLS': 200.3, 'bias': 278.9}
-
-Model recovery (rows: generating, columns: selected by AIC):
-            Q-learning  WSLS  bias
-Q-learning          20     0     0
-WSLS                 0    20     0
-\end{Verbatim}
-
 \subsubsection{Part E: an ideal observer for cue combination (25 min)}
 
 A simulated participant judges the size of objects seen and felt
 simultaneously. We know the single-cue noise levels from unimodal
 blocks. Does the participant combine the cues optimally?
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week15.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-Ideal observer: w_V = 0.80, predicted bimodal SD = 0.894 mm
-Participant: empirical w_V = 0.56, bimodal SD = 1.006 mm
-Best single cue SD = 1.000 mm;  simple average would give 1.118 mm
-\end{Verbatim}
 
 \textbf{Interpret:} is this participant optimal? The empirical visual
 weight (0.56) is well below the optimal 0.80: the participant
@@ -710,17 +682,14 @@ Exercise 4 puts bootstrap intervals around them.)
 
 \subsubsection{Exercises (increasing difficulty)}
 
-\textbf{Exercise 1 \ensuremath{\star}.} Reproduce the worked example's four Q-learning
-trials with \nolinkurl{nll_q} (hint: compute the NLL with
-\nolinkurl{theta = (logit 0.5, log 3)} on the four-trial sequence). Do
-you get −1.884 for the log-likelihood?
+Do you get −1.884 for the log-likelihood?
 
 \textbf{Exercise 2 \ensuremath{\star}.} Rerun Part C with 50 trials (no reversal) and
 with 400 trials (three reversals). How does recovery of \(\alpha\)
 change? What does this imply for experimental design?
 
 \textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (two learning rates).} Many studies find different
-learning rates for positive and negative prediction errors. Implement a
+learning rates for positive and negative prediction errors. Formulate and evaluate a
 model with \(\alpha^{+}\) and \(\alpha^{-}\), simulate an agent with
 \(\alpha^{+} = 0.4\), \(\alpha^{-} = 0.1\), and test with AIC/BIC and a
 recovery study whether the extra parameter is identifiable at the Part A
@@ -733,13 +702,7 @@ confidence intervals around the empirical weights and SDs. With 100
 trials, can you distinguish the two observers?
 
 \textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: hierarchical RL).} Simulate 20 agents
-with individual \((\alpha_j, \beta_j)\) and only 80 trials each. Fit
-them individually by MLE, and then with a hierarchical Bayesian model in
-PyMC. (Hint: the trial loop can be written with
-\nolinkurl{pytensor.scan}; alternatively, implement a hand-written
-Metropolis-within-Gibbs sampler using \nolinkurl{nll_q} for the
-individual parameters and conjugate updates for the group means.)
-Compare recovery of \(\alpha_j\) between the two approaches.
+with individual \((\alpha_j, \beta_j)\) and only 80 trials each.
 
 \subsubsection{Lab check-off}
 
@@ -766,30 +729,16 @@ preferences, and so do their problems: noisy choices, identifiability
 (only \emph{differences} in \(r\) matter, so one value is fixed), and
 the gap between what people choose and what is actually good.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week15.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{4\baselineskip}
-\begin{Verbatim}
-304 comparisons; estimated rewards = [0.   0.56 0.5  1.61] (true [0.  0.5 1.  2. ])
-\end{Verbatim}
-
 With about 300 noisy comparisons, the estimated order of responses 1 and
 2 is even reversed. A reward model is a fitted cognitive model, and it
 needs uncertainty estimates and recovery checks like any other.
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} Compute Hessian-based standard
-errors for the three estimates (Week 5). Is the reversal of responses 1
-and 2 within the uncertainty? - \ensuremath{\star}\ensuremath{\star} Run a parameter recovery: how many
-comparisons are needed before the order of all four responses is
-recovered correctly in 90\% of simulated datasets? - \ensuremath{\star}\ensuremath{\star} Simulate raters
-who prefer \emph{longer} answers regardless of quality (add a length
-bonus to the true reward). What does the fitted reward model learn, and
-what will the chatbot then be trained to do?
+Is the reversal of responses 1 and 2 within the uncertainty? - \ensuremath{\star}\ensuremath{\star} Run a
+parameter recovery: how many comparisons are needed before the order of
+all four responses is recovered correctly in 90\% of simulated datasets?
+- \ensuremath{\star}\ensuremath{\star} Simulate raters who prefer \emph{longer} answers regardless of
+quality (add a length bonus to the true reward). What does the fitted
+reward model learn, and what will the chatbot then be trained to do?
 
 \emph{Optional reading:} Christiano, P. F., et al.~(2017). Deep
 reinforcement learning from human preferences. \emph{NeurIPS}. Ouyang,
@@ -892,9 +841,7 @@ correspondence between its internal states and psychological constructs.
 
 \subsection{Assignment}
 
-No new assignment: \textbf{final project presentations are next week},
-and the written report and code are due before the final exam. Use this
-week's lab time for project work and the course wrap-up.
+Use this week's lab time for project work and the course wrap-up.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 

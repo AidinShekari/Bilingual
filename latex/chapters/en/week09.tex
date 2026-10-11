@@ -14,11 +14,21 @@ participant (68/100 hits, 11/100 false alarms).
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -73,7 +83,6 @@ forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش ی�
 زمان} \\
 accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -160,13 +169,11 @@ analysis}, a method we as scientists use to estimate the parameters of
 \item
   \textbf{Combining evidence}: today's posterior is tomorrow's prior, so
   results of earlier studies can be built in formally.
-\item
-  \textbf{Modern cognitive modeling software} (PyMC, Stan, JAGS) is
-  Bayesian; most hierarchical models in recent papers are fitted this
-  way (Week 13).
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lecture notes}
 
@@ -257,11 +264,21 @@ likelihood dominates and the posterior concentrates around the MLE.
 
 \subsubsection{2. Choosing priors}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 2. Choosing priors}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Kind
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Example for a recall probability \(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+When
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Kind
@@ -282,7 +299,6 @@ absurd values, otherwise lets the data speak \\
 Informative & \(\mathrm{Beta}(20, 5)\): ``recall after one day is around
 0.8'' & When previous studies or theory provide real knowledge \\
 \end{longtable}
-}
 
 Principles: - Priors must be fixed \textbf{before} seeing the data. -
 They should respect the parameter's range (e.g., no prior mass on
@@ -377,11 +393,21 @@ parameters (the curse of dimensionality, Week 3), which motivates MCMC
 
 \subsubsection{5. Summarizing a posterior}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 5. Summarizing a posterior}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Summary
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Definition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Remark
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Summary
@@ -407,7 +433,6 @@ compute \\
 containing 95\% of the posterior; every value inside is more probable
 than every value outside & Preferred for skewed posteriors \\
 \end{longtable}
-}
 
 \textbf{Credible vs.~confidence interval.} A 95\% credible interval
 \emph{does} mean ``given the model, the prior and the data, the
@@ -509,6 +534,8 @@ inference is a popular normative model of \emph{learning} (Week 15).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Worked example}
 
 \subsubsection{Part 1: a four-point grid by hand}
@@ -517,13 +544,27 @@ A participant recalls \(y = 7\) of \(n = 10\) items. To keep the
 arithmetic simple, suppose \(\theta\) can only take the values 0.2, 0.4,
 0.6 or 0.8, each with prior probability 1/4.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering Part 1: a four-point grid by hand}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Prior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Likelihood \(\theta^7(1-\theta)^3\) (constant dropped)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Prior × likelihood
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Posterior
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(\theta\)
@@ -546,7 +587,6 @@ Posterior
 0.8 & 0.25 & 0.0016777 & 0.0004194 & \textbf{0.438} \\
 Sum & 1 & & 0.0009574 & 1.000 \\
 \end{longtable}
-}
 
 Each posterior value = (prior × likelihood) / sum. The binomial
 coefficient was dropped because it cancels in the normalization.
@@ -579,12 +619,24 @@ probability is probably around 0.64, but anything from about 0.39 to
 
 With \(y = 30\) of \(n = 50\):
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering Part 3: the prior matters less with more data}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Prior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Posterior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+95\% credible interval
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Prior
@@ -606,7 +658,6 @@ Mean
 \(\mathrm{Beta}(20, 5)\) (informative, ``\ensuremath{\approx} 0.8'') &
 \(\mathrm{Beta}(50, 25)\) & 0.667 & {[}0.557, 0.768{]} \\
 \end{longtable}
-}
 
 The flat and Jeffreys priors give practically the same answer, also
 equal to the Week 5 profile-likelihood interval {[}0.462, 0.728{]}. The
@@ -616,6 +667,8 @@ overwhelm a strong prior. Whether that is good depends on whether the
 prior knowledge was right.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lab (2 hours)}
 
@@ -639,39 +692,13 @@ prior knowledge was right.
 \textbf{Timing:} Part A 25 min · Part B 15 min · Part C 40 min · Part D
 25 min · Part E 15 min.
 
-\subsubsection{Setup}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
 \subsubsection{Part A: beta-binomial, analytically and on a grid (25
 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-flat Beta(1,1)           grid mean = 0.5962, exact mean = 0.5962, 95% CI = [0.461 0.724]
-Jeffreys Beta(.5,.5)     grid mean = 0.5980, exact mean = 0.5980, 95% CI = [0.462 0.727]
-informative Beta(20,5)   grid mean = 0.6667, exact mean = 0.6667, 95% CI = [0.557 0.768]
-\end{Verbatim}
 
 The grid and exact posteriors coincide. Look at where each posterior
 sits relative to its prior and the likelihood.
 
 \subsubsection{Part B: sequential updating (15 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
 
 \textbf{What to notice:} the posterior starts as the prior, narrows as
 items accumulate, and concentrates around the true value. Its width
@@ -684,33 +711,16 @@ alarms out of 100 noise trials. Priors: \(d' \sim \mathcal{N}(1, 1.5)\)
 (sensitivity is usually positive, rarely above 4) and
 \(c \sim \mathcal{N}(0, 1)\) (bias is usually modest).
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{9\baselineskip}
-\begin{Verbatim}
-    post. mean  post. SD    MAP  95% HDI low  95% HDI high
-d'       1.688     0.209  1.675        1.250         2.062
-c        0.376     0.106  0.375        0.163         0.575
-MLE (uncorrected formulas): d' = 1.694, c = 0.379
-P(d' > 1 | data) = 1.000;  P(c > 0 | data) = 1.000
-Posterior correlation of d' and c: 0.245
-\end{Verbatim}
-
 (``1.000'' means that none of the 20 000 posterior samples fell below
 the threshold, so the probability is \textgreater{} 0.9999. Report it as
 such, not as certainty.)
 
-\textbf{Interpret (write in your notebook):} 1. How do the posterior
-mean and MAP compare with the MLE? Why are they so close here? 2.
-Translate the HDI for \(d'\) and \(P(c > 0 \mid \text{data})\) into one
-plain-language sentence each about this participant. 3. Increase the
-prior SD on \(d'\) to 10, then decrease it to 0.3 (centered at 1). Which
-summaries change, and by how much?
+How do the posterior mean and MAP compare with the MLE? Why are they so
+close here? 2. Translate the HDI for \(d'\) and
+\(P(c > 0 \mid \text{data})\) into one plain-language sentence each
+about this participant. 3. Increase the prior SD on \(d'\) to 10, then
+decrease it to 0.3 (centered at 1). Which summaries change, and by how
+much?
 
 \subsubsection{Part D: prior predictive checks (25 min)}
 
@@ -718,19 +728,6 @@ Before trusting a prior, look at the data it implies. Compare our prior
 with a ``vague'' one, \(d' \sim \mathcal{N}(0, 10)\) and
 \(c \sim \mathcal{N}(0, 10)\), which is sometimes used because it is
 ``uninformative''.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-our prior: d'~N(1,1.5), c~N(0,1): 14% of simulated datasets have a rate of exactly 0 or 1; 24% have H < F
-'vague' prior: d'~N(0,10), c~N(0,10): 96% of simulated datasets have a rate of exactly 0 or 1; 23% have H < F
-\end{Verbatim}
 
 \textbf{What to notice:} the ``vague'' prior is not neutral at all. On
 the probability scale it puts 96\% of simulated datasets at hit or
@@ -801,29 +798,13 @@ gives what such studies usually lack: a full posterior for the accuracy,
 direct probability statements (``the probability that accuracy exceeds
 60\%''), and a direct comparison of two models.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-Model A: posterior mean = 0.704, 95% interval = [0.522, 0.857], P(accuracy > 0.6) = 0.878
-Model B: posterior mean = 0.593, 95% interval = [0.406, 0.766], P(accuracy > 0.6) = 0.479
-P(A more accurate than B | data) = 0.807
-\end{Verbatim}
-
 With 25 items, the posterior intervals are about 0.35 wide, and there is
 a 19\% posterior probability that B is actually the better model.
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} Use an informative prior from an
-earlier, larger evaluation (e.g., Beta(14, 6) for model A). How much do
-the conclusions change? - \ensuremath{\star}\ensuremath{\star} The comparison above treats the two models
-as independent, although they answered the same items. Why is this a
-problem (see the Week 5 box)? Sketch a model that respects the pairing.
-- \ensuremath{\star}\ensuremath{\star} Discussion: what prior would you use for the accuracy of a
+How much do the conclusions change? - \ensuremath{\star}\ensuremath{\star} The comparison above treats the
+two models as independent, although they answered the same items. Why is
+this a problem (see the Week 5 box)? Sketch a model that respects the
+pairing. - \ensuremath{\star}\ensuremath{\star} Discussion: what prior would you use for the accuracy of a
 brand-new model on a four-choice test, and why should it not put much
 mass below 0.25?
 
@@ -942,10 +923,6 @@ correction implicitly adds half a pseudo-observation of each type.
 \item
   \textbf{Lee \& Wagenmakers (2014), chapters 1 and 3.} The basics of
   Bayesian analysis, and inferences with binomials.
-\item
-  \textbf{Martin, Kumar \& Lao (2021), chapter 1.} Bayesian inference:
-  the components of a Bayesian model and prior/posterior predictive
-  distributions, with Python code.
 \item
   \textbf{Farrell \& Lewandowsky (2018), chapter 6.} Bayesian parameter
   estimation: basic concepts, linked to the likelihood framework of Week

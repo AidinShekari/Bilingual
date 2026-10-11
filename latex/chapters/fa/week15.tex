@@ -15,11 +15,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -76,7 +86,6 @@
 \lr{Bradley\lr{--}Terry model} & مدل \lr{Bradley\lr{--}Terry} & مدل انتخاب برای
 مقایسه‌های جفتی \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -127,9 +136,7 @@ error)}، یعنی تفاوت چیزی که گرفتید و چیزی که انت
 است، مثلاً در روان‌پزشکی محاسباتی.
 
 \textbf{ذهن به‌عنوان آماردان.} وقتی یک شیء را هم‌زمان می‌بینید و لمس
-می‌کنید، بینایی و لامسه هر دو برآوردی پرنویز از اندازه‌اش می‌دهند. یک
-\emph{مشاهده‌گر ایده‌آل بیزی} آن‌ها را با وزن دادن به هر نشانه به نسبت
-پایایی‌اش ترکیب می‌کند، که برآوردی دقیق‌تر از هرکدام به تنهایی می‌دهد. آیا
+می‌کنید، بینایی و لامسه هر دو برآوردی پرنویز از اندازه‌اش می‌دهند. آیا
 آدم‌ها این کار را می‌کنند؟ این کاربردی متفاوت از کلمه‌ی «بیزی» نسبت به
 هفته‌های 9\lr{--}13 است: اینجا قاعده‌ی بیز یک \textbf{فرضیه درباره‌ی ذهن} است،
 در سطح محاسباتی \lr{Marr} (هفته‌ی 1).
@@ -170,15 +177,15 @@ error)}، یعنی تفاوت چیزی که گرفتید و چیزی که انت
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{جزوه‌ی درس}
 
 \paragraph{به زبان ساده}
 
-\textbf{یادگیری از پاداش.} هر گزینه (مثلاً هر کدام از دو دستگاه بازی) در
-ذهن شرکت‌کننده یک «ارزش» دارد: چقدر پاداش از آن انتظار دارد. بعد از
-انتخاب یک گزینه و دیدن نتیجه، ارزش کمی به سمت چیزی که واقعاً اتفاق افتاد
-جابه‌جا می‌شود: \emph{ارزش جدید = ارزش قبلی + نرخ یادگیری × (پاداش \ensuremath{-} ارزش
-قبلی)}. عبارت داخل پرانتز \textbf{خطای پیش‌بینی} است، یعنی میزان
+بعد از انتخاب یک گزینه و دیدن نتیجه، ارزش کمی به سمت چیزی که واقعاً اتفاق
+افتاد جابه‌جا می‌شود: \emph{ارزش جدید = ارزش قبلی + نرخ یادگیری × (پاداش \ensuremath{-}
+ارزش قبلی)}. عبارت داخل پرانتز \textbf{خطای پیش‌بینی} است، یعنی میزان
 غافلگیری. \textbf{نرخ یادگیری} \(\alpha\) می‌گوید این جابه‌جایی چقدر بزرگ
 است. انتخاب‌ها کاملاً حریصانه نیستند: قاعده‌ی \textbf{\lr{softmax}} گزینه‌ی
 باارزش‌تر را بیشتر انتخاب می‌کند و \textbf{\lr{inverse temperature}}
@@ -318,9 +325,7 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 
 \textbf{یک مدل بیزی شناخت چه ادعایی دارد.} اینکه رفتار، با توجه به نویز،
 پیشین و هدف‌های عامل، تقریبی از استنباط بهینه است: یک تبیین در
-\textbf{سطح محاسباتی} \lr{(Marr).} درباره‌ی الگوریتم ساکت است: مغز ممکن
-است بیز را با نمونه‌گیری، \lr{heuristic}ها یا کدهای جمعیتی عصبی تقریب
-بزند.
+\textbf{سطح محاسباتی} \lr{(Marr).}
 
 \textbf{نقدهایی که باید در ذهن داشت:} با انتخاب آزادانه‌ی پیشین‌ها،
 درست‌نمایی‌ها و تابع‌های زیان، تقریباً هر رفتاری را می‌شود بعد از واقعه
@@ -329,11 +334,20 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 
 \textbf{دو معنا، یک بار دیگر:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. مدل‌های بیزی شناخت}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مدل بیزی شناخت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تحلیل داده‌ی بیزی
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -352,7 +366,6 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 انتخاب شده باشند \\
 نمونه‌ها در این درس & ترکیب نشانه‌ها (امروز) & هفته‌های 9\lr{--}13 \\
 \end{longtable}
-}
 
 می‌توانید یک مدل بیزی شناخت را با بیشینه‌ی درست‌نمایی تحلیل کنید، و یک مدل
 غیربیزی (مثلاً \lr{Q-learning)} را با تحلیل داده‌ی بیزی.
@@ -407,10 +420,18 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 
 \subsubsection{4. مدل‌های شناختی و هوش مصنوعی}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering 4. مدل‌های شناختی و هوش مصنوعی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+جهت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نمونه‌ها
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 جهت
@@ -432,7 +453,6 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 (هفته‌ی 3)؛ استنباط بیزی و \lr{MCMC}؛ \lr{cross-validation} و تعمیم
 (هفته‌ی 6) \\
 \end{longtable}
-}
 
 \textbf{ارزیابی یک سیستم هوش مصنوعی به‌عنوان مدل شناختی} دقیقاً از
 جعبه‌ابزار درس استفاده می‌کند: - آیا داده‌ی انسانی را \emph{فراتر} از برازش
@@ -465,8 +485,7 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
   هر معادله‌ای کاوش، بهره‌برداری و وارونگی را تجربه می‌کند.
 \item
   \textbf{چهار \lr{trial Q-learning} مثال حل‌شده را روی تخته انجام دهید}
-  با یک جدول: ارزش قبل، انتخاب، پاداش، خطای پیش‌بینی، ارزش بعد. ده دقیقه
-  وقت می‌گیرد و کد را رازگشایی می‌کند.
+  با یک جدول: ارزش قبل، انتخاب، پاداش، خطای پیش‌بینی، ارزش بعد.
 \item
   \textbf{برای ترکیب نشانه‌ها آزادانه از شهود مهندسی‌تان استفاده کنید:}
   «ترکیب دو حسگر پرنویز» راه طبیعی ارائه‌ی آن است و برای دانشجوهای
@@ -496,6 +515,8 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{مثال حل‌شده}
 
 \subsubsection{\texorpdfstring{بخش 1: چهار \lr{trial Q-learning} با
@@ -504,7 +525,6 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 دو گزینه؛ \(\alpha = 0.5\)، \(\beta = 3\)؛ ارزش‌های اولیه
 \(Q(1) = Q(2) = 0.5\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
@@ -515,6 +535,27 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\caption{\centering بخش 1: چهار \lr{trial Q-learning }با دست}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{trial}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(Q(1)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(Q(2)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(P(\text{\lr{choose }} 1)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+انتخاب
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پاداش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\delta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+به‌روزرسانی
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{trial}
@@ -547,7 +588,6 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 \(+0.25\) & \(Q(2) = 0.875\) \\
 \end{longtable}
 \end{landscape}
-}
 
 \textbf{لگاریتم درست‌نمایی این چهار انتخاب:}
 \(\ln 0.5 + \ln 0.679 + \ln(1 - 0.407) + \ln(1 - 0.245) = -0.693 - 0.387 - 0.523 - 0.281 = -1.884\).
@@ -574,6 +614,8 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
 \subsubsection{اهداف}
@@ -596,61 +638,9 @@ P(\text{\lr{choose }} o \text{\lr{ on trial }} t) = \frac{\exp(\beta\, Q_t(o))}{
 \textbf{زمان‌بندی:} بخش \lr{A} 20 دقیقه · بخش \lr{B} 20 دقیقه · بخش
 \lr{C} 25 دقیقه · بخش \lr{D} 30 دقیقه · بخش \lr{E} 25 دقیقه.
 
-\subsubsection{\texorpdfstring{بخش \lr{A:} یک عامل \lr{Q-learning} در
-تکلیف وارونگی (20
-دقیقه)}{بخش A: یک عامل Q-learning در تکلیف وارونگی (20 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week15.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{6\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Total reward: 151 / 200;  chose the better option on 91% of trials
-\end{Verbatim}
-\end{latin}
-
-\subsubsection{\texorpdfstring{بخش \lr{B:} درست‌نمایی و یک برازش \lr{MLE}
-(20 دقیقه)}{بخش B: درست‌نمایی و یک برازش MLE (20 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week15.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-MLE: alpha = 0.491 (true 0.3), beta = 3.80 (true 5.0), NLL = 51.77
-Chance-level NLL (always p = 0.5): 138.63
-\end{Verbatim}
-\end{latin}
-
 \subsubsection{\texorpdfstring{بخش \lr{C:} بازیابی پارامتر و
 \lr{trade-off} \ensuremath{\alpha}\lr{--}\ensuremath{\beta} (25
 دقیقه)}{بخش C: بازیابی پارامتر و trade-off \ensuremath{\alpha}\lr{--}\ensuremath{\beta} (25 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week15.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار} (حدود 30\lr{--}60 ثانیه):
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-alpha: r(true, recovered) = 0.90
-beta: r(true, recovered) = 0.17
-corr(recovered alpha, recovered beta) = 0.31 (true values were drawn independently: 0.03)
-\end{Verbatim}
-\end{latin}
 
 \textbf{تفسیر کنید:} با 200 \lr{trial} و یک وارونگی، \(\alpha\) خوب
 بازیابی می‌شود \lr{(r} = 0.90) ولی \(\beta\) تقریباً اصلاً نه \lr{(r} =
@@ -662,29 +652,6 @@ corr(recovered alpha, recovered beta) = 0.31 (true values were drawn independent
 اینکه مقادیر واقعی مستقل بودند: یک معاوضه. این برای مطالعه‌ای که
 \(\beta\) را با مثلاً یک پرسش‌نامه‌ی بالینی همبسته می‌کند چه معنایی دارد؟
 
-\subsubsection{\texorpdfstring{بخش \lr{D:} آیا واقعاً یادگیری تقویتی است؟
-مقایسه‌ی مدل (30
-دقیقه)}{بخش D: آیا واقعاً یادگیری تقویتی است؟ مقایسه‌ی مدل (30 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week15.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار} (حدود 1 دقیقه):
-
-\Needspace{11\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-AIC for the Part A participant: {'Q-learning': 107.5, 'WSLS': 200.3, 'bias': 278.9}
-
-Model recovery (rows: generating, columns: selected by AIC):
-            Q-learning  WSLS  bias
-Q-learning          20     0     0
-WSLS                 0    20     0
-\end{Verbatim}
-\end{latin}
-
 \subsubsection{\texorpdfstring{بخش \lr{E:} یک مشاهده‌گر ایده‌آل برای ترکیب
 نشانه‌ها (25
 دقیقه)}{بخش E: یک مشاهده‌گر ایده‌آل برای ترکیب نشانه‌ها (25 دقیقه)}}
@@ -692,22 +659,6 @@ WSLS                 0    20     0
 یک شرکت‌کننده‌ی شبیه‌سازی‌شده اندازه‌ی اشیایی را که هم‌زمان دیده و لمس می‌شوند
 قضاوت می‌کند. سطح نویز تک‌نشانه را از بلوک‌های تک‌حسی می‌دانیم. آیا شرکت‌کننده
 نشانه‌ها را بهینه ترکیب می‌کند؟
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week15.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Ideal observer: w_V = 0.80, predicted bimodal SD = 0.894 mm
-Participant: empirical w_V = 0.56, bimodal SD = 1.006 mm
-Best single cue SD = 1.000 mm;  simple average would give 1.118 mm
-\end{Verbatim}
-\end{latin}
 
 \textbf{تفسیر کنید:} آیا این شرکت‌کننده بهینه است؟ وزن بینایی تجربی
 (0.56) خیلی پایین‌تر از مقدار بهینه‌ی 0.80 است: شرکت‌کننده به نشانه‌ی
@@ -724,10 +675,7 @@ Best single cue SD = 1.000 mm;  simple average would give 1.118 mm
 
 \subsubsection{تمرین‌ها (به ترتیب سختی)}
 
-\textbf{تمرین 1 \ensuremath{\star}.} چهار \lr{trial Q-learning} مثال حل‌شده را با
-\lr{\nolinkurl{nll_q}} بازتولید کنید (راهنمایی: \lr{NLL} را با
-\lr{\nolinkurl{theta = (logit 0.5, log 3)}} روی دنباله‌ی چهار \lr{trial}ی
-حساب کنید). آیا لگاریتم درست‌نمایی \ensuremath{-}1.884 به دست می‌آید؟
+آیا لگاریتم درست‌نمایی \ensuremath{-}1.884 به دست می‌آید؟
 
 \textbf{تمرین 2 \ensuremath{\star}.} بخش \lr{C} را با 50 \lr{trial} (بدون وارونگی) و با
 400 \lr{trial} (سه وارونگی) دوباره اجرا کنید. بازیابی \(\alpha\) چطور
@@ -735,26 +683,16 @@ Best single cue SD = 1.000 mm;  simple average would give 1.118 mm
 
 \textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (دو نرخ یادگیری).} بسیاری از مطالعه‌ها نرخ‌های یادگیری
 متفاوتی برای خطاهای پیش‌بینی مثبت و منفی پیدا می‌کنند. مدلی با
-\(\alpha^{+}\) و \(\alpha^{-}\) پیاده‌سازی کنید، یک عامل با
+\(\alpha^{+}\) و \(\alpha^{-}\) صورت‌بندی کنید، یک عامل با
 \(\alpha^{+} = 0.4\) و \(\alpha^{-} = 0.1\) شبیه‌سازی کنید، و با
 \lr{AIC/BIC} و یک مطالعه‌ی بازیابی بیازمایید که آیا پارامتر اضافه در طرح
 بخش \lr{A identifiable} است.
 
-\textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} (وزن‌های بهینه).} در بخش \lr{E}، یک مشاهده‌گر با
-\(w_V = 0.8\) (بهینه) و یکی با \(w_V = 0.5\) (میانگین‌گیر)، هرکدام با 100
-\lr{trial} دوحسی، شبیه‌سازی کنید. با \lr{bootstrap} (هفته‌ی 5) دور وزن‌ها و
+\(w_V = 0.8\) · \(w_V = 0.5\) با \lr{bootstrap} (هفته‌ی 5) دور وزن‌ها و
 انحراف معیارهای تجربی بازه‌ی اطمینان بگذارید. با 100 \lr{trial} می‌توانید
 دو مشاهده‌گر را از هم تشخیص دهید؟
 
-\textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: \lr{RL} سلسله‌مراتبی).} 20 عامل با
-\((\alpha_j, \beta_j)\) فردی و فقط 80 \lr{trial} برای هرکدام شبیه‌سازی
-کنید. آن‌ها را جداگانه با \lr{MLE} و بعد با یک مدل بیزی سلسله‌مراتبی در
-\lr{PyMC} برازش کنید. (راهنمایی: حلقه‌ی \lr{trial}ها را می‌شود با
-\lr{\nolinkurl{pytensor.scan}} نوشت؛ یا به جایش یک نمونه‌گیر
-\lr{Metropolis-within-Gibbs} دست‌نویس پیاده کنید که از
-\lr{\nolinkurl{nll_q}} برای پارامترهای فردی و به‌روزرسانی‌های
-\lr{conjugate} برای میانگین‌های گروه استفاده کند.) بازیابی \(\alpha_j\)
-را بین دو رویکرد مقایسه کنید.
+\((\alpha_j, \beta_j)\)
 
 \subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
 
@@ -769,11 +707,8 @@ Best single cue SD = 1.000 mm;  simple average would give 1.118 mm
 
 \textbf{قاعده‌ی انتخاب پشت آموزش \lr{chatbot}ها.} \lr{chatbot}های امروزی
 با \emph{یادگیری تقویتی از بازخورد انسانی} \lr{(RLHF)} تنظیم دقیق
-\lr{(fine-tune)} می‌شوند. آدم‌ها دو پاسخ را می‌بینند و می‌گویند کدام را
-ترجیح می‌دهند، یک \textbf{مدل پاداش} \lr{(reward model)} روی این انتخاب‌ها
-برازش می‌شود، و بعد \lr{chatbot} با یادگیری تقویتی آموزش می‌بیند تا پاداش
-یادگرفته‌شده را بیشینه کند \lr{(Christiano et al.,} 2017; \lr{Ouyang et
-al.,} 2022). مدل پاداش معمولاً مدل \textbf{\lr{Bradley\lr{--}Terry}} است،
+\lr{(fine-tune)} می‌شوند. مدل پاداش معمولاً مدل
+\textbf{\lr{Bradley\lr{--}Terry}} است،
 \(P(i \succ j) = 1/(1 + e^{-(r_i - r_j)})\). این همان قاعده‌ی انتخاب
 \lr{softmax} این هفته با \(\beta = 1\)، و قاعده‌ی انتخاب \lr{Luce} در
 \lr{GCM} است. برازش آن یک مسئله‌ی \lr{MLE} از هفته‌ی 4 است. پس مدل‌های
@@ -783,32 +718,16 @@ al.,} 2022). مدل پاداش معمولاً مدل \textbf{\lr{Bradley\lr{--}T
 مهم‌اند، پس یک مقدار ثابت می‌شود)، و فاصله‌ی بین آنچه آدم‌ها انتخاب می‌کنند و
 آنچه واقعاً خوب است.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week15.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{6\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-304 comparisons; estimated rewards = [0.   0.56 0.5  1.61] (true [0.  0.5 1.  2. ])
-\end{Verbatim}
-\end{latin}
-
 با حدود 300 مقایسه‌ی پرنویز، ترتیب برآوردشده‌ی پاسخ‌های 1 و 2 حتی برعکس
 شده. یک مدل پاداش یک مدل شناختی برازش‌شده است، و مثل هر مدل دیگری به
 برآورد عدم قطعیت و بررسی بازیابی نیاز دارد.
 
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} خطاهای استاندارد
-مبتنی بر \lr{Hessian} را برای سه برآورد حساب کنید (هفته‌ی 5). آیا برعکس
-شدن پاسخ‌های 1 و 2 در محدوده‌ی عدم قطعیت است؟ - \ensuremath{\star}\ensuremath{\star} یک بازیابی پارامتر اجرا
-کنید: چند مقایسه لازم است تا ترتیب هر چهار پاسخ در 90\% مجموعه داده‌های
-شبیه‌سازی‌شده درست بازیابی شود؟ - \ensuremath{\star}\ensuremath{\star} ارزیاب‌هایی را شبیه‌سازی کنید که
-جواب‌های \emph{طولانی‌تر} را صرف‌نظر از کیفیت ترجیح می‌دهند (یک پاداش طول به
-پاداش واقعی اضافه کنید). مدل پاداش برازش‌شده چه یاد می‌گیرد، و بعد
-\lr{chatbot} برای انجام چه کاری آموزش می‌بیند؟
+آیا برعکس شدن پاسخ‌های 1 و 2 در محدوده‌ی عدم قطعیت است؟ - \ensuremath{\star}\ensuremath{\star} یک بازیابی
+پارامتر اجرا کنید: چند مقایسه لازم است تا ترتیب هر چهار پاسخ در 90\%
+مجموعه داده‌های شبیه‌سازی‌شده درست بازیابی شود؟ - \ensuremath{\star}\ensuremath{\star} ارزیاب‌هایی را شبیه‌سازی
+کنید که جواب‌های \emph{طولانی‌تر} را صرف‌نظر از کیفیت ترجیح می‌دهند (یک
+پاداش طول به پاداش واقعی اضافه کنید). مدل پاداش برازش‌شده چه یاد می‌گیرد،
+و بعد \lr{chatbot} برای انجام چه کاری آموزش می‌بیند؟
 
 \emph{مطالعه‌ی اختیاری:} \lr{Christiano, P. F., et al.~(2017). Deep
 reinforcement learning from human preferences.} \emph{\lr{NeurIPS}}.
@@ -876,10 +795,9 @@ instructions with human feedback.} \emph{\lr{NeurIPS}}.
 \textbf{پاسخ} ترکیب‌های مختلف نرخ یادگیری و نویز انتخاب می‌توانند
 دنباله‌های انتخاب مشابهی تولید کنند. مثلاً تطبیق کُند می‌تواند از یادگیری
 کند (\(\alpha\) پایین) یا از انتخاب پرنویز و بی‌حساس به ارزش (\(\beta\)
-پایین) بیاید. پس برآوردها همبسته‌اند و هرکدام به تنهایی نامطمئن؛ جهت
-همبستگی به طرح بستگی دارد. علاوه بر این، مقادیر بالای \(\beta\) ضعیف
-شناسایی می‌شوند، چون انتخاب‌های تقریباً قطعی برای بسیاری از \(\beta\)های
-بزرگ یکسان به نظر می‌رسند.
+پایین) بیاید. جهت همبستگی به طرح بستگی دارد. علاوه بر این، مقادیر بالای
+\(\beta\) ضعیف شناسایی می‌شوند، چون انتخاب‌های تقریباً قطعی برای بسیاری از
+\(\beta\)های بزرگ یکسان به نظر می‌رسند.
 
 \textbf{5.} بینایی انحراف معیار 2 و لامسه انحراف معیار 2 دارد. وزن‌های
 بهینه و انحراف معیار ترکیبی پیش‌بینی‌شده چقدر است؟ \textbf{پاسخ} پایایی‌های
@@ -887,8 +805,6 @@ instructions with human feedback.} \emph{\lr{NeurIPS}}.
 \(\sqrt{4 \times 4/8} = \sqrt{2} = 1.41\) است، بهتر از هر نشانه به
 تنهایی (2).
 
-\textbf{6.} برای هرکدام یک نمونه بزنید: ایده‌ای که از علوم شناختی به هوش
-مصنوعی رفته، و ایده‌ای که از هوش مصنوعی به علوم شناختی آمده.
 \textbf{پاسخ} علوم شناختی \ensuremath{\leftarrow} هوش مصنوعی: یادگیری خطامحور
 \lr{(Rescorla\lr{--}Wagner} / قاعده‌ی دلتا) که به آموزش شبکه‌های عصبی و یادگیری
 تقویتی منجر شد. هوش مصنوعی \ensuremath{\leftarrow} علوم شناختی: شبکه‌های کانولوشنی عمیق که
@@ -908,9 +824,7 @@ instructions with human feedback.} \emph{\lr{NeurIPS}}.
 
 \subsection{تکلیف}
 
-تکلیف جدیدی نداریم: \textbf{ارائه‌های پروژه‌ی پایانی هفته‌ی آینده است}، و
-گزارش کتبی و کد پیش از امتحان پایانی تحویل داده می‌شوند. وقت \lr{lab} این
-هفته را برای کار روی پروژه و جمع‌بندی درس استفاده کنید.
+وقت \lr{lab} این هفته را برای کار روی پروژه و جمع‌بندی درس استفاده کنید.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 

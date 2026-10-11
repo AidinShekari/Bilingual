@@ -14,11 +14,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -72,7 +82,6 @@
 بعدی متن را پیش‌بینی می‌کند \\
 \lr{scaling law} & قانون مقیاس & رابطه‌ی توانی بین اندازه‌ی مدل و خطا \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -90,11 +99,6 @@
 \item
   سطح خطای یک مدل دوپارامتری را \textbf{رسم کنند} و شکل آن (کمینه، دره،
   فلات) را بر حسب \lr{trade-off} پارامترها \textbf{تفسیر کنند}.
-\item
-  برازش کمترین مربعات را با جستجوی شبکه‌ای و با
-  \lr{\nolinkurl{scipy.optimize.minimize}} \lr{(Nelder\lr{--}Mead} و
-  \lr{L-BFGS-B)} \textbf{پیاده‌سازی کنند} و نقاط قوت و حالت‌های شکست
-  الگوریتم‌ها را \textbf{مقایسه کنند}.
 \item
   شکست‌های رایج برازش را \textbf{تشخیص دهند} و \textbf{رفع کنند}: مقدار
   شروع بد، فلات‌ها، کمینه‌های محلی، و پارامترهای خارج از دامنه (با کران،
@@ -152,6 +156,8 @@
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{جزوه‌ی درس}
 
 \paragraph{به زبان ساده}
@@ -163,10 +169,7 @@
 داده از منحنی. دوم، روشی برای چرخاندن پیچ‌ها که این عدد را کم کند: یک
 \textbf{بهینه‌ساز \lr{(optimizer)}}. \lr{SSE} را مثل یک منظره روی همه‌ی
 تنظیم‌های ممکن پیچ‌ها تصور کنید، با تپه‌ها (برازش بد) و دره‌ها (برازش خوب)؛
-بهینه‌ساز یک کوهنورد است که دنبال پایین‌ترین نقطه می‌گردد. مشکل وقتی پیش
-می‌آید که منظره یک دره‌ی دراز و صاف داشته باشد (دو پیچ می‌توانند اثر هم را
-جبران کنند)، یک فلات صاف (کوهنورد نمی‌فهمد کدام طرف سرازیری است)، یا چند
-دره‌ی جدا (کوهنورد ممکن است در دره‌ی اشتباه بایستد). بیشتر این هفته
+بهینه‌ساز یک کوهنورد است که دنبال پایین‌ترین نقطه می‌گردد. بیشتر این هفته
 درباره‌ی تشخیص این موقعیت‌ها و محافظت از خودمان در برابر آن‌هاست.
 
 \textbf{زمان‌بندی پیشنهادی (60 دقیقه):} توابع ناهمخوانی 10 · سطح خطا 10 ·
@@ -256,11 +259,21 @@ surface)}}{2. سطح خطا (error surface)}}
 
 ویژگی‌هایی که باید بشناسید:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 2. سطح خطا (\lr{error surface)}}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+ویژگی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ظاهرش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معنایش
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 ویژگی
@@ -286,7 +299,6 @@ surface)}}{2. سطح خطا (error surface)}}
 \textbf{چند حوضه‌ی جدا} & بیش از یک مجموعه‌ی بسته از خطوط تراز &
 \textbf{کمینه‌های محلی}: جواب الگوریتم به نقطه‌ی شروع بستگی دارد \\
 \end{longtable}
-}
 
 در فراموشی نمایی، \(A\) و \(\lambda\) با هم \lr{trade-off} دارند: سطح
 شروع بالاتر با زوال سریع‌تر می‌تواند تقریباً همان مقادیر میانی را پیش‌بینی
@@ -328,11 +340,21 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 \(\boldsymbol\theta_w\) را با حرکت دادنش از میان مرکز ثقل
 \(\bar{\boldsymbol\theta}\) بقیه‌ی رأس‌ها جایگزین کند:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3.2 سیمپلکس \lr{Nelder\lr{--}Mead (}بدون مشتق)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+حرکت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فرمول (ضرایب استاندارد)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+چه وقت
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 حرکت
@@ -358,7 +380,6 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 جمع‌شدن \lr{(shrink)} & همه‌ی رأس‌ها را تا نیمه به سمت بهترین ببر & انقباض
 هم شکست خورد \\
 \end{longtable}
-}
 
 نقطه‌ی بازتاب‌شده \textbf{پذیرفته می‌شود} وقتی از دومین بدترین رأس بهتر
 باشد ولی از بهترین بهتر نباشد. سیمپلکس سرازیر «غلت می‌خورد»، در امتداد
@@ -400,8 +421,7 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 \textbf{\lr{BFGS}} استفاده می‌کنیم. این روش‌ها \emph{انحنای} سطح را هم
 تخمین می‌زنند و اندازه‌ی گام را خودکار انتخاب می‌کنند، پس نزدیک کمینه خیلی
 سریع‌تر همگرا می‌شوند. \textbf{\lr{L-BFGS-B}} نسخه‌ای است که \textbf{کران}
-پارامترها را می‌پذیرد. اگر گرادیان را ندهید، \lr{scipy} آن را عددی با
-تفاضل‌های متناهی تقریب می‌زند.
+پارامترها را می‌پذیرد.
 
 \begin{itemize}
 \tightlist
@@ -425,12 +445,24 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 
 \textbf{خلاصه:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 3.3 روش‌های گرادیانی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+روش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نیاز به مشتق
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+کران
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+کاربرد معمول
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 روش
@@ -446,14 +478,13 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 \bottomrule\noalign{}
 \endlastfoot
 جستجوی شبکه‌ای & ندارد & ذاتی & رسم، مقدار شروع، \(k \le 2\) \\
-\lr{Nelder\lr{--}Mead} & ندارد & دارد \lr{(scipy} \ensuremath{\geq} 1.7) & پیش‌فرض برای مدل‌های
-شناختی کوچک؛ توابع هدف پرنویز \\
+\lr{Nelder\lr{--}Mead} & ندارد & دارد ( \ensuremath{\geq} 1.7 & پیش‌فرض برای مدل‌های شناختی
+کوچک؛ توابع هدف پرنویز \\
 \lr{BFGS} & عددی یا تحلیلی & ندارد & توابع هدف هموار، پارامترهای بدون
 قید \\
 \lr{L-BFGS-B} & عددی یا تحلیلی & دارد & توابع هدف هموار با پارامترهای
 کران‌دار \\
 \end{longtable}
-}
 
 \paragraph{خواندن ریاضی}
 
@@ -499,10 +530,8 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
   متغیر است که مسئله‌ی مقید را به مسئله‌ی بدون قید تبدیل می‌کند و اغلب حالت
   \lr{(conditioning)} مسئله را هم بهتر می‌کند.
 \item
-  \textbf{تفاوت با کار مهندسی:} مجموعه داده‌ها کوچک‌اند (8 نقطه، هرکدام 50
-  آیتم)، نویز زیاد است، و پارامترها باید از نظر روان‌شناختی \emph{تفسیر}
-  شوند. پس کافی نیست منحنی پیش‌بینی‌شده خوب به نظر برسد؛ تک‌تک مقدارهای
-  پارامتر باید قابل اعتماد باشند.
+  پس کافی نیست منحنی پیش‌بینی‌شده خوب به نظر برسد؛ تک‌تک مقدارهای پارامتر
+  باید قابل اعتماد باشند.
 \end{itemize}
 
 \subsubsection{4. مشکلات عملی و راه‌حل‌ها}
@@ -521,11 +550,21 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 (\(0 \le A \le 1\)، \(\lambda > 0\)). بدون قید، بهینه‌سازها با خیال راحت
 \(A = 29.6\) برمی‌گردانند. سه رویکرد:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 4. مشکلات عملی و راه‌حل‌ها}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+رویکرد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+چطور
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 رویکرد
@@ -538,9 +577,7 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-بهینه‌ساز کران‌دار & \lr{\nolinkurl{method="L-BFGS-B"}} یا
-\lr{\nolinkurl{"Nelder-Mead"}} با \lr{\nolinkurl{bounds=}} & ساده‌ترین؛
-پیش‌فرض توصیه‌شده \\
+بهینه‌ساز کران‌دار & یا با & ساده‌ترین؛ پیش‌فرض توصیه‌شده \\
 \textbf{\lr{reparameterization}} & روی \(\eta\) بدون قید بهینه کنید و
 تبدیل کنید: \(\lambda = e^{\eta}\) (مثبت)، \(A = 1/(1 + e^{-\alpha_A})\)
 (بین 0 و 1) & با هر بهینه‌سازی کار می‌کند؛ در مدل‌سازی بیزی هم استفاده
@@ -548,17 +585,14 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 جریمه & وقتی پارامتر خارج از دامنه است یک \lr{SSE} خیلی بزرگ برگردانید &
 ناپیوستگی می‌سازد؛ از آن پرهیز کنید \\
 \end{longtable}
-}
 
 \textbf{4. \lr{non-identifiability.}} گاهی \emph{چند} ترکیب پارامتر به
 یک اندازه خوب برازش می‌شوند. مثالش مدلی دوجزئی است که برچسب دو جزئش قابل
 جابه‌جایی است. این ویژگی خود مدل است، نه شکست بهینه‌ساز، و
 \lr{multi-start} آن را آشکار می‌کند (بخش \lr{D lab).}
 
-\textbf{5. اعتماد کن، ولی بررسی کن.}
-\lr{\nolinkurl{result.success == True}} فقط یعنی قاعده‌ی توقف الگوریتم
-برقرار شده است. همیشه (1) منحنی برازش‌شده را روی داده رسم کنید، (2) به
-باقی‌مانده‌ها نگاه کنید، و (3) بررسی کنید برآوردها در دامنه‌ی معقول باشند.
+همیشه (1) منحنی برازش‌شده را روی داده رسم کنید، (2) به باقی‌مانده‌ها نگاه
+کنید، و (3) بررسی کنید برآوردها در دامنه‌ی معقول باشند.
 
 \textbf{چک‌لیست برازش (از این به بعد در هر \lr{lab} از آن استفاده کنید):}
 
@@ -616,10 +650,6 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
   \begin{itemize}
   \tightlist
   \item
-    \emph{«از کدام بهینه‌ساز استفاده کنم؟»} برای مدل‌های شناختی کوچک:
-    \lr{Nelder\lr{--}Mead} یا \lr{L-BFGS-B} با کران، همیشه همراه با
-    \lr{multi-start.}
-  \item
     \emph{«چرا همیشه از \lr{grid} استفاده نکنیم؟»} هزینه با تعداد
     پارامترها به‌طور نمایی زیاد می‌شود.
   \item
@@ -646,8 +676,12 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 
 با تکرار این کار برای یک شبکه‌ی 2 × 3:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}llll@{}}
+\caption{\centering قدم 1: یک جستجوی شبکه‌ای کوچک با دست}\tabularnewline
+\toprule\noalign{}
+& \(\lambda = 0.15\) & \(\lambda = 0.20\) & \(\lambda = 0.25\) \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 & \(\lambda = 0.15\) & \(\lambda = 0.20\) & \(\lambda = 0.25\) \\
 \midrule\noalign{}
@@ -657,7 +691,6 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 \(A = 0.8\) & 0.02281 & \textbf{0.00212} & 0.00364 \\
 \(A = 0.9\) & 0.06638 & 0.02172 & 0.00791 \\
 \end{longtable}
-}
 
 بهترین نقطه‌ی شبکه \((0.8, 0.20)\) است. به کجی دقت کنید: \((0.9, 0.25)\)
 خیلی بهتر از \((0.9, 0.15)\) است. \(A\) بزرگ‌تر یک \(\lambda\) بزرگ‌تر
@@ -668,8 +701,12 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 
 با سیمپلکس (مثلث) سه نقطه‌ی شبکه شروع کنید:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}llll@{}}
+\caption{\centering قدم 2: یک تکرار \lr{Nelder\lr{--}Mead }با دست}\tabularnewline
+\toprule\noalign{}
+رأس & \((A, \lambda)\) & \lr{SSE} & رتبه \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 رأس & \((A, \lambda)\) & \lr{SSE} & رتبه \\
 \midrule\noalign{}
@@ -680,7 +717,6 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 \(\boldsymbol\theta_g\) & (0.8, 0.15) & 0.02281 & دومین بدترین \\
 \(\boldsymbol\theta_w\) & (0.9, 0.15) & 0.06638 & بدترین \\
 \end{longtable}
-}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -706,11 +742,8 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 
 \subsubsection{قدم 3: بگذارید کامپیوتر تمامش کند}
 
-اجرای
-\lr{\nolinkurl{scipy.optimize.minimize(..., method="Nelder-Mead")}} از
-\((0.8, 0.2)\) به \(\hat A = 0.754\)، \(\hat\lambda = 0.200\) با
-\(\mathrm{SSE} = 3.7 \times 10^{-5}\) \lr{(RMSD} \(= 0.0035\)) همگرا
-می‌شود.
+\(\hat A = 0.754\) · \(\hat\lambda = 0.200\) ·
+\(\mathrm{SSE} = 3.7 \times 10^{-5}\) · \(= 0.0035\)
 
 \textbf{تفسیر.} مدل برازش‌شده می‌گوید این شرکت‌کننده بلافاصله بعد از
 یادگیری حدود 75\% را به یاد می‌آورد و هر روز حدود 18\% از باقی‌مانده را از
@@ -720,6 +753,8 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 منحنی نزولی دوپارامتری معقولی سه نقطه را خوب برازش می‌کند (هفته‌ی 6).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
@@ -744,53 +779,13 @@ search)}}{3.1 جستجوی شبکه‌ای (grid search)}}
 \textbf{زمان‌بندی:} بخش \lr{A} 15 دقیقه · بخش \lr{B} 25 دقیقه · بخش
 \lr{C} 25 دقیقه · بخش \lr{D} 35 دقیقه · بخش \lr{E} 20 دقیقه.
 
-\subsubsection{آماده‌سازی و داده}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
 \subsubsection{\texorpdfstring{بخش \lr{A:} آشنایی با تابع ناهمخوانی (15
 دقیقه)}{بخش A: آشنایی با تابع ناهمخوانی (15 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{9\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-theta = (0.9, 0.5):  power SSE = 0.0349   exponential SSE = 0.4511
-theta = (0.8, 0.4):  power SSE = 0.0328   exponential SSE = 0.4145
-theta = (0.9, 0.1):  power SSE = 0.9047   exponential SSE = 0.2192
-theta = (0.6, 0.05):  power SSE = 0.3303   exponential SSE = 0.1145
-\end{Verbatim}
-\end{latin}
-
-پیش از اجرای بخش‌های بعد \textbf{پیش‌بینی کنید}: کدام مقادیر پارامتر
-کمترین \lr{SSE} را برای هر مدل می‌دهند؟ حدستان را یادداشت کنید.
+حدستان را یادداشت کنید.
 
 \subsubsection{\texorpdfstring{بخش \lr{B:} جستجوی شبکه‌ای و سطح خطا (25
 دقیقه)}{بخش B: جستجوی شبکه‌ای و سطح خطا (25 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-exp: grid minimum A = 0.655, rate = 0.0560, SSE = 0.10607  (42300 evaluations)
-pow: grid minimum A = 0.870, rate = 0.4239, SSE = 0.02592  (42300 evaluations)
-\end{Verbatim}
-\end{latin}
 
 \textbf{به این دقت کنید:} هر دو سطح یک حوضه دارند، ولی یک \textbf{دره‌ی
 کشیده و مورب}: \(A\) بالاتر با زوال بیشتر همراه است. این همان
@@ -800,33 +795,6 @@ pow: grid minimum A = 0.870, rate = 0.4239, SSE = 0.02592  (42300 evaluations)
 
 \subsubsection{\texorpdfstring{بخش \lr{C:} برازش با یک بهینه‌ساز (25
 دقیقه)}{بخش C: برازش با یک بهینه‌ساز (25 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{14\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-model            method      A   rate    SSE   RMSD  f_evals success
-  exp          L-BFGS-B 0.6568 0.0566 0.1061 0.1151     39.0    True
-  exp       Nelder-Mead 0.6568 0.0566 0.1061 0.1151     69.0    True
-  exp              grid 0.6550 0.0560 0.1061 0.1151  42300.0    True
-  exp linearized (Wk 2) 0.5500 0.0320 0.1373 0.1310      NaN     NaN
-  pow          L-BFGS-B 0.8712 0.4251 0.0259 0.0569     36.0    True
-  pow       Nelder-Mead 0.8711 0.4251 0.0259 0.0569     71.0    True
-  pow              grid 0.8700 0.4239 0.0259 0.0569  42300.0    True
-  pow linearized (Wk 2) 0.7970 0.3700 0.0315 0.0628      NaN     NaN
-\end{Verbatim}
-\end{latin}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
 
 \textbf{به این‌ها دقت کنید:} - \lr{Nelder\lr{--}Mead} و \lr{L-BFGS-B} تا سه یا
 چهار رقم اعشار با هم توافق دارند؛ شبکه در حد فاصله‌ی نقاطش (0.005 برای
@@ -842,48 +810,13 @@ model            method      A   rate    SSE   RMSD  f_evals success
 \textbf{\lr{D1.} یک فلات و یک «موفقیت» کاذب.} برازش نمایی را با یک نرخ
 زوال بی‌معنی، \(\lambda = 20\) در روز، شروع کنید:
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-BFGS         A =   29.571  lambda =  14.244  SSE = 1.1616  success = True  (Optimization terminated successfully.)
-L-BFGS-B     A =   29.905  lambda =  14.289  SSE = 1.1616  success = True  (CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_<=_PGTOL)
-Nelder-Mead  A =    0.657  lambda =   0.057  SSE = 0.1061  success = True  (Optimization terminated successfully.)
-\end{Verbatim}
-\end{latin}
-
-(متن پیام \lr{L-BFGS-B} بین نسخه‌های \lr{SciPy} کمی فرق می‌کند.) دو روش
-گرادیانی \textbf{موفقیت} گزارش می‌کنند ولی برازشی بی‌معنی برمی‌گردانند:
-\(A\) حدود 30 است (احتمال یادآوری 3000\%!) و منحنی پیش‌بینی‌شده عملاً در
-همه‌ی فاصله‌ها صفر است. آن‌ها روی فلاتی شروع کردند که گرادیان در آن تقریباً
-صفر است (کادر «پیشرفته» بخش 3.3 جزوه). \lr{Nelder\lr{--}Mead} فرار کرد.
-درس‌ها: (1) همیشه برآوردها و نمودارها را بررسی کنید، نه فقط
-\lr{\nolinkurl{success}} را؛ (2) از کران استفاده کنید؛ (3) از مقادیر
-شروع معقول یا متعدد استفاده کنید.
+آن‌ها روی فلاتی شروع کردند که گرادیان در آن تقریباً صفر است (کادر
+«پیشرفته» بخش 3.3 جزوه). \lr{Nelder\lr{--}Mead} فرار کرد. (2) از کران استفاده
+کنید؛ (3) از مقادیر شروع معقول یا متعدد استفاده کنید.
 
 \textbf{\lr{D2. reparameterization.}} پارامترها را بدون قید کنید تا
 \emph{هر} بهینه‌سازی دامنه‌های \(0 < A < 1\) و \(\lambda > 0\) را رعایت
 کند:
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 7 ·
-سلول 7
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{6\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-BFGS on reparameterized power model: A = 0.8712, d = 0.4251, SSE = 0.02592
-\end{Verbatim}
-\end{latin}
 
 همان جواب بخش \lr{C}، و تضمین می‌شود که برآوردها در دامنه باشند.
 
@@ -899,76 +832,25 @@ f(t) = A_1 e^{-\lambda_1 t} + A_2 e^{-\lambda_2 t}.
 این مدل \(k = 4\) پارامتر دارد و سطح خطایش چند حوضه دارد. آن را از 50
 نقطه‌ی شروع تصادفی برازش کنید:
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 8 ·
-سلول 8
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{19\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Distinct final SSE values (rounded) and how often each was reached:
-  SSE = 0.0201: 42 starts
-  SSE = 0.0203: 1 starts
-  SSE = 0.0337: 1 starts
-  SSE = 0.0340: 1 starts
-  SSE = 0.0359: 1 starts
-  SSE = 0.1064: 1 starts
-  SSE = 0.2010: 1 starts
-  SSE = 0.2456: 1 starts
-  SSE = 0.9092: 1 starts
-Best 3 solutions (A1, lam1, A2, lam2):
-   [0.58  0.36  0.264 0.   ] SSE = 0.02013
-   [0.264 0.    0.58  0.36 ] SSE = 0.02013
-   [0.264 0.    0.58  0.36 ] SSE = 0.02013
-\end{Verbatim}
-\end{latin}
-
 \textbf{به این‌ها دقت کنید:} - حدود 40 شروع از 50 در همان بهترین حوضه
 تمام می‌شوند، ولی بقیه (حدود 1 از 6) در \textbf{کمینه‌های محلی بدتر} گیر
-می‌کنند؛ بعضی با \lr{SSE} چند برابر بزرگ‌تر. (تعداد دقیق بین نسخه‌های
-\lr{SciPy} کمی فرق دارد؛ با \lr{SciPy} 1.18 برابر 41 از 50 است.) یک
-اجرای تنها از یک شروع بدشانس جواب غلطی می‌داد، بدون هیچ هشداری. - در میان
-بهترین جواب‌ها، اجزای سریع و کند ممکن است \textbf{با برچسب‌های جابه‌جا}
-ظاهر شوند (\(A_1,\allowbreak \lambda_1 \leftrightarrow A_2,\allowbreak \lambda_2\)). هر دو
-همان منحنی را توصیف می‌کنند. این یک \lr{non-identifiability} ذاتی مدل
-است، و راه‌حل رایج اعمال قید ترتیبی مثل \(\lambda_1 > \lambda_2\) است. -
-در بهترین جواب، یکی از اجزا نرخ دقیقاً 0 دارد (یک جزء ثابت و بدون زوال به
-اندازه‌ی 0.264). پس مدل دوردی برازش‌شده به مدل نمایی با مجانب تمرین 4
-تبدیل شده، با همان \lr{SSE} (0.0201). آیا این یک «حافظه‌ی دائمی» معنادار
-است یا فقط پارامترهای اضافه نویز را جذب کرده‌اند؟ یادتان باشد داده‌ها از
-یک مدل \emph{توانی} آمده‌اند. برازش به‌تنهایی نمی‌تواند جواب دهد (هفته‌های
-6\lr{--}7).
+می‌کنند؛ بعضی با \lr{SSE} چند برابر بزرگ‌تر. - در میان بهترین جواب‌ها،
+اجزای سریع و کند ممکن است \textbf{با برچسب‌های جابه‌جا} ظاهر شوند
+(\(A_1,\allowbreak \lambda_1 \leftrightarrow A_2,\allowbreak \lambda_2\)). هر دو همان منحنی را
+توصیف می‌کنند. این یک \lr{non-identifiability} ذاتی مدل است، و راه‌حل رایج
+اعمال قید ترتیبی مثل \(\lambda_1 > \lambda_2\) است. - در بهترین جواب،
+یکی از اجزا نرخ دقیقاً 0 دارد (یک جزء ثابت و بدون زوال به اندازه‌ی 0.264).
+پس مدل دوردی برازش‌شده به مدل نمایی با مجانب تمرین 4 تبدیل شده، با همان
+\lr{SSE} (0.0201). آیا این یک «حافظه‌ی دائمی» معنادار است یا فقط
+پارامترهای اضافه نویز را جذب کرده‌اند؟ یادتان باشد داده‌ها از یک مدل
+\emph{توانی} آمده‌اند. برازش به‌تنهایی نمی‌تواند جواب دهد (هفته‌های 6\lr{--}7).
 
 \subsubsection{\texorpdfstring{بخش \lr{E:} ارزیابی و تفسیر (20
 دقیقه)}{بخش E: ارزیابی و تفسیر (20 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 9 ·
-سلول 9
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Power model: relative loss rate at t =  1 days: 0.213 per day
-Power model: relative loss rate at t = 20 days: 0.020 per day
-Exponential model: constant relative loss rate 0.057 per day
-\end{Verbatim}
-\end{latin}
-
-\textbf{تفسیر (برای هرکدام 2 تا 3 جمله در \lr{notebook} بنویسید):}
-
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
-\item
-  الگوهای باقی‌مانده‌ها را مقایسه کنید. کدام مدل الگوی نظام‌مند نشان می‌دهد،
-  و آن الگو درباره‌ی شکل فراموشی در این داده‌ها چه می‌گوید؟
 \item
   نرخ نسبی فراموشی مدل توانی از حدود 0.21 در روز بعد از 1 روز به حدود
   0.02 در روز بعد از 20 روز می‌رسد. به زبان ساده توضیح دهید این چه ادعایی
@@ -995,10 +877,9 @@ Exponential model: constant relative loss rate 0.057 per day
 
 \textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (کمترین مربعات وزنی).} نسبت‌های دوجمله‌ای واریانس
 \(f(1-f)/n\) دارند. \lr{WSSE} (بخش 1 جزوه) را با استفاده از \(f\)
-\textbf{پیش‌بینی‌شده} در واریانس پیاده‌سازی کنید، مدل توانی را دوباره برازش
-کنید و برآوردها را با کمترین مربعات ساده مقایسه کنید. کدام نقاط داده
-تأثیر بیشتری پیدا می‌کنند و کدام کمتر؟ (هفته‌ی بعد می‌بینید که بیشینه
-درست‌نمایی این وزن‌دهی را خودکار انجام می‌دهد.)
+\textbf{پیش‌بینی‌شده} در واریانس صورت‌بندی کنید، مدل توانی را دوباره برازش
+کنید و برآوردها را با کمترین مربعات ساده مقایسه کنید. (هفته‌ی بعد می‌بینید
+که بیشینه درست‌نمایی این وزن‌دهی را خودکار انجام می‌دهد.)
 
 \textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} (پارامتر بیشتر، برازش بهتر؟).} مدل سه‌پارامتری
 \textbf{نمایی با مجانب} \(f(t) = B + (A - B)e^{-\lambda t}\) را که در آن
@@ -1012,10 +893,7 @@ Exponential model: constant relative loss rate 0.057 per day
 \textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: \lr{Nelder\lr{--}Mead} از صفر).}
 \lr{Nelder\lr{--}Mead} را برای \(k = 2\) با حرکت‌های بخش 3.2 جزوه (بازتاب،
 گسترش، انقباض داخلی/خارجی، جمع‌شدن) و یک قاعده‌ی توقف بر اساس پراکندگی
-مقادیر \lr{SSE} در سیمپلکس پیاده‌سازی کنید. آن را روی مدل توانی از
-\((0.8, 0.2)\) اجرا کنید، سیمپلکس را هر چند تکرار یک بار روی سطح خطا رسم
-کنید، و نتیجه و تعداد ارزیابی‌های تابع را با \lr{\nolinkurl{scipy}}
-مقایسه کنید.
+مقادیر \lr{SSE} در سیمپلکس صورت‌بندی کنید.
 
 \subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
 
@@ -1041,29 +919,12 @@ al.,} 2022). شرکت‌ها از چنین برازش‌هایی استفاده 
 \lr{(extrapolation)} خیلی دورتر از داده، و \lr{trade-off} پارامترها
 (اینجا \(E\) و \(\alpha\)).
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week03.py}}, \lr{cell} 10 ·
-سلول 10
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-E = 1.70, B = 3.22, alpha = 0.358, SSE = 0.00424
-Extrapolated loss at N = 1e11: 1.754
-\end{Verbatim}
-\end{latin}
-
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} یک قانون توانی خالص
-بدون مجانب (\(E = 0\)) برازش کنید. \lr{SSE} و برون‌یابی تا
-\(N = 10^{11}\) را مقایسه کنید. کدام نتیجه‌گیری درباره‌ی «بزرگ‌تر بهتر است»
-عوض می‌شود؟ - \ensuremath{\star}\ensuremath{\star} فقط چهار مدل کوچک‌تر را برازش کنید و تا چهار مدل بزرگ‌تر
-برون‌یابی کنید. پیش‌بینی چقدر خطا دارد؟ با \lr{seed}های مختلف تکرار کنید
-تا ببینید برون‌یابی چقدر پایدار است. - \ensuremath{\star}\ensuremath{\star} سطح \lr{SSE} را روی \(E\) و
-\(\alpha\) رسم کنید (با \(B\) در بهترین مقدارش برای هر جفت). آیا مثل
-\lr{lab} هفته‌ی 3 یک \lr{ridge} وجود دارد؟
+\(E = 0\) \lr{SSE} و برون‌یابی تا \(N = 10^{11}\) را مقایسه کنید. - \ensuremath{\star}\ensuremath{\star}
+فقط چهار مدل کوچک‌تر را برازش کنید و تا چهار مدل بزرگ‌تر برون‌یابی کنید.
+پیش‌بینی چقدر خطا دارد؟ با \lr{seed}های مختلف تکرار کنید تا ببینید
+برون‌یابی چقدر پایدار است. - \ensuremath{\star}\ensuremath{\star} سطح \lr{SSE} را روی \(E\) و \(\alpha\)
+رسم کنید (با \(B\) در بهترین مقدارش برای هر جفت). آیا مثل \lr{lab} هفته‌ی
+3 یک \lr{ridge} وجود دارد؟
 
 \emph{مطالعه‌ی اختیاری:} \lr{Kaplan, J., et al.~(2020). Scaling laws for
 neural language models.} \emph{\lr{arXiv:2001.08361}}. \lr{Hoffmann, J.,
@@ -1078,9 +939,7 @@ et al.~(2022). Training compute-optimal large language models.}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{«\lr{\nolinkurl{success=True}} یعنی برازش خوب است.»} فقط یعنی
-  یک قاعده‌ی توقف برقرار شده است (بخش \lr{D1).} همیشه برآوردها، نمودارها
-  و باقی‌مانده‌ها را وارسی کنید.
+  همیشه برآوردها، نمودارها و باقی‌مانده‌ها را وارسی کنید.
 \item
   \textbf{یک شروع کافی است.} برای هر مدلی فراتر از مدل‌های ساده‌ی
   دوپارامتری \lr{multi-start} اجرا کنید. هزینه‌اش کم است؛ خطر گزارش یک
@@ -1115,11 +974,10 @@ et al.~(2022). Training compute-optimal large language models.}
 \subsection{خودآزمایی}
 
 \textbf{1.} چرا \lr{SSE}، \lr{MSE} و \lr{RMSD} کمینه‌کننده‌ی یکسانی دارند؟
-کدام را گزارش می‌کنید و چرا؟ \textbf{پاسخ} \lr{MSE} = \lr{SSE/N} و
-\lr{RMSD} = \lr{\ensuremath{\surd}MSE} تبدیل‌های اکیداً صعودی \lr{SSE} هستند \lr{(N} ثابت
-است)، پس همان پارامترها هر سه را کمینه می‌کنند. \lr{RMSD} را گزارش کنید،
-چون بر حسب واحد داده است و بین مجموعه‌داده‌هایی با اندازه‌ی متفاوت قابل
-مقایسه است.
+\textbf{پاسخ} \lr{MSE} = \lr{SSE/N} و \lr{RMSD} = \lr{\ensuremath{\surd}MSE} تبدیل‌های
+اکیداً صعودی \lr{SSE} هستند \lr{(N} ثابت است)، پس همان پارامترها هر سه را
+کمینه می‌کنند. \lr{RMSD} را گزارش کنید، چون بر حسب واحد داده است و بین
+مجموعه‌داده‌هایی با اندازه‌ی متفاوت قابل مقایسه است.
 
 \textbf{2.} \lr{trade-off} پارامترها چیست و روی سطح خطا چگونه دیده
 می‌شود؟ \textbf{پاسخ} تغییر یک پارامتر را می‌شود با تغییر پارامتر دیگری
@@ -1144,11 +1002,8 @@ et al.~(2022). Training compute-optimal large language models.}
 نقطه کمینه نیست، پس معیار همگرایی برقرار می‌شود.
 
 \textbf{6.} دو راه برای مثبت نگه داشتن یک پارامتر نرخ زوال در حین برازش
-بگویید. \textbf{پاسخ} (1) استفاده از بهینه‌ساز کران‌دار (مثلاً
-\lr{L-BFGS-B} یا \lr{Nelder\lr{--}Mead} با
-\lr{\nolinkurl{bounds=[(1e-6, None)]}}). (2) \lr{reparameterization:}
-\(\eta\) را روی کل اعداد حقیقی بهینه کنید و قرار دهید
-\(\lambda = e^{\eta}\).
+بگویید. (2) \lr{reparameterization:} \(\eta\) را روی کل اعداد حقیقی
+بهینه کنید و قرار دهید \(\lambda = e^{\eta}\).
 
 \textbf{7.} برازش‌های \lr{multi-start} مدل دوجزئی با
 \((A_1,\allowbreak \lambda_1,\allowbreak A_2,\allowbreak \lambda_2) = (0.58,\allowbreak 0.36,\allowbreak 0.26,\allowbreak 0.00)\) و
@@ -1193,7 +1048,5 @@ switching)} است: جابه‌جا کردن دو جزء دقیقاً همان �
   بررسی شود{]}.
 \end{itemize}
 
-\emph{پیش‌نمایش هفته‌ی 4:} به‌جای پرسیدن «کدام پارامترها مربع خطا را کمینه
-می‌کنند؟» می‌پرسیم «کدام پارامترها داده‌ی مشاهده‌شده را محتمل‌ترین می‌کنند؟»
-این بیشینه درست‌نمایی است. داده‌های دوجمله‌ای را درست مدیریت می‌کند و پایه‌ی
-\lr{AIC/BIC} (هفته‌ی 7) و استنباط بیزی (هفته‌های 9\lr{--}13) است.
+داده‌های دوجمله‌ای را درست مدیریت می‌کند و پایه‌ی \lr{AIC/BIC} (هفته‌ی 7) و
+استنباط بیزی (هفته‌های 9\lr{--}13) است.

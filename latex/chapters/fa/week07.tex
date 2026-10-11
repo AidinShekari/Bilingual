@@ -14,11 +14,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -72,7 +82,6 @@
 \lr{in-context learning} & یادگیری درون‌متنی & یادگیری از مثال‌های داخل
 \lr{prompt} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -157,6 +166,8 @@
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{جزوه‌ی درس}
 
 \paragraph{به زبان ساده}
@@ -223,11 +234,20 @@
 \textbf{کمتر بهتر است.} فقط \textbf{تفاوت‌ها} بین مدل‌هایی که روی داده‌ی
 یکسان برازش شده‌اند معنادارند.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 2. معیارهای اطلاعاتی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{AIC} (و \lr{AICc)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{BIC}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -248,7 +268,6 @@ factor} \\
 انتخاب کند & مدل واقعی را با احتمال \ensuremath{\leftarrow} 1 انتخاب می‌کند \\
 تصحیح نمونه‌ی کوچک & \lr{AICc} (وقتی \(N/k < 40\)) & \lr{---} \\
 \end{longtable}
-}
 
 \textbf{\(N\) چیست؟} تعداد \emph{مشاهدات مستقلی} که وارد درست‌نمایی
 می‌شوند. برای داده‌ی یادآوری دوجمله‌ای این تعداد پاسخ‌های آیتم است (اینجا
@@ -382,11 +401,10 @@ w_i = \frac{\exp(-\Delta_i/2)}{\sum_j \exp(-\Delta_j/2)}.
   \(b\) را انتخاب کردیم، چند بار واقعاً \(b\) حقیقت بود؟» این همان سؤالی
   است که برای داده‌ی واقعی اهمیت دارد، جایی که فقط برنده را می‌بینیم.
 \item
-  \textbf{مثال کوچک.} از هر کدام از دو مدل 100 مجموعه داده. از \lr{A:}
-  90 بار \lr{A} و 10 بار \lr{B} انتخاب می‌شود. از \lr{B:} 40 بار \lr{A} و
-  60 بار \lr{B.} سطر \lr{A} در \lr{confusion matrix} برابر (0.90, 0.10)
-  است. ولی از 130 مجموعه داده‌ای که \lr{A} را انتخاب کردند، فقط 90 تا از
-  \lr{A} آمده بودند:
+  از \lr{A:} 90 بار \lr{A} و 10 بار \lr{B} انتخاب می‌شود. از \lr{B:} 40
+  بار \lr{A} و 60 بار \lr{B.} سطر \lr{A} در \lr{confusion matrix} برابر
+  (0.90, 0.10) است. ولی از 130 مجموعه داده‌ای که \lr{A} را انتخاب کردند،
+  فقط 90 تا از \lr{A} آمده بودند:
   \(P(\text{\lr{A true}} \mid \text{\lr{A selected}}) = 90/130 = 0.69\).
 \end{itemize}
 
@@ -426,9 +444,7 @@ w_i = \frac{\exp(-\Delta_i/2)}{\sum_j \exp(-\Delta_j/2)}.
 \item
   \textbf{\lr{confusion matrix}} همان ماتریس احتمال انتقال یک کانال
   گسسته است: ورودی = مدل مولد، خروجی = مدل انتخاب‌شده.
-  \textbf{\lr{inversion matrix}} ماتریس احتمال‌های \emph{پسین}
-  \(P(\text{\lr{input}} \mid \text{\lr{output}})\) است، یعنی چیزی که یک دیکدر
-  \lr{MAP} لازم دارد، با فرض احتمال‌های پیشین برابر برای ورودی‌ها.
+  \(P(\text{\lr{input}} \mid \text{\lr{output}})\)
 \item
   \textbf{\lr{non-identifiability} ساختاری} مثل یک حالت مشاهده‌ناپذیر یا
   ماتریس سیستم با رتبه‌ی ناقص است: هیچ مقداری از داده کمک نمی‌کند.
@@ -459,10 +475,6 @@ w_i = \frac{\exp(-\Delta_i/2)}{\sum_j \exp(-\Delta_j/2)}.
   \begin{itemize}
   \tightlist
   \item
-    \emph{\lr{«AIC} یا \lr{BIC}؟»} به هدف بستگی دارد (پیش‌بینی در برابر
-    پیدا کردن مدل درست) و در عمل به اینکه کدام در طرح آزمایش شما مدل‌ها
-    را بهتر بازیابی می‌کند.
-  \item
     \emph{«چند مجموعه داده‌ی شبیه‌سازی‌شده؟»} برای دیدن الگو 50 تا 100 برای
     هر حالت کافی است؛ برای انتشار بیشتر.
   \item
@@ -478,13 +490,27 @@ w_i = \frac{\exp(-\Delta_i/2)}{\sum_j \exp(-\Delta_j/2)}.
 چهار مدل فراموشی که با \lr{MLE} روی داده‌های هفته‌ی 2 برازش شده‌اند
 \lr{(NLL}های آموزش از هفته‌ی 6)، با \(N = 400\) پاسخ آیتم:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering مثال حل‌شده}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+مدل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{NLL}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{AIC} \(= 2\,\mathrm{NLL} + 2k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{BIC} \(= 2\,\mathrm{NLL} + k\ln 400\)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 مدل
@@ -506,7 +532,6 @@ w_i = \frac{\exp(-\Delta_i/2)}{\sum_j \exp(-\Delta_j/2)}.
 \lr{expasym} & 3 & 18.919 & 43.84 & 55.81 \\
 \lr{two} & 4 & 18.919 & 45.84 & 61.80 \\
 \end{longtable}
-}
 
 \textbf{قدم 1: \lr{AIC} برای مدل توانی.}
 \(2 \times 19.830 + 2 \times 2 = 43.66\).
@@ -541,6 +566,8 @@ w^{\text{\lr{AIC}}} = (0.000,\ 0.444,\ 0.406,\ 0.149).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
 \subsubsection{اهداف}
@@ -565,30 +592,8 @@ w^{\text{\lr{AIC}}} = (0.000,\ 0.444,\ 0.406,\ 0.149).
 \textbf{زمان‌بندی:} بخش \lr{A} 15 دقیقه · بخش \lr{B} 15 دقیقه · بخش
 \lr{C} 35 دقیقه · بخش \lr{D} 40 دقیقه · بخش \lr{E} 15 دقیقه.
 
-\subsubsection{آماده‌سازی}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week07.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
 \subsubsection{\texorpdfstring{بخش \lr{A:} آزمون نسبت درست‌نمایی (15
 دقیقه)}{بخش A: آزمون نسبت درست‌نمایی (15 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week07.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-NLL exp = 29.812, NLL expasym = 18.919
-LR statistic = 21.79, df = 1, naive p = 3.05e-06, boundary-corrected p = 1.52e-06
-\end{Verbatim}
-\end{latin}
 
 \textbf{سؤال:} چرا نمی‌توانید از همین آزمون برای مقایسه‌ی مدل‌های توانی و
 نمایی استفاده کنید؟
@@ -596,115 +601,31 @@ LR statistic = 21.79, df = 1, naive p = 3.05e-06, boundary-corrected p = 1.52e-0
 \subsubsection{\texorpdfstring{بخش \lr{B:} معیارهای اطلاعاتی و وزن‌ها (15
 دقیقه)}{بخش B: معیارهای اطلاعاتی و وزن‌ها (15 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week07.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{11\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-         k     NLL     AIC    AICc     BIC  w_AIC  w_AICc  w_BIC
-model
-exp      2  29.812  63.625  63.655  71.608  0.000   0.000  0.000
-pow      2  19.830  43.661  43.691  51.644  0.444   0.449  0.884
-expasym  3  18.919  43.837  43.898  55.812  0.406   0.405  0.110
-two      4  18.919  45.837  45.939  61.803  0.150   0.146  0.006
-\end{Verbatim}
-\end{latin}
-
 \textbf{بررسی حساسیت:} \lr{BIC} را با \(N = 8\) (تعداد خانه‌ها) به‌جای 400
-دوباره حساب کنید. آیا رتبه‌بندی عوض می‌شود؟ کدام انتخاب \(N\) اینجا قابل
-دفاع است و چرا؟
+دوباره حساب کنید. آیا رتبه‌بندی عوض می‌شود؟
 
 \subsubsection{\texorpdfstring{بخش \lr{C:} بازیابی پارامتر (35
 دقیقه)}{بخش C: بازیابی پارامتر (35 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week07.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار} (حدود 1 دقیقه):
-
-\Needspace{17\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-pow:
-   r(true, rec)   bias   RMSE
-A         0.888  0.005  0.055
-d         0.965  0.003  0.070
-
-expasym:
-     r(true, rec)   bias   RMSE
-A           0.802  0.008  0.077
-lam         0.799  0.034  0.230
-s           0.918 -0.008  0.060
-
-expasym: corr(true lam, true s) = -0.08;  corr(recovered lam, recovered s) = 0.03
-\end{Verbatim}
-\end{latin}
-
-\textbf{تفسیر:} 1. با این طرح آزمایش، کدام پارامترها خوب بازیابی می‌شوند؟
-تفسیر کدام را با تردید انجام می‌دهید؟ 2. نرخ زوال \(\lambda\) در
-\lr{expasym} با فاصله‌ی زیاد بیشترین \lr{RMSE} را دارد (0.23 روی دامنه‌ی
-0.05 تا 1). به نمودارش نگاه کنید: بازیابی برای کدام مقادیر واقعی شکست
-می‌خورد و چرا؟ (راهنمایی: اگر زوال خیلی سریع باشد، بیشترِ افت پیش از دومین
-فاصله‌ی آزمون اتفاق می‌افتد؛ پس داده‌ها چه شکلی پیدا می‌کنند؟) اینجا
-\(\lambda\) و \(s\) بازیابی‌شده همبستگی \emph{ندارند} \lr{(r} = 0.03)، پس
-این عدم دقت است نه \lr{trade-off.} این را با \lr{trade-off} آشکار
-\(A\)\lr{--}\(d\) مدل توانی که در هفته‌ی 5 دیدیم مقایسه کنید. 3. چه تغییری در
-طرح آزمایش بازیابی \(\lambda\) و \(s\) را بهتر می‌کند؟ یک ایده را در
-تمرین 3 آزمون کنید.
+\textbf{تفسیر:} 1. 2. نرخ زوال \(\lambda\) در \lr{expasym} با فاصله‌ی
+زیاد بیشترین \lr{RMSE} را دارد (0.23 روی دامنه‌ی 0.05 تا 1). (راهنمایی:
+اگر زوال خیلی سریع باشد، بیشترِ افت پیش از دومین فاصله‌ی آزمون اتفاق
+می‌افتد؛ پس داده‌ها چه شکلی پیدا می‌کنند؟) اینجا \(\lambda\) و \(s\)
+بازیابی‌شده همبستگی \emph{ندارند} \lr{(r} = 0.03)، پس این عدم دقت است نه
+\lr{trade-off.} این را با \lr{trade-off} آشکار \(A\)\lr{--}\(d\) مدل توانی که
+در هفته‌ی 5 دیدیم مقایسه کنید. 3. چه تغییری در طرح آزمایش بازیابی
+\(\lambda\) و \(s\) را بهتر می‌کند؟ یک ایده را در تمرین 3 آزمون کنید.
 
 \subsubsection{\texorpdfstring{بخش \lr{D:} بازیابی مدل (40
 دقیقه)}{بخش D: بازیابی مدل (40 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week07.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
-\textbf{خروجی مورد انتظار} (حدود 1 تا 2 دقیقه):
-
-\Needspace{26\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-AIC confusion matrix (rows = generating model, columns = selected model):
-          exp   pow  expasym
-exp      0.91  0.00     0.09
-pow      0.03  0.82     0.15
-expasym  0.06  0.25     0.69
-AIC inversion matrix (rows = generating model, columns = selected model):
-          exp   pow  expasym
-exp      0.91  0.00     0.10
-pow      0.03  0.77     0.16
-expasym  0.06  0.23     0.74
-
-BIC confusion matrix (rows = generating model, columns = selected model):
-          exp   pow  expasym
-exp      0.99  0.01     0.00
-pow      0.05  0.94     0.01
-expasym  0.09  0.58     0.33
-BIC inversion matrix (rows = generating model, columns = selected model):
-          exp   pow  expasym
-exp      0.88  0.01     0.00
-pow      0.04  0.61     0.03
-expasym  0.08  0.38     0.97
-\end{Verbatim}
-\end{latin}
-
-\textbf{تفسیر:} 1. کدام مدل بیشتر با کدام اشتباه گرفته می‌شود؟ (با
-\lr{AIC}، 25\% مجموعه‌داده‌های \lr{expasym} برچسب توانی می‌گیرند؛ با
-\lr{BIC}، 58\%.) این تقلید را بر حسب شکل منحنی‌ها توضیح دهید. 2. \lr{AIC}
-و \lr{BIC} را مقایسه کنید. کدام مدل‌های ساده‌تر را بهتر بازیابی می‌کند و
-کدام مدل پیچیده‌تر را؟ 3. در بخش \lr{B}، \lr{BIC} برای داده‌ی واقعی مدل
-توانی را انتخاب کرد. با استفاده از \textbf{\lr{inversion matrix}}
-\lr{BIC}، چقدر باید مطمئن باشیم که داده‌ها را یک مدل توانی تولید کرده
-است؟ (فقط 61\% از حکم‌های «توانی» \lr{BIC} از داده‌های تولیدشده با مدل
-توانی آمده‌اند؛ 38\% از \lr{expasym.)}
+\textbf{تفسیر:} 1. (با \lr{AIC}، 25\% مجموعه‌داده‌های \lr{expasym} برچسب
+توانی می‌گیرند؛ با \lr{BIC}، 58\%.) این تقلید را بر حسب شکل منحنی‌ها توضیح
+دهید. 2. \lr{AIC} و \lr{BIC} را مقایسه کنید. 3. در بخش \lr{B}، \lr{BIC}
+برای داده‌ی واقعی مدل توانی را انتخاب کرد. با استفاده از
+\textbf{\lr{inversion matrix}} \lr{BIC}، چقدر باید مطمئن باشیم که داده‌ها
+را یک مدل توانی تولید کرده است؟ (فقط 61\% از حکم‌های «توانی» \lr{BIC} از
+داده‌های تولیدشده با مدل توانی آمده‌اند؛ 38\% از \lr{expasym.)}
 
 \subsubsection{\texorpdfstring{بخش \lr{E:} نتیجه‌گیری درباره‌ی داده‌های
 هفته‌ی 2 (15
@@ -726,8 +647,7 @@ expasym  0.08  0.38     0.97
 \textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (طراحی برای بازیابی).} بازیابی \lr{expasym} بخش
 \lr{C} را با فاصله‌های گسترش‌یافته به
 \(\{0.25,\allowbreak 1,\allowbreak 2,\allowbreak 4,\allowbreak 7,\allowbreak 14,\allowbreak 30,\allowbreak 60,\allowbreak 90\}\) روز، و جداگانه با \(n = 200\)
-آیتم، دوباره اجرا کنید. کدام تغییر بیشتر به بازیابی \(\lambda\) و \(s\)
-کمک می‌کند؟
+آیتم، دوباره اجرا کنید.
 
 \textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} \lr{(CV} در بازیابی مدل).} در بخش \lr{D}،
 \lr{AIC/BIC} را با \lr{CV} پنج‌بخشی (از هفته‌ی 6) برای 30 شبیه‌سازی از هر
@@ -741,13 +661,6 @@ expasym  0.08  0.38     0.97
 می‌کند که پاداش حساسیت را تغییر می‌دهد؟ برای اینکه یک تفاوت واقعی حساسیت
 به اندازه‌ی 0.3 را در 80\% شبیه‌سازی‌ها تشخیص دهید، در هر شرط چند
 \lr{trial} لازم است؟
-
-\subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
-
-نشان دهید: (1) جدول معیارهای اطلاعاتی با وزن‌ها (بخش \lr{B)}، (2)
-نمودارهای پراکنش بازیابی با یک جمله درباره‌ی اینکه کدام پارامتر بدتر
-بازیابی می‌شود و چرا، (3) ماتریس‌های درهم‌ریختگی \lr{AIC} و \lr{BIC}، و (4)
-پاراگراف بخش \lr{E.}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -763,30 +676,14 @@ expasym  0.08  0.38     0.97
 همان اندازه مهم است: با مقادیر کم \(k\) و آیتم‌های آزمون کم، ممکن است دو
 منحنی اصلاً قابل تمیز نباشند.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week07.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{6\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-{'exponential': 41.6, 'power': 40.4} Akaike weights: [0.362 0.638]
-\end{Verbatim}
-\end{latin}
-
 داده از یک قانون توانی تولید شده، ولی شواهد ضعیف است (وزن‌های 0.64 در
 برابر 0.36).
 
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} در همین طرح یک
-بازیابی مدل (هفته‌ی 7، بخش \lr{D)} اجرا کنید: 50 مجموعه داده از هر منحنی.
 \lr{confusion matrix} را بسازید. - \ensuremath{\star}\ensuremath{\star} طرح را عوض کنید: مقادیر بیشتری
-برای \(k\) (تا 128) یا 200 آیتم آزمون برای هر \(k\). کدام تغییر بازیابی
-مدل را بیشتر بهتر می‌کند؟ - \ensuremath{\star}\ensuremath{\star} بحث: مقاله‌ای از یک منحنی برازش‌شده نتیجه
-می‌گیرد که «یادگیری درون‌بافتی، مثل تمرین در انسان، از قانون توانی پیروی
-می‌کند». پیش از پذیرفتن این مقایسه با انسان، چه چیزی باید ببینید؟
+برای \(k\) (تا 128) یا 200 آیتم آزمون برای هر \(k\). - \ensuremath{\star}\ensuremath{\star} بحث: مقاله‌ای
+از یک منحنی برازش‌شده نتیجه می‌گیرد که «یادگیری درون‌بافتی، مثل تمرین در
+انسان، از قانون توانی پیروی می‌کند». پیش از پذیرفتن این مقایسه با انسان،
+چه چیزی باید ببینید؟
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -844,8 +741,7 @@ expasym  0.08  0.38     0.97
 \textbf{3.} چرا آزمون نسبت درست‌نمایی می‌تواند نمایی و نمایی با مجانب را
 مقایسه کند ولی نمایی و توانی را نه؟ \textbf{پاسخ} نمایی حالت خاصی از مدل
 مجانبی است (\(s = 0\))، پس مدل‌ها \lr{nested} هستند و \(2\Delta\ell\) تحت
-فرض صفر توزیع \(\chi^2\) معلومی دارد. نمایی و توانی \lr{nested} نیستند:
-هیچ‌کدام حالت خاص دیگری نیست.
+فرض صفر توزیع \(\chi^2\) معلومی دارد.
 
 \textbf{4.} مراحل یک مطالعه‌ی بازیابی پارامتر را شرح دهید. \textbf{پاسخ}
 مقادیر واقعی معقول برای پارامترها انتخاب کنید؛ با طرح واقعی داده
@@ -877,15 +773,15 @@ expasym  0.08  0.38     0.97
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{تکلیف}
 
 \subsubsection{\texorpdfstring{ادامه‌ی \lr{A3} (موعد ابتدای درس هفته‌ی
 9)}{ادامه‌ی A3 (موعد ابتدای درس هفته‌ی 9)}}
 
 کارهای 4 (معیارهای اطلاعاتی) و 5 (بازیابی پارامتر و مدل) \lr{A3} از
-مطالب این هفته استفاده می‌کنند. شرح کامل در هفته‌ی 6 است. کد
-\lr{\nolinkurl{parameter_recovery}} امروز و حلقه‌ی بازیابی مدل را دوباره
-به کار ببرید: طوری طراحی شده‌اند که مستقیماً قابل تطبیق باشند.
+مطالب این هفته استفاده می‌کنند. شرح کامل در هفته‌ی 6 است.
 
 \subsubsection{پروژه‌ی پایانی: تشکیل گروه‌ها و انتشار راهنمای پیشنهاد}
 
@@ -903,8 +799,7 @@ expasym  0.08  0.38     0.97
 \item
   \textbf{پیشنهاد پروژه (موعد ابتدای درس هفته‌ی 9، حداکثر 2 صفحه):} سؤال
   پژوهش، مدل(ها) با معادلات، منبع داده و طرح آزمایش، تحلیل‌های مقایسه و
-  بازیابی برنامه‌ریزی‌شده، و زمان‌بندی. شرح کامل پروژه و روبریک جداگانه
-  توزیع می‌شود (\lr{\nolinkurl{project_brief.md}}).
+  بازیابی برنامه‌ریزی‌شده، و زمان‌بندی.
 \item
   \textbf{مطمئن نیستید چه چیزی را مدل کنید؟} موضوعات هفته‌های 14\lr{--}15
   (دسته‌بندی \lr{exemplar}، \lr{drift-diffusion}، یادگیری تقویتی) همه

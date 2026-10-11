@@ -16,11 +16,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -75,7 +85,6 @@
 \lr{parameter recovery} & بازیابی پارامتر & آیا برازش، پارامترهای معلوم
 شبیه‌سازی را برمی‌گرداند \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -94,7 +103,7 @@
   پیچیدگی مدل یکنواخت کم می‌شود ولی خطای پیش‌بینی نه.
 \item
   اعتبارسنجی \lr{hold-out}، \(K\)\lr{-fold} و \lr{leave-one-out} را با
-  امتیاز لگاریتم درست‌نمایی خارج از نمونه \textbf{پیاده‌سازی کنند} و
+  امتیاز لگاریتم درست‌نمایی خارج از نمونه \textbf{صورت‌بندی کنند} و
   داده‌های آموزش و آزمون را درست جدا نگه دارند.
 \item
   بر اساس ادعای تعمیمی که مطرح است، \textbf{انتخاب کنند} چه چیزی را کنار
@@ -155,6 +164,8 @@
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{جزوه‌ی درس}
 
 \paragraph{به زبان ساده}
@@ -177,12 +188,24 @@
 
 \subsubsection{1. معیارهای نیکویی برازش}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 1. معیارهای نیکویی برازش}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+معیار
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تعریف
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مقیاس
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 معیار
@@ -208,11 +231,9 @@
 انحراف \(G^2\) & \(2(\ell_{\text{\lr{sat}}} - \ell)\) & \ensuremath{\approx} \(\chi^2\) & آزمون
 مطلق عدم برازش (هفته‌ی 4) \\
 \end{longtable}
-}
 
 همه‌ی این‌ها \textbf{کفایت توصیفی} را می‌سنجند: اینکه مدل داده‌هایی را که
-رویشان برازش شده چقدر خوب بازتولید می‌کند. هیچ‌کدام در نظر نمی‌گیرند که مدل
-چقدر راحت \emph{می‌توانست} آن داده‌ها را تولید کند.
+رویشان برازش شده چقدر خوب بازتولید می‌کند.
 
 \subsubsection{\texorpdfstring{2. \lr{overfitting} و
 انعطاف‌پذیری}{2. overfitting و انعطاف‌پذیری}}
@@ -287,11 +308,21 @@
 مدلی را ترجیح می‌دهیم که \textbf{داده‌ی جدید از همان فرایند} را بهتر
 پیش‌بینی کند. سه نوع «جدید» با سه ادعای علمی متناظرند:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. تعمیم به‌عنوان معیار}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+داده‌ی جدید یعنی\ensuremath{\ldots}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ادعایی که آزمون می‌شود
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+کنار بگذارید\ensuremath{\ldots}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 داده‌ی جدید یعنی\ensuremath{\ldots}
@@ -312,9 +343,6 @@
 \textbf{شرکت‌کننده‌های} جدید & مدل آنچه را بین آدم‌ها مشترک است گرفته است &
 کل شرکت‌کننده‌ها \\
 \end{longtable}
-}
-
-همیشه بگویید ارزیابی‌تان کدام نوع تعمیم را هدف گرفته است.
 
 \subsubsection{\texorpdfstring{4. \lr{cross-validation
 (CV)}}{4. cross-validation (CV)}}
@@ -360,8 +388,7 @@
 \textbf{پیشرفته: \lr{LOO}، \lr{AIC} و بیز.} برای مدل‌های منظم و \(N\)
 بزرگ، \lr{LOO} با امتیاز لگاریتمی و \lr{AIC} (هفته‌ی 7) به‌طور مجانبی یک
 مدل را انتخاب می‌کنند. در مدل‌سازی بیزی، تقریبی کارا از \lr{LOO
-(PSIS-LOO)} از نمونه‌های پسین محاسبه می‌شود. در هفته‌ی 13 با \lr{ArviZ} با
-آن آشنا می‌شوید.
+(PSIS-LOO)} از نمونه‌های پسین محاسبه می‌شود.
 \end{quote}
 
 \paragraph{خواندن ریاضی}
@@ -440,7 +467,7 @@
 \item
   \textbf{\lr{leave-one-out} را برای یک نقطه با دست انجام دهید} (نقطه‌ی 8
   روز را با دست بپوشانید، خط را با چشم دوباره برازش کنید و پیش‌بینی
-  کنید). بعد دانشجوها می‌فهمند کد \lr{lab} چه می‌کند.
+  کنید).
 \item
   \textbf{روی «چه چیزی کنار گذاشته می‌شود» تأکید کنید.} سه نوع داده‌ی
   «جدید» (بخش 3) را روی تخته بنویسید؛ بیشتر اشتباه‌های پروژه‌های دانشجویی
@@ -474,8 +501,12 @@
 
 \subsubsection{قدم 1: برازش روی همه‌ی داده‌ها}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}llll@{}}
+\caption{\centering قدم 1: برازش روی همه‌ی داده‌ها}\tabularnewline
+\toprule\noalign{}
+مدل & \(k\) & معادله‌ی برازش‌شده & \lr{SSE} آموزش \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 مدل & \(k\) & معادله‌ی برازش‌شده & \lr{SSE} آموزش \\
 \midrule\noalign{}
@@ -487,7 +518,6 @@
 درجه‌ی دو & 3 & \(\hat y = 0.647 - 0.053\,t + 0.0008\,t^2\) & 0.0031 \\
 درجه‌ی سه & 4 & دقیقاً از هر 4 نقطه می‌گذرد & \textbf{0.0000} \\
 \end{longtable}
-}
 
 بر اساس \lr{SSE} آموزش، چندجمله‌ای درجه‌ی سه «کامل» است. ولی از آن بخواهید
 یادآوری را در \(t = 16\) روز پیش‌بینی کند: \(-8.5\) پیش‌بینی می‌کند، یعنی
@@ -500,13 +530,27 @@
 هر بار یک نقطه را کنار بگذارید، روی سه نقطه‌ی باقی‌مانده دوباره برازش کنید
 و نقطه‌ی کنارگذاشته را پیش‌بینی کنید.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering قدم 2: اعتبارسنجی \lr{leave-one-out}}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(t\) کنارگذاشته
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مشاهده‌شده
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پیش‌بینی ثابت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پیش‌بینی خطی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پیش‌بینی درجه‌ی دو
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(t\) کنارگذاشته
@@ -530,7 +574,6 @@
 \textbf{\lr{SSE} در \lr{LOO}} & & \textbf{0.1125} & \textbf{0.0090} &
 \textbf{1.0000} \\
 \end{longtable}
-}
 
 (چندجمله‌ای درجه‌ی سه اینجا قابل اعتبارسنجی نیست: سه نقطه چهار پارامتر را
 تعیین نمی‌کنند.)
@@ -539,12 +582,12 @@
 ولی خطای \lr{LOO} آن بیش از 100 برابر بزرگ‌تر است. وقتی نقطه‌ی 8 روزه را
 نمی‌بیند، انحنایش را طوری خم می‌کند که سه فاصله‌ی کوتاه را برازش کند و در 8
 روز یادآوری \emph{بیشتر از 1} پیش‌بینی می‌کند. پارامتر اضافه نویز را برازش
-کرد، نه فراموشی را. مدل خطی از میان این سه بهترین تعمیم را دارد.
-(هیچ‌کدام از این چندجمله‌ای‌ها مدل \emph{شناختی} معقولی برای فراموشی
-نیستند، چون هیچ‌کدام دامنه‌ی 0 تا 1 را رعایت نمی‌کنند؛ دقیقاً به همین دلیل
-به‌جایشان از مدل‌های نمایی و توانی استفاده می‌کنیم.)
+کرد، نه فراموشی را. مدل خطی از میان این سه بهترین تعمیم را دارد. دقیقاً
+به همین دلیل به‌جایشان از مدل‌های نمایی و توانی استفاده می‌کنیم.)
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
@@ -557,37 +600,17 @@
   دیدن \lr{overfitting} در عمل: خطای آموزش در برابر خطای آزمون با افزایش
   درجه‌ی چندجمله‌ای.
 \item
-  پیاده‌سازی \lr{CV} \(K\)\lr{-fold} در سطح آیتم با لگاریتم درست‌نمایی
+  صورت‌بندی \lr{CV} \(K\)\lr{-fold} در سطح آیتم با لگاریتم درست‌نمایی
   دوجمله‌ای خارج از نمونه، و مقایسه‌ی چهار مدل فراموشی.
 \item
   اجرای یک آزمون \textbf{معیار تعمیم}: آموزش روی فاصله‌های کوتاه، پیش‌بینی
   فاصله‌های طولانی.
-\item
-  \textbf{تفسیر} اینکه کدام مدل تعمیم پیدا می‌کند و چرا مدلی که بهترین
-  برازش را دارد بهترین پیش‌بینی‌کننده نیست.
 \end{enumerate}
 
 \textbf{زمان‌بندی:} بخش \lr{A} 25 دقیقه · بخش \lr{B} 45 دقیقه · بخش
 \lr{C} 25 دقیقه · بخش \lr{D} 25 دقیقه.
 
 \subsubsection{آماده‌سازی: داده و چهار مدل}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week06.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{9\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-exp      k = 2  training NLL = 29.812  params = [0.638 0.046]
-pow      k = 2  training NLL = 19.830  params = [0.877 0.421]
-expasym  k = 3  training NLL = 18.919  params = [0.861 0.38  0.308]
-two      k = 4  training NLL = 18.919  params = [0.265 0.    0.596 0.38 ]
-\end{Verbatim}
-\end{latin}
 
 بر اساس \lr{NLL} آموزش، مدل‌های پیچیده‌تر برنده‌اند. دقت کنید که بهترین
 برازش مدل دوردی یک جزء کند با نرخ 0 دارد: مثل هفته‌ی 3 به مدل نمایی با
@@ -600,28 +623,6 @@ two      k = 4  training NLL = 18.919  params = [0.265 0.    0.596 0.38 ]
 چندجمله‌ای‌هایی بر حسب \(x = \ln(1+t)\) را به‌عنوان مدل‌های منعطفِ عمداً
 «بی‌فکر» به کار می‌بریم. داده‌های \textbf{آزمون} 500 مجموعه‌داده‌ی تازه‌اند که
 با همان طرح از مدل توانی واقعی شبیه‌سازی شده‌اند.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week06.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{14\baselineskip}
-\begin{latin}
-\begin{Verbatim}
- degree  k  train_MSE  test_MSE
-      0  1    0.03980   0.05072
-      1  2    0.00663   0.00787
-      2  3    0.00204   0.00634
-      3  4    0.00202   0.00640
-      4  5    0.00173   0.00661
-      5  6    0.00087   0.00750
-      6  7    0.00087   0.00750
-      7  8    0.00000   0.00833
-\end{Verbatim}
-\end{latin}
 
 \textbf{به این دقت کنید:} خطای آموزش با هر پارامتر اضافه کم می‌شود و در
 \(k = 8\) به 0 می‌رسد (درون‌یابی). خطای آزمون در یک پیچیدگی میانی کمترین
@@ -637,38 +638,14 @@ two      k = 4  training NLL = 18.919  params = [0.265 0.    0.596 0.38 ]
 یکی از \(K = 5\) بخش اختصاص می‌دهیم تا هر مجموعه‌ی آموزش همه‌ی 8 فاصله را
 داشته باشد.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week06.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار} (حدود 1 تا 2 دقیقه):
-
-\Needspace{15\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-         k  train_NLL  CV_NLL_mean  CV_NLL_sd
-exp      2     29.812      256.458      1.058
-pow      2     19.830      245.791      0.734
-expasym  3     18.919      247.370      1.574
-two      4     18.919      247.531      1.172
-
-CV-NLL difference to the power model (mean, SD over repeats):
-         exp  pow  expasym    two
-mean  10.667  0.0    1.579  1.740
-std    1.137  0.0    1.807  1.349
-\end{Verbatim}
-\end{latin}
-
 دقت کنید که \lr{NLL} آموزش (دوجمله‌ای، با ضرایب دوجمله‌ای) و \lr{CV-NLL}
 (برنولی، در سطح آیتم) مقیاس‌های متفاوتی دارند. مدل‌ها را \textbf{داخل} هر
 ستون مقایسه کنید، نه بین ستون‌ها.
 
-\textbf{تفسیر:} 1. کدام مدل آیتم‌های کنارگذاشته را بهتر پیش‌بینی می‌کند؟
-آیا برتری‌اش بر نفر دوم از تغییرپذیری بین تکرارهای \lr{CV} بیشتر است؟ 2.
-مدل دوردی بهترین برازش آموزش را دارد. در \lr{CV} چه بر سرش می‌آید و چرا؟
-3. آیا \lr{CV} با این داده‌ها می‌تواند مدل توانی و مدل نمایی با مجانب را
-از هم جدا کند؟ چه چیزی کمک می‌کرد؟
+\textbf{تفسیر:} 1. آیا برتری‌اش بر نفر دوم از تغییرپذیری بین تکرارهای
+\lr{CV} بیشتر است؟ 2. مدل دوردی بهترین برازش آموزش را دارد. در \lr{CV}
+چه بر سرش می‌آید و چرا؟ 3. آیا \lr{CV} با این داده‌ها می‌تواند مدل توانی و
+مدل نمایی با مجانب را از هم جدا کند؟ چه چیزی کمک می‌کرد؟
 
 \subsubsection{\texorpdfstring{بخش \lr{C:} معیار تعمیم: پیش‌بینی فاصله‌های
 طولانی‌تر (25
@@ -677,26 +654,6 @@ std    1.137  0.0    1.807  1.349
 مدلی که فهمیده فراموشی \emph{چگونه} کار می‌کند باید بتواند برون‌یابی کند.
 روی پنج فاصله‌ی کوتاه‌تر (\(t \le 7\) روز) آموزش دهید و سه فاصله‌ی طولانی‌تر
 (14، 21، 30 روز) را که مدل‌ها هرگز ندیده‌اند پیش‌بینی کنید.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week06.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{12\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-         test_NLL_long_delays  pred_t14  pred_t21  pred_t30
-model
-exp                    72.550     0.086     0.028     0.007
-pow                     9.627     0.228     0.186     0.156
-expasym                 6.268     0.260     0.257     0.257
-two                    46.072     0.131     0.057     0.020
-observed: {14: 0.26, 21: 0.26, 30: 0.28}
-\end{Verbatim}
-\end{latin}
 
 \textbf{به این دقت کنید:} اینجا مدل \textbf{نمایی با مجانب} بهترین
 برون‌یابی را دارد، \emph{نه} مدل توانی واقعی. سه نقطه‌ی کنارگذاشته اتفاقاً
@@ -713,12 +670,6 @@ observed: {14: 0.26, 21: 0.26, 30: 0.28}
 \subsubsection{\texorpdfstring{بخش \lr{D:} کنار هم گذاشتن (25
 دقیقه)}{بخش D: کنار هم گذاشتن (25 دقیقه)}}
 
-این جدول را در \lr{notebook} از روی بخش‌های \lr{B} و \lr{C} پر کنید و یک
-پاراگراف کوتاه (5 تا 8 جمله) در جواب این سؤال بنویسید: \textbf{کدام مدل
-را به‌عنوان بهترین توضیح این داده‌های فراموشی توصیه می‌کنید و چقدر
-مطمئنید؟}
-
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
@@ -728,6 +679,25 @@ observed: {14: 0.26, 21: 0.26, 30: 0.28}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\caption{\centering بخش \lr{D: }کنار هم گذاشتن (25 دقیقه)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+مدل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{NLL} آموزش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{CV-NLL} پنج‌بخشی (میانگین \ensuremath{\pm} \lr{SD)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{NLL} آزمون فاصله‌های طولانی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+الگوی باقی‌مانده‌ها (هفته‌ی 4)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پارامترها معقول‌اند؟
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 مدل
@@ -754,7 +724,6 @@ observed: {14: 0.26, 21: 0.26, 30: 0.28}
 \lr{two} & & & & & & \\
 \end{longtable}
 \end{landscape}
-}
 
 \subsubsection{تمرین‌ها (به ترتیب سختی)}
 
@@ -765,12 +734,12 @@ observed: {14: 0.26, 21: 0.26, 30: 0.28}
 
 \textbf{تمرین 2 \ensuremath{\star}.} بخش \lr{B} را با \(K = 2\)، \(K = 10\) و
 \lr{leave-one-item-out} (\(K = 50\)) دوباره اجرا کنید. آیا رتبه‌بندی
-تغییر می‌کند؟ کدام \(K\) پایدارترین نتایج را بین تکرارها می‌دهد؟
+تغییر می‌کند؟
 
 \textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (نشت داده).} یک \lr{CV} «غلط» بنویسید که در آن مقادیر
 شروع هر بخش از برازش روی \emph{کل} مجموعه‌داده گرفته شود، و یکی دیگر که
 در آن آیتم‌های آزمون هر بخش اشتباهاً در آموزش هم باشند. نتایج را با
-\lr{CV} درست مقایسه کنید. کدام اشتباه مهم‌تر است و چرا؟
+\lr{CV} درست مقایسه کنید.
 
 \textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} (داده‌ی بیشتر).} یک مجموعه‌داده‌ی جدید از مدل توانی
 واقعی با \(n = 500\) آیتم در هر فاصله شبیه‌سازی کنید و بخش‌های \lr{B} و
@@ -779,7 +748,7 @@ observed: {14: 0.26, 21: 0.26, 30: 0.28}
 
 \textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: \lr{leave-one-participant-out).}} از مولد
 داده‌ی تمرین بخش \lr{D} هفته‌ی 5 با 20 شرکت‌کننده استفاده کنید. \lr{CV} ای
-پیاده‌سازی کنید که هر بخش آن \emph{یک شرکت‌کننده} را کنار بگذارد: یک مدل
+صورت‌بندی کنید که هر بخش آن \emph{یک شرکت‌کننده} را کنار بگذارد: یک مدل
 تجمیعی (میانگین گروه) را روی 19 شرکت‌کننده برازش کنید و پیش‌بینی منحنی
 شرکت‌کننده‌ی کنارگذاشته را با لگاریتم درست‌نمایی گاوسی امتیاز دهید. مدل‌های
 نمایی و توانی را مقایسه کنید. بعد همین کار را با برازش‌های سطح فرد انجام
@@ -806,36 +775,18 @@ observed: {14: 0.26, 21: 0.26, 30: 0.28}
 می‌گویند \lr{LLM}ها روی تکلیف‌های کلاسیک روان‌شناسی، که مواد آن‌ها همه‌جا
 منتشر شده، توانایی‌های شناختی انسان‌گونه نشان می‌دهند.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week06.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Reported accuracy (all items): 0.73
-Accuracy on leaked items:      0.96  (n = 120)
-Accuracy on clean items:       0.63  (n = 280)
-\end{Verbatim}
-\end{latin}
-
 نمره‌ی گزارش‌شده (0.73) توانایی حل مسئله‌های \emph{تازه} (0.63) را بیش از
 واقع نشان می‌دهد. راه‌حل همان است که در \lr{lab} این هفته دیدید: ارزیابی
 روی آیتم‌هایی که مطمئنیم در برازش استفاده نشده‌اند، مثلاً آیتم‌های
 تازه‌نوشته، یا گونه‌های نظام‌مند تکلیف‌های کلاسیک.
 
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} سهم آیتم‌های نشت‌کرده
-را از 0 تا 0.9 تغییر دهید و دقت گزارش‌شده را رسم کنید. آیا فقط از روی دقت
-گزارش‌شده می‌توانید بگویید چقدر نشت کرده؟ - \ensuremath{\star}\ensuremath{\star} در عمل نمی‌دانیم کدام آیتم‌ها
-نشت کرده‌اند. فرض کنید برای هر آیتم یک گونه‌ی «تازه» (همان منطق، عبارت‌بندی
-تازه) داریم. گونه‌های تازه را با \(P(\text{\lr{correct}}) = 0.60\) شبیه‌سازی
-کنید و اثر نشت را به‌صورت تفاوت دقت آیتم‌های اصلی و تازه، با یک بازه‌ی
-\lr{bootstrap} جفتی (هفته‌ی 5) برآورد کنید. - \ensuremath{\star}\ensuremath{\star} بحث: یک \lr{LLM} معمای
-استدلالی معروفی از یک مقاله‌ی روان‌شناسی دهه‌ی 1970 را حل می‌کند. چرا این
-شاهد ضعیفی است بر اینکه «مثل انسان استدلال می‌کند»؟ چه آزمونی قوی‌تر است؟
+آیا فقط از روی دقت گزارش‌شده می‌توانید بگویید چقدر نشت کرده؟ فرض کنید برای
+هر آیتم یک گونه‌ی «تازه» (همان منطق، عبارت‌بندی تازه) داریم. گونه‌های تازه
+را با \(P(\text{\lr{correct}}) = 0.60\) شبیه‌سازی کنید و اثر نشت را به‌صورت
+تفاوت دقت آیتم‌های اصلی و تازه، با یک بازه‌ی \lr{bootstrap} جفتی (هفته‌ی 5)
+برآورد کنید. - \ensuremath{\star}\ensuremath{\star} بحث: یک \lr{LLM} معمای استدلالی معروفی از یک مقاله‌ی
+روان‌شناسی دهه‌ی 1970 را حل می‌کند. چرا این شاهد ضعیفی است بر اینکه «مثل
+انسان استدلال می‌کند»؟ چه آزمونی قوی‌تر است؟
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -921,6 +872,8 @@ Accuracy on clean items:       0.63  (n = 280)
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{تکلیف}
 
 \subsubsection{\texorpdfstring{\lr{A3:} مقایسه و بازیابی مدل (1.0 نمره
@@ -930,14 +883,6 @@ Accuracy on clean items:       0.63  (n = 280)
 \lr{A3} این هفته و هفته‌ی بعد را در بر می‌گیرد: کارهای 1 تا 3 از مطالب این
 هفته و کارهای 4 تا 6 از مطالب هفته‌ی 7 \lr{(AIC/BIC}، بازیابی پارامتر و
 مدل) استفاده می‌کنند.
-
-\textbf{داده.} یک آزمایش فراموشی با 12 شرکت‌کننده که با این کد تولید
-می‌شود:
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week06.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
 
 \textbf{کارها.}
 
@@ -967,10 +912,6 @@ Accuracy on clean items:       0.63  (n = 280)
   و درباره‌ی هر \lr{trade-off}ی توضیح دهید. (ب) بازیابی مدل برای سه مدل
   با \lr{AIC} و \lr{BIC:} یک \lr{confusion matrix} 3 × 3 از 100 شبیه‌سازی
   برای هر مدل تولیدکننده.
-\item
-  \textbf{تفسیر (1.5 امتیاز، حداکثر 400 کلمه).} کدام مدل فراموشی را در
-  این مطالعه بهتر توصیف می‌کند، شواهد چقدر قوی است، و تحلیل بازیابی چطور
-  نتیجه‌گیری شما را مقید می‌کند؟
 \end{enumerate}
 
 \textbf{روبریک (10 امتیاز، معادل 1.0):} امتیاز هر کار در بالا آمده است.

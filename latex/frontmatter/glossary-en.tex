@@ -2,10 +2,18 @@ Terms are listed alphabetically. The number in brackets is the week
 where the term is introduced or treated most fully. Notation follows the
 course-wide table in Week 1.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering Glossary}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Term
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Definition
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Term
@@ -244,15 +252,22 @@ with the SE from the Hessian; assumes approximate normality. \\
 \textbf{Weighted least squares} {[}3{]} & Squared errors weighted by the
 inverse of their variance. \\
 \end{longtable}
-}
 
 \subsection{AI \& LLM terms (from the ``Connection to AI \& LLMs''
 sections)}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering AI \& LLM terms (from the Connection to AI \& LLMs sections)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Term
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Definition
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Term
@@ -296,4 +311,3 @@ temperature more random output (\(\beta = 1/T\)). \\
 \textbf{Token} {[}1{]} & The unit a language model reads and predicts: a
 word or part of a word. \\
 \end{longtable}
-}

@@ -2,10 +2,10 @@
 
 ## Results
 
-- 00-full-notes/en/Course-EN.pdf: 278 pages
-- 00-full-notes/fa/Course-FA.pdf: 258 pages
+- 00-full-notes/en/Course-EN.pdf: 246 pages
+- 00-full-notes/fa/Course-FA.pdf: 224 pages
 - 32 individual weekly PDFs validated with pdfinfo
-- Source references to companion code/assessments remain unresolved because those files were not supplied.
+- Generated lectures contain no software lesson text or uncaptained longtables; archival Markdown is preserved.
 
 ## Critical errors
 

@@ -14,11 +14,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -74,7 +84,6 @@
 \lr{benchmark} & \lr{benchmark} (مجموعه‌آزمون استاندارد) & مجموعه سؤال
 برای مقایسه‌ی مدل‌های هوش مصنوعی \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -119,14 +128,11 @@
 \textbf{قانونی که هیچ‌کس از آن پیروی نمی‌کند.} \emph{قانون توانی تمرین}
 \lr{(power law of practice)} یکی از پرارجاع‌ترین یافته‌ها در روان‌شناسی
 شناختی است: زمان واکنش با تمرین تقریباً به شکل تابع توانی از تعداد
-\lr{trial}ها کم می‌شود. بعضی پژوهشگران استدلال کرده‌اند که شکل توانی
-می‌تواند از \textbf{میانگین‌گیری} روی افرادی (یا آیتم‌هایی) بیاید که هرکدام
-به‌طور \emph{نمایی} ولی با نرخ‌های متفاوت بهتر می‌شوند (مطالعه‌ی بیشتر را
-ببینید). اگر این‌طور باشد، «قانون» میانگین را توصیف می‌کند ولی هیچ
-یادگیرنده‌ی تکی را نه، و نظریه‌ای که برای توضیح یک تابع توانی در ذهن هر
-فرد ساخته شود در واقع یک خطای ناشی از میانگین‌گیری را توضیح می‌دهد. این
-هفته این اثر را با داده‌ی شبیه‌سازی‌شده نشان می‌دهیم و یاد می‌گیریم کی باید
-افراد را برازش کرد نه میانگین گروه را.
+\lr{trial}ها کم می‌شود. اگر این‌طور باشد، «قانون» میانگین را توصیف می‌کند
+ولی هیچ یادگیرنده‌ی تکی را نه، و نظریه‌ای که برای توضیح یک تابع توانی در
+ذهن هر فرد ساخته شود در واقع یک خطای ناشی از میانگین‌گیری را توضیح می‌دهد.
+این هفته این اثر را با داده‌ی شبیه‌سازی‌شده نشان می‌دهیم و یاد می‌گیریم کی
+باید افراد را برازش کرد نه میانگین گروه را.
 
 \paragraph{این موضوع کجا به کار می‌رود؟}
 
@@ -146,13 +152,11 @@
   امروز پژوهشگرها یادگیرنده‌ها را جداگانه برازش می‌کنند (و چرا همین احتیاط
   درباره‌ی منحنی‌های میانگین گروه در آموزش، علوم ورزشی و ارگونومی هم لازم
   است).
-\item
-  \textbf{تکرار پژوهش و فراتحلیل \lr{(meta-analysis)}} برآوردهای چند
-  مطالعه را با وزن دادن به هر کدام بر اساس دقتش \lr{(1/SE²)} ترکیب
-  می‌کنند.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{جزوه‌ی درس}
 
@@ -164,15 +168,10 @@
 \textbf{بازه‌ی اطمینان} محدوده‌ای است که از روی آن ساخته می‌شود (تقریباً
 برآورد \ensuremath{\pm} 2 \lr{SE).} نمی‌توانیم آزمایش را بارها تکرار کنیم، پس این پرش را
 به سه روش تخمین می‌زنیم: (1) از اینکه قله‌ی درست‌نمایی چقدر تیز است (قله‌ی
-تیز یعنی داده پارامتر را دقیق تعیین می‌کند؛ این روش \textbf{\lr{Wald}} با
-استفاده از \textbf{\lr{Hessian}} است)، (2) با دنبال کردن اینکه وقتی یک
-پارامتر را جابه‌جا می‌کنیم برازش با چه سرعتی بدتر می‌شود
-(\textbf{\lr{profile likelihood}})، و (3) با شبیه‌سازی تعداد زیادی آزمایش
-ساختگی از مدل برازش‌شده و برازش دوباره‌ی هرکدام (\textbf{\lr{bootstrap}}).
-نیمه‌ی دوم هفته درباره‌ی یک دام هشدار می‌دهد: میانگین گرفتن داده‌ها روی
-افراد می‌تواند شکلی از منحنی بسازد که \textbf{هیچ فردی} آن را ندارد. اگر
-هر یادگیرنده به‌طور نمایی ولی با سرعتی متفاوت بهتر شود، میانگین گروه شبیه
-قانون توانی می‌شود.
+تیز یعنی داده پارامتر را دقیق تعیین می‌کند؛ نیمه‌ی دوم هفته درباره‌ی یک دام
+هشدار می‌دهد: میانگین گرفتن داده‌ها روی افراد می‌تواند شکلی از منحنی بسازد
+که \textbf{هیچ فردی} آن را ندارد. اگر هر یادگیرنده به‌طور نمایی ولی با
+سرعتی متفاوت بهتر شود، میانگین گروه شبیه قانون توانی می‌شود.
 
 \textbf{زمان‌بندی پیشنهادی (60 دقیقه):} توزیع‌های نمونه‌گیری 10 · خطای
 استاندارد از \lr{Hessian} 15 · \lr{profile likelihood} 8 ·
@@ -238,8 +237,7 @@ information)} هم می‌گویند. برای نمونه‌های بزرگ:
 کتاب‌های درسی.
 
 \textbf{در عمل:} \(\mathbf{H}\) را عددی با تفاضل‌های متناهی حساب کنید
-(بخش \lr{A lab).} \lr{\nolinkurl{hess_inv}} که \lr{BFGS} برمی‌گرداند فقط
-یک تقریب خام است، پس برای \lr{SE} از آن استفاده نکنید.
+(بخش \lr{A lab).}
 
 \textbf{وقتی \lr{Wald} جواب نمی‌دهد:} نمونه‌های کوچک، برآوردهای نزدیک یک
 کران (مثلاً سطح یادآوری \(\hat A\) نزدیک 1)، درست‌نمایی‌هایی که شدیداً
@@ -356,13 +354,27 @@ likelihood}}{3. بازه‌های profile likelihood}}
 
 \textbf{مقایسه:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering \lr{4. bootstrap }پارامتری}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+روش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+هزینه
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+متقارن؟
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+کران را رعایت می‌کند؟
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نیاز دارد به
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 روش
@@ -386,19 +398,30 @@ likelihood}}{3. بازه‌های profile likelihood}}
 \lr{bootstrap} پارامتری & \(B\) برازش & می‌تواند نامتقارن باشد & بله &
 مدلی که بتوانید شبیه‌سازی کنید \\
 \end{longtable}
-}
 
 \subsubsection{5. برازش برای چند شرکت‌کننده}
 
 آزمایش‌های واقعی \(J\) شرکت‌کننده دارند (اندیس \(j\)). سه راهبرد کلی وجود
 دارد:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 5. برازش برای چند شرکت‌کننده}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+راهبرد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+چه چیزی برازش می‌شود
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مزایا
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معایب
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 راهبرد
@@ -424,7 +447,6 @@ likelihood}}{3. بازه‌های profile likelihood}}
 توزیع گروهی، که با هم برآورد می‌شوند & بهترینِ هر دو؛ \lr{shrinkage} اصولی
 & پیچیده‌تر؛ معمولاً بیزی (هفته‌ی 13) \\
 \end{longtable}
-}
 
 \textbf{خطاهای ناشی از میانگین‌گیری.} میانگین منحنی‌های غیرخطی معمولاً
 منحنی‌ای از همان خانواده \textbf{نیست}. مثلاً میانگین منحنی‌های نمایی با
@@ -474,10 +496,6 @@ likelihood}}{3. بازه‌های profile likelihood}}
   مختلف یک افت کندتر با دنباله‌ی سنگین می‌دهد؛ همان‌طور که میانگین تعداد
   زیادی تحقق کانال شبیه هیچ تحقق تکی نیست. فرایند «بین افراد ارگودیک»
   نیست: میانگین گروه، فرد را توصیف نمی‌کند.
-\item
-  \textbf{\lr{partial pooling}} (پیش‌نمایش هفته‌ی 13) شبیه تخمین \lr{SNR}
-  هر کاربر با ترکیب چند اندازه‌گیری خودش و توزیع \lr{SNR} در کل سلول است:
-  یک برآورد \lr{empirical Bayes.}
 \end{itemize}
 
 \paragraph{برای مدرس}
@@ -490,8 +508,7 @@ likelihood}}{3. بازه‌های profile likelihood}}
   دارد.
 \item
   \textbf{سه روش را کنار هم نشان دهید} روی همان داده (جدول بخش \lr{C
-  lab).} پیام این نیست که «کدام درست است»، بلکه «وقتی درست‌نمایی خوش‌رفتار
-  است با هم توافق دارند و نزدیک کران‌ها یا با داده‌ی کم فرق می‌کنند».
+  lab).}
 \item
   \textbf{نمایش میانگین‌گیری نقطه‌ی اوج جلسه است.} 5 منحنی نمایی فردی و
   میانگین آن‌ها را روی نمودار لگاریتمی\lr{--}لگاریتمی رسم کنید: میانگین تقریباً
@@ -520,6 +537,8 @@ likelihood}}{3. بازه‌های profile likelihood}}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{مثال حل‌شده}
 
 \subsubsection{بخش 1: سه بازه برای یک احتمال یادآوری}
@@ -545,7 +564,6 @@ likelihood}}{3. بازه‌های profile likelihood}}
 شرکت‌کننده‌ی 1 با \(\lambda = 0.1\) و شرکت‌کننده‌ی 2 با \(\lambda = 1.0\)
 فراموش می‌کند. منحنی میانگین \(\bar f(t) = (e^{-0.1t} + e^{-t})/2\):
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
@@ -553,6 +571,23 @@ likelihood}}{3. بازه‌های profile likelihood}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\caption{\centering بخش 2: میانگین‌گیری از دو یادگیرنده‌ی نمایی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(t\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+10
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(t\)
@@ -575,16 +610,16 @@ likelihood}}{3. بازه‌های profile likelihood}}
 نرخ نسبی فراموشی \(-\bar f'(t)/\bar f(t)\) & 0.55 & 0.36 & 0.23 & 0.11 &
 0.10 \\
 \end{longtable}
-}
 
 هر شرکت‌کننده یک نرخ نسبی \emph{ثابت} دارد (0.1 و 1.0)، ولی نرخ میانگین
 از 0.55 به 0.10 \textbf{کاهش} می‌یابد؛ نشانه‌ی یک منحنی شبه‌توانی. دلیل: در
 زمان‌های بعدی، فراموش‌کننده‌ی کند که نرخش پایین است بر میانگین غالب است.
 \textbf{تفسیر:} پژوهشگری که فقط میانگین را برازش کند نتیجه می‌گیرد که
-«خاطره‌ها با بالا رفتن سن مقاوم‌تر می‌شوند»؛ ادعایی که درباره‌ی هیچ‌کدام از
-دو شرکت‌کننده درست نیست.
+«خاطره‌ها با بالا رفتن سن مقاوم‌تر می‌شوند»؛
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
@@ -607,33 +642,9 @@ likelihood}}{3. بازه‌های profile likelihood}}
 \textbf{زمان‌بندی:} بخش \lr{A} 20 دقیقه · بخش \lr{B} 15 دقیقه · بخش
 \lr{C} 25 دقیقه · بخش \lr{D} 40 دقیقه · بخش \lr{E} 20 دقیقه.
 
-\subsubsection{آماده‌سازی}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
 \subsubsection{\texorpdfstring{بخش \lr{A:} خطای استاندارد \lr{Wald} از
 یک \lr{Hessian} عددی (20
 دقیقه)}{بخش A: خطای استاندارد Wald از یک Hessian عددی (20 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{9\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-   estimate      SE   lower   upper
-A    0.8773  0.0626  0.7546  1.0000
-d    0.4214  0.0532  0.3171  0.5257
-Estimated correlation between A-hat and d-hat: 0.751
-\end{Verbatim}
-\end{latin}
 
 \textbf{تفسیر:} هر دو بازه‌ی 95\% مقادیر واقعی (\(A^\ast = 0.9\)،
 \(d^\ast = 0.5\)) را در بر دارند، پس «خطایی» که در هفته‌های 3\lr{--}4 نگرانش
@@ -644,57 +655,19 @@ Estimated correlation between A-hat and d-hat: 0.751
 همان دره‌ی \lr{trade-off} هفته‌ی 3 است: وقتی برآورد \(A\) زیادی بالاست،
 برآورد \(d\) هم معمولاً زیادی بالاست.
 
-\subsubsection{\texorpdfstring{بخش \lr{B:} بازه‌ی \lr{profile likelihood}
-برای \(d\) (15
-دقیقه)}{بخش B: بازه‌ی profile likelihood برای d (15 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{6\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Profile 95% CI for d: [0.320, 0.525]  (grid step 0.005)
-\end{Verbatim}
-\end{latin}
-
 \subsubsection{\texorpdfstring{بخش \lr{C: bootstrap} پارامتری (25
 دقیقه)}{بخش C: bootstrap پارامتری (25 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار} (حدود 30 تا 60 ثانیه طول می‌کشد):
-
-\Needspace{9\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-   boot SE    2.5%  97.5%
-A   0.0563  0.7724  1.000
-d   0.0501  0.3304  0.528
-Bootstrap correlation: 0.703
-\end{Verbatim}
-\end{latin}
-
 \textbf{مقایسه کنید:} بازه‌های \lr{Wald}، \lr{profile} و \lr{bootstrap}
-برای \(d\) را کنار هم بگذارید. شبیه هم‌اند؟ کدام نامتقارن است؟ با این
-داده‌ها (8 خانه × 50 آیتم) هر سه روش باید نسبتاً با هم توافق داشته باشند.
-با آیتم‌های کمتر یا برآوردهای نزدیک کران بیشتر از هم فاصله می‌گیرند (تمرین
-5).
+برای \(d\) را کنار هم بگذارید. شبیه هم‌اند؟ با این داده‌ها (8 خانه × 50
+آیتم) هر سه روش باید نسبتاً با هم توافق داشته باشند. با آیتم‌های کمتر یا
+برآوردهای نزدیک کران بیشتر از هم فاصله می‌گیرند (تمرین 5).
 
 \subsubsection{\texorpdfstring{بخش \lr{D:} قانون توانی تمرین به‌عنوان
 خطای میانگین‌گیری (40
 دقیقه)}{بخش D: قانون توانی تمرین به‌عنوان خطای میانگین‌گیری (40 دقیقه)}}
 
-\textbf{طرح.} \(J = 20\) شرکت‌کننده هرکدام 60 بلوک تمرین در یک تکلیف
-جستجوی دیداری انجام می‌دهند. هر شرکت‌کننده به‌طور \textbf{نمایی} بهتر
-می‌شود:
+\(J = 20\) هر شرکت‌کننده به‌طور \textbf{نمایی} بهتر می‌شود:
 
 \[
 \mathrm{RT}_j(m) = E + B\,e^{-r_j (m-1)} + \varepsilon, \qquad \varepsilon \sim \mathcal{N}(0, 40 \text{\lr{ ms}}),
@@ -707,83 +680,19 @@ Bootstrap correlation: 0.703
 یادگیرنده‌ی خیلی کند). اینجا \(m\) شماره‌ی بلوک تمرین و \(\varepsilon\)
 نویز میانگین زمان واکنش هر بلوک است.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-True learning rates: [1.000e-03 7.000e-03 7.000e-03 2.000e-02 3.000e-02 4.500e-02 1.220e-01
- 1.490e-01 1.720e-01 2.360e-01 2.820e-01 3.260e-01 3.870e-01 3.950e-01
- 5.340e-01 7.100e-01 7.900e-01 1.002e+00 1.869e+00 2.534e+00]
-Average curve, exp: E = 507.5, B = 423.8, r = 0.205, RMSD = 19.26 ms
-Average curve, pow: E = 419.2, B = 579.4, r = 0.529, RMSD = 10.16 ms
-\end{Verbatim}
-\end{latin}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار (خط خلاصه):}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Which model fits each participant better? {'exp': 20}
-(with SciPy 1.18: {'exp': 19, 'pow': 1}; one participant with a near-zero learning rate is fitted differently)
-\end{Verbatim}
-\end{latin}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 7 ·
-سلول 7
-\end{quote}
-
 \subsubsection{\texorpdfstring{بخش \lr{E:} تفسیر (20
 دقیقه)}{بخش E: تفسیر (20 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 8 ·
-سلول 8
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Mean of true individual rates:      0.481
-Mean of estimated individual rates: 0.449 (SD 0.626)
-Exponential rate fitted to the average curve: 0.205
-Correlation of true and estimated individual rates: 0.971
-(with SciPy 1.18: estimated mean 0.457 (SD 0.621), correlation 0.968, because of the same participant)
-\end{Verbatim}
-\end{latin}
-
-\textbf{برای هرکدام 2 تا 3 جمله بنویسید:} 1. منحنی میانگین با تابع توانی
-بهتر توصیف می‌شود \lr{(RMSD} حدود 10 در برابر 19 \lr{ms)}، ولی همه‌ی 20
-فرد (یا بسته به نسخه‌ی \lr{SciPy}، 19 نفر) با تابع نمایی بهتر توصیف
-می‌شوند. کدام گزاره درباره‌ی \emph{یادگیری} موجه است و کدام نیست؟ 2. چرا
-نرخ نمایی برازش‌شده روی منحنی میانگین از میانگین نرخ‌های فردی کوچک‌تر است؟
-(راهنمایی: در اواخر تمرین کدام شرکت‌کننده‌ها بر میانگین غالب‌اند؟) 3. اینجا
-با 60 بلوک برای هر نفر، برازش‌های فردی نرخ‌های واقعی را خوب بازیابی
-می‌کنند. با فقط 10 بلوک برای هر نفر چه تغییر می‌کرد و آن‌وقت چه می‌کردید؟
-(پیش‌نمایش هفته‌ی 13.)
+2. چرا نرخ نمایی برازش‌شده روی منحنی میانگین از میانگین نرخ‌های فردی
+کوچک‌تر است؟ اینجا با 60 بلوک برای هر نفر، برازش‌های فردی نرخ‌های واقعی را
+خوب بازیابی می‌کنند. با فقط 10 بلوک برای هر نفر چه تغییر می‌کرد و آن‌وقت چه
+می‌کردید؟ (پیش‌نمایش هفته‌ی 13.)
 
 \subsubsection{تمرین‌ها (به ترتیب سختی)}
 
 \textbf{تمرین 1 \ensuremath{\star}.} بازه‌های اطمینان 95\% \lr{Wald} را برای \lr{MLE} مدل
 \emph{نمایی} روی داده‌های هفته‌ی 2 حساب کنید. آیا مقادیر معقولی در بر
-دارند؟ بعد آن‌ها را در «برآورد» ساختگی
-\lr{\nolinkurl{(A, lam) = (1.0, 0.107)}} از هشدار \lr{Nelder\lr{--}Mead}
-کران‌دار هفته‌ی قبل حساب کنید. در نقطه‌ای که کمینه نیست چه بر سر
-\lr{Hessian} می‌آید؟
+دارند؟ در نقطه‌ای که کمینه نیست چه بر سر \lr{Hessian} می‌آید؟
 
 \textbf{تمرین 2 \ensuremath{\star}.} \lr{bootstrap} را با \(B = 50, 200, 1000\) و
 \lr{seed}های مختلف دوباره اجرا کنید. حدود صدکی چقدر پایدارند؟ برای یک
@@ -802,11 +711,9 @@ Correlation of true and estimated individual rates: 0.971
 برازش کنید.
 
 \textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: پوشش).} بازه‌های 95\% واقعاً چند وقت یک بار
-مقدار واقعی را در بر می‌گیرند؟ 300 مجموعه‌داده از مدل توانی (\(A = 0.9\)،
-\(d = 0.5\)) با \(n = 10\) آیتم در هر فاصله شبیه‌سازی کنید و برای هرکدام
-بازه‌های \lr{Wald} و \lr{profile} \(d\) را حساب کنید. پوشش (نسبت بازه‌هایی
-که 0.5 را در بر دارند) هر روش را گزارش کنید. کدام به 95\% نزدیک‌تر است؟
-با \(n = 50\) تکرار کنید.
+مقدار واقعی را در بر می‌گیرند؟ \(A = 0.9\) · \(d = 0.5\) · \(n = 10\)
+پوشش (نسبت بازه‌هایی که 0.5 را در بر دارند) هر روش را گزارش کنید. با
+\(n = 50\) تکرار کنید.
 
 \subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
 
@@ -835,28 +742,10 @@ Correlation of true and estimated individual rates: 0.971
 دشواری آیتم‌ها هم خیلی متفاوت است، که نسخه‌ی سطح آیتمِ ناهمگنی شرکت‌کننده‌ها
 در بخش \lr{D} است: یک دقت میانگین واحد آن را پنهان می‌کند.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week05.py}}, \lr{cell} 9 ·
-سلول 9
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Accuracy A = 0.74, B = 0.67, difference = 0.07
-95% CI, paired bootstrap:   [-0.03, 0.17]
-95% CI, unpaired bootstrap: [-0.06, 0.20]
-\end{Verbatim}
-\end{latin}
-
 7 درصد برتری روی 100 آیتم به‌وضوح با صفر فرق ندارد. جدول رتبه‌بندی‌ای که
 \lr{A} را بدون بازه بالای \lr{B} می‌گذارد، بیش از حد مطمئن است.
 
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} اگر تفاوت واقعی ثابت
-بماند، \lr{benchmark} به چند آیتم نیاز دارد تا بازه‌ی جفتی 0 را شامل
-نشود؟ با شبیه‌سازی پیدا کنید. - \ensuremath{\star}\ensuremath{\star} \lr{SE} والد \lr{(Wald)} هر دقت،
+با شبیه‌سازی پیدا کنید. - \ensuremath{\star}\ensuremath{\star} \lr{SE} والد \lr{(Wald)} هر دقت،
 \(\sqrt{p(1-p)/n}\)، را حساب کنید و با \lr{SE} حاصل از \lr{bootstrap}
 مقایسه کنید. - \ensuremath{\star}\ensuremath{\star} بحث: مقاله‌ای «مدل \lr{A:} 74\%، مدل \lr{B:} 67\%» را
 بدون بازه گزارش می‌کند و نتیجه می‌گیرد که \lr{A} «بهتر استدلال می‌کند».
@@ -878,9 +767,7 @@ Accuracy A = 0.74, B = 0.67, difference = 0.07
   بازه‌ی اطمینان فراوانی‌گرا، 95\% به رفتار بلندمدت رویه برمی‌گردد. این
   گزاره‌ی احتمالاتی مال \lr{credible interval}های بیزی است (هفته‌ی 9).
 \item
-  \textbf{استفاده از \lr{\nolinkurl{hess_inv}} در \lr{BFGS} برای خطای
-  استاندارد.} یک محصول جانبی خام بهینه‌ساز است. \lr{Hessian} را درست حساب
-  کنید.
+  \lr{Hessian} را درست حساب کنید.
 \item
   \textbf{اعتماد به بازه‌های \lr{Wald} نزدیک کران‌ها.} اگر \(\hat\theta\)
   روی کران یا نزدیک آن است، یا بازه از مقادیر ناممکن عبور می‌کند، از
@@ -926,9 +813,9 @@ Accuracy A = 0.74, B = 0.67, difference = 0.07
 \textbf{4.} مراحل یک \lr{bootstrap} پارامتری برای بازه‌ی اطمینان یک
 پارامتر مدل را بنویسید. \textbf{پاسخ} مدل را برازش کنید تا
 \(\hat{\boldsymbol\theta}\) به دست آید. \(B\) مجموعه‌داده از مدل با
-\(\hat{\boldsymbol\theta}\) و طرح آزمایش اصلی شبیه‌سازی کنید. هرکدام را
-دوباره برازش کنید. انحراف معیار برآوردهای جدید را \lr{SE} و صدک‌های 2.5 و
-97.5 آن‌ها را بازه‌ی 95\% در نظر بگیرید.
+\(\hat{\boldsymbol\theta}\) و طرح آزمایش اصلی شبیه‌سازی کنید. انحراف
+معیار برآوردهای جدید را \lr{SE} و صدک‌های 2.5 و 97.5 آن‌ها را بازه‌ی 95\%
+در نظر بگیرید.
 
 \textbf{5.} چرا بازه‌ی \lr{profile likelihood} می‌تواند نامتقارن باشد ولی
 بازه‌ی \lr{Wald} نمی‌تواند؟ \textbf{پاسخ} بازه‌ی \lr{Wald} یک \lr{NLL}
@@ -936,7 +823,6 @@ Accuracy A = 0.74, B = 0.67, difference = 0.07
 \lr{profile} از درست‌نمایی واقعی استفاده می‌کند که ممکن است چوله باشد،
 مثلاً نزدیک یک کران یا برای پارامترهای نرخ.
 
-\textbf{6.} بیست شرکت‌کننده هرکدام با نرخ متفاوت به‌طور نمایی یاد می‌گیرند.
 منحنی میانگین با تابع توانی بهتر برازش می‌شود. آیا باید نتیجه بگیریم که
 یادگیری از قانون توانی پیروی می‌کند؟ \textbf{پاسخ} نه. شکل توانی خطای
 ناشی از میانگین‌گیری است: میانگین توابع نمایی با نرخ‌های ناهمگن منحنی‌ای

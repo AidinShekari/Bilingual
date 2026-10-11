@@ -16,11 +16,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -71,7 +81,6 @@
 \lr{embedding} & \lr{embedding} (بردار معنایی) & برداری که مدل برای یک
 کلمه یا متن می‌سازد \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -136,11 +145,6 @@
 \begin{itemize}
 \tightlist
 \item
-  \textbf{مدل‌های دسته‌بندی} توضیح می‌دهند آدم‌ها چطور مفهوم‌ها را یاد
-  می‌گیرند (دانشجوی پزشکی که یاد می‌گیرد ضایعه‌های پوستی را تشخیص دهد،
-  کودکی که کلمه یاد می‌گیرد)، و برای طراحی آموزش بهتر استفاده می‌شوند:
-  کدام مثال‌ها را و با چه ترتیبی نشان دهیم.
-\item
   \textbf{ایده‌ی \lr{exemplar} در یادگیری ماشین:} طبقه‌بندهای نزدیک‌ترین
   همسایه \lr{(nearest neighbor)} و روش‌های \lr{kernel} یک مورد جدید را بر
   اساس شباهتش به مثال‌های ذخیره‌شده طبقه‌بندی می‌کنند؛ همان اصل \lr{GCM.}
@@ -157,16 +161,16 @@
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{جزوه‌ی درس}
 
 \paragraph{به زبان ساده}
 
 این هفته دو مدل معروف داریم. \textbf{دسته‌بندی:} چطور تصمیم می‌گیریم یک
 حیوان تازه سگ است؟ یک نظریه می‌گوید آن را با یک «سگ ایده‌آل» میانگین
-مقایسه می‌کنیم (\textbf{\lr{prototype}}). نظریه‌ی دیگر می‌گوید آن را با
-همه‌ی سگ‌ها و گربه‌هایی که به یاد داریم مقایسه می‌کنیم و می‌بینیم در مجموع به
-کدام گروه بیشتر شبیه است (\textbf{\lr{exemplar}ها}). \textbf{\lr{GCM}}
-ایده‌ی \lr{exemplar} را به ریاضی تبدیل می‌کند: فاصله‌ی آیتم جدید با هر مثال
+مقایسه می‌کنیم (\textbf{\lr{prototype}}). \textbf{\lr{GCM}} ایده‌ی
+\lr{exemplar} را به ریاضی تبدیل می‌کند: فاصله‌ی آیتم جدید با هر مثال
 ذخیره‌شده را بسنج (با \textbf{توجه} بیشتر به بعضی ویژگی‌ها)، فاصله را به
 شباهت تبدیل کن (نزدیک‌تر = خیلی شبیه‌تر)، و دسته‌ی \lr{A} را با احتمال
 «شباهت کل به \lr{A} / شباهت کل به همه» انتخاب کن. یک مجموعه محرک
@@ -193,8 +197,12 @@
 بازخورد دسته‌بندی می‌کنند. مجموعه محرک رایج این است {[}با \lr{Medin} \lr{\&}
 \lr{Schaffer,} 1978 یا \lr{Smith} \lr{\&} \lr{Minda,} 2000 بررسی شود{]}:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}lll@{}}
+\caption{\centering 1. ساختار دسته‌ی 5-4}\tabularnewline
+\toprule\noalign{}
+دسته‌ی \lr{A} & دسته‌ی \lr{B} & انتقال \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 دسته‌ی \lr{A} & دسته‌ی \lr{B} & انتقال \\
 \midrule\noalign{}
@@ -209,7 +217,6 @@
 & & \lr{T6} 0011 \\
 & & \lr{T7} 0100 \\
 \end{longtable}
-}
 
 \lr{prototype} دسته‌ی \lr{A} برابر 1111 و \lr{prototype} دسته‌ی \lr{B}
 برابر 0000 است. مقایسه‌ی کلیدی: \textbf{\lr{A1} (1110)} سه ویژگی با
@@ -310,11 +317,21 @@ dX = v\,dt + s\,dW(t), \qquad X(0) = z,
 \(a\) (درست) یا \(0\) (خطا) برسد پاسخ داده می‌شود؛
 \(\mathrm{RT} = T_{\text{\lr{decision}}} + T_{er}\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. مدل \lr{drift-diffusion (DDM)}}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+پارامتر
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معنا
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+دست‌کاری معمولی که تغییرش می‌دهد
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 پارامتر
@@ -338,7 +355,6 @@ dX = v\,dt + s\,dW(t), \qquad X(0) = z,
 \(s\) (نویز درون \lr{trial)} & ثابت مقیاس & ثابت (طبق قرارداد
 \(s = 0.1\) در \lr{EZ} و \(s = 1\) در جاهای دیگر) \\
 \end{longtable}
-}
 
 \lr{DDM} کامل تغییرپذیری بین \lr{trial}ها در \lr{drift}، نقطه‌ی شروع و
 \lr{non-decision time} را هم دارد. تمرین 5 هفته‌ی 1 نشان داد که
@@ -355,11 +371,9 @@ dX = v\,dt + s\,dW(t), \qquad X(0) = z,
 کوچک \(dt\)، شواهد به اندازه‌ی یک هل قطعی \(v\,dt\) به‌علاوه‌ی یک ضربه‌ی
 تصادفی \(s\,dW\) تغییر می‌کند». \(dW\) نویز گاوسی است که واریانسش متناسب
 با \(dt\) است (پس در یک گام به طول \(dt\) ضربه انحراف معیار
-\(s\sqrt{dt}\) دارد). در شبیه‌سازی \lr{lab} این دقیقاً همان \lr{random
-walk} هفته‌ی 1 با گام‌های کوچک است:
-\lr{\nolinkurl{x += v*dt + s*sqrt(dt)*randn()}}. جدول پارامترها بخشی است
-که باید به خاطر سپرد: \(v\) = کیفیت شواهد، \(a\) = احتیاط، \(z\) =
-سوگیری، \(T_{er}\) = \lr{non-decision time.}
+\(s\sqrt{dt}\) دارد). جدول پارامترها بخشی است که باید به خاطر سپرد:
+\(v\) = کیفیت شواهد، \(a\) = احتیاط، \(z\) = سوگیری، \(T_{er}\) =
+\lr{non-decision time.}
 
 \subsubsection{\texorpdfstring{4. \lr{EZ-diffusion}}{4. EZ-diffusion}}
 
@@ -394,9 +408,7 @@ T_{er} = M_{RT} - \mathrm{MDT}.
 و وقتی فرض‌هایش برقرارند پارامترها را خوب بازیابی می‌کند (بخش \lr{C lab).
 RT}های خطا و شکل توزیع \lr{RT} فراتر از میانگین و واریانس را نادیده
 می‌گیرد، و نمی‌تواند سوگیری یا تغییرپذیری‌های بین \lr{trial}ها را برآورد
-کند. برای این‌ها \lr{DDM} کامل را با \lr{MLE} یا روش‌های بیزی سلسله‌مراتبی
-برازش کنید (مثلاً بسته‌ی \lr{HDDM} یا درست‌نمایی \lr{Wiener} در
-\lr{PyMC/Stan).}
+کند.
 
 \paragraph{خواندن ریاضی}
 
@@ -421,9 +433,7 @@ RT}های خطا و شکل توزیع \lr{RT} فراتر از میانگین و 
   زمان تصمیم نیست، \lr{non-decision time} است.
 \end{enumerate}
 
-از مثال حل‌شده (بخش 2) برای نشان دادن هر قدم با عدد استفاده کنید؛ بعد
-بگذارید کامپیوتر انجامش دهد (تابع \lr{\nolinkurl{ez_diffusion}} در کد
-\lr{lab).}
+از مثال حل‌شده (بخش 2) برای نشان دادن هر قدم با عدد استفاده کنید؛
 
 \paragraph{برای یک مهندس}
 
@@ -464,19 +474,13 @@ RT}های خطا و شکل توزیع \lr{RT} فراتر از میانگین و 
   بکشید.} بعد هر بار یک پارامتر را روی تخته تغییر دهید (مرزهای دورتر،
   \lr{drift} تندتر، شروع دیرتر) و بپرسید دقت و زمان واکنش چه می‌شود.
 \item
-  \textbf{\lr{EZ} را اثبات نکنید.} آن را به‌عنوان یک «ماشین‌حساب» معرفی
-  کنید و وقت را روی تفسیر بگذارید (بخش \lr{E lab):} کدام دست‌کاری کدام
-  پارامتر را تغییر داد.
-\item
   \textbf{سؤال‌های رایج.}
 
   \begin{itemize}
   \tightlist
   \item
-    \emph{\lr{«prototype} یا \lr{exemplar}، کدام برنده شد؟»} برای
-    دسته‌های کوچک و کم‌ساختار معمولاً مدل‌های \lr{exemplar} بهتر برازش
-    می‌شوند؛ برای دسته‌های بزرگ و پرساختار \lr{prototype} هم خوب کار
-    می‌کند. هر دو ایده در مدل‌های امروزی زنده‌اند.
+    برای دسته‌های بزرگ و پرساختار \lr{prototype} هم خوب کار می‌کند. هر دو
+    ایده در مدل‌های امروزی زنده‌اند.
   \item
     \emph{«چرا فقط میانگین زمان واکنش را مقایسه نکنیم؟»} یک گروه کندتر
     ممکن است محتاط‌تر باشد، شواهد بدتری داشته باشد یا از نظر حرکتی کندتر
@@ -490,6 +494,8 @@ RT}های خطا و شکل توزیع \lr{RT} فراتر از میانگین و 
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{مثال حل‌شده}
 
 \subsubsection{\texorpdfstring{بخش 1: یک پیش‌بینی \lr{GCM} با
@@ -497,8 +503,13 @@ RT}های خطا و شکل توزیع \lr{RT} فراتر از میانگین و 
 
 محرک \lr{T3} (1111)، توجه برابر \(w_m = 0.25\)، حساسیت \(c = 2\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}llll@{}}
+\caption{\centering بخش 1: یک پیش‌بینی \lr{GCM }با دست}\tabularnewline
+\toprule\noalign{}
+\lr{Exemplar} & ابعاد ناهمخوان & فاصله & شباهت
+\(e^{-2\,\mathrm{dist}}\) \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \lr{Exemplar} & ابعاد ناهمخوان & فاصله & شباهت
 \(e^{-2\,\mathrm{dist}}\) \\
@@ -518,7 +529,6 @@ RT}های خطا و شکل توزیع \lr{RT} فراتر از میانگین و 
 \lr{B4} 0000 & 4 & 1.00 & 0.135 \\
 \textbf{جمع \lr{B}} & & & \textbf{1.094} \\
 \end{longtable}
-}
 
 \[
 P(A\mid \text{\lr{T3}}) = \frac{2.794}{2.794 + 1.094} = 0.719.
@@ -563,6 +573,8 @@ P(A\mid \text{\lr{T3}}) = \frac{2.794}{2.794 + 1.094} = 0.719.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
 \subsubsection{اهداف}
@@ -571,7 +583,7 @@ P(A\mid \text{\lr{T3}}) = \frac{2.794}{2.794 + 1.094} = 0.719.
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  پیاده‌سازی \lr{GCM} و مدل \lr{prototype} برای ساختار 5-4؛ شبیه‌سازی داده
+  صورت‌بندی \lr{GCM} و مدل \lr{prototype} برای ساختار 5-4؛ شبیه‌سازی داده
   از \lr{GCM.}
 \item
   برازش هر دو مدل با \lr{MLE}، مقایسه‌شان، و بررسی پیش‌بینی کلیدی \lr{A1}
@@ -586,138 +598,34 @@ P(A\mid \text{\lr{T3}}) = \frac{2.794}{2.794 + 1.094} = 0.719.
 \textbf{زمان‌بندی:} بخش \lr{A} 20 دقیقه · بخش \lr{B} 25 دقیقه · بخش
 \lr{C} 15 دقیقه · بخش \lr{D} 40 دقیقه · بخش \lr{E} 20 دقیقه.
 
-\subsubsection{\texorpdfstring{بخش \lr{A:} ساختار 5-4 و دو مدل (20
-دقیقه)}{بخش A: ساختار 5-4 و دو مدل (20 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week14.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{22\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-stimulus features  P(A) true  A responses / 20
-      A1     1110       0.84                15
-      A2     1010       0.88                18
-      A3     1011       0.91                18
-      A4     1101       0.60                10
-      A5     0111       0.60                11
-      B1     1100       0.47                10
-      B2     0110       0.47                11
-      B3     0001       0.16                 4
-      B4     0000       0.12                 2
-      T1     1001       0.58                11
-      T2     1000       0.48                11
-      T3     1111       0.87                20
-      T4     0010       0.48                10
-      T5     0101       0.26                 6
-      T6     0011       0.58                12
-      T7     0100       0.19                 4
-\end{Verbatim}
-\end{latin}
-
 \subsubsection{\texorpdfstring{بخش \lr{B:} برازش و مقایسه (25
 دقیقه)}{بخش B: برازش و مقایسه (25 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week14.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-GCM       NLL =  28.36  AIC =  64.72  BIC =  79.79  c = 3.82  w = [0.397 0.111 0.426 0.066]
-prototype NLL =  30.02  AIC =  68.04  BIC =  83.11  c = 1.90  w = [0.435 0.009 0.461 0.095]
-stimulus  observed   GCM  prototype
-      A1      0.75 0.842      0.822
-      A2      0.90 0.884      0.818
-\end{Verbatim}
-\end{latin}
-
-\textbf{تفسیر کنید:} 1. کدام مدل ترجیح دارد و شواهد چقدر قوی است؟
-(\(\Delta\mathrm{AIC} = 3.3\)، پس وزن‌های \lr{Akaike} حدود 0.84 در برابر
-0.16: ترجیحی متوسط، نه قاطع.) 2. به \lr{A1} و \lr{A2} نگاه کنید. داده
-نشان می‌دهد \lr{A2} (0.90) بهتر از \lr{A1} (0.75) دسته‌بندی شده. \lr{GCM}
-این ترتیب را پیش‌بینی می‌کند (0.88 در برابر 0.84)؛ مدل \lr{prototype}
-نمی‌تواند (0.82 در برابر 0.82). چرا این مقایسه بین دو نظریه تیزتر از
-آماره‌ی برازش کلی تمایز می‌گذارد؟ 3. وزن‌های توجه \lr{GCM} را تفسیر کنید.
-شرکت‌کننده به کدام ابعاد توجه کرده، و آیا با ساختار دسته جور درمی‌آید؟
+\textbf{تفسیر کنید:} 1. (\(\Delta\mathrm{AIC} = 3.3\)، پس وزن‌های
+\lr{Akaike} حدود 0.84 در برابر 0.16: ترجیحی متوسط، نه قاطع.) 2. به
+\lr{A1} و \lr{A2} نگاه کنید. داده نشان می‌دهد \lr{A2} (0.90) بهتر از
+\lr{A1} (0.75) دسته‌بندی شده. \lr{GCM} این ترتیب را پیش‌بینی می‌کند (0.88
+در برابر 0.84)؛ مدل \lr{prototype} نمی‌تواند (0.82 در برابر 0.82). چرا
+این مقایسه بین دو نظریه تیزتر از آماره‌ی برازش کلی تمایز می‌گذارد؟ 3.
+وزن‌های توجه \lr{GCM} را تفسیر کنید.
 
 \subsubsection{\texorpdfstring{بخش \lr{C:} آیا \lr{GCM} در این طرح قابل
 بازیابی است؟ (15
 دقیقه)}{بخش C: آیا GCM در این طرح قابل بازیابی است؟ (15 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week14.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار} (حدود 1 دقیقه):
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-c: r(true, recovered) = 0.08
-w1: r(true, recovered) = 0.91
-w2: r(true, recovered) = 0.76
-w3: r(true, recovered) = 0.89
-w4: r(true, recovered) = 0.85
-\end{Verbatim}
-\end{latin}
-
 \textbf{به چه دقت کنید:} وزن‌های توجه خوب بازیابی می‌شوند \lr{(r} =
 0.76\lr{--}0.91)، ولی حساسیت \(c\) در این طرح عملاً \textbf{قابل بازیابی نیست}
-\lr{(r} = 0.08). با فقط 16 محرک و 20 \lr{trial} برای هرکدام، یک \(c\)
-بزرگ و یک \(c\) متوسط می‌توانند نسبت‌های پاسخ خیلی شبیهی بدهند (وقتی \(c\)
-بزرگ شد، پیش‌بینی‌ها اشباع می‌شوند)، و \(c\) با میزان متمرکز بودن وزن‌ها
-\lr{trade-off} دارد. پس باید وزن‌های توجه بخش \lr{B} را تفسیر کنیم ولی
-مقدار \(\hat c = 3.82\) را \textbf{نه}. \lr{trial}های بیشتر، دامنه‌ی محرک
+\lr{(r} = 0.08). پس باید وزن‌های توجه بخش \lr{B} را تفسیر کنیم ولی مقدار
+\(\hat c = 3.82\) را \textbf{نه}. \lr{trial}های بیشتر، دامنه‌ی محرک
 گسترده‌تر، یا یک پیشین بیزی روی \(c\) کمک می‌کند. این دقیقاً همان نوع
 نتیجه‌ای است که مطالعه‌ی بازیابی برایش ساخته شده (هفته‌ی 7).
-
-\subsubsection{\texorpdfstring{بخش \lr{D: drift-diffusion} و \lr{EZ} (40
-دقیقه)}{بخش D: drift-diffusion و EZ (40 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week14.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار} (حدود 30 ثانیه):
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-instruction difficulty    Pc   MRT  v_true  v_EZ  a_true  a_EZ  Ter_EZ
-      speed       easy 0.870 0.423    0.25 0.243    0.08 0.078   0.304
-      speed       hard 0.732 0.466    0.12 0.115    0.08 0.088   0.288
-   accuracy       easy 0.975 0.572    0.25 0.261    0.14 0.140   0.317
-   accuracy       hard 0.818 0.697    0.12 0.111    0.14 0.135   0.313
-\end{Verbatim}
-\end{latin}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week14.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
 
 \subsubsection{\texorpdfstring{بخش \lr{E:} تفسیر آزمایش 2 × 2 (20
 دقیقه)}{بخش E: تفسیر آزمایش 2 × 2 (20 دقیقه)}}
 
-در \lr{notebook} جواب دهید: 1. کدام پارامتر \lr{EZ} با دست‌کاری
-\textbf{دستورالعمل} تغییر می‌کند و کدام با \textbf{دشواری}؟ آیا هیچ‌کدام
-از دست‌کاری‌ها روی پارامتری که \emph{نباید} اثر بگذارد اثر گذاشت؟ 2. توصیف
-کنید توزیع \lr{RT} از دستورالعمل سرعت به دقت چطور تغییر می‌کند (نمودار
-بخش \lr{D).} کدام بخش توزیع بیشتر تغییر می‌کند: لبه‌ی جلویی یا دنباله؟ 3.
-یک مطالعه‌ی بالینی نشان می‌دهد بیماران از گروه کنترل کندترند ولی به همان
-اندازه دقیق. دو تبیین مختلف \lr{DDM} برای این نتیجه طرح کنید و بگویید
-کدام داده‌ها بین آن‌ها تمایز می‌گذارند.
+2. توصیف کنید توزیع \lr{RT} از دستورالعمل سرعت به دقت چطور تغییر می‌کند
+(نمودار بخش \lr{D).} 3. یک مطالعه‌ی بالینی نشان می‌دهد بیماران از گروه
+کنترل کندترند ولی به همان اندازه دقیق.
 
 \subsubsection{تمرین‌ها (به ترتیب سختی)}
 
@@ -734,19 +642,11 @@ instruction difficulty    Pc   MRT  v_true  v_EZ  a_true  a_EZ  Ter_EZ
 مقایسه‌ی مدل، مدل مولد را تشخیص می‌دهد؟ یک بازیابی مدل کوچک اجرا کنید (20
 مجموعه داده برای هر مدل مولد) و \lr{confusion matrix} 2 × 2 را بسازید.
 
-\textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} (بازیابی و سوگیری \lr{EZ).}} برای 200 شرکت‌کننده‌ی
-شبیه‌سازی‌شده با \((v, a, T_{er})\) تصادفی و فقط 100 \lr{trial} برای
-هرکدام، برآوردهای \lr{EZ} را با مقادیر واقعی مقایسه کنید. کدام پارامتر
-بدتر از همه بازیابی می‌شود؟ بعد تغییرپذیری بین \lr{trial}ها \lr{drift} را
-به شبیه‌ساز اضافه کنید (تمرین 5 هفته‌ی 1) و ببینید کدام برآورد \lr{EZ}
-سوگیر می‌شود.
-
-\textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: \lr{GCM} بیزی).} \lr{GCM} را در \lr{PyMC}
-با پیشین‌های \(c \sim \mathrm{Gamma}(2, \text{\lr{scale }} 2)\) و
-\(w \sim \mathrm{Dirichlet}(1,\allowbreak 1,\allowbreak 1,\allowbreak 1)\) برازش کنید. پسین وزن‌های توجه
-را با \lr{MLE} مقایسه کنید و یک بررسی پیش‌بینی پسین روی تفاوت \lr{A1} و
-\lr{A2} اجرا کنید. (برای نسخه‌ی سلسله‌مراتبی، \lr{Lee} \lr{\&} \lr{Wagenmakers}
-فصل 17 را ببینید.)
+\(c \sim \mathrm{Gamma}(2, \text{\lr{scale }} 2)\) ·
+\(w \sim \mathrm{Dirichlet}(1,\allowbreak 1,\allowbreak 1,\allowbreak 1)\) پسین وزن‌های توجه را با
+\lr{MLE} مقایسه کنید و یک بررسی پیش‌بینی پسین روی تفاوت \lr{A1} و \lr{A2}
+اجرا کنید. (برای نسخه‌ی سلسله‌مراتبی، \lr{Lee} \lr{\&} \lr{Wagenmakers} فصل 17
+را ببینید.)
 
 \subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
 
@@ -770,31 +670,12 @@ instruction difficulty    Pc   MRT  v_true  v_EZ  a_true  a_EZ  Ter_EZ
 درمی‌آیند یا نه یک سؤال تجربی است، و می‌توانید آن را با ابزارهای این درس
 بیازمایید.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week14.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-P(fruit | tomato) = 0.902
-P(fruit | knife) = 0.094
-P(fruit | nutcracker) = 0.370
-\end{Verbatim}
-\end{latin}
-
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} \(c\) را به 1 و به 10
-تغییر دهید. سه پیش‌بینی چطور عوض می‌شوند، و چرا \lr{«nutcracker»} بیشتر از
-همه تغییر می‌کند؟ - \ensuremath{\star}\ensuremath{\star} فرض کنید 20 شرکت‌کننده سه محرک آزمون را دسته‌بندی
-کرده‌اند، با 19، 1 و 12 پاسخ \lr{«fruit».} \(c\) را با \lr{MLE} برازش
-کنید (درست‌نمایی دوجمله‌ای، هفته‌ی 4) و یک آزمون \(G^2\) اجرا کنید. آیا
-فضای \lr{embedding} با یک پارامتر برازش خوبی دارد؟ - \ensuremath{\star}\ensuremath{\star} بحث:
-\lr{embedding}ها از متن یاد گرفته شده‌اند، نه از ادراک. برای کدام دسته‌ها
-ممکن است شباهت مبتنی بر متن به‌طور نظام‌مند با شباهت انسانی فرق کند (به
-رنگ یا شکل فکر کنید)؟
+سه پیش‌بینی چطور عوض می‌شوند، و چرا \lr{«nutcracker»} بیشتر از همه تغییر
+می‌کند؟ - \ensuremath{\star}\ensuremath{\star} فرض کنید 20 شرکت‌کننده سه محرک آزمون را دسته‌بندی کرده‌اند، با
+19، 1 و 12 پاسخ \lr{«fruit».} \(c\) را با \lr{MLE} برازش کنید (درست‌نمایی
+دوجمله‌ای، هفته‌ی 4) و یک آزمون \(G^2\) اجرا کنید. آیا فضای \lr{embedding}
+با یک پارامتر برازش خوبی دارد؟ - \ensuremath{\star}\ensuremath{\star} بحث: \lr{embedding}ها از متن یاد
+گرفته شده‌اند، نه از ادراک.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -827,8 +708,7 @@ P(fruit | nutcracker) = 0.370
 \item
   \textbf{«گروه کندتر \lr{drift rate} پایین‌تری دارد.»} کندی می‌تواند از
   مرز بالاتر، \lr{drift} پایین‌تر یا \lr{non-decision time} طولانی‌تر
-  بیاید. فقط مدلی که روی دقت \emph{و} توزیع‌های \lr{RT} برازش شده می‌تواند
-  بگوید کدام.
+  بیاید.
 \item
   \textbf{فراموش کردن حالت‌های مرزی} \(P_c = 1\) یا \(P_c \le 0.5\) در
   \lr{EZ.}
@@ -838,11 +718,10 @@ P(fruit | nutcracker) = 0.370
 
 \subsection{خودآزمایی}
 
-\textbf{1.} تفاوت اصلی نظریه‌های \lr{exemplar} و \lr{prototype} را هرکدام
-در یک جمله بیان کنید. \textbf{پاسخ} \lr{Exemplar:} یک دسته با همه‌ی
-نمونه‌های ذخیره‌شده نمایش داده می‌شود و دسته‌بندی به شباهت جمع‌شده با آن‌ها
-بستگی دارد. \lr{Prototype:} یک دسته با یک خلاصه‌ی واحد (گرایش مرکزی)
-نمایش داده می‌شود و دسته‌بندی به شباهت با آن خلاصه بستگی دارد.
+\textbf{پاسخ} \lr{Exemplar:} یک دسته با همه‌ی نمونه‌های ذخیره‌شده نمایش
+داده می‌شود و دسته‌بندی به شباهت جمع‌شده با آن‌ها بستگی دارد.
+\lr{Prototype:} یک دسته با یک خلاصه‌ی واحد (گرایش مرکزی) نمایش داده می‌شود
+و دسته‌بندی به شباهت با آن خلاصه بستگی دارد.
 
 \textbf{2.} در ساختار 5-4، چرا مقایسه‌ی \lr{A1} و \lr{A2} تشخیصی است؟
 \textbf{پاسخ} \lr{A1} به \lr{prototype} دسته‌ی \lr{A} نزدیک‌تر است (3 از 4
@@ -858,13 +737,10 @@ P(fruit | nutcracker) = 0.370
 \(w_m\) نسبت توجهی است که به بعد \(m\) داده می‌شود و فاصله‌ها را در امتداد
 ابعاد مورد توجه کش می‌دهد.
 
-\textbf{4.} انتظار دارید کدام پارامتر \lr{DDM} تحت این موارد تغییر کند:
-(الف) دستورالعمل سرعت در برابر دقت، (ب) محرک‌های سخت‌تر، (ج) پاسخ حرکتی
-کندتر (مثلاً پا به جای انگشت)؟ \textbf{پاسخ} (الف) فاصله‌ی مرزها \(a\).
-(ب) \lr{drift rate} \(v\). (ج) \lr{non-decision time} \(T_{er}\).
+\textbf{پاسخ} (الف) فاصله‌ی مرزها \(a\). (ب) \lr{drift rate} \(v\). (ج)
+\lr{non-decision time} \(T_{er}\).
 
-\textbf{5.} \lr{EZ-diffusion} به کدام سه آماره نیاز دارد و فرض‌های اصلی‌اش
-چیست؟ \textbf{پاسخ} نسبت پاسخ‌های درست، واریانس \lr{RT}های درست و میانگین
+\textbf{پاسخ} نسبت پاسخ‌های درست، واریانس \lr{RT}های درست و میانگین
 \lr{RT}های درست. فرض می‌کند نقطه‌ی شروع بی‌سوگیر است (\(z = a/2\))،
 پارامترها تغییرپذیری بین \lr{trial}ها ندارند، و مقیاس \(s = 0.1\) است.
 
@@ -883,9 +759,8 @@ P(fruit | nutcracker) = 0.370
   \textbf{\lr{A5 (MCMC} از صفر)} در ابتدای درس این هفته تحویل داده
   می‌شود.
 \item
-  تکلیف جدیدی نداریم: روی \textbf{پروژه‌ی پایانی} کار کنید. اگر پروژه‌تان
-  از \lr{GCM} یا \lr{DDM} استفاده می‌کند، کد امروز نقطه‌ی شروع خوبی است؛
-  به مواد درس ارجاع دهید و بگویید چه چیزی را تغییر داده‌اید.
+  تکلیف جدیدی نداریم: روی \textbf{پروژه‌ی پایانی} کار کنید. به مواد درس
+  ارجاع دهید و بگویید چه چیزی را تغییر داده‌اید.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}

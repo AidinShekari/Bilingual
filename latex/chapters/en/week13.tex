@@ -1,11 +1,4 @@
-\section{Week 13: Probabilistic Programming and Hierarchical Models}
-
-\begin{quote}
-\textbf{Chapter 5: Parameter estimation with data-driven methods
-(MCMC)}, bridging to Chapter 6 · Lecture 1 h · Lab 2 h \textbf{Running
-data:} a recognition/detection experiment with 12 participants and only
-50 + 50 trials each: hierarchical SDT in PyMC.
-\end{quote}
+\section{Week 13: Hierarchical Models}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -14,11 +7,21 @@ data:} a recognition/detection experiment with 12 participants and only
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -38,8 +41,6 @@ parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم �
 estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
 برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
 trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
-probabilistic programming & \RL{\CMfa برنامه‌نویسی احتمالاتی} & \RL{\CMfa تعریف مدل
-با کد و نمونه‌گیری خودکار} (PyMC) \\
 prior & \RL{\CMfa توزیع پیشین} (prior) & \RL{\CMfa باور درباره‌ی پارامتر پیش از دیدن
 داده} \\
 likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
@@ -76,7 +77,6 @@ standard error (SE) & \RL{\CMfa خطای استاندارد} & \RL{\CMfa پرا�
 benchmark & benchmark \RL{\CMfa (مجموعه‌آزمون استاندارد)} & \RL{\CMfa مجموعه سؤال
 برای مقایسه‌ی مدل‌های هوش مصنوعی} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -88,11 +88,6 @@ By the end of this week, students will be able to:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{Specify} a cognitive model in PyMC (priors, deterministic
-  transformations, likelihood) and \textbf{run} a complete Bayesian
-  workflow: prior predictive check, sampling, diagnostics, posterior
-  predictive check.
-\item
   \textbf{Explain} conceptually how Hamiltonian Monte Carlo / NUTS
   differs from random-walk Metropolis, and what a divergence signals.
 \item
@@ -100,7 +95,7 @@ By the end of this week, students will be able to:
   \textbf{explain} partial pooling and shrinkage, contrasting it with
   the complete- and no-pooling approaches of Week 5.
 \item
-  \textbf{Implement} a non-centered parameterization and
+  \textbf{Formulate and evaluate} a non-centered parameterization and
   \textbf{justify} its use.
 \item
   \textbf{Interpret} group-level and individual-level posteriors and
@@ -131,10 +126,8 @@ typical sensitivity, and how much do people differ?'') with all sources
 of uncertainty included.
 
 Writing samplers for such models by hand would be a research project.
-\textbf{Probabilistic programming languages} like PyMC let us
-\emph{describe} the model in a few lines and use a state-of-the-art
-sampler, NUTS, automatically. The hand-built samplers of Weeks 11--12
-are what make this black box transparent to you.
+The hand-built samplers of Weeks 11--12 are what make this black box
+transparent to you.
 
 \paragraph{Where is this used?}
 
@@ -142,8 +135,7 @@ are what make this black box transparent to you.
 \tightlist
 \item
   \textbf{Most modern cognitive modeling studies with many participants}
-  fit hierarchical models: hierarchical drift-diffusion models (the HDDM
-  package), hierarchical reinforcement-learning models in computational
+  fit hierarchical models: hierarchical drift-diffusion models, hierarchical reinforcement-learning models in computational
   psychiatry, hierarchical SDT in memory research.
 \item
   \textbf{Clinical and developmental studies with short sessions}:
@@ -161,6 +153,8 @@ are what make this black box transparent to you.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lecture notes}
 
 \paragraph{In plain words}
@@ -174,58 +168,8 @@ spread we also estimate. The effect is sensible compromise: a person
 with little or extreme data is pulled toward the group average
 (\textbf{shrinkage}), and a person with plenty of data keeps an estimate
 close to their own. How strong the pull is depends on how different
-people turn out to be, which is learned from the data. Writing a sampler
-for such a model by hand is hard, so we use \textbf{PyMC}: we write the
-model almost like the math, and PyMC runs an advanced sampler
-(\textbf{NUTS}) for us. The last part of the week is a step-by-step
-\textbf{workflow} for doing this safely.
-
-\textbf{Suggested timing (60 min):} probabilistic programming 10 ·
-HMC/NUTS concepts 10 · hierarchical models 20 · parameterization and
-divergences 10 · the Bayesian workflow 10.
-
-\subsubsection{1. Probabilistic programming with PyMC}
-
-A PyMC model is a direct transcription of the mathematical model:
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Math
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-PyMC
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\(\mu_{d} \sim \mathcal{N}(1, 1)\) &
-\nolinkurl{mu_d = pm.Normal("mu_d", 1, 1)} \\
-\(\sigma_d \sim \mathcal{N}^{+}(0, 1)\) &
-\nolinkurl{sigma_d = pm.HalfNormal("sigma_d", 1)} \\
-\(d'_j = \mu_d + \sigma_d z_j\) &
-\nolinkurl{d = pm.Deterministic("d", mu_d + sigma_d * z_d)} \\
-\(H_j = \Phi(d'_j/2 - c_j)\) & \nolinkurl{H = Phi(d / 2 - c)} (an
-expression, built with \nolinkurl{pm.math}) \\
-\(\text{hits}_j \sim \mathrm{Binomial}(n_s, H_j)\) &
-\nolinkurl{pm.Binomial("hits", n=n_s, p=H, observed=hits)} \\
-\end{longtable}
-}
-
-Then \nolinkurl{pm.sample()} compiles the model, computes gradients
-automatically, and runs NUTS. The result is an ArviZ
-\nolinkurl{InferenceData}/\nolinkurl{DataTree} object with groups such
-as \nolinkurl{posterior}, \nolinkurl{sample_stats},
-\nolinkurl{prior_predictive} and \nolinkurl{posterior_predictive}, which
-ArviZ summarizes and diagnoses (Week 12).
-
-\textbf{Practical notes:} use \nolinkurl{cores=1} when running a plain
-\nolinkurl{.py} script on Windows (or protect the code with
-\nolinkurl{if __name__ == "__main__":}); give every variable a unique
-name; use \nolinkurl{dims}/\nolinkurl{coords} to label participants.
+people turn out to be, which is learned from the data. The last part of
+the week is a step-by-step \textbf{workflow} for doing this safely.
 
 \subsubsection{2. Hamiltonian Monte Carlo and NUTS (conceptually)}
 
@@ -237,8 +181,7 @@ Give the ball a random push (momentum), let it roll for a while
 following the landscape's gradient, and propose where it ends up.
 Proposals can be far away yet still in high-probability regions, so
 acceptance is high and autocorrelation low. \textbf{NUTS} (the No-U-Turn
-Sampler) tunes the rolling time automatically. HMC needs gradients,
-which PyMC computes for you.
+Sampler) tunes the rolling time automatically.
 
 \textbf{Divergences.} The rolling is simulated numerically in small
 steps. Where the posterior's curvature changes abruptly (typically in
@@ -270,11 +213,21 @@ energy error explodes.
 
 \textbf{Three ways to pool information (cf.~Week 5):}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. Hierarchical models}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Approach
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+What it assumes
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Approach
@@ -294,7 +247,6 @@ No pooling & Separate \(d'_j\), \(c_j\) with fixed, independent priors &
 \textbf{Partial pooling} & Hierarchical; \(\sigma_d\), \(\sigma_c\)
 \emph{estimated} & The data decide how similar participants are \\
 \end{longtable}
-}
 
 \textbf{Shrinkage.} For a normal approximation, the hierarchical
 estimate of participant \(j\) is a precision-weighted average of their
@@ -398,9 +350,6 @@ everywhere.
   \textbf{Posterior predictive check} (Week 10): can the fitted model
   reproduce the data?
 \item
-  \textbf{Compare} models if needed (LOO via ArviZ, Bayes factors; Weeks
-  6, 10).
-\item
   \textbf{Interpret and report.}
 \end{enumerate}
 
@@ -428,9 +377,6 @@ everywhere.
   normalizes the variables to unit scale, i.e.~it improves the
   conditioning of the problem, much like whitening or normalizing inputs
   before an adaptive algorithm.
-\item
-  \textbf{PyMC} computes gradients automatically (automatic
-  differentiation), the same technology that trains neural networks.
 \end{itemize}
 
 \paragraph{For the instructor}
@@ -452,10 +398,6 @@ everywhere.
   rolling on the negative log posterior, given a random push) is enough;
   the important practical skill is reading the diagnostics (divergences,
   \(\hat R\), ESS).
-\item
-  \textbf{Running PyMC in class:} on Windows use \nolinkurl{cores=1} in
-  scripts, and start sampling early (Part C), since it can take a few
-  minutes.
 \item
   \textbf{Typical questions.}
 
@@ -485,13 +427,27 @@ everywhere.
 \(1/0.5^2 = 4\)). Two participants both have a raw estimate
 \(\hat d_j = 2.4\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering Worked example}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Participant
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathrm{SE}_j\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Individual precision \(1/\mathrm{SE}_j^2\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Hierarchical estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Posterior SD
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Participant
@@ -515,7 +471,6 @@ P2 (many trials) & 0.20 & 25 &
 \((25 \times 2.4 + 4 \times 1.3)/(25 + 4) = 65.2/29 = \mathbf{2.25}\) &
 \(1/\sqrt{29} = 0.19\) \\
 \end{longtable}
-}
 
 \textbf{Interpretation.} Both participants \emph{look} equally
 sensitive, but P1's estimate rests on less data, so the model trusts it
@@ -527,6 +482,8 @@ calculation fixes them for illustration.)
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lab (2 hours)}
 
 \subsubsection{Goals}
@@ -537,9 +494,6 @@ calculation fixes them for illustration.)
 \item
   Simulate a 12-participant experiment and compute individual
   (no-pooling) estimates.
-\item
-  Write the hierarchical SDT model in PyMC with a non-centered
-  parameterization; run a prior predictive check.
 \item
   Sample with NUTS; check \(\hat R\), ESS and divergences.
 \item
@@ -553,123 +507,26 @@ calculation fixes them for illustration.)
 30 min · Part E 20 min · Part F 15 min.
 
 \begin{quote}
-\textbf{Run time:} sampling takes from under a minute (conda-forge
-install with a compiler) up to about 2--3 minutes (no compiler). Start
-Part C early.
+Start Part C early.
 \end{quote}
 
-\subsubsection{Part A: data and no-pooling estimates (10 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week13.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{16\baselineskip}
-\begin{Verbatim}
-    hits  fas  d_true  d_indiv  c_true  c_indiv
-0     46    2    2.21     3.01    0.13     0.15
-1     16   25   -0.24    -0.46    0.42     0.23
-2     28    6    1.78     1.29    0.41     0.50
-3     40   11    1.33     1.57    0.05    -0.03
-4     43    9    1.96     1.94    0.09    -0.08
-5     43   17    1.49     1.45   -0.34    -0.32
-6     31    0    2.21     2.63    0.70     1.02
-7     35   11    1.32     1.27    0.13     0.12
-8     24    8    1.04     0.92    0.60     0.51
-9     39    8    1.59     1.72    0.33     0.11
-10    27    3    1.52     1.58    0.78     0.69
-11    21    9    1.12     0.69    0.66     0.54
-\end{Verbatim}
-
-\subsubsection{Part B: the model in PyMC, and a prior predictive check
-(20 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week13.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{4\baselineskip}
-\begin{Verbatim}
-Share of prior-predictive rates exactly 0 or 1: 0.30
-\end{Verbatim}
+\subsubsection{Part B: prior predictive check}
 
 The prior implies a broad range of hit and false-alarm rates, mostly
 above the diagonal. About 30\% of simulated participants have a hit or
 false-alarm count of exactly 0 or 50. These are mostly participants
 simulated with very high sensitivity and a strong bias, which produce
-zero false alarms. This is far better than the 96\% of the ``vague''
-prior in Week 9, but still on the generous side: tightening the priors
-on \nolinkurl{sigma_d} and \nolinkurl{sigma_c} (e.g.,
-\nolinkurl{HalfNormal(0.5)}) would remove most of them. Try it and check
-whether the posterior changes.
-
-\subsubsection{Part C: sampling and diagnostics (25 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week13.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{10\baselineskip}
-\begin{Verbatim}
-        ess_bulk ess_tail r_hat mcse_mean mcse_sd
-mu_d        1303     1651  1.00    0.0075  0.0054
-sigma_d     1639     2088  1.00    0.0055  0.0045
-mu_c        1312     1474  1.00    0.0036   0.003
-sigma_c     1203     1748  1.00    0.0034  0.0047
-Number of divergent transitions: 0
-Max R-hat over all individual d and c: 1.0023234826538692
-\end{Verbatim}
+zero false alarms. Try it and check whether the posterior changes.
 
 \subsubsection{Part D: shrinkage and group-level inference (30 min)}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week13.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{9\baselineskip}
-\begin{Verbatim}
-RMSE vs. true d':  no pooling = 0.339,  hierarchical = 0.279
-mu_d     posterior mean = 1.45, 95% interval = [0.90, 1.95]
-sigma_d  posterior mean = 0.90, 95% interval = [0.56, 1.42]
-mu_c     posterior mean = 0.29, 95% interval = [0.04, 0.55]
-sigma_c  posterior mean = 0.38, 95% interval = [0.22, 0.65]
-P(mu_c > 0 | data) = 0.987
-\end{Verbatim}
-
-\textbf{Interpret (write in your notebook):} 1. Which participants are
-shrunk most, and why? Find one whose raw estimate is extreme and
-describe what the hierarchical model does with it. 2. Is the
-hierarchical estimate closer to the truth on average? Is it closer for
-\emph{every} participant? Why is that not required? 3. What do \(\mu_d\)
-and \(\sigma_d\) tell you about this population? Compare \(\sigma_d\)
-with the SD used to simulate the data (0.5) and explain the difference
-(hint: 12 participants).
-
-\subsubsection{Part E: posterior predictive check (20 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week13.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{4\baselineskip}
-\begin{Verbatim}
-Share of observed counts inside their 95% predictive interval: 1.00
-\end{Verbatim}
+Which participants are shrunk most, and why? Find one whose raw estimate
+is extreme and describe what the hierarchical model does with it. 2. Is
+the hierarchical estimate closer to the truth on average? Is it closer
+for \emph{every} participant? Why is that not required? 3. What do
+\(\mu_d\) and \(\sigma_d\) tell you about this population? Compare
+\(\sigma_d\) with the SD used to simulate the data (0.5) and explain the
+difference (hint: 12 participants).
 
 \subsubsection{Part F: report (15 min)}
 
@@ -681,15 +538,10 @@ the group-level conclusions (\(\mu_d\), \(\sigma_d\), \(\mu_c\) with
 
 \subsubsection{Exercises (increasing difficulty)}
 
-\textbf{Exercise 1 \ensuremath{\star}.} Fit the \textbf{complete-pooling} model (one
-\(d'\) and one \(c\) for everyone) in PyMC. Compare its estimate of
-\(d'\) with \(\mu_d\) from the hierarchical model, and its posterior
-predictive check with Part E. Which participants does it fail to
-predict?
+Compare its estimate of \(d'\) with \(\mu_d\) from the hierarchical
+model, and its posterior predictive check with Part E. Which
+participants does it fail to predict?
 
-\textbf{Exercise 2 \ensuremath{\star}.} Rerun Part C with the \textbf{centered}
-parameterization
-(\nolinkurl{d = pm.Normal("d", mu_d, sigma_d, dims="participant")}).
 Compare divergences, ESS and run time. Then reduce the data to 10 + 10
 trials per participant and compare again.
 
@@ -698,14 +550,6 @@ participants 20 + 20 trials and the other half 200 + 200 (simulate new
 data). Show that shrinkage depends on the number of trials, as in the
 worked example.
 
-\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (model comparison with LOO).} Compute the
-log-likelihood with \nolinkurl{pm.compute_log_likelihood(idata)}.
-ArviZ's \nolinkurl{loo} needs one pointwise log-likelihood per
-observation: add the \nolinkurl{hits} and \nolinkurl{fas} log-likelihood
-arrays into a single per-participant array (e.g.,
-\nolinkurl{idata.log_likelihood["obs"] = idata.log_likelihood["hits"] + idata.log_likelihood["fas"]})
-and call \nolinkurl{az.loo(idata, var_name="obs")}. Compare the
-hierarchical and complete-pooling models with \nolinkurl{az.compare}.
 Check the Pareto-\(k\) diagnostics and say what they mean for
 leave-one-participant-out prediction.
 
@@ -735,45 +579,17 @@ task categories, and some categories have only a handful of items.
 Reporting raw accuracy per category gives noisy, sometimes extreme
 numbers, just like individual SDT fits with few trials. A hierarchical
 model treats category accuracies as draws from a common distribution and
-shrinks small categories toward the overall mean. The code below uses a
-fast empirical-Bayes version, a beta-binomial model whose group
-parameters are estimated by maximizing the marginal likelihood on a
-grid. In the exercises you fit the full Bayesian version in PyMC.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week13.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{13\baselineskip}
-\begin{Verbatim}
-items   true    raw  shrunk
-    5  0.72  0.80   0.71
-    8  0.63  0.88   0.74
-   10  0.64  0.50   0.63
-   15  0.63  0.67   0.68
-   25  0.76  0.88   0.80
-   40  0.69  0.55   0.60
-   60  0.80  0.78   0.76
-   80  0.51  0.57   0.60
-group mean = 0.69, concentration = 19.9;  RMSE raw = 0.125, shrunk = 0.066
-\end{Verbatim}
+shrinks small categories toward the overall mean.
 
 The 8-item category (raw 0.88, true 0.63) is pulled down strongly, and
 the shrunken estimates are about twice as accurate overall (RMSE 0.066
 vs.~0.125).
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} Which categories move most, and
-why? Relate your answer to the shrinkage formula in this week's lecture
-notes. - \ensuremath{\star}\ensuremath{\star} Fit the same model in PyMC: \nolinkurl{mu ~ Beta(2, 2)},
-\nolinkurl{kappa ~ Gamma(2, 0.1)} (shape and rate),
-\nolinkurl{theta_j ~ Beta(mu * kappa, (1 - mu) * kappa)},
-\nolinkurl{y_j ~ Binomial(n_j, theta_j)}. Compare the posterior means
-with the empirical-Bayes estimates, and check the diagnostics. - \ensuremath{\star}\ensuremath{\star}
-Discussion: a leaderboard highlights ``the category where Model X is
-weakest'', a category with 5 items. What would you tell the authors?
+Relate your answer to the shrinkage formula in this week's lecture
+notes. Compare the posterior means with the empirical-Bayes estimates,
+and check the diagnostics. - \ensuremath{\star}\ensuremath{\star} Discussion: a leaderboard highlights
+``the category where Model X is weakest'', a category with 5 items. What
+would you tell the authors?
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -788,8 +604,7 @@ weakest'', a category with 5 items. What would you tell the authors?
   average. It is principled, not an ad-hoc correction.
 \item
   \textbf{Ignoring divergences.} Even a handful indicate unreliable
-  exploration. Reparameterize (non-centered), tighten priors on scale
-  parameters, or increase \nolinkurl{target_accept}.
+  exploration.
 \item
   \textbf{Centered parameterization with sparse data.} It invites
   funnels and divergences. Default to non-centered for hierarchical
@@ -798,14 +613,6 @@ weakest'', a category with 5 items. What would you tell the authors?
   \textbf{Vague priors on group SDs.} Very wide priors on \(\sigma\) can
   produce implausible prior predictions and sampling problems.
   Half-normal priors on a sensible scale are usually better.
-\item
-  \textbf{Treating the black box as magic.} PyMC samples whatever model
-  you wrote, including wrong ones. The workflow (prior predictive check,
-  diagnostics, PPC) still applies in full.
-\item
-  \textbf{Running multi-process sampling from a script on Windows
-  without a main guard,} which causes cryptic multiprocessing errors.
-  Use \nolinkurl{cores=1} or \nolinkurl{if __name__ == "__main__":}.
 \item
   \textbf{Reporting only individual estimates.} The group-level
   parameters often answer the actual research question.
@@ -838,9 +645,7 @@ geometry that is much easier to explore.
 \textbf{4.} What is a divergent transition, and what should you do about
 it? \textbf{Answer} A NUTS trajectory whose numerical simulation broke
 down, usually in a region of high curvature; it signals that part of the
-posterior is not explored reliably. Reparameterize, use more informative
-priors for scale parameters, or increase \nolinkurl{target_accept}, then
-check that the divergences disappear.
+posterior is not explored reliably.
 
 \textbf{5.} Why does HMC usually mix much better than random-walk
 Metropolis in high dimensions? \textbf{Answer} It uses gradient
@@ -891,10 +696,6 @@ predictive check \ensuremath{\rightarrow} compare models if needed \ensuremath{\
 \item
   \textbf{Farrell \& Lewandowsky (2018), chapter 9.} Multilevel or
   hierarchical modeling of cognitive data.
-\item
-  \textbf{Martin, Kumar \& Lao (2021), chapters 2 and 10.} Diagnostics
-  with ArviZ, and probabilistic programming languages (how PyMC works
-  under the hood).
 \end{itemize}
 
 \emph{Preview for Week 14:} with the full toolkit in hand, we tour

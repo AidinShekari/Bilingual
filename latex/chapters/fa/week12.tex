@@ -15,11 +15,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -75,7 +85,6 @@
 \lr{autocorrelation} & خودهمبستگی & وابستگی نمونه‌های پشت سر هم \\
 \lr{sensitivity (d′)} & حساسیت & فاصله‌ی توزیع علامت و نویز \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -89,14 +98,11 @@
 \item
   \lr{full conditional}ها یک مدل نرمال \lr{semi-conjugate} را
   \textbf{استخراج کنند} و یک نمونه‌گیر \lr{Gibbs} را از صفر
-  \textbf{پیاده‌سازی کنند}.
+  \textbf{صورت‌بندی کنند}.
 \item
   \textbf{توضیح دهند} که نمونه‌گیری \lr{Gibbs} کی کاراست و کی کند مخلوط
   می‌شود (پارامترهای همبسته)، و \lr{Metropolis-within-Gibbs} چطور
   \lr{full conditional}های \lr{non-conjugate} را مدیریت می‌کند.
-\item
-  \lr{split-}\(\hat R\) و اندازه‌ی مؤثر نمونه \lr{(ESS)} را
-  \textbf{پیاده‌سازی کنند} و با \lr{ArviZ} \textbf{بررسی کنند}.
 \item
   عدم همگرایی را از روی چند زنجیره با \lr{trace plot}، \(\hat R\)،
   \lr{ESS} و خطای استاندارد \lr{Monte Carlo} \textbf{تشخیص دهند}.
@@ -120,13 +126,11 @@
 کتاب‌های \lr{Lee} \lr{\&} \lr{Wagenmakers} و \lr{Kruschke} استفاده می‌شوند) بر
 همین ایده ساخته شده‌اند.
 
-\textbf{تشخیص همگرایی} بخش صادقانه‌ی \lr{MCMC} است. یک زنجیره فقط وقتی
-مفید است که (الف) نقطه‌ی شروعش را فراموش کرده باشد و (ب) کل پسین را کاوش
-کرده باشد، و هیچ چیزی در یک زنجیره‌ی تنها هیچ‌کدام را ثابت نمی‌کند. راه‌حل
-استاندارد اجرای \textbf{چند زنجیره از نقاط شروع مختلف} و بررسی توافق
-آن‌هاست. \(\hat R\) این را کمّی می‌کند که «آیا زنجیره‌ها توافق دارند؟»، و
-\lr{ESS} این را که «نمونه‌های همبسته چقدر اطلاعات مستقل دارند؟». هیچ
-نتیجه‌ی \lr{MCMC} نباید بدون این‌ها گزارش شود.
+\textbf{تشخیص همگرایی} بخش صادقانه‌ی \lr{MCMC} است. راه‌حل استاندارد اجرای
+\textbf{چند زنجیره از نقاط شروع مختلف} و بررسی توافق آن‌هاست. \(\hat R\)
+این را کمّی می‌کند که «آیا زنجیره‌ها توافق دارند؟»، و \lr{ESS} این را که
+«نمونه‌های همبسته چقدر اطلاعات مستقل دارند؟». هیچ نتیجه‌ی \lr{MCMC} نباید
+بدون این‌ها گزارش شود.
 
 \paragraph{این موضوع کجا به کار می‌رود؟}
 
@@ -151,6 +155,8 @@
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{جزوه‌ی درس}
 
@@ -238,10 +244,8 @@
 باقی‌مانده به \lr{rate} اضافه می‌کند.
 
 \begin{quote}
-\textbf{نکته درباره‌ی پارامترسازی‌ها.}
-\lr{\nolinkurl{rng.gamma(shape, scale)}} در \lr{NumPy} از
-\textbf{\lr{scale}} = \lr{1/rate} استفاده می‌کند. قاطی کردن \lr{rate} و
-\lr{scale} رایج‌ترین باگ در نمونه‌گیرهای \lr{Gibbs} است.
+قاطی کردن \lr{rate} و \lr{scale} رایج‌ترین باگ در نمونه‌گیرهای \lr{Gibbs}
+است.
 \end{quote}
 
 \paragraph{خواندن ریاضی}
@@ -291,10 +295,6 @@
 \textbf{پیشرفته:} \lr{JAGS} و \lr{BUGS} برای هر پارامتر خودکار یک
 نمونه‌گیر انتخاب می‌کنند \lr{(Gibbs conjugate}، \lr{slice sampling}،
 \lr{Metropolis} تطبیقی)، و به همین دلیل روی تقریباً هر مدلی اجرا می‌شوند.
-\lr{Hamiltonian Monte Carlo} امروزی \lr{(Stan}، \lr{NUTS} در \lr{PyMC)}
-در عوض از گرادیان لگاریتم پسین استفاده می‌کند تا همه‌ی پارامترها را هم‌زمان
-در امتداد هندسه‌ی پسین حرکت دهد، و پسین‌های همبسته را خیلی بهتر مدیریت
-می‌کند (هفته‌ی 13).
 \end{quote}
 
 \subsubsection{3. همگرایی: منطق چند زنجیره}
@@ -304,11 +304,9 @@
 است. 2. \textbf{گیرکرده یا کند:} زنجیره فقط بخشی از پسین را کاوش می‌کند
 (مثلاً یکی از دو مُد، یا یک سر یک \lr{ridge} طولانی).
 
-هیچ‌کدام را نمی‌شود با اطمینان از یک زنجیره تشخیص داد، چون زنجیره‌ای که در
-یک ناحیه گیر کرده می‌تواند کاملاً پایدار به نظر برسد. \(C \ge 4\) زنجیره
-از نقاط شروع \textbf{بیش‌پراکنده} \lr{(over-dispersed)} اجرا کنید: اگر
-همه به توصیف همان توزیع برسند، این شاهد خوبی (هرچند هرگز قطعی نیست) برای
-همگرایی است.
+\(C \ge 4\) زنجیره از نقاط شروع \textbf{بیش‌پراکنده}
+\lr{(over-dispersed)} اجرا کنید: اگر همه به توصیف همان توزیع برسند، این
+شاهد خوبی (هرچند هرگز قطعی نیست) برای همگرایی است.
 
 \textbf{\lr{trace plot}های} همه‌ی زنجیره‌ها روی هم باید مثل یک «کرم
 پشمالوی» خوب مخلوط‌شده باشند، بدون زنجیره‌ای که آشکارا جدا افتاده یا روند
@@ -338,10 +336,7 @@ B = \frac{S}{C-1}\sum_c (\bar\theta_c - \bar\theta)^2, \qquad
   کنید و با آن‌ها مثل \(2C\) زنجیره رفتار کنید. این کار زنجیره‌ی تنهایی را
   هم که هنوز در حال \lr{drift} است تشخیص می‌دهد.
 \item
-  \textbf{آستانه:} قاعده‌ی کلاسیک \(\hat R < 1.1\) بود؛ توصیه‌های امروزی
-  \lr{(Vehtari} و همکاران، 2021) \(\hat R < 1.01\) است که بعد از
-  نرمال‌سازی رتبه‌ای \lr{(rank-normalization)} حساب می‌شود (همان کاری که
-  \lr{ArviZ} می‌کند).
+  \textbf{آستانه:} قاعده‌ی کلاسیک \(\hat R < 1.1\) بود؛ \(\hat R < 1.01\)
 \end{itemize}
 
 \subsubsection{\texorpdfstring{5. اندازه‌ی مؤثر نمونه و خطای استاندارد
@@ -408,9 +403,6 @@ B = \frac{S}{C-1}\sum_c (\bar\theta_c - \bar\theta)^2, \qquad
 \item
   مقادیر شروع (پراکنده؟).
 \item
-  \(\hat R\) (کدام نسخه) و \lr{ESS} برای \textbf{همه‌ی} پارامترهای
-  گزارش‌شده، به‌علاوه‌ی بیشترین \(\hat R\) و کمترین \lr{ESS.}
-\item
   \lr{trace plot}ها (در پیوست) و جمله‌ای که نشان دهد بررسی شده‌اند.
 \item
   پیشین‌ها، و خلاصه‌های پسین با دقتی متناسب با \lr{MCSE.}
@@ -468,19 +460,16 @@ B = \frac{S}{C-1}\sum_c (\bar\theta_c - \bar\theta)^2, \qquad
   \tightlist
   \item
     \emph{«\(\hat R\) برابر 1.00 است، پس مدلم درست است؟»} نه. \(\hat R\)
-    فقط بررسی می‌کند که زنجیره‌ها توافق دارند؛ مدل هنوز می‌تواند غلط باشد
-    (با \lr{PPC} بررسی کنید) یا کد هنوز می‌تواند باگ داشته باشد.
+    فقط بررسی می‌کند که زنجیره‌ها توافق دارند؛
   \item
     \emph{«زنجیره‌ها را \lr{thin} کنم؟»} برای درستی لازم نیست؛ فقط حافظه
     را صرفه‌جویی می‌کند.
-  \item
-    \emph{\lr{«rate} یا \lr{scale}؟»} توزیع \lr{Gamma} در \lr{NumPy} از
-    \lr{scale} = \lr{1/rate} استفاده می‌کند؛ رایج‌ترین باگ در نمونه‌گیرهای
-    \lr{Gibbs} دانشجوها.
   \end{itemize}
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{مثال حل‌شده}
 
@@ -507,7 +496,7 @@ B = \frac{S}{C-1}\sum_c (\bar\theta_c - \bar\theta)^2, \qquad
 \subsubsection{\texorpdfstring{بخش 2: \(\hat R\) با
 دست}{بخش 2: \textbackslash hat R با دست}}
 
-دو زنجیره، هرکدام \(S = 4\) نمونه.
+\(S = 4\)
 
 \textbf{همگرا نشده.} زنجیره‌ی 1: (1.0، 1.2، 0.8، 1.0)؛ زنجیره‌ی 2: (2.0،
 2.2، 1.8، 2.0). - میانگین زنجیره‌ها: 1.0 و 2.0. واریانس‌های درون‌زنجیره‌ای
@@ -533,6 +522,8 @@ B = \frac{S}{C-1}\sum_c (\bar\theta_c - \bar\theta)^2, \qquad
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
 \subsubsection{اهداف}
@@ -541,12 +532,10 @@ B = \frac{S}{C-1}\sum_c (\bar\theta_c - \bar\theta)^2, \qquad
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  پیاده‌سازی یک نمونه‌گیر \lr{Gibbs} برای مدل نرمال لگاریتم زمان واکنش و
+  صورت‌بندی یک نمونه‌گیر \lr{Gibbs} برای مدل نرمال لگاریتم زمان واکنش و
   اعتبارسنجی آن با یک پسین شبکه‌ای.
 \item
   اجرای چهار زنجیره‌ی پراکنده و وارسی آن‌ها.
-\item
-  پیاده‌سازی \lr{split-}\(\hat R\) و \lr{ESS}؛ مقایسه با \lr{ArviZ.}
 \item
   خراب کردن عمدی همگرایی (مدل توانی با یک نمونه‌گیر \lr{Metropolis} بد) و
   دیدن اینکه تشخیص‌ها آن را می‌گیرند.
@@ -555,105 +544,23 @@ B = \frac{S}{C-1}\sum_c (\bar\theta_c - \bar\theta)^2, \qquad
 \textbf{زمان‌بندی:} بخش \lr{A} 30 دقیقه · بخش \lr{B} 15 دقیقه · بخش
 \lr{C} 30 دقیقه · بخش \lr{D} 30 دقیقه · بخش \lr{E} 15 دقیقه.
 
-\subsubsection{آماده‌سازی}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week12.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
-\subsubsection{\texorpdfstring{بخش \lr{A:} یک نمونه‌گیر \lr{Gibbs} (30
-دقیقه)}{بخش A: یک نمونه‌گیر Gibbs (30 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week12.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-N = 40, sample mean = 6.200, sample SD = 0.225
-Gibbs: mu = 6.1994 (SD 0.0358), sigma = 0.2283 (SD 0.0255)
-Grid:  mu = 6.1996, sigma = 0.2287
-\end{Verbatim}
-\end{latin}
-
 \subsubsection{\texorpdfstring{بخش \lr{B:} چهار زنجیره‌ی پراکنده (15
 دقیقه)}{بخش B: چهار زنجیره‌ی پراکنده (15 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week12.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{6\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Chain means of mu: [6.2006 6.1988 6.1996 6.1992]
-\end{Verbatim}
-\end{latin}
 
 اینجا \lr{Gibbs} حتی مقادیر شروع پوچ را در چند تکرار فراموش می‌کند، چون
 \(\mu\) و \(\tau\) در این پسین تقریباً ناهمبسته‌اند.
 
-\subsubsection{\texorpdfstring{بخش \lr{C:} \(\hat R\) و \lr{ESS} از صفر،
-بررسی‌شده با \lr{ArviZ} (30
-دقیقه)}{بخش C: \textbackslash hat R و ESS از صفر، بررسی‌شده با ArviZ (30 دقیقه)}}
+\subsubsection{\texorpdfstring{بخش \lr{C: }تشخیص همگرایی با \lr{R-hat }و \lr{ESS (}۳۰ دقیقه)}{بخش C: تشخیص همگرایی با R-hat و ESS (۳۰ دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week12.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{12\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-       R-hat (ours)  R-hat (ArviZ)  ESS (ours)  bulk-ESS (ArviZ)  MCSE of mean
-param
-mu           1.0002         1.0004   9980.4260        10032.6243        0.0004
-sigma        0.9997         0.9998   8772.9605         8861.7940        0.0003
-      ess_bulk ess_tail r_hat mcse_mean  mcse_sd
-mu       10032     9427  1.00   0.00036  0.00027
-sigma     8861     9714  1.00   0.00027  0.00021
-\end{Verbatim}
-\end{latin}
-
-(چیدمان دقیق ستون‌های \lr{\nolinkurl{az.summary}} بین نسخه‌های \lr{ArviZ}
-کمی فرق دارد؛ خروجی بالا از \lr{ArviZ 1.x} است.) برآوردگرهای ساده‌ی ما با
-\lr{ArviZ} خیلی نزدیک‌اند. با 4 × 2500 = 10 000 نمونه، \lr{ESS} \ensuremath{\approx} 9000 تا
-10 000 یعنی نمونه‌های \lr{Gibbs} تقریباً مستقل‌اند. \lr{ArviZ} علاوه بر این
-نمونه‌ها را \textbf{نرمال‌سازی رتبه‌ای} می‌کند \lr{(Vehtari} و همکاران،
-2021)، که \(\hat R\) و \lr{bulk-ESS} آن را در برابر دنباله‌های سنگین
-مقاوم می‌کند، پس تفاوت‌های کوچک قابل انتظار است. در عمل از \lr{ArviZ}
-استفاده کنید؛ نکته‌ی امروز این است که بدانید چه چیزی حساب می‌کند.
+با 4 × 2500 = 10 000 نمونه، \lr{ESS} \ensuremath{\approx} 9000 تا 10 000 یعنی نمونه‌های
+\lr{Gibbs} تقریباً مستقل‌اند. نکته‌ی امروز این است که بدانید چه چیزی حساب
+می‌کند.
 
 \subsubsection{\texorpdfstring{بخش \lr{D:} گرفتن عدم همگرایی (30
 دقیقه)}{بخش D: گرفتن عدم همگرایی (30 دقیقه)}}
 
 نمونه‌گیر \lr{Metropolis} هفته‌ی قبل را روی مدل فراموشی توانی دوباره به
 کار می‌بریم؛ یک بار بد تنظیم‌شده و کوتاه، یک بار خوب تنظیم‌شده.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week12.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-bad (tiny steps, short)   split-R-hat(d) = 3.583, ArviZ R-hat(d) = 3.424, ESS(d) = 4, chain means of d = [0.248 0.785 0.451 0.328]
-good (tuned, longer)      split-R-hat(d) = 1.002, ArviZ R-hat(d) = 1.002, ESS(d) = 1025, chain means of d = [0.414 0.414 0.415 0.413]
-\end{Verbatim}
-\end{latin}
 
 \textbf{به این دقت کنید:} با گام‌های ریز و زنجیره‌های کوتاه، هر زنجیره
 هنوز نزدیک جایی است که شروع کرده. \lr{trace}ها جدا از هم‌اند، \(\hat R\)
@@ -680,11 +587,8 @@ good (tuned, longer)      split-R-hat(d) = 1.002, ArviZ R-hat(d) = 1.002, ESS(d)
 \(p(\tau\mid\mu,\mathbf{y}) \propto \tau^{N/2}\exp(-\tfrac{\tau}{2}\sum(y_i-\mu)^2)\cdot\tau^{a_0-1}e^{-b_0\tau}\)
 را بنویسید و شکل و \lr{rate} را بخوانید.
 
-\textbf{تمرین 2 \ensuremath{\star}.} باگ \lr{rate/scale} را
-(\lr{\nolinkurl{scale=B0 + ...}} به‌جای \lr{\nolinkurl{1 / (...)}}) وارد
-\lr{\nolinkurl{gibbs_normal}} کنید. آیا تشخیص‌ها آن را می‌گیرند؟
-اعتبارسنجی با شبکه چطور؟ این درباره‌ی تفاوت \emph{همگرایی} و \emph{درستی}
-چه می‌گوید؟
+آیا تشخیص‌ها آن را می‌گیرند؟ اعتبارسنجی با شبکه چطور؟ این درباره‌ی تفاوت
+\emph{همگرایی} و \emph{درستی} چه می‌گوید؟
 
 \textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} \lr{(Gibbs} همبسته).} یک نمونه‌گیر \lr{Gibbs} برای یک
 «پسین» نرمال دومتغیره با همبستگی \(\rho\) بنویسید \lr{(full
@@ -693,23 +597,14 @@ conditional}ها:
 و برعکس). \lr{ESS} را برای \(\rho = 0, 0.9, 0.99\) با 5000 تکرار مقایسه
 کنید و مسیر زیگزاگ را برای \(\rho = 0.99\) رسم کنید.
 
-\textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} \lr{(Metropolis-within-Gibbs).}} از مدل فراموشی توانی
-با به‌روزرسانی \(A\) و \(d\) \textbf{یکی‌یکی}، هرکدام با یک گام
-\lr{Metropolis} یک‌بعدی، نمونه بگیرید. \lr{ESS} در هر ثانیه را با
-نمونه‌گیر \lr{Metropolis} مشترک مقایسه کنید. چرا ممکن است اینجا بدتر
-باشد؟ (راهنمایی: همبستگی \(A\)\lr{--}\(d\).)
+\lr{ESS} در هر ثانیه را با نمونه‌گیر \lr{Metropolis} مشترک مقایسه کنید.
+چرا ممکن است اینجا بدتر باشد؟ (راهنمایی: همبستگی \(A\)\lr{--}\(d\).)
 
 \textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: دو شرط).} نمونه‌گیر \lr{Gibbs} را برای
 لگاریتم زمان واکنش در دو شرط با میانگین‌های جداگانه‌ی \(\mu_1, \mu_2\) و
 دقت مشترک \(\tau\) گسترش دهید. داده‌ای با تفاوت واقعی 0.1 شبیه‌سازی کنید،
 نمونه بگیرید، و پسین \(\mu_2 - \mu_1\) و
 \(P(\mu_2 > \mu_1\mid\mathbf{y})\) را با تشخیص‌ها گزارش کنید.
-
-\subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
-
-نشان دهید: (1) اعتبارسنجی \lr{Gibbs} در برابر شبکه (بخش \lr{A)}، (2)
-جدول \(\hat R\)\lr{/ESS} خودتان کنار جدول \lr{ArviZ} (بخش \lr{C)}، و (3)
-\lr{trace plot}های بد در برابر خوب با تشخیص‌هایشان (بخش \lr{D).}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -728,31 +623,10 @@ conditional}ها:
 با \lr{meows)}، زنجیره کند مخلوط می‌شود، و \(\hat R\) این را در اجراهای
 کوتاه تشخیص می‌دهد.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week12.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-  50 iterations: P(subject = dog) = 0.285 (exact 0.35), R-hat = 1.151
-3000 iterations: P(subject = dog) = 0.354 (exact 0.35), R-hat = 1.000
-\end{Verbatim}
-\end{latin}
-
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} زبان را باز هم
-چسبناک‌تر کنید (مثلاً 0.33 روی قطر و 0.001 در بقیه، دوباره نرمال‌شده). حالا
-برای \(\hat R < 1.01\) به چند تکرار نیاز دارید؟ \lr{ESS} زنجیره‌های
-\lr{\nolinkurl{is_dog}} را حساب کنید (هفته‌ی 12، بخش \lr{C).} - \ensuremath{\star}\ensuremath{\star} مدل‌های
+حالا برای \(\hat R < 1.01\) به چند تکرار نیاز دارید؟ - \ensuremath{\star}\ensuremath{\star} مدل‌های
 \lr{masked} واقعی برای هر موقعیت جداگانه آموزش می‌بینند، پس لازم نیست
-توزیع‌های شرطی‌شان از یک توزیع توأم واحد آمده باشند.
-\lr{\nolinkurl{p_v_given_s}} را کمی دست‌کاری کنید (بدون تغییر
-\lr{\nolinkurl{p_s_given_v}}) و بررسی کنید آیا نمونه‌گیر \lr{Gibbs} هنوز
-\lr{\nolinkurl{joint}} را بازیابی می‌کند. این درباره‌ی اعتماد به نمونه‌گیری
-که توزیع‌های شرطی‌اش یادگرفته‌شده‌اند چه می‌گوید؟
+توزیع‌های شرطی‌شان از یک توزیع توأم واحد آمده باشند. این درباره‌ی اعتماد به
+نمونه‌گیری که توزیع‌های شرطی‌اش یادگرفته‌شده‌اند چه می‌گوید؟
 
 \emph{مطالعه‌ی اختیاری:} \lr{Wang, A.,} \lr{\&} \lr{Cho, K.} (2019). \lr{BERT
 has a mouth, and it must speak: BERT as a Markov random field language
@@ -766,16 +640,8 @@ model.} \emph{\lr{arXiv:1902.04094}}.
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{\lr{rate} در برابر \lr{scale} در توزیع \lr{Gamma.}} \lr{NumPy}
-  و \lr{SciPy} از \lr{scale} = \lr{1/rate} استفاده می‌کنند. بنویسید
-  فرمولتان از کدام استفاده می‌کند.
-\item
   \textbf{استفاده از مقادیر قدیمی داخل یک دور \lr{Gibbs.}} هر توزیع شرطی
   باید از \emph{جدیدترین} مقادیر پارامترهای دیگر استفاده کند.
-\item
-  \textbf{«\(\hat R \approx 1\)، پس نتایج درست‌اند.»} تشخیص‌ها توافق بین
-  زنجیره‌ها را آزمون می‌کنند، نه درستی مدل یا کد را (تمرین 2). نمونه‌گیرهای
-  جدید را روی حالت‌های معلوم اعتبارسنجی کنید.
 \item
   \textbf{یک زنجیره‌ی بلند به‌جای چند زنجیره.} زنجیره‌ی گیرکرده می‌تواند
   کاملاً پایدار به نظر برسد. از \ensuremath{\geq} 4 زنجیره‌ی پراکنده استفاده کنید.
@@ -816,11 +682,11 @@ model.} \emph{\lr{arXiv:1902.04094}}.
 کردن همبستگی، به‌روزرسانی هم‌زمان پارامترهای همبسته (بلوک‌بندی)، یا استفاده
 از \lr{HMC/NUTS.}
 
-\textbf{4.} \(\hat R\) را در یک جمله توضیح دهید. کدام مقدار نشانه‌ی
-همگرایی است؟ \textbf{پاسخ} واریانس بین زنجیره‌ها را با واریانس درون
-زنجیره‌ها مقایسه می‌کند (تخمین می‌زند اگر زنجیره‌ها تا ابد اجرا می‌شدند
-پراکندگی پسین چقدر می‌توانست کم شود)؛ مقادیر نزدیک 1 (طبق راهنمایی امروزی
-\lr{\textless} 1.01) یعنی زنجیره‌ها توافق دارند.
+\textbf{4.} \(\hat R\) را در یک جمله توضیح دهید. \textbf{پاسخ} واریانس
+بین زنجیره‌ها را با واریانس درون زنجیره‌ها مقایسه می‌کند (تخمین می‌زند اگر
+زنجیره‌ها تا ابد اجرا می‌شدند پراکندگی پسین چقدر می‌توانست کم شود)؛ مقادیر
+نزدیک 1 (طبق راهنمایی امروزی \lr{\textless} 1.01) یعنی زنجیره‌ها توافق
+دارند.
 
 \textbf{5.} 4000 نمونه و \lr{ESS} برابر 200 برای پارامتری با انحراف
 معیار پسین 0.5 دارید. \lr{MCSE} میانگین پسینش چقدر است؟ چند رقم اعشار
@@ -835,23 +701,19 @@ model.} \emph{\lr{arXiv:1902.04094}}.
 جای دیگری رسیده‌اند مشکل را لو می‌دهند.
 
 \textbf{7.} چهار چیزی را که بخش روش‌ها باید درباره‌ی یک تحلیل \lr{MCMC}
-گزارش کند نام ببرید. \textbf{پاسخ} هر چهار مورد از این‌ها:
-نمونه‌گیر/نرم‌افزار؛ تعداد زنجیره‌ها؛ تکرارها و \lr{warm-up}؛ مقادیر شروع؛
-\(\hat R\) و \lr{ESS} برای همه‌ی پارامترها؛ اینکه \lr{trace plot}ها بررسی
-شده‌اند؛ پیشین‌ها؛ یک بررسی پیش‌بینی پسین.
+گزارش کند نام ببرید. تعداد زنجیره‌ها؛ تکرارها و \lr{warm-up}؛ مقادیر
+شروع؛ \(\hat R\) و \lr{ESS} برای همه‌ی پارامترها؛ اینکه \lr{trace plot}ها
+بررسی شده‌اند؛ پیشین‌ها؛ یک بررسی پیش‌بینی پسین.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{تکلیف}
 
 \subsubsection{\texorpdfstring{\lr{A5: MCMC} از صفر، همراه با تشخیص
 همگرایی (1.0 نمره از 20؛ انتشار هفته‌ی 12، موعد ابتدای درس هفته‌ی
 14)}{A5: MCMC از صفر، همراه با تشخیص همگرایی (1.0 نمره از 20؛ انتشار هفته‌ی 12، موعد ابتدای درس هفته‌ی 14)}}
-
-\textbf{داده:} آزمایش \lr{SDT} پاداش از بخش \lr{D} هفته‌ی 4 (با همان
-\lr{seed} بازتولیدش کنید: \lr{\nolinkurl{np.random.default_rng(11)}}) و
-داده‌ی لگاریتم زمان واکنش \lr{lab} امروز
-(\lr{\nolinkurl{np.random.default_rng(12)}}).
 
 \textbf{کارها.}
 
@@ -862,11 +724,9 @@ model.} \emph{\lr{arXiv:1902.04094}}.
   \textbf{\lr{Metropolis} برای \lr{SDT} (3 امتیاز).} یک نمونه‌گیر
   \lr{Metropolis} گام تصادفی برای مدل پاداش با \(d'\) مشترک (\(d'\)،
   \(c_1, c_2, c_3\)) با پیشین‌های \(d' \sim \mathcal{N}(1, 1.5)\) و
-  \(c_m \sim \mathcal{N}(0, 1)\) پیاده‌سازی کنید. پیشنهاد را تنظیم کنید
+  \(c_m \sim \mathcal{N}(0, 1)\) صورت‌بندی کنید. پیشنهاد را تنظیم کنید
   (نرخ پذیرش را گزارش کنید) و 4 زنجیره‌ی پراکنده اجرا کنید.
 \item
-  \textbf{تشخیص همگرایی (2 امتیاز).} \lr{split-}\(\hat R\) و \lr{ESS} را
-  برای همه‌ی پارامترها با توابع خودتان \emph{و} با \lr{ArviZ} گزارش کنید؛
   \lr{trace plot}ها را نشان دهید. بگویید آیا به نتایج اعتماد می‌کنید و
   چرا.
 \item
@@ -875,7 +735,7 @@ model.} \emph{\lr{arXiv:1902.04094}}.
   مثبت بودنش را حساب کنید. \(d'\) را با \lr{MLE} هفته‌ی 4 مقایسه کنید.
 \item
   \textbf{\lr{Gibbs} (2 امتیاز).} نمونه‌گیر \lr{Gibbs} دوشرطی تمرین 5 را
-  پیاده‌سازی کنید و پسین تفاوت میانگین‌ها را با تشخیص‌ها گزارش کنید.
+  صورت‌بندی کنید و پسین تفاوت میانگین‌ها را با تشخیص‌ها گزارش کنید.
 \item
   \textbf{تفسیر (1.5 امتیاز، حداکثر 300 کلمه).} طبق پسین، پاداش‌ها با
   حساسیت و سوگیری چه می‌کنند؟ با نتیجه‌ی آزمون نسبت درست‌نمایی هفته‌ی 4
@@ -897,10 +757,6 @@ model.} \emph{\lr{arXiv:1902.04094}}.
   نماینده بودن، دقت و کارایی \lr{MCMC):} تشخیص همگرایی، \lr{ESS} و
   \lr{MCSE} به زبان تصویری. \emph{(منبع اصلی.)}
 \item
-  \textbf{\lr{Martin, Kumar} \lr{\&} \lr{Lao} (2021)، فصل 2.} تحلیل اکتشافی
-  مدل‌های بیزی: \lr{trace plot}ها، \(\hat R\)، \lr{ESS} و \lr{MCSE} با
-  \lr{ArviZ.}
-\item
   \textbf{\lr{Lee} \lr{\&} \lr{Wagenmakers} (2014)، فصل 4.} استنباط با
   توزیع‌های گاوسی: همان مدل نرمالی که امروز نمونه‌گیر \lr{Gibbs} آن را
   ساختید، در بافت مدل‌سازی بیزی.
@@ -913,7 +769,4 @@ model.} \emph{\lr{arXiv:1902.04094}}.
 \end{itemize}
 
 \emph{پیش‌نمایش هفته‌ی 13:} نوشتن نمونه‌گیرها با دست یاد می‌دهد چطور کار
-می‌کنند، ولی کند و پراشتباه است. هفته‌ی بعد مدل‌ها را در \lr{PyMC} توصیف
-می‌کنیم، می‌گذاریم نمونه‌گیر \lr{NUTS} آن کار را بکند، و از وقتی که
-صرفه‌جویی می‌کنیم برای مفیدترین دسته‌ی مدل‌ها در علوم شناختی استفاده می‌کنیم:
-مدل‌های سلسله‌مراتبی چند شرکت‌کننده.
+می‌کنند، ولی کند و پراشتباه است.

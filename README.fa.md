@@ -45,7 +45,7 @@
 |---|---|---|
 | 11 | [هفته‌ی 11: روش‌های Monte Carlo و الگوریتم Metropolis–Hastings](05-monte-carlo/week11/fa/week11-fa.pdf) | [Week 11: Monte Carlo Methods and the Metropolis–Hastings Algorithm](05-monte-carlo/week11/en/week11-en.pdf) |
 | 12 | [هفته‌ی 12: نمونه‌گیری Gibbs و تشخیص همگرایی](05-monte-carlo/week12/fa/week12-fa.pdf) | [Week 12: Gibbs Sampling and Convergence Diagnostics](05-monte-carlo/week12/en/week12-en.pdf) |
-| 13 | [هفته‌ی 13: برنامه‌نویسی احتمالاتی و مدل‌های سلسله‌مراتبی](05-monte-carlo/week13/fa/week13-fa.pdf) | [Week 13: Probabilistic Programming and Hierarchical Models](05-monte-carlo/week13/en/week13-en.pdf) |
+| 13 | [هفته‌ی 13: مدل‌های سلسله‌مراتبی](05-monte-carlo/week13/fa/week13-fa.pdf) | [Week 13: Hierarchical Models](05-monte-carlo/week13/en/week13-en.pdf) |
 
 ### فصل 6: کاربردها در علوم شناختی
 
@@ -59,4 +59,4 @@
 
 [طرح درس](syllabus.md)، [نقشهٔ دوره](00_course_blueprint.md)، [واژه‌نامه](glossary.md) و [فهرست مطالعه](reading_list.md) در ریشهٔ مخزن قرار دارند. ۲۰ فایل Markdown اصلی در [source](source/) بدون تغییر نگهداری شده‌اند. قالب و متن LaTeX در [latex](latex/) است.
 
-برای ساخت همهٔ PDFها `make all` و برای بررسی `make check` اجرا کنید. راهنمای کامل در [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) و نتیجهٔ بازبینی تصویری در [PDF_QA_REPORT.md](PDF_QA_REPORT.md) آمده است. فایل‌های همراه `code/` و `assessments/` در بستهٔ ارسالی نبودند؛ ارجاع‌های مربوط به آن‌ها به صورت متن حفظ شده‌اند.
+برای ساخت همهٔ PDFها `make all` و برای بررسی `make check` اجرا کنید. راهنمای کامل در [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) و نتیجهٔ بازبینی تصویری در [PDF_QA_REPORT.md](PDF_QA_REPORT.md) آمده است. فایل‌های Markdown اصلی بدون تغییر بایگانی شده‌اند؛ درس‌نامه‌ها و PDFهای تولیدی فاقد بخش‌های آموزش نرم‌افزار، دستورهای اجرای کد، دفترچه‌های محاسباتی و نمونهٔ خروجی کد هستند. ریاضیات و بحث نظری حفظ شده‌اند و همهٔ جدول‌ها عنوانِ بالای وسط‌چین دارند.

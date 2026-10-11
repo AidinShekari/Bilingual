@@ -15,11 +15,21 @@ Likelihood)}}{هفته‌ی 4: برآورد بیشینه درست‌نمایی (
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -74,7 +84,6 @@ Likelihood)}}{هفته‌ی 4: برآورد بیشینه درست‌نمایی (
 \lr{perplexity} & \lr{perplexity} (سردرگمی) & \lr{e} به توان \lr{NLL} هر
 \lr{token} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -92,10 +101,6 @@ Likelihood)}}{هفته‌ی 4: برآورد بیشینه درست‌نمایی (
   درست‌نمایی و لگاریتم درست‌نمایی را برای مدل‌های داده‌ی دوجمله‌ای (برنولی) و
   گاوسی \textbf{استخراج کنند} و \textbf{نشان دهند} که کمترین مربعات همان
   بیشینه درست‌نمایی تحت نویز گاوسی با واریانس برابر است.
-\item
-  برآورد بیشینه درست‌نمایی \lr{(MLE)} را با کمینه کردن منفی لگاریتم
-  درست‌نمایی \lr{(NLL)} در \lr{Python}، برای منحنی‌های فراموشی و یک مدل
-  \lr{SDT} چندشرطی، \textbf{پیاده‌سازی کنند}.
 \item
   برازش مطلق را با انحراف \lr{(deviance)} \(G^2\) \textbf{ارزیابی کنند}
   و \lr{MLE} را با برآوردهای کمترین مربعات \textbf{مقایسه کنند}.
@@ -118,11 +123,6 @@ Likelihood)}}{هفته‌ی 4: برآورد بیشینه درست‌نمایی (
 بیشینه درست‌نمایی «پیش‌بینی‌ها را به داده نزدیک کن» را با سؤالی دقیق‌تر
 جایگزین می‌کند:
 
-\begin{quote}
-\textbf{کدام مقادیر پارامتر داده‌ای را که واقعاً مشاهده کردیم محتمل‌ترین
-می‌کنند؟}
-\end{quote}
-
 برای جواب دادن، مدل باید بگوید \emph{هر} مجموعه‌داده‌ی ممکن چقدر محتمل
 است، و این دقیقاً همان مدل نویز است (جزء 4 در کالبدشکافی هفته‌ی 2). وقتی
 آن را داشته باشیم، \lr{MLE} با شمارش‌ها، انتخاب‌ها، زمان‌های واکنش و
@@ -140,10 +140,6 @@ Likelihood)}}{هفته‌ی 4: برآورد بیشینه درست‌نمایی (
   بیزی آن (هفته‌های 9 تا 13) برازش می‌شود. وقتی مقاله‌ای «برازش مدل»،
   \lr{«AIC»} یا \lr{«log-likelihood»} گزارش می‌کند، \lr{MLE} پشت آن است.
 \item
-  \textbf{داده‌ی انتخاب:} اینکه آدم کدام گزینه را انتخاب می‌کند (در آزمون
-  حافظه، یک قمار، یک تکلیف یادگیری) یک عدد پیوسته نیست، پس کمترین مربعات
-  کار نمی‌کند. درست‌نمایی به‌طور طبیعی با انتخاب‌ها کار می‌کند.
-\item
   \textbf{روان‌فیزیک \lr{(psychophysics):}} تابع روان‌سنجی (احتمال تشخیص
   یک محرک بر حسب شدت آن) در هر آزمایشگاه بینایی و شنوایی با \lr{MLE}
   دوجمله‌ای برازش می‌شود.
@@ -156,6 +152,8 @@ Likelihood)}}{هفته‌ی 4: برآورد بیشینه درست‌نمایی (
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{جزوه‌ی درس}
 
@@ -184,13 +182,27 @@ Likelihood)}}{هفته‌ی 4: برآورد بیشینه درست‌نمایی (
 تابع یکسان \(p(\mathbf{y}\mid\boldsymbol\theta)\) را می‌شود به دو شکل
 خواند:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering 1. احتمال در برابر درست‌نمایی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+خوانش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ثابت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+متغیر
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نام
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+جمع/انتگرالش 1 است؟
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 خوانش
@@ -214,7 +226,6 @@ Likelihood)}}{هفته‌ی 4: برآورد بیشینه درست‌نمایی (
 \(L(\boldsymbol\theta) = p(\mathbf{y}\mid\boldsymbol\theta,\mathcal{M})\)
 & \textbf{نه}، روی \(\boldsymbol\theta\) نه \\
 \end{longtable}
-}
 
 درست‌نمایی احتمال درست بودن پارامترها \textbf{نیست}. احتمال داده
 \emph{تحت} هر مقدار ممکن پارامتر است. (تبدیل آن به یک توزیع احتمال روی
@@ -238,14 +249,10 @@ L(\theta) = \binom{10}{7}\theta^{7}(1-\theta)^{3}.
 \begin{itemize}
 \tightlist
 \item
-  \(\theta^7\): احتمال اینکه 7 آیتم مشخص به یاد آورده شوند (هرکدام با
-  احتمال \(\theta\)).
-\item
   \((1-\theta)^3\): احتمال اینکه 3 آیتم دیگر فراموش شوند.
 \item
-  \(\binom{10}{7} = 120\) («ترکیب 7 از 10»): تعداد راه‌های مختلف برای
-  انتخاب اینکه کدام 7 آیتم از 10 آیتم به یاد آمده‌اند. به \(\theta\)
-  بستگی ندارد، پس هیچ‌وقت \emph{محل} بیشینه را عوض نمی‌کند.
+  \(\binom{10}{7} = 120\) به \(\theta\) بستگی ندارد، پس هیچ‌وقت
+  \emph{محل} بیشینه را عوض نمی‌کند.
 \item
   با \(\theta = 0.7\):
   \(120 \times 0.7^7 \times 0.3^3 = 120 \times 0.0824 \times 0.027 = 0.267\).
@@ -270,10 +277,7 @@ L(\theta) = \binom{10}{7}\theta^{7}(1-\theta)^{3}.
 صعودی است، پس بیشینه‌کننده‌ی یکسانی دارد. 3. مشتق گرفتن از مجموع راحت‌تر
 است.
 
-بهینه‌سازها \emph{کمینه} می‌کنند، پس در کد \textbf{منفی لگاریتم
-درست‌نمایی}،
-\(\mathrm{NLL}(\boldsymbol\theta) = -\ell(\boldsymbol\theta)\)، را کمینه
-می‌کنیم.
+\(\mathrm{NLL}(\boldsymbol\theta) = -\ell(\boldsymbol\theta)\)
 
 \textbf{مثال تحلیلی (دوجمله‌ای).}
 \(\ell(\theta) = \text{\lr{const}} + y\ln\theta + (n-y)\ln(1-\theta)\). با
@@ -299,11 +303,6 @@ L(\theta) = \binom{10}{7}\theta^{7}(1-\theta)^{3}.
 
 \begin{itemize}
 \tightlist
-\item
-  ضریب دوجمله‌ای به \(\boldsymbol\theta\) بستگی ندارد، پس روی \lr{MLE}
-  اثری ندارد (ولی اگر می‌خواهید لگاریتم درست‌نمایی را بین کدگذاری‌های مختلف
-  داده مقایسه کنید نگهش دارید؛ \lr{\nolinkurl{scipy.stats.binom.logpmf}}
-  آن را شامل می‌شود).
 \item
   مشاهداتی که پیش‌بینی می‌شود نزدیک 0 یا 1 باشند واریانس کمی دارند، پس
   پیش‌بینی‌ای که آن‌ها را از دست بدهد بیشتر جریمه می‌شود. \lr{MLE} همان
@@ -428,12 +427,24 @@ G^2 = 2\big[\ell_{\text{\lr{saturated}}} - \ell(\hat{\boldsymbol\theta})\big]
 می‌کند. مثال: یک آزمایش \lr{SDT} با سه شرط پاداش (پاداش برای پاسخ «بله»،
 خنثی، پاداش برای «نه»).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 6. مدل‌های مقیدشده به‌عنوان فرضیه}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+مدل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پارامترهای آزاد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فرضیه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 مدل
@@ -453,7 +464,6 @@ G^2 = 2\big[\ell_{\text{\lr{saturated}}} - \ell(\hat{\boldsymbol\theta})\big]
 جداگانه & \(d'_1, d'_2, d'_3\)؛ \(c_1, c_2, c_3\) & 6 & پاداش ممکن است
 \emph{حساسیت} را هم تغییر دهد (این مدل اشباع‌شده برای 6 نرخ است) \\
 \end{longtable}
-}
 
 لگاریتم درست‌نمایی مشترک، مجموع لگاریتم درست‌نمایی‌های دوجمله‌ای \lr{hit}ها
 و \lr{false alarm}ها در همه‌ی شرایط است. مقایسه‌ی لگاریتم درست‌نمایی
@@ -542,19 +552,35 @@ G^2 = 2\big[\ell_{\text{\lr{saturated}}} - \ell(\hat{\boldsymbol\theta})\big]
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{مثال حل‌شده}
 
 \subsubsection{بخش 1: درست‌نمایی یک نسبت تنها}
 
 \(y = 7\) یادآوری از \(n = 10\):
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering بخش 1: درست‌نمایی یک نسبت تنها}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{0.7}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.8
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(\theta\)
@@ -575,7 +601,6 @@ G^2 = 2\big[\ell_{\text{\lr{saturated}}} - \ell(\hat{\boldsymbol\theta})\big]
 \textbf{0.267} & 0.201 \\
 \(\ell(\theta)\) & \ensuremath{-}2.144 & \ensuremath{-}1.537 & \textbf{\ensuremath{-}1.321} & \ensuremath{-}1.603 \\
 \end{longtable}
-}
 
 بیشینه در \(\hat\theta = 7/10 = 0.7\) است. دقت کنید که مقادیر درست‌نمایی
 روی \(\theta\) جمعشان 1 نمی‌شود: درست‌نمایی توزیع احتمال روی پارامترها
@@ -615,6 +640,8 @@ G^2 = 2\big[\ell_{\text{\lr{saturated}}} - \ell(\hat{\boldsymbol\theta})\big]
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
 \subsubsection{اهداف}
@@ -638,53 +665,8 @@ G^2 = 2\big[\ell_{\text{\lr{saturated}}} - \ell(\hat{\boldsymbol\theta})\big]
 \textbf{زمان‌بندی:} بخش \lr{A} 15 دقیقه · بخش \lr{B} 35 دقیقه · بخش
 \lr{C} 15 دقیقه · بخش \lr{D} 35 دقیقه · بخش \lr{E} 20 دقیقه (تمرین‌ها).
 
-\subsubsection{آماده‌سازی}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
-\subsubsection{\texorpdfstring{بخش \lr{A:} تابع درست‌نمایی (15
-دقیقه)}{بخش A: تابع درست‌نمایی (15 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Area under L(theta): 0.091 (not 1: L is not a distribution over theta)
-Product of 2000 trial probabilities: 0.0
-Sum of their logs: -1239.52
-\end{Verbatim}
-\end{latin}
-
 \subsubsection{\texorpdfstring{بخش \lr{B: MLE} برای منحنی‌های فراموشی (35
 دقیقه)}{بخش B: MLE برای منحنی‌های فراموشی (35 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{11\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-model method      A   rate     NLL    SSE
-  exp    MLE 0.6377 0.0458 29.8123 0.1100
-  exp     LS 0.6568 0.0566 30.6983 0.1061
-  pow    MLE 0.8773 0.4214 19.8303 0.0262
-  pow     LS 0.8712 0.4251 19.8585 0.0259
-True (power): A = 0.9, d = 0.5
-\end{Verbatim}
-\end{latin}
 
 \textbf{به این‌ها دقت کنید:} - هر روش در معیار \emph{خودش} برنده است:
 \lr{MLE} کمترین \lr{NLL} و \lr{LS} کمترین \lr{SSE} را دارد. - برای مدل
@@ -695,35 +677,15 @@ True (power): A = 0.9, d = 0.5
 نزدیک‌تر بماند.
 
 \begin{quote}
-\textbf{هشدار: یک دام واقعی بهینه‌ساز.} در برازش \lr{ML} بالا
-\lr{\nolinkurl{"L-BFGS-B"}} را با \lr{\nolinkurl{"Nelder-Mead"}} عوض
-کنید (با نگه داشتن \lr{\nolinkurl{bounds=bounds}}) و دوباره اجرا کنید.
-برای مدل نمایی، \lr{Nelder\lr{--}Mead} کران‌دار \lr{scipy} روی کران
-\lr{\nolinkurl{A = 1}} فرو می‌ریزد و با \lr{NLL} = 79.5
-«\lr{\nolinkurl{success}}» گزارش می‌کند؛ خیلی بدتر از کمینه‌ی واقعی 29.8
-(حتی بدتر از \lr{NLL} برآورد \lr{LS).} روش‌های سیمپلکس کران‌دار وقتی رأس‌ها
-روی یک کران فشرده شوند ممکن است تباهیده \lr{(degenerate)} شوند. دو بررسی
-سریع این را لو می‌دهند: برآوردی که دقیقاً روی یک کران نشسته، و یک
-\lr{«MLE»} که \lr{NLL} آن از مقادیر پارامتر دیگری که امتحان کرده‌اید
-\emph{بیشتر} است. \lr{multi-start} (هفته‌ی 3) درمان کلی آن است.
+خیلی بدتر از کمینه‌ی واقعی 29.8 (حتی بدتر از \lr{NLL} برآورد \lr{LS).}
+روش‌های سیمپلکس کران‌دار وقتی رأس‌ها روی یک کران فشرده شوند ممکن است
+تباهیده \lr{(degenerate)} شوند. دو بررسی سریع این را لو می‌دهند: برآوردی
+که دقیقاً روی یک کران نشسته، و یک \lr{«MLE»} که \lr{NLL} آن از مقادیر
+پارامتر دیگری که امتحان کرده‌اید \emph{بیشتر} است. \lr{multi-start}
+(هفته‌ی 3) درمان کلی آن است.
 \end{quote}
 
 حالا برازش مطلق را با انحراف ارزیابی کنید:
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-exp: G2 =  26.27, df = 6, p = 0.0002
-pow: G2 =   6.31, df = 6, p = 0.3895
-\end{Verbatim}
-\end{latin}
 
 \textbf{تفسیر:} عدم برازش مدل نمایی خیلی بیشتر از آن است که نویز
 دوجمله‌ای اجازه می‌دهد (\(p = .0002\)): می‌توانیم آن را به‌عنوان توصیف این
@@ -731,32 +693,12 @@ pow: G2 =   6.31, df = 6, p = 0.3895
 است. این ثابت نمی‌کند که مدل درستی است؛ یعنی این داده‌ها دلیلی برای رد آن
 نمی‌دهند.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
 \subsubsection{\texorpdfstring{بخش \lr{C: MLE} گاوسی همان کمترین مربعات
 است (15 دقیقه)}{بخش C: MLE گاوسی همان کمترین مربعات است (15 دقیقه)}}
 
 نسبت‌ها را پیوسته در نظر بگیرید و نویز گاوسی با \(\sigma\) آزاد (پارامتر
 سوم) فرض کنید. برآوردهای \(A\) و \(d\) باید با کمترین مربعات یکی باشند و
 \(\hat\sigma\) باید برابر \(\sqrt{\mathrm{SSE}/N}\) باشد.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Gaussian MLE: A = 0.8712, d = 0.4251, sigma = 0.0569
-Least squares: A = 0.8711, d = 0.4251, sqrt(SSE/N) = 0.0569
-\end{Verbatim}
-\end{latin}
 
 \subsubsection{\texorpdfstring{بخش \lr{D:} یک مدل \lr{SDT} چندشرطی
 مقیدشده (35 دقیقه)}{بخش D: یک مدل SDT چندشرطی مقیدشده (35 دقیقه)}}
@@ -767,68 +709,35 @@ Least squares: A = 0.8711, d = 0.4251, sqrt(SSE/N) = 0.0569
 \lr{trial} علامت و 80 \lr{trial} نویز. یک شرکت‌کننده را شبیه‌سازی می‌کنیم
 که حساسیتش در همه‌ی شرایط یکسان است و ملاکش با پاداش جابه‌جا می‌شود.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 7 ·
-سلول 7
-\end{quote}
+با 80 \lr{trial} در هر خانه این یک خطای نمونه‌گیری عادی است. هفته‌ی 5 نشان
+می‌دهد چطور دور آن بازه‌ی اطمینان بسازیم.
 
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{14\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-      condition  hits  n_signal  fas  n_noise
-0       liberal    73        80   33       80
-1       neutral    58        80   16       80
-2  conservative    44        80    7       80
-
-Shared d':   d' = 1.496, c = [-0.555  0.124  0.618], NLL = 13.134
-Separate d': d' = [1.577 1.439 1.482], c = [-0.568  0.122  0.615], NLL = 13.043
-
-Likelihood-ratio statistic = 0.18, df = 2, p = 0.913
-\end{Verbatim}
-\end{latin}
-
-دقت کنید که \lr{\nolinkurl{d'}} برآوردشده (حدود 1.5) از مقدار
-تولیدکننده‌ی 1.2 بیشتر است. با 80 \lr{trial} در هر خانه این یک خطای
-نمونه‌گیری عادی است. هفته‌ی 5 نشان می‌دهد چطور دور آن بازه‌ی اطمینان بسازیم.
-
-\textbf{تفسیر (در \lr{notebook} بنویسید):} 1. آیا مقید کردن \(d'\) به
-برابری در همه‌ی شرایط پاداش درست‌نمایی زیادی را هزینه می‌کند؟ درباره‌ی اثر
-پاداش‌ها چه نتیجه‌ای می‌گیرید؟ 2. برآوردهای \(d'\) جداگانه چند دهم با هم
-فرق دارند. چرا این شاهدی بر اینکه پاداش حساسیت را تغییر می‌دهد نیست؟ 3.
-بررسی کنید که مدل \(d'\) جداگانه نرخ‌های \lr{hit} و \lr{false alarm}
-مشاهده‌شده را دقیقاً بازتولید می‌کند. چرا باید این‌طور باشد؟
+آیا مقید کردن \(d'\) به برابری در همه‌ی شرایط پاداش درست‌نمایی زیادی را
+هزینه می‌کند؟ درباره‌ی اثر پاداش‌ها چه نتیجه‌ای می‌گیرید؟ 2. برآوردهای \(d'\)
+جداگانه چند دهم با هم فرق دارند. چرا این شاهدی بر اینکه پاداش حساسیت را
+تغییر می‌دهد نیست؟ 3. بررسی کنید که مدل \(d'\) جداگانه نرخ‌های \lr{hit} و
+\lr{false alarm} مشاهده‌شده را دقیقاً بازتولید می‌کند. چرا باید این‌طور
+باشد؟
 
 \subsubsection{تمرین‌ها (به ترتیب سختی)}
 
-\textbf{تمرین 1 \ensuremath{\star}.} \lr{MLE} \(\theta\) را برای یک دنباله‌ی برنولی با
-\(y\) موفقیت در \(n\) \lr{trial} با دست استخراج کنید و آن را برای
-\(y = 13\)، \(n = 40\) با \lr{\nolinkurl{minimize_scalar}} عددی بررسی
-کنید.
+\(y = 13\) · \(n = 40\)
 
 \textbf{تمرین 2 \ensuremath{\star}.} در بخش \lr{B}، هر دو مدل را با درست‌نمایی
 \textbf{برنولی} روی داده‌ی سطح آیتم دوباره برازش کنید (هر شمارش را به
 پاسخ‌های 0/1 باز کنید). نشان دهید برآوردها با برازش‌های دوجمله‌ای یکسان‌اند
 و \lr{NLL}ها به اندازه‌ی یک ثابت فرق دارند. آن ثابت چیست؟
 
-\textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (شمارش صفر).} دو شمارش آخر را 0 کنید
-(\lr{\nolinkurl{recalled[-2:] = 0}}). کدام روش‌های برازش هفته‌های 2\lr{--}4
-هنوز کار می‌کنند؟ هر دو مدل را با \lr{MLE} برازش کنید و درباره‌ی آنچه بر
-سر برآوردها و \(G^2\) می‌آید توضیح دهید.
+هر دو مدل را با \lr{MLE} برازش کنید و درباره‌ی آنچه بر سر برآوردها و
+\(G^2\) می‌آید توضیح دهید.
 
 \textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} (یک مدل \lr{SDT} سوم).} مدلی را برازش کنید که در آن
 ملاک در همه‌ی شرایط \emph{یکسان} است ولی \(d'\) فرق دارد (\(k = 4\)).
 \lr{NLL} آن را با مدل \(d'\) مشترک مقایسه کنید. هر دو \(k = 4\) دارند؛
-چرا اینجا می‌توانید مستقیماً با \lr{NLL} مقایسه کنید؟ کدام برای یک دست‌کاری
-پاداش از نظر روان‌شناختی معقول‌تر است؟
+چرا اینجا می‌توانید مستقیماً با \lr{NLL} مقایسه کنید؟
 
-\textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: \lr{LS} در برابر \lr{MLE} با شبیه‌سازی).}
-500 مجموعه‌داده از مدل توانی (\(A = 0.9\)، \(d = 0.5\)، همان 8 فاصله،
-\(n = 50\)) شبیه‌سازی کنید، هرکدام را با \lr{LS} و با \lr{MLE} برازش کنید
-و دو برآوردگر \(d\) را مقایسه کنید: میانگین (سوگیری)، انحراف معیار، و
-ریشه‌ی میانگین مربع خطا. کدام اینجا بهتر است؟ با \(n = 10\) تکرار کنید.
-(آمادگی خوبی برای \lr{A2} است.)
+\(A = 0.9\) · \(d = 0.5\) · \(n = 50\) با \(n = 10\) تکرار کنید. (آمادگی
+خوبی برای \lr{A2} است.)
 
 \subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
 
@@ -858,33 +767,14 @@ descent} حل می‌شود. دو کمیتی که در مقاله‌های هو�
 \lr{(NLL} = \ensuremath{\infty}). هموارسازی \lr{(smoothing)} این را حل می‌کند، همان‌طور که
 تصحیح \lr{log-linear} هفته‌ی 2 مشکل نرخ \lr{hit} 1 را حل کرد.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 8 ·
-سلول 8
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-P(cat | the) = 0.333
-'the dog sat on the mat .'   MLE      NLL =  3.584  perplexity =   1.82
-'the dog sat on the mat .'   add-one  NLL =  9.537  perplexity =   4.90
-'the dog saw the cat .'      MLE      NLL =    inf  perplexity =    inf
-'the dog saw the cat .'      add-one  NLL =  9.624  perplexity =   6.85
-\end{Verbatim}
-\end{latin}
-
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} کدام جفت کلمه در
-\lr{«the dog saw the cat} .» هرگز در \lr{corpus} دیده نشده؟ با دست بررسی
-کنید که \lr{MLE} برای \(P(\text{\lr{cat}}\mid\text{\lr{the}})\) برابر 1/3 است. -
-\ensuremath{\star}\ensuremath{\star} هموارسازی جمله‌ی \emph{آموزشی} را کم‌احتمال‌تر می‌کند \lr{(NLL} از 3.6 به
-9.5) ولی جمله‌ی تازه را ممکن می‌کند. \lr{add-one} را با \lr{add-}\(k\) عوض
-کنید و \(k\) را با \lr{cross-validation leave-one-sentence-out} انتخاب
-کنید (پیش‌نمایشی از هفته‌ی 6). - \ensuremath{\star}\ensuremath{\star} بحث: \lr{MLE} یک مدل \lr{bigram
-corpus} آموزشی را تا جای ممکن بازتولید می‌کند. چرا «بیشینه کردن درست‌نمایی
-روی متن اینترنت» با «یاد گرفتن راست‌گویی» یکی نیست؟
+با دست بررسی کنید که \lr{MLE} برای \(P(\text{\lr{cat}}\mid\text{\lr{the}})\) برابر
+1/3 است. - \ensuremath{\star}\ensuremath{\star} هموارسازی جمله‌ی \emph{آموزشی} را کم‌احتمال‌تر می‌کند
+\lr{(NLL} از 3.6 به 9.5) ولی جمله‌ی تازه را ممکن می‌کند. \lr{add-one} را
+با \lr{add-}\(k\) عوض کنید و \(k\) را با \lr{cross-validation
+leave-one-sentence-out} انتخاب کنید (پیش‌نمایشی از هفته‌ی 6). - \ensuremath{\star}\ensuremath{\star} بحث:
+\lr{MLE} یک مدل \lr{bigram corpus} آموزشی را تا جای ممکن بازتولید می‌کند.
+چرا «بیشینه کردن درست‌نمایی روی متن اینترنت» با «یاد گرفتن راست‌گویی» یکی
+نیست؟
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -901,18 +791,10 @@ corpus} آموزشی را تا جای ممکن بازتولید می‌کند. �
   \textbf{ضرب کردن احتمال‌ها به‌جای جمع کردن لگاریتم‌ها.} حاصل‌ضرب برای
   تعداد \lr{trial} واقعی به 0 سرریز می‌کند (بخش \lr{A).}
 \item
-  \textbf{بیشینه کردن وقتی بهینه‌ساز کمینه می‌کند.}
-  \lr{\nolinkurl{minimize}} به \textbf{منفی} لگاریتم درست‌نمایی نیاز
-  دارد. فراموش کردن علامت منفی بهینه‌ساز را به \emph{بدترین} پارامترها
-  می‌فرستد.
+  فراموش کردن علامت منفی بهینه‌ساز را به \emph{بدترین} پارامترها می‌فرستد.
 \item
   \textbf{محدود نکردن احتمال‌ها.} احتمال‌های پیش‌بینی‌شده‌ی دقیقاً 0 یا 1
   لگاریتم درست‌نمایی \(-\infty\) می‌دهند و بهینه‌ساز را از کار می‌اندازند.
-\item
-  \textbf{مقایسه‌ی \lr{NLL} بین مجموعه‌داده‌ها یا کدگذاری‌های مختلف.}
-  \lr{NLL} به تعداد مشاهدات و ثابت‌ها (مثلاً ضرایب دوجمله‌ای) بستگی دارد.
-  فقط مدل‌هایی را مقایسه کنید که روی همان داده با همان کدگذاری برازش
-  شده‌اند.
 \item
   \textbf{استفاده‌ی پیش‌فرض از کمترین مربعات برای انتخاب‌ها یا شمارش‌ها.}
   ساختار نویز داده را نادیده می‌گیرد. از درست‌نمایی‌ای استفاده کنید که با
@@ -931,11 +813,9 @@ corpus} آموزشی را تا جای ممکن بازتولید می‌کند. �
 
 \subsection{خودآزمایی}
 
-\textbf{1.} هرکدام در یک جمله: در یک توزیع احتمال در برابر یک تابع
-درست‌نمایی چه چیزی متغیر و چه چیزی ثابت است؟ \textbf{پاسخ} احتمال:
-پارامترها ثابت، داده متغیر، و جمع/انتگرالش روی داده 1 است. درست‌نمایی:
-داده روی مقادیر مشاهده‌شده ثابت، پارامترها متغیر، و لازم نیست انتگرالش
-روی پارامترها 1 باشد.
+\textbf{پاسخ} احتمال: پارامترها ثابت، داده متغیر، و جمع/انتگرالش روی
+داده 1 است. درست‌نمایی: داده روی مقادیر مشاهده‌شده ثابت، پارامترها متغیر،
+و لازم نیست انتگرالش روی پارامترها 1 باشد.
 
 \textbf{2.} دو دلیل برای کار با لگاریتم درست‌نمایی بیاورید. \textbf{پاسخ}
 (1) عددی: حاصل‌ضرب احتمال‌های زیاد سرریز می‌کند ولی مجموع لگاریتم‌ها نه. (2)
@@ -978,19 +858,13 @@ corpus} آموزشی را تا جای ممکن بازتولید می‌کند. �
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{تکلیف}
 
 \subsubsection{\texorpdfstring{\lr{A2:} کمترین مربعات در برابر بیشینه
 درست‌نمایی (1.0 نمره از 20؛ انتشار هفته‌ی 4، موعد ابتدای درس هفته‌ی
 6)}{A2: کمترین مربعات در برابر بیشینه درست‌نمایی (1.0 نمره از 20؛ انتشار هفته‌ی 4، موعد ابتدای درس هفته‌ی 6)}}
-
-\textbf{داده.} مجموعه‌داده را دقیقاً با این کد بسازید (همه داده‌ی یکسانی
-می‌گیرند):
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week04.py}}, \lr{cell} 9 ·
-سلول 9
-\end{quote}
 
 \textbf{کارها.}
 
@@ -1004,24 +878,15 @@ corpus} آموزشی را تا جای ممکن بازتولید می‌کند. �
 \item
   \textbf{ارزیابی (2 امتیاز).} \(G^2\)، درجه‌ی آزادی و \(p\) را برای
   برازش \lr{MLE} هر مدل حساب کنید. داده‌ها را با بازه‌های 95\% دوجمله‌ای،
-  هر دو منحنی برازش‌شده، و باقی‌مانده‌ها رسم کنید. کدام مدل (اگر هست) قابل
-  رد است؟
+  هر دو منحنی برازش‌شده، و باقی‌مانده‌ها رسم کنید.
 \item
   \textbf{مطالعه‌ی شبیه‌سازی (3 امتیاز).} مدل توانی با \(A = 0.95\)،
-  \(d = 0.7\) را مدل واقعی در نظر بگیرید. 500 مجموعه‌داده با همین طرح
-  شبیه‌سازی کنید، هرکدام را با \lr{LS} و \lr{MLE} برازش کنید و سوگیری،
-  انحراف معیار و \lr{RMSE} برآورد \(\hat d\) را برای هر روش گزارش کنید.
-  هیستوگرام‌ها را نشان دهید. با \(n = 100\) آیتم تکرار کنید و بگویید چه
-  تغییر می‌کند.
+  \(d = 0.7\) را مدل واقعی در نظر بگیرید. هیستوگرام‌ها را نشان دهید. با
+  \(n = 100\) آیتم تکرار کنید و بگویید چه تغییر می‌کند.
 \item
-  \textbf{تفسیر (2 امتیاز، حداکثر 300 کلمه).} برای داده‌های یادآوری کدام
-  برآوردگر را توصیه می‌کنید و چرا؟ جوابتان را به ساختار نویز داده‌های
-  دوجمله‌ای و به شمارش‌های نزدیک به کف (1 تا 2 از 20) در طولانی‌ترین
-  فاصله‌ها ربط دهید. اگر یکی از آن شمارش‌ها 0 بود، چه بر سر روش خطی‌سازی
-  هفته‌ی 2 می‌آمد؟
-\item
-  \textbf{کیفیت کد (1 امتیاز).} \lr{notebook} قابل بازتولید و با توضیح؛
-  \lr{seed}ها ثابت؛ توابع دوباره استفاده شوند نه کپی.
+  جوابتان را به ساختار نویز داده‌های دوجمله‌ای و به شمارش‌های نزدیک به کف
+  (1 تا 2 از 20) در طولانی‌ترین فاصله‌ها ربط دهید. اگر یکی از آن شمارش‌ها 0
+  بود، چه بر سر روش خطی‌سازی هفته‌ی 2 می‌آمد؟
 \end{enumerate}
 
 برای تحویل با تأخیر، روزی 10\% کسر می‌شود (حداکثر 3 روز).

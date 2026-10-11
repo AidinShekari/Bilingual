@@ -15,11 +15,21 @@ exponential-with-asymptote (\(k=3\)) and two-trace (\(k=4\)).
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -79,7 +89,6 @@ benchmark contamination & \RL{\CMfa آلودگی} benchmark & \RL{\CMfa بودن
 parameter recovery & \RL{\CMfa بازیابی پارامتر} & \RL{\CMfa آیا برازش، پارامترهای
 معلوم شبیه‌سازی را برمی‌گرداند} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -98,7 +107,7 @@ By the end of this week, students will be able to:
   \textbf{Demonstrate} overfitting by simulation: training error falls
   monotonically with model complexity while prediction error does not.
 \item
-  \textbf{Implement} hold-out, \(K\)-fold and leave-one-out
+  \textbf{Formulate and evaluate} hold-out, \(K\)-fold and leave-one-out
   cross-validation with an out-of-sample log-likelihood score, keeping
   the training and test data properly separated.
 \item
@@ -160,6 +169,8 @@ directly with data we already have.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lecture notes}
 
 \paragraph{In plain words}
@@ -182,12 +193,24 @@ cross-validation 20 · what to hold out 10.
 
 \subsubsection{1. Measures of goodness of fit}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 1. Measures of goodness of fit}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Measure
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Definition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Scale
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Remarks
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Measure
@@ -214,7 +237,6 @@ The natural measure for likelihood-based models \\
 Deviance \(G^2\) & \(2(\ell_{\text{sat}} - \ell)\) & \ensuremath{\approx} \(\chi^2\) &
 Absolute test of misfit (Week 4) \\
 \end{longtable}
-}
 
 All of these measure \textbf{descriptive adequacy}: how well the model
 reproduces the data it was fitted to. None of them accounts for how
@@ -293,11 +315,21 @@ complex one when data are scarce.
 We prefer the model that best predicts \textbf{new data from the same
 process}. Three kinds of ``new'' correspond to three scientific claims:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. Generalization as the criterion}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+New data are\ldots{}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Claim being tested
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Hold out\ldots{}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 New data are\ldots{}
@@ -318,7 +350,6 @@ captures the mechanism, so it can extrapolate & Whole conditions (the
 New \textbf{participants} & The model captures what is common to people
 & Whole participants \\
 \end{longtable}
-}
 
 Always state which kind of generalization your evaluation targets.
 
@@ -365,8 +396,7 @@ of the data, so it slightly penalizes models that need a lot of data.
 \textbf{Advanced: LOO, AIC and Bayes.} For regular models and large
 \(N\), leave-one-out CV with the log score and AIC (Week 7) choose the
 same model asymptotically. In Bayesian modeling, an efficient
-approximation to LOO (PSIS-LOO) is computed from posterior samples. You
-will meet it with ArviZ in Week 13.
+approximation to LOO (PSIS-LOO) is computed from posterior samples.
 \end{quote}
 
 \paragraph{Reading the math}
@@ -445,8 +475,7 @@ will meet it with ArviZ in Week 13.
   (\(-8.5\)). The laugh is the lesson.
 \item
   \textbf{Do leave-one-out by hand for one point} (cover the 8-day point
-  with your hand, refit the line by eye, predict). Students then
-  understand what the code in the lab does.
+  with your hand, refit the line by eye, predict).
 \item
   \textbf{Insist on ``what is held out''.} Write the three kinds of
   ``new'' data (Section 3) on the board; most mistakes in student
@@ -479,8 +508,12 @@ degree as ``models''.
 
 \subsubsection{Step 1: fit to all the data}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}llll@{}}
+\caption{\centering Step 1: fit to all the data}\tabularnewline
+\toprule\noalign{}
+Model & \(k\) & Fitted equation & Training SSE \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 Model & \(k\) & Fitted equation & Training SSE \\
 \midrule\noalign{}
@@ -492,7 +525,6 @@ Linear & 2 & \(\hat y = 0.637 - 0.046\,t\) & 0.0032 \\
 Quadratic & 3 & \(\hat y = 0.647 - 0.053\,t + 0.0008\,t^2\) & 0.0031 \\
 Cubic & 4 & passes exactly through all 4 points & \textbf{0.0000} \\
 \end{longtable}
-}
 
 By training SSE, the cubic is ``perfect''. But ask it to predict recall
 at \(t = 16\) days: it predicts \(-8.5\), i.e., \emph{minus 850\%
@@ -504,13 +536,27 @@ absurd), and the constant predicts 0.47.
 Leave out each point in turn, refit on the remaining three, and predict
 the left-out point.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering Step 2: leave-one-out CV}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Left-out \(t\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Observed
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Constant predicts
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Linear predicts
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Quadratic predicts
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Left-out \(t\)
@@ -534,7 +580,6 @@ Quadratic predicts
 \textbf{LOO SSE} & & \textbf{0.1125} & \textbf{0.0090} &
 \textbf{1.0000} \\
 \end{longtable}
-}
 
 (The cubic cannot be cross-validated here: three points do not determine
 four parameters.)
@@ -550,6 +595,8 @@ range; that is exactly why we use exponential and power models instead.)
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lab (2 hours)}
 
 \subsubsection{Goals}
@@ -561,7 +608,7 @@ range; that is exactly why we use exponential and power models instead.)
   See overfitting happen: training vs.~test error as polynomial degree
   increases.
 \item
-  Implement item-level \(K\)-fold CV with the out-of-sample binomial
+  Formulate and evaluate item-level \(K\)-fold CV with the out-of-sample binomial
   log-likelihood, and compare four forgetting models.
 \item
   Run a \textbf{generalization-criterion} test: train on short delays,
@@ -576,21 +623,6 @@ range; that is exactly why we use exponential and power models instead.)
 
 \subsubsection{Setup: data and four models}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week06.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{7\baselineskip}
-\begin{Verbatim}
-exp      k = 2  training NLL = 29.812  params = [0.638 0.046]
-pow      k = 2  training NLL = 19.830  params = [0.877 0.421]
-expasym  k = 3  training NLL = 18.919  params = [0.861 0.38  0.308]
-two      k = 4  training NLL = 18.919  params = [0.265 0.    0.596 0.38 ]
-\end{Verbatim}
-
 By training NLL, the more complex models win. Notice that the two-trace
 model's best fit has a slow component with rate 0: it has collapsed into
 the exponential-with-asymptote model (same NLL), as in Week 3. Now let's
@@ -601,26 +633,6 @@ see whether they also \emph{predict} better.
 We use polynomials in \(x = \ln(1+t)\) as deliberately ``dumb'' flexible
 models. The \textbf{test} data are 500 fresh datasets simulated from the
 true power model, with the same design.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week06.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{12\baselineskip}
-\begin{Verbatim}
- degree  k  train_MSE  test_MSE
-      0  1    0.03980   0.05072
-      1  2    0.00663   0.00787
-      2  3    0.00204   0.00634
-      3  4    0.00202   0.00640
-      4  5    0.00173   0.00661
-      5  6    0.00087   0.00750
-      6  7    0.00087   0.00750
-      7  8    0.00000   0.00833
-\end{Verbatim}
 
 \textbf{What to notice:} training error decreases with every added
 parameter and reaches 0 at \(k = 8\) (interpolation). Test error is
@@ -634,27 +646,6 @@ items (45 min)}{Part B: K-fold cross-validation over items (45 min)}}
 Each interval tested 50 items. We assign each item to one of \(K = 5\)
 folds \emph{within} each interval, so that every training set contains
 all 8 intervals.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week06.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output} (about 1--2 minutes):
-
-\Needspace{13\baselineskip}
-\begin{Verbatim}
-         k  train_NLL  CV_NLL_mean  CV_NLL_sd
-exp      2     29.812      256.458      1.058
-pow      2     19.830      245.791      0.734
-expasym  3     18.919      247.370      1.574
-two      4     18.919      247.531      1.172
-
-CV-NLL difference to the power model (mean, SD over repeats):
-         exp  pow  expasym    two
-mean  10.667  0.0    1.579  1.740
-std    1.137  0.0    1.807  1.349
-\end{Verbatim}
 
 Note that training NLL (binomial, with the binomial coefficients) and
 CV-NLL (Bernoulli, item level) are on different scales. Compare models
@@ -675,24 +666,6 @@ extrapolate. Train on the five shortest delays (\(t \le 7\) days) and
 predict the three longest (14, 21, 30 days), which the models have never
 seen.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week06.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{10\baselineskip}
-\begin{Verbatim}
-         test_NLL_long_delays  pred_t14  pred_t21  pred_t30
-model
-exp                    72.550     0.086     0.028     0.007
-pow                     9.627     0.228     0.186     0.156
-expasym                 6.268     0.260     0.257     0.257
-two                    46.072     0.131     0.057     0.020
-observed: {14: 0.26, 21: 0.26, 30: 0.28}
-\end{Verbatim}
-
 \textbf{What to notice:} here the \textbf{exponential-with-asymptote}
 model extrapolates best, \emph{not} the true power model. The three
 held-out points happen to be flat (0.26, 0.26, 0.28), and a curve that
@@ -708,12 +681,6 @@ one of them.
 
 \subsubsection{Part D: put it together (25 min)}
 
-Fill in this table in your notebook from Parts B and C, and write a
-short paragraph (5--8 sentences) answering: \textbf{Which model would
-you recommend as the best account of these forgetting data, and how
-confident are you?}
-
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
@@ -723,6 +690,25 @@ confident are you?}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\caption{\centering Part D: put it together (25 min)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Training NLL
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+5-fold CV-NLL (mean \ensuremath{\pm} SD)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Long-delay test NLL
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Residual pattern (Week 4)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Parameters plausible?
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Model
@@ -749,7 +735,6 @@ expasym & & & & & & \\
 two & & & & & & \\
 \end{longtable}
 \end{landscape}
-}
 
 \subsubsection{Exercises (increasing difficulty)}
 
@@ -774,7 +759,7 @@ Does the ranking become clearer? Does the two-trace model ever win?
 
 \textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: leave-one-participant-out).} Use the
 practice data generator from Week 5, Part D, with 20 participants.
-Implement CV in which each fold leaves out \emph{one participant}: fit
+Formulate and evaluate CV in which each fold leaves out \emph{one participant}: fit
 an aggregate (group-average) model on 19 participants and score the
 prediction of the held-out participant's curve with the Gaussian
 log-likelihood. Compare the exponential and power models. Then do the
@@ -800,35 +785,19 @@ generalization. It is one of the most serious problems in evaluating AI
 systems, including claims that LLMs show human-like cognitive abilities
 on classic psychology tasks, whose materials are widely published.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week06.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-Reported accuracy (all items): 0.73
-Accuracy on leaked items:      0.96  (n = 120)
-Accuracy on clean items:       0.63  (n = 280)
-\end{Verbatim}
-
 The reported score (0.73) overstates the ability to solve \emph{new}
 problems (0.63). The fix is the same as in this week's lab: evaluate on
 items that were guaranteed not to be used in fitting, for example newly
 written items, or systematic variations of classic tasks.
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} Change the share of leaked items
-from 0 to 0.9 and plot the reported accuracy. Can you tell from the
-reported accuracy alone how much leaked? - \ensuremath{\star}\ensuremath{\star} In practice we do not know
-which items leaked. Suppose a ``fresh'' variant of every item (same
-logic, new wording) is available. Simulate fresh variants with
-\(P(\text{correct}) = 0.60\) and estimate the leakage effect as the
-difference between original and fresh accuracy, with a paired bootstrap
-CI (Week 5). - \ensuremath{\star}\ensuremath{\star} Discussion: an LLM solves a famous reasoning puzzle
-from a 1970s psychology paper. Why is this weak evidence that it
-``reasons like a human''? Which test would be stronger?
+Can you tell from the reported accuracy alone how much leaked? - \ensuremath{\star}\ensuremath{\star} In
+practice we do not know which items leaked. Suppose a ``fresh'' variant
+of every item (same logic, new wording) is available. Simulate fresh
+variants with \(P(\text{correct}) = 0.60\) and estimate the leakage
+effect as the difference between original and fresh accuracy, with a
+paired bootstrap CI (Week 5). - \ensuremath{\star}\ensuremath{\star} Discussion: an LLM solves a famous
+reasoning puzzle from a 1970s psychology paper. Why is this weak
+evidence that it ``reasons like a human''? Which test would be stronger?
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -920,6 +889,8 @@ needed.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Assignment}
 
 \subsubsection{A3: Model comparison and recovery (1.0 point of 20;
@@ -927,14 +898,6 @@ released Week 6, due at the start of the Week 9 lecture)}
 
 A3 spans this week and next: Tasks 1--3 use this week's material, Tasks
 4--6 use Week 7's (AIC/BIC, parameter and model recovery).
-
-\textbf{Data.} A forgetting experiment with 12 participants, generated
-by this code:
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week06.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
 
 \textbf{Tasks.}
 

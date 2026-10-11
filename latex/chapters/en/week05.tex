@@ -15,11 +15,21 @@ participants (the power law of practice).
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -77,7 +87,6 @@ noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شوا�
 benchmark & benchmark \RL{\CMfa (مجموعه‌آزمون استاندارد)} & \RL{\CMfa مجموعه سؤال
 برای مقایسه‌ی مدل‌های هوش مصنوعی} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -157,6 +166,8 @@ averages.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lecture notes}
 
@@ -242,8 +253,7 @@ between two estimates means their errors largely compensate each other
 textbook formula.
 
 \textbf{In practice:} compute \(\mathbf{H}\) numerically by finite
-differences (lab Part A). The \nolinkurl{hess_inv} returned by BFGS is
-only a rough approximation, so do not use it for SEs.
+differences (lab Part A).
 
 \textbf{When Wald fails:} small samples, estimates near a bound (e.g., a
 recall level \(\hat A\) close to 1), strongly non-quadratic likelihoods,
@@ -361,13 +371,27 @@ from the model.
 
 \textbf{Comparison:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering 4. The parametric bootstrap}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Cost
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Symmetric?
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Handles bounds?
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Needs
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Method
@@ -390,19 +414,30 @@ A likelihood \\
 Parametric bootstrap & \(B\) fits & Can be asymmetric & Yes & A model
 you can simulate \\
 \end{longtable}
-}
 
 \subsubsection{5. Fitting multiple participants}
 
 Real experiments have \(J\) participants (index \(j\)). There are three
 broad strategies:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 5. Fitting multiple participants}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Strategy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+What is fitted
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pros
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Cons
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Strategy
@@ -428,7 +463,6 @@ analysis ignores estimation uncertainty \\
 from a group distribution, estimated jointly & Best of both; principled
 shrinkage & More complex; usually Bayesian (Week 13) \\
 \end{longtable}
-}
 
 \textbf{Aggregation artifacts.} The average of nonlinear curves is
 generally \textbf{not} a curve of the same family. For example,
@@ -529,6 +563,8 @@ process. When individual data are sparse, use hierarchical models (Week
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Worked example}
 
 \subsubsection{Part 1: three intervals for a recall probability}
@@ -555,7 +591,6 @@ Participant 1 forgets at \(\lambda = 0.1\), participant 2 at
 \(\lambda = 1.0\). The average curve
 \(\bar f(t) = (e^{-0.1t} + e^{-t})/2\):
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
@@ -563,6 +598,23 @@ Participant 1 forgets at \(\lambda = 0.1\), participant 2 at
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\caption{\centering Part 2: averaging two exponential learners}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(t\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+10
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(t\)
@@ -585,7 +637,6 @@ Participant 1 forgets at \(\lambda = 0.1\), participant 2 at
 Relative loss rate \(-\bar f'(t)/\bar f(t)\) & 0.55 & 0.36 & 0.23 & 0.11
 & 0.10 \\
 \end{longtable}
-}
 
 Each participant has a \emph{constant} relative loss rate (0.1 and 1.0),
 but the average's rate \textbf{falls} from 0.55 to 0.10, the signature
@@ -596,6 +647,8 @@ conclude that ``memories become more resistant with age'', a claim true
 of neither participant.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lab (2 hours)}
 
@@ -619,30 +672,8 @@ of neither participant.
 \textbf{Timing:} Part A 20 min · Part B 15 min · Part C 25 min · Part D
 40 min · Part E 20 min.
 
-\subsubsection{Setup}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
 \subsubsection{Part A: Wald standard errors from a numerical Hessian (20
 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{7\baselineskip}
-\begin{Verbatim}
-   estimate      SE   lower   upper
-A    0.8773  0.0626  0.7546  1.0000
-d    0.4214  0.0532  0.3171  0.5257
-Estimated correlation between A-hat and d-hat: 0.751
-\end{Verbatim}
 
 \textbf{Interpret:} both 95\% intervals contain the true values
 (\(A^\ast = 0.9\), \(d^\ast = 0.5\)), so the ``miss'' we worried about
@@ -654,37 +685,7 @@ interval cannot. The positive correlation is the trade-off valley from
 Week 3: when the estimate of \(A\) is too high, the estimate of \(d\)
 tends to be too high as well.
 
-\subsubsection{\texorpdfstring{Part B: profile likelihood interval for
-\(d\) (15 min)}{Part B: profile likelihood interval for d (15 min)}}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{4\baselineskip}
-\begin{Verbatim}
-Profile 95% CI for d: [0.320, 0.525]  (grid step 0.005)
-\end{Verbatim}
-
 \subsubsection{Part C: parametric bootstrap (25 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output} (takes about 30--60 s):
-
-\Needspace{7\baselineskip}
-\begin{Verbatim}
-   boot SE    2.5%  97.5%
-A   0.0563  0.7724  1.000
-d   0.0501  0.3304  0.528
-Bootstrap correlation: 0.703
-\end{Verbatim}
 
 \textbf{Compare:} put the Wald, profile and bootstrap intervals for
 \(d\) side by side. Are they similar? Which is asymmetric? With these
@@ -710,77 +711,21 @@ individual learning rates
 learners and several very slow ones). Here \(m\) is the practice block,
 and \(\varepsilon\) is the noise of a block-mean RT.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-True learning rates: [1.000e-03 7.000e-03 7.000e-03 2.000e-02 3.000e-02 4.500e-02 1.220e-01
- 1.490e-01 1.720e-01 2.360e-01 2.820e-01 3.260e-01 3.870e-01 3.950e-01
- 5.340e-01 7.100e-01 7.900e-01 1.002e+00 1.869e+00 2.534e+00]
-Average curve, exp: E = 507.5, B = 423.8, r = 0.205, RMSD = 19.26 ms
-Average curve, pow: E = 419.2, B = 579.4, r = 0.529, RMSD = 10.16 ms
-\end{Verbatim}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output (summary line):}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-Which model fits each participant better? {'exp': 20}
-(with SciPy 1.18: {'exp': 19, 'pow': 1}; one participant with a near-zero learning rate is fitted differently)
-\end{Verbatim}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 7 · \RL{\CMfa سلول}
-7
-\end{quote}
-
 \subsubsection{Part E: interpret (20 min)}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 8 · \RL{\CMfa سلول}
-8
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-Mean of true individual rates:      0.481
-Mean of estimated individual rates: 0.449 (SD 0.626)
-Exponential rate fitted to the average curve: 0.205
-Correlation of true and estimated individual rates: 0.971
-(with SciPy 1.18: estimated mean 0.457 (SD 0.621), correlation 0.968, because of the same participant)
-\end{Verbatim}
-
-\textbf{Write 2--3 sentences for each:} 1. The average curve is better
-described by a power function (RMSD about 10 vs.~19 ms), yet all (or,
-depending on the SciPy version, 19) of the 20 individuals are better
-described by an exponential. Which statement about \emph{learning} is
-justified, and which is not? 2. Why is the exponential rate fitted to
-the average curve smaller than the mean of the individual rates? (Hint:
-which participants dominate the average late in practice?) 3. Individual
-fits recover the true rates well here, with 60 blocks per person. What
-would change with only 10 blocks per person, and what would you do then?
-(Preview of Week 13.)
+\textbf{Write 2--3 sentences for each:} 1. Which statement about
+\emph{learning} is justified, and which is not? 2. Why is the
+exponential rate fitted to the average curve smaller than the mean of
+the individual rates? (Hint: which participants dominate the average
+late in practice?) 3. Individual fits recover the true rates well here,
+with 60 blocks per person. What would change with only 10 blocks per
+person, and what would you do then? (Preview of Week 13.)
 
 \subsubsection{Exercises (increasing difficulty)}
 
 \textbf{Exercise 1 \ensuremath{\star}.} Compute Wald 95\% CIs for the \emph{exponential}
-model's MLE on the Week 2 data. Do they contain sensible values? Then
-compute them at the bogus ``estimate''
-\nolinkurl{(A, lam) = (1.0, 0.107)} from last week's
-bounded-Nelder--Mead warning. What happens to the Hessian at a point
-that is not a minimum?
+model's MLE on the Week 2 data. Do they contain sensible values? What
+happens to the Hessian at a point that is not a minimum?
 
 \textbf{Exercise 2 \ensuremath{\star}.} Rerun the bootstrap with \(B = 50, 200, 1000\)
 and different seeds. How stable are the percentile limits? How large
@@ -831,28 +776,12 @@ Item difficulty also varies a lot, which is the item-level version of
 the participant heterogeneity in Part D: a single average accuracy hides
 it.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 9 · \RL{\CMfa سلول}
-9
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-Accuracy A = 0.74, B = 0.67, difference = 0.07
-95% CI, paired bootstrap:   [-0.03, 0.17]
-95% CI, unpaired bootstrap: [-0.06, 0.20]
-\end{Verbatim}
-
 A 7-point lead on 100 items is not clearly different from zero. A
 leaderboard that ranks A above B without an interval is overconfident.
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} How many items would the benchmark
-need for the paired interval to exclude 0, if the true difference stays
-the same? Find out by simulation. - \ensuremath{\star}\ensuremath{\star} Compute the Wald SE of each
-accuracy, \(\sqrt{p(1-p)/n}\), and compare it with the bootstrap SE. -
-\ensuremath{\star}\ensuremath{\star} Discussion: a paper reports ``Model A: 74\%, Model B: 67\%'' with no
+Find out by simulation. - \ensuremath{\star}\ensuremath{\star} Compute the Wald SE of each accuracy,
+\(\sqrt{p(1-p)/n}\), and compare it with the bootstrap SE. - \ensuremath{\star}\ensuremath{\star}
+Discussion: a paper reports ``Model A: 74\%, Model B: 67\%'' with no
 interval and concludes that A ``reasons better''. List what you would
 ask the authors.
 
@@ -873,8 +802,7 @@ ask the authors.
   the procedure. The probability statement belongs to Bayesian credible
   intervals (Week 9).
 \item
-  \textbf{Using BFGS's \nolinkurl{hess_inv} for standard errors.} It is
-  a crude by-product of the optimizer. Compute the Hessian properly.
+  Compute the Hessian properly.
 \item
   \textbf{Trusting Wald intervals near bounds.} If \(\hat\theta\) is on
   or near a bound, or the interval crosses impossible values, use

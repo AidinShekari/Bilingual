@@ -14,11 +14,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -71,7 +81,6 @@
 \lr{verbal theory} & نظریه‌ی کلامی & نظریه‌ای که فقط با کلمات بیان شده و
 پیش‌بینی دقیق نمی‌دهد \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -91,7 +100,7 @@
   با تصحیح برای نرخ \lr{hit} یا \lr{false alarm} برابر 0 یا 1، و
   \textbf{توضیح دهند} چرا \(d'\) حساسیت را از سوگیری جدا می‌کند.
 \item
-  مدل‌های فراموشی نمایی و توانی را با مدل نویز دوجمله‌ای \textbf{پیاده‌سازی
+  مدل‌های فراموشی نمایی و توانی را با مدل نویز دوجمله‌ای \textbf{صورت‌بندی
   کنند} و به‌طور کیفی \textbf{پیش‌بینی کنند} که هر پارامتر منحنی‌ها را
   چگونه تغییر می‌دهد.
 \item
@@ -112,7 +121,6 @@
 واقعاً تومور دارند تومور گزارش می‌کند، ولی در 31\% از تصویرهای سالم هم.
 رادیولوژیست \lr{R2} فقط 69\% از تومورها را گزارش می‌کند، ولی فقط در 7\%
 از تصویرهای سالم اشتباه می‌کند. درصد پاسخ درست هر دو یکسان است (81\%).
-کدام تشخیص‌دهنده‌ی بهتری است؟
 
 درصد پاسخ درست نمی‌تواند به این سؤال جواب دهد، چون دو چیز متفاوت را قاطی
 می‌کند: اینکه فرد \textbf{چقدر خوب} تومور را از بافت سالم تشخیص می‌دهد
@@ -165,6 +173,8 @@
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{جزوه‌ی درس}
 
 \paragraph{به زبان ساده}
@@ -175,21 +185,16 @@
 مشاهده‌گر یک «حس وجود علامت» پرنویز می‌دهد. اگر این حس از یک آستانه‌ی شخصی
 قوی‌تر باشد، مشاهده‌گر می‌گوید «بله». دو عدد مشاهده‌گر را توصیف می‌کنند: حس
 «علامت هست» و «علامت نیست» به‌طور میانگین چقدر از هم فاصله دارند
-(\textbf{حساسیت}، \(d'\))، و آستانه کجاست (\textbf{ملاک}، \(c\)). دو نفر
-می‌توانند درصد پاسخ درست یکسانی داشته باشند به دلایل کاملاً متفاوت، و
-\lr{SDT} نشان می‌دهد کدام دلیل. \textbf{منحنی فراموشی} نشان می‌دهد یادآوری
-با گذشت زمان چطور کم می‌شود. دو فرمول، نمایی و توانی، هر دو شکل «اول
-سریع، بعد آهسته» دارند، ولی درباره‌ی حافظه حرف‌های متفاوتی می‌زنند. انتخاب
-بین آن‌ها از جنس سؤال‌هایی است که بقیه‌ی درس یاد می‌دهد با داده جواب دهیم.
+(\textbf{حساسیت}، \(d'\))، و آستانه کجاست (\textbf{ملاک}، \(c\)).
+\textbf{منحنی فراموشی} نشان می‌دهد یادآوری با گذشت زمان چطور کم می‌شود. دو
+فرمول، نمایی و توانی، هر دو شکل «اول سریع، بعد آهسته» دارند، ولی درباره‌ی
+حافظه حرف‌های متفاوتی می‌زنند. انتخاب بین آن‌ها از جنس سؤال‌هایی است که
+بقیه‌ی درس یاد می‌دهد با داده جواب دهیم.
 
 \paragraph{واژه‌های آماری به زبان ساده}
 
 \begin{itemize}
 \tightlist
-\item
-  \textbf{توزیع \lr{(distribution):}} توصیف اینکه یک کمیت تصادفی چه
-  مقدارهایی می‌گیرد و هرکدام چقدر رایج است. هیستوگرام تعداد زیادی
-  اندازه‌گیری تقریبی از آن است.
 \item
   \textbf{توزیع نرمال (گاوسی) \(\mathcal{N}(\mu, \sigma)\):} منحنی
   زنگوله‌ای با میانگین \(\mu\) (مرکز) و انحراف معیار \(\sigma\) (پهنا).
@@ -202,18 +207,11 @@
 \item
   \textbf{\(\Phi(x)\) (تابع توزیع تجمعی یا \lr{CDF):}} احتمال اینکه یک
   مقدار نرمال استاندارد \emph{کمتر} از \(x\) باشد. \(\Phi(0) = 0.5\)،
-  \(\Phi(1) \approx 0.84\)، \(\Phi(1.96) \approx 0.975\). در
-  \lr{Python:} \lr{\nolinkurl{norm.cdf(x)}}.
+  \(\Phi(1) \approx 0.84\)، \(\Phi(1.96) \approx 0.975\).
 \item
   \textbf{\(\Phi^{-1}(p)\) (معکوس \lr{CDF}، «تبدیل \lr{z»):}} سؤال
   برعکس: نسبت \(p\) از مقدارها زیر چه عددی هستند؟
-  \(\Phi^{-1}(0.84) \approx 1\). در \lr{Python:}
-  \lr{\nolinkurl{norm.ppf(p)}}.
-\item
-  \textbf{توزیع دوجمله‌ای \(\mathrm{Binomial}(n, p)\):} تعداد موفقیت‌ها در
-  \(n\) تلاش مستقل که هرکدام با احتمال \(p\) موفق است (مثلاً تعداد
-  کلمه‌های به‌یادآمده از 50). میانگین آن \(np\) و واریانس آن \(np(1-p)\)
-  است.
+  \(\Phi^{-1}(0.84) \approx 1\).
 \item
   \textbf{نسبت در برابر احتمال:} نسبت چیزی است که \emph{مشاهده} می‌کنیم
   (30 از 50 = 0.60)؛ احتمال مقدار \emph{زیربنایی} مدل است که نسبت آن را
@@ -229,12 +227,24 @@
 \(\mathbf{y} \sim p(\mathbf{y}\mid\boldsymbol\theta,\allowbreak \mathcal{M})\). در
 عمل تقریباً هر مدلی که در این درس می‌بینید را می‌شود به پنج تکه تقسیم کرد:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 1. کالبدشکافی یک مدل}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+جزء
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+سؤال
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{SDT}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فراموشی (نمایی)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 جزء
@@ -266,7 +276,6 @@
 اگر شواهد درونی از ملاک بیشتر باشد «بله» & احتمال یادآوری برابر قدرت
 حافظه \(f(t)\) است \\
 \end{longtable}
-}
 
 چند نکته درباره‌ی هر جزء:
 
@@ -298,8 +307,12 @@
 یک تومور، یک کلمه‌ی مطالعه‌شده، یک صدای ضعیف) یا \emph{نویز}. مشاهده‌گر
 پاسخ «بله» (علامت) یا «نه» می‌دهد. نتیجه‌ها یک جدول 2×2 می‌سازند:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}lll@{}}
+\caption{\centering 2. نظریه‌ی تشخیص علامت (\lr{SDT)}}\tabularnewline
+\toprule\noalign{}
+& پاسخ «بله» & پاسخ «نه» \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 & پاسخ «بله» & پاسخ «نه» \\
 \midrule\noalign{}
@@ -310,7 +323,6 @@
 \textbf{\lr{trial} نویز} & \lr{false alarm (FA)} & رد درست \lr{(correct
 rejection}، \lr{CR)} \\
 \end{longtable}
-}
 
 با نرخ \lr{hit} \(H = \frac{\text{\lr{hits}}}{\text{\lr{hits}} + \text{\lr{misses}}}\)
 و نرخ \lr{false alarm}
@@ -437,10 +449,18 @@ c = -\tfrac{1}{2}\left[\Phi^{-1}(H) + \Phi^{-1}(F)\right].
 \lr{SDT} \emph{همان} نظریه‌ی آشکارسازی رادار و مخابرات است که در دهه‌ی
 1950 وارد روان‌شناسی شد.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering برای یک مهندس}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+روان‌شناسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مخابرات / رادار
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 روان‌شناسی
@@ -465,7 +485,6 @@ filter)} \\
 مشاهده‌گر آسان‌گیر / محافظه‌کار & آستانه‌ی پایین / بالا (\(P_{FA}\) بالا /
 پایین) \\
 \end{longtable}
-}
 
 تفاوت در تأکید: مهندس معمولاً آستانه را \emph{انتخاب} می‌کند (مثلاً
 \lr{Neyman\lr{--}Pearson:} \(P_{FA}\) را ثابت کن و \(P_D\) را بیشینه کن).
@@ -484,11 +503,20 @@ filter)} \\
 
 \textbf{دو هسته‌ی قطعی رقیب:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. منحنی‌های فراموشی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نمایی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توانی
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -511,7 +539,6 @@ filter)} \\
 از دست می‌دهد، هر سنی که داشته باشد & خاطره‌های قدیمی‌تر کندتر قدرت از دست
 می‌دهند؛ مقاوم‌تر می‌شوند \\
 \end{longtable}
-}
 
 \textbf{نرخ نسبی فراموشی} (که در تحلیل بقا به آن \emph{\lr{hazard}}
 می‌گویند) تفاوت کلیدی در تفسیر است. به همین دلیل انتخاب بین این دو تابع
@@ -525,9 +552,7 @@ y_i \sim \mathrm{Binomial}\big(n, f(t_i; \boldsymbol\theta)\big).
 
 با \(n = 50\) آیتم و \(f = 0.5\)، انحراف معیار نسبت مشاهده‌شده
 \(\sqrt{0.5 \cdot 0.5 / 50} \approx 0.07\) است. این در مقایسه با تفاوت
-مدل‌ها در فاصله‌های کوتاه بزرگ است؛ اولین نشانه‌ی اینکه \textbf{طرح آزمایش}
-(کدام فاصله‌ها، چند آیتم) تعیین می‌کند داده‌ها می‌توانند بین مدل‌ها تمایز
-بگذارند یا نه.
+مدل‌ها در فاصله‌های کوتاه بزرگ است؛
 
 \begin{quote}
 \textbf{پیشرفته: «+1» در مدل توانی بی‌خطر نیست.} \(A\,t^{-d}\) در
@@ -605,9 +630,6 @@ y_i \sim \mathrm{Binomial}\big(n, f(t_i; \boldsymbol\theta)\big).
   مجموعه‌ی کارهایی که یک مدل \textbf{نمی‌تواند} انجام دهد همان چیزی است که
   آن را قابل آزمون می‌کند.
 \item
-  \textbf{کدام پارامتر کجا اهمیت دارد؟} \(A\) کل منحنی فراموشی را جابه‌جا
-  می‌کند؛ \(\lambda\) یا \(d\) شکل را کنترل می‌کند.
-\item
   \textbf{آیا طرح آزمایش می‌تواند بین مدل‌ها تمایز بگذارد؟} اگر دو مدل در
   فاصله‌هایی که می‌خواهیم آزمون کنیم پیش‌بینی‌های تقریباً یکسانی بدهند، هیچ
   روش برازشی نمی‌تواند آن‌ها را از هم جدا کند (تمرین 4 \lr{lab}؛ تکلیف
@@ -645,19 +667,16 @@ y_i \sim \mathrm{Binomial}\big(n, f(t_i; \boldsymbol\theta)\big).
 \begin{itemize}
 \tightlist
 \item
-  \textbf{با معمای رادیولوژیست‌ها شروع کنید} (بخش مقدمه) و پیش از نشان
-  دادن هر فرمولی، بگذارید دانشجوها رأی بدهند کدام بهتر است. بیشترشان بر
-  اساس درصد پاسخ درست انتخاب می‌کنند و بعد می‌فهمند که دو عدد یکسان است.
+  بیشترشان بر اساس درصد پاسخ درست انتخاب می‌کنند و بعد می‌فهمند که دو عدد
+  یکسان است.
 \item
   \textbf{رسم کنید، اثبات نکنید.} دو منحنی زنگوله‌ای هم‌پوشان با یک خط
   عمودی متحرک، \(H\)، \(F\)، \(d'\) و \(c\) را بهتر از هر فرمولی توضیح
   می‌دهند. خط را روی تخته به چپ و راست ببرید و بپرسید \(H\) و \(F\) چه
   می‌شوند؛ بعد منحنی‌ها را از هم دور کنید و دوباره بپرسید.
 \item
-  \textbf{از جدول \(\Phi\) یا \lr{Python} به‌طور زنده استفاده کنید.}
-  \(d'\) رادیولوژیست \lr{R1} را جلوی کلاس با \lr{\nolinkurl{norm.ppf}}
-  حساب کنید. دانشجوهایی که آمار برایشان تازه است باید ببینند
-  \(\Phi^{-1}\) «فقط یک جدول‌خوانی» است.
+  دانشجوهایی که آمار برایشان تازه است باید ببینند \(\Phi^{-1}\) «فقط یک
+  جدول‌خوانی» است.
 \item
   \textbf{به چیزی که می‌شناسند وصل کنید:} یک تست کرونا یا بارداری نرخ
   \lr{hit (sensitivity)} و نرخ \lr{false alarm} (یک منهای
@@ -675,14 +694,12 @@ y_i \sim \mathrm{Binomial}\big(n, f(t_i; \boldsymbol\theta)\big).
   \item
     \emph{«آیا ملاک آسان‌گیر بد است؟»} نه؛ بهترین ملاک به هزینه‌ها و
     نرخ‌های پایه بستگی دارد.
-  \item
-    \emph{«نمایی یا توانی، کدام درست است؟»} در بسیاری از داده‌ها تابع
-    توانی بهتر برازش می‌شود، ولی میانگین‌گیری روی افراد می‌تواند شکل توانی
-    بسازد (هفته‌ی 5). سؤال را باز نگه دارید.
   \end{itemize}
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{مثال حل‌شده}
 
@@ -690,7 +707,6 @@ y_i \sim \mathrm{Binomial}\big(n, f(t_i; \boldsymbol\theta)\big).
 
 هر رادیولوژیست 100 تصویر با تومور و 100 تصویر سالم را می‌خواند.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
@@ -701,6 +717,27 @@ y_i \sim \mathrm{Binomial}\big(n, f(t_i; \boldsymbol\theta)\big).
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\caption{\centering بخش 1: دو رادیولوژیست (و یک سومی)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+مشاهده‌گر
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(H\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(F\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\Phi^{-1}(H)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\Phi^{-1}(F)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(d'\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(c\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+درصد درست
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 مشاهده‌گر
@@ -730,22 +767,17 @@ y_i \sim \mathrm{Binomial}\big(n, f(t_i; \boldsymbol\theta)\big).
 81\% \\
 \end{longtable}
 \end{landscape}
-}
 
-\textbf{قدم‌به‌قدم برای \lr{R1:}} 1. \(\Phi^{-1}(0.93) = 1.476\) و
-\(\Phi^{-1}(0.31) = -0.496\) (\lr{\nolinkurl{scipy.stats.norm.ppf}}). 2.
-\(d' = 1.476 - (-0.496) = 1.972\). 3.
+\textbf{قدم‌به‌قدم برای \lr{R1:}} 1. \(\Phi^{-1}(0.93) = 1.476\) ·
+\(\Phi^{-1}(0.31) = -0.496\) 2. \(d' = 1.476 - (-0.496) = 1.972\). 3.
 \(c = -\tfrac{1}{2}(1.476 + (-0.496)) = -0.490\)، که منفی است، پس \lr{R1
 liberal} است. 4. بررسی با جای‌گذاری:
 \(H = \Phi(1.972/2 + 0.490) = \Phi(1.476) = 0.93\). \ensuremath{\checkmark}
 
 \textbf{تفسیر.} هر سه رادیولوژیست در عمل حساسیت یکسانی دارند
 (\(d' \approx 2\)). \lr{R1} و \lr{R2} درصد درست \emph{یکسان} ولی سوگیری
-\emph{مخالف} دارند. اینکه کدام سوگیری بهتر است سؤالی درباره‌ی ادراک نیست،
-بلکه درباره‌ی هزینه‌هاست: از دست دادن یک تومور معمولاً خیلی بدتر از یک
-\lr{false alarm} است، پس شاید ملاک \lr{liberal} همان ملاک \emph{مطلوب}
-باشد. \lr{SDT} به ما اجازه می‌دهد «آیا می‌بینند؟» و «چقدر آماده‌اند
-بگویند؟» را جداگانه بپرسیم.
+\emph{مخالف} دارند. \lr{SDT} به ما اجازه می‌دهد «آیا می‌بینند؟» و «چقدر
+آماده‌اند بگویند؟» را جداگانه بپرسیم.
 
 \textbf{تصحیح نرخ حدی.} یک شرکت‌کننده 50/50 \lr{hit} و 3/50 \lr{false
 alarm} دارد. پس \(H = 1\) و \(d' = \infty\). با تصحیح \lr{log-linear:}
@@ -757,7 +789,6 @@ alarm} دارد. پس \(H = 1\) و \(d' = \infty\). با تصحیح \lr{log-line
 برای هر دو مدل \(A = 0.95\) بگیرید، برای مدل نمایی \(\lambda = 0.25\) در
 روز و برای مدل توانی \(d = 0.6\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
@@ -767,6 +798,25 @@ alarm} دارد. پس \(H = 1\) و \(d' = \infty\). با تصحیح \lr{log-line
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\caption{\centering بخش 2: فراموشی نمایی در برابر توانی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(t\) (روز)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+7
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+14
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+30
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(t\) (روز)
@@ -793,7 +843,6 @@ alarm} دارد. پس \(H = 1\) و \(d' = \infty\). با تصحیح \lr{log-line
 0.121 \\
 \end{longtable}
 \end{landscape}
-}
 
 \textbf{نیمه‌عمر (زمانی که یادآوری به نصف سطح اولیه می‌رسد):} - نمایی:
 \(e^{-\lambda t} = 1/2 \Rightarrow t_{1/2} = \ln 2 / \lambda = 0.693/0.25 = 2.77\)
@@ -811,6 +860,8 @@ alarm} دارد. پس \(H = 1\) و \(d' = \infty\). با تصحیح \lr{log-line
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
 \subsubsection{اهداف}
@@ -819,13 +870,13 @@ alarm} دارد. پس \(H = 1\) و \(d' = \infty\). با تصحیح \lr{log-line
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  پیاده‌سازی \lr{SDT} به‌عنوان یک مدل مولد \lr{(generative)}، شبیه‌سازی
+  صورت‌بندی \lr{SDT} به‌عنوان یک مدل مولد \lr{(generative)}، شبیه‌سازی
   آزمایش‌های بله/نه، و برآورد \(d'\) و \(c\).
 \item
   استفاده از نمودارهای \lr{ROC} و \lr{zROC} برای \textbf{ارزیابی} فرض
   واریانس برابر.
 \item
-  پیاده‌سازی فراموشی نمایی و توانی با نویز دوجمله‌ای و بررسی
+  صورت‌بندی فراموشی نمایی و توانی با نویز دوجمله‌ای و بررسی
   پارامترهایشان.
 \item
   \textbf{برازش} هر دو مدل فراموشی با خطی‌سازی، \textbf{ارزیابی} آن‌ها با
@@ -835,71 +886,22 @@ alarm} دارد. پس \(H = 1\) و \(d' = \infty\). با تصحیح \lr{log-line
 \textbf{زمان‌بندی:} بخش \lr{A} 30 دقیقه · بخش \lr{B} 25 دقیقه · بخش
 \lr{C} 30 دقیقه · بخش \lr{D} 25 دقیقه · زمان باقی‌مانده: تمرین‌ها.
 
-\subsubsection{آماده‌سازی}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
 \subsubsection{\texorpdfstring{بخش \lr{A: SDT} به‌عنوان یک مدل مولد (30
 دقیقه)}{بخش A: SDT به‌عنوان یک مدل مولد (30 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
 یک شرکت‌کننده را شبیه‌سازی کنید و پارامترها را بازیابی کنید:
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Counts: {'hits': 68, 'misses': 32, 'fas': 11, 'crs': 89}
-Predicted H = 0.674, F = 0.147
-Estimated d' = 1.67 (true 1.5),  c = 0.37 (true 0.3)
-\end{Verbatim}
-\end{latin}
 
 یک شرکت‌کننده‌ی شبیه‌سازی‌شده چیز زیادی درباره‌ی کیفیت \emph{برآوردگر}
 نمی‌گوید. آزمایش را چندین بار تکرار کنیم: این پیش‌نمایشی از منطق
 \textbf{بازیابی پارامتر} در هفته‌ی 7 است.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{11\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-            d_hat         c_hat
-             mean    std   mean    std
-n_per_type
-20          1.500  0.449  0.296  0.224
-50          1.489  0.290  0.295  0.143
-200         1.502  0.142  0.299  0.071
-\end{Verbatim}
-\end{latin}
-
 \textbf{به این دقت کنید:} برآوردها حول مقادیر واقعی پراکنده‌اند و
 پراکندگی با افزایش تعداد \lr{trial}ها کم می‌شود. با 20 \lr{trial} از هر
 نوع، انحراف معیار \(\hat d'\) حدود 0.45 است، پس برآوردهای تکی اغلب \ensuremath{\pm}0.5
 یا بیشتر خطا دارند، و برای نصف کردن پراکندگی تقریباً 4 برابر \lr{trial}
-لازم است. اینجا به‌طور میانگین برآوردها درست سر هدف‌اند. ولی با \(d'\)
-بالاتر و \lr{trial}های کم، نرخ‌های حدی رایج می‌شوند و آن‌وقت تصحیح،
-برآوردها را به سمت 0 می‌کشد (\lr{\nolinkurl{true_d = 3}} را با 20
-\lr{trial} امتحان کنید). هر وقت \(d'\) گروه‌هایی را مقایسه می‌کنید که با
-تعداد \lr{trial} متفاوت آزمون شده‌اند، این را در نظر داشته باشید.
+لازم است. اینجا به‌طور میانگین برآوردها درست سر هدف‌اند. هر وقت \(d'\)
+گروه‌هایی را مقایسه می‌کنید که با تعداد \lr{trial} متفاوت آزمون شده‌اند،
+این را در نظر داشته باشید.
 
 \subsubsection{\texorpdfstring{بخش \lr{B:} منحنی‌های \lr{ROC} و فرض
 واریانس برابر (25
@@ -907,31 +909,11 @@ n_per_type
 
 اول، \lr{ROC}های پیش‌بینی‌شده‌ی مدل:
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
 حالا یک آزمایش \textbf{درجه‌بندی اطمینان} را شبیه‌سازی کنید. پاسخ‌ها روی یک
 مقیاس 6 درجه‌ای داده می‌شوند (1 = «مطمئنم نویز است» \ensuremath{\ldots} 6 = «مطمئنم
 علامت است») که معادل پنج ملاک هم‌زمان است. داده‌ها را از یک مشاهده‌گر با
 واریانس برابر و از یک مشاهده‌گر با \textbf{واریانس نابرابر} که توزیع
 علامتش انحراف معیار 1.5 دارد تولید می‌کنیم.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-sigma_signal = 1.0: zROC slope = 0.96 (predicted 1.00); d' at each criterion = [1.52 1.48 1.48 1.43 1.43]
-sigma_signal = 1.5: zROC slope = 0.67 (predicted 0.67); d' at each criterion = [1.46 1.34 1.16 0.96 0.84]
-\end{Verbatim}
-\end{latin}
 
 \textbf{ارزیابی و تفسیر.} برای مشاهده‌گر با واریانس برابر، شیب \lr{zROC}
 نزدیک 1 است و \(d'\) در همه‌ی ملاک‌ها تقریباً یکسان است: فرض مدل برقرار
@@ -945,43 +927,11 @@ sigma_signal = 1.5: zROC slope = 0.67 (predicted 0.67); d' at each criterion = [
 دوجمله‌ای (30
 دقیقه)}{بخش C: منحنی‌های فراموشی با نویز دوجمله‌ای (30 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 7 ·
-سلول 7
-\end{quote}
-
 پارامترها را بررسی کنید: \(A\) و پارامتر زوال هر منحنی را چگونه تغییر
 می‌دهند؟
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 8 ·
-سلول 8
-\end{quote}
-
 حالا یک \textbf{آزمایش شبیه‌سازی‌شده} بسازید. داده‌ها از مدل \emph{توانی}
 می‌آیند، با 50 آیتم که در هر یک از 8 فاصله‌ی نگهداری آزمون می‌شوند:
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 9 ·
-سلول 9
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{14\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-       t  recalled   n  p_obs
-0   0.25        42  50   0.84
-1   1.00        30  50   0.60
-2   2.00        26  50   0.52
-3   4.00        25  50   0.50
-4   7.00        13  50   0.26
-5  14.00        13  50   0.26
-6  21.00        13  50   0.26
-7  30.00        14  50   0.28
-\end{Verbatim}
-\end{latin}
 
 \subsubsection{\texorpdfstring{بخش \lr{D:} برازش با خطی‌سازی، ارزیابی،
 تفسیر (25 دقیقه)}{بخش D: برازش با خطی‌سازی، ارزیابی، تفسیر (25 دقیقه)}}
@@ -989,41 +939,16 @@ sigma_signal = 1.5: zROC slope = 0.67 (predicted 0.67); d' at each criterion = [
 \textbf{برازش.} هر مدل را با رگرسیون خط راست روی مقیاس لگاریتمی برازش
 کنید (بخش 5 جزوه).
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 10 ·
-سلول 10
-\end{quote}
-
 \textbf{ارزیابی.} به منحنی‌های برازش‌شده \emph{و} باقی‌مانده‌ها نگاه کنید.
 یک مدل خوب باقی‌مانده‌هایی به جا می‌گذارد که به‌طور تصادفی حول صفر
 پراکنده‌اند؛ یک الگوی نظام‌مند یعنی \emph{شکل} مدل غلط است.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 11 ·
-سلول 11
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-exp: A = 0.550, rate = 0.032, RMSD = 0.1308
-pow: A = 0.797, rate = 0.370, RMSD = 0.0628
-true (power): A = 0.9, d = 0.5
-\end{Verbatim}
-\end{latin}
-
-\textbf{تفسیر (برای هرکدام 2 تا 3 جمله در \lr{notebook} بنویسید):}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  کدام مدل داده‌ها را بهتر توصیف می‌کند، و الگوی باقی‌مانده‌های مدل
-  \emph{دیگر} چه شکلی دارد؟ (دنبال شکل \lr{U} یا \lr{U} وارونه بگردید:
-  مدل نمایی در فاصله‌های میانی بیش‌برآورد و در فاصله‌های طولانی کم‌برآورد
-  می‌کند، یا برعکس.)
+  (دنبال شکل \lr{U} یا \lr{U} وارونه بگردید: مدل نمایی در فاصله‌های میانی
+  بیش‌برآورد و در فاصله‌های طولانی کم‌برآورد می‌کند، یا برعکس.)
 \item
   با پارامترهای برازش‌شده، نرخ نسبی فراموشی هر مدل بعد از 1 روز و بعد از
   20 روز چقدر است؟ این برای حافظه چه معنایی دارد؟
@@ -1051,7 +976,6 @@ true (power): A = 0.9, d = 0.5
 آزمایش‌های ابینگهاوس روی خودش در 1885 اغلب این‌طور گزارش می‌شوند {[}پیش از
 استفاده در کلاس با منبع اصلی تطبیق داده شود{]}:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
@@ -1062,6 +986,27 @@ true (power): A = 0.9, d = 0.5
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\caption{\centering تمرین‌ها (به ترتیب سختی)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+فاصله
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+20 دقیقه
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+1 ساعت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+8.8 ساعت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+1 روز
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+2 روز
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+6 روز
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+31 روز
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 فاصله
@@ -1087,28 +1032,23 @@ true (power): A = 0.9, d = 0.5
 \lr{Savings} (\%) & 58.2 & 44.2 & 35.8 & 33.7 & 27.8 & 25.4 & 21.1 \\
 \end{longtable}
 \end{landscape}
-}
 
 فاصله‌ها را به روز تبدیل کنید، هر دو مدل را با خطی‌سازی برازش کنید و
-باقی‌مانده‌هایشان را مقایسه کنید. کدام شکل بهتر برازش می‌شود؟ بعد تحلیل را
-با زمان بر حسب \textbf{ساعت} تکرار کنید. آیا برازش توانی تغییر می‌کند؟ با
-استفاده از کادر «پیشرفته» در بخش 3 جزوه توضیح دهید.
+باقی‌مانده‌هایشان را مقایسه کنید. بعد تحلیل را با زمان بر حسب
+\textbf{ساعت} تکرار کنید. آیا برازش توانی تغییر می‌کند؟ با استفاده از
+کادر «پیشرفته» در بخش 3 جزوه توضیح دهید.
 
-\textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} (کدام طرح آزمایش مدل‌ها را از هم جدا می‌کند؟).}
-\((A, \lambda)\) و \((A, d)\) را طوری انتخاب کنید که دو مدل در \(t = 1\)
-و \(t = 7\) روز یادآوری \emph{یکسانی} پیش‌بینی کنند. (راهنمایی: برای هر
-مدل دو معادله و دو مجهول؛ لگاریتم بگیرید.) بعد هر دو منحنی را از
-\(t = 0\) تا \(60\) روز رسم کنید و جاهایی را که اختلافشان با \(n = 50\)
-از 2 انحراف معیار دوجمله‌ای بیشتر است علامت بزنید. کدام فاصله‌های نگهداری
-را آزمون می‌کردید؟
+\(t = 1\) · \(t = 7\) (راهنمایی: برای هر مدل دو معادله و دو مجهول؛
+لگاریتم بگیرید.) بعد هر دو منحنی را از \(t = 0\) تا \(60\) روز رسم کنید
+و جاهایی را که اختلافشان با \(n = 50\) از 2 انحراف معیار دوجمله‌ای بیشتر
+است علامت بزنید.
 
 \textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: شمارش صفر).} از مدل نمایی با \(A = 0.9\)،
 \(\lambda = 0.3\) در فاصله‌های بخش \lr{C} و با \(n = 20\) آیتم داده تولید
-کنید. چند بار (از 1000 مجموعه‌داده‌ی شبیه‌سازی‌شده) دست‌کم یک فاصله یادآوری
-صفر دارد که \lr{\nolinkurl{fit_linearized}} را از کار می‌اندازد؟ یک راه‌حل
-سریع (مثلاً افزودن 0.5 به شمارش‌ها) پیشنهاد و پیاده‌سازی کنید و بررسی کنید
-آیا برآورد \(\lambda\) را سوگیر می‌کند. توضیح دهید چرا این نشان می‌دهد به
-روشی نیاز داریم که روی مقیاس اصلی کار کند (هفته‌های 3\lr{--}4).
+کنید. یک راه‌حل سریع (مثلاً افزودن 0.5 به شمارش‌ها) پیشنهاد و صورت‌بندی
+کنید و بررسی کنید آیا برآورد \(\lambda\) را سوگیر می‌کند. توضیح دهید چرا
+این نشان می‌دهد به روشی نیاز داریم که روی مقیاس اصلی کار کند (هفته‌های
+3\lr{--}4).
 
 \subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
 
@@ -1131,36 +1071,18 @@ true (power): A = 0.9, d = 0.5
 کاربر انتخاب می‌کند). یک \lr{false alarm} یعنی دانشجویی به‌اشتباه متهم
 شود، پس انتخاب ملاک یک تصمیم اخلاقی است، نه فقط فنی.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week02.py}}, \lr{cell} 12 ·
-سلول 12
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-threshold 0.0: H = 0.84, F = 0.49, d' = 1.03, c = -0.50
-threshold 0.6: H = 0.70, F = 0.28, d' = 1.11, c = 0.03
-threshold 1.2: H = 0.51, F = 0.09, d' = 1.35, c = 0.66
-\end{Verbatim}
-\end{latin}
-
 جابه‌جا کردن آستانه \(c\) را خیلی تغییر می‌دهد (از \ensuremath{-}0.50 تا 0.66)، در حالی
 که \(d'\) نزدیک مقدار واقعی‌اش یعنی 1.2 می‌ماند. تغییرات \(d'\) نویز
 نمونه‌گیری ناشی از 200 متن در هر گروه است.
 
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} فرض کنید 10\%
-مقاله‌های تحویلی با هوش مصنوعی نوشته شده‌اند. در آستانه‌ی 1.2،
-\(P(\text{\lr{AI-written}} \mid \text{\lr{flagged}})\) چقدر است؟ (از قاعده‌ی بیز با
-\(H\) و \(F\) استفاده کنید.) آیا بر اساس یک هشدار اقدام می‌کنید؟ - \ensuremath{\star}\ensuremath{\star}
-\lr{ROC} آشکارساز (همه‌ی آستانه‌ها از \ensuremath{-}2 تا 3) و \lr{zROC} آن را رسم کنید.
-آیا شیب نزدیک 1 است؟ با امتیازهای متن انسانی با انحراف معیار 1.5
-(آشکارسازی با واریانس نابرابر) تکرار کنید. - \ensuremath{\star}\ensuremath{\star} بحث: گزارش شده که
-آشکارسازها متن‌های نویسندگان غیربومی انگلیسی را بیشتر علامت می‌زنند
-{[}بررسی شود: \lr{Liang et al.,} 2023, \emph{\lr{Patterns}}{]}. به زبان
-\lr{SDT} این یعنی چه، و یک دانشگاه چه باید بکند؟
+در آستانه‌ی 1.2، \(P(\text{\lr{AI-written}} \mid \text{\lr{flagged}})\) چقدر است؟
+(از قاعده‌ی بیز با \(H\) و \(F\) استفاده کنید.) آیا بر اساس یک هشدار
+اقدام می‌کنید؟ - \ensuremath{\star}\ensuremath{\star} \lr{ROC} آشکارساز (همه‌ی آستانه‌ها از \ensuremath{-}2 تا 3) و
+\lr{zROC} آن را رسم کنید. آیا شیب نزدیک 1 است؟ با امتیازهای متن انسانی
+با انحراف معیار 1.5 (آشکارسازی با واریانس نابرابر) تکرار کنید. - \ensuremath{\star}\ensuremath{\star} بحث:
+گزارش شده که آشکارسازها متن‌های نویسندگان غیربومی انگلیسی را بیشتر علامت
+می‌زنند {[}بررسی شود: \lr{Liang et al.,} 2023, \emph{\lr{Patterns}}{]}.
+به زبان \lr{SDT} این یعنی چه، و یک دانشگاه چه باید بکند؟
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -1178,9 +1100,8 @@ threshold 1.2: H = 0.51, F = 0.09, d' = 1.35, c = 0.66
   فرمول \(\Phi^{-1}(H) - \Phi^{-1}(F)\) است، با نرخ‌ها به‌صورت نسبت بین 0
   و 1.
 \item
-  \textbf{فراموش کردن مشکل نرخ‌های حدی.} \(H = 1\) یا \(F = 0\) یک \(d'\)
-  بی‌نهایت می‌دهد و \lr{Python} بدون هیچ خطایی \lr{\nolinkurl{inf}}
-  برمی‌گرداند. همیشه از یک تصحیح استفاده کنید (و آن را گزارش کنید).
+  \(H = 1\) · \(F = 0\) همیشه از یک تصحیح استفاده کنید (و آن را گزارش
+  کنید).
 \item
   \textbf{فرض اینکه \(d'\) در هر حالتی مستقل از سوگیری است.} فقط تحت مدل
   واریانس برابر مستقل از ملاک است. اگر شیب \lr{zROC} با 1 فرق کند،
@@ -1193,10 +1114,6 @@ threshold 1.2: H = 0.51, F = 0.09, d' = 1.35, c = 0.66
   با الگوی نظام‌مند در باقی‌مانده‌ها یعنی شکل مدل غلط است. همیشه
   باقی‌مانده‌ها را رسم کنید.
 \item
-  \textbf{نادیده گرفتن مدل نویز.} مدل فقط \(f(x;\boldsymbol\theta)\)
-  نیست. نویز دوجمله‌ای نسبت‌های یادآوری جزئی از مدل است و به شما می‌گوید
-  کدام تفاوت‌ها معنادارند.
-\item
   \textbf{تغییر واحد \(t\) در مدل توانی جابه‌جاشده} و انتظار شکل یکسان.
 \end{enumerate}
 
@@ -1204,10 +1121,9 @@ threshold 1.2: H = 0.51, F = 0.09, d' = 1.35, c = 0.66
 
 \subsection{خودآزمایی}
 
-\textbf{1.} پنج جزء یک مدل را نام ببرید و نسخه‌ی \lr{SDT} هرکدام را
-بگویید. \textbf{پاسخ} طرح آزمایش \lr{(trial}های علامت در برابر نویز؛
-پاسخ‌های بله/نه)؛ پارامترها (آزاد: \(d'\)، \(c\)؛ ثابت: میانگین نویز 0،
-هر دو انحراف معیار 1)؛ هسته‌ی قطعی (\(H = \Phi(d'/2 - c)\)،
+\textbf{پاسخ} طرح آزمایش \lr{(trial}های علامت در برابر نویز؛ پاسخ‌های
+بله/نه)؛ پارامترها (آزاد: \(d'\)، \(c\)؛ ثابت: میانگین نویز 0، هر دو
+انحراف معیار 1)؛ هسته‌ی قطعی (\(H = \Phi(d'/2 - c)\)،
 \(F = \Phi(-d'/2 - c)\))؛ مدل نویز (شمارش \lr{hit}ها و \lr{false
 alarm}ها دوجمله‌ای است)؛ فرض پیوند (وقتی شواهد از ملاک بیشتر است پاسخ
 «بله»).
@@ -1250,6 +1166,8 @@ alarm}ها دوجمله‌ای است)؛ فرض پیوند (وقتی شواهد 
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{تکلیف}
 
 \subsubsection{\texorpdfstring{\lr{A1:} از کلامی به فرمال (1.0 نمره از
@@ -1265,12 +1183,8 @@ alarm}ها دوجمله‌ای است)؛ فرض پیوند (وقتی شواهد 
 هر دو گروه ادعا می‌کنند داده‌های منتشرشده (یادآوری سریع افت می‌کند و بعد
 ثابت می‌شود) از دیدگاهشان حمایت می‌کند.
 
-\textbf{کارها.} یک \lr{Jupyter notebook} به‌همراه خروجی \lr{PDF} آن تحویل
-دهید.
-
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\tightlist
 \item
   \textbf{فرمال‌سازی (گروه \lr{C} و گروه \lr{R).}} هر ادعای کلامی را
   به‌صورت یک مدل فرمال با هر پنج جزء بخش 1 جزوه بنویسید: طرح آزمایش،
@@ -1278,9 +1192,7 @@ alarm}ها دوجمله‌ای است)؛ فرض پیوند (وقتی شواهد 
   پیوند. در 2 تا 3 جمله توجیه کنید چرا هر معادله ادعای کلامی‌اش را نشان
   می‌دهد (از نرخ نسبی فراموشی استفاده کنید).
 \item
-  \textbf{پیاده‌سازی.} توابع \lr{Python} بنویسید که (الف) احتمال‌های
-  یادآوری پیش‌بینی‌شده را برگردانند و (ب) برای فاصله‌ها و تعداد آیتم \(n\)
-  داده‌شده، شمارش‌های یادآوری دوجمله‌ای را شبیه‌سازی کنند.
+  احتمال‌های پیش‌بینی‌شده‌ی یادآوری و تغییرپذیری دوجمله‌ای را در چند فاصله‌ی نگهداری تحلیل کنید و تفاوت دو مدل را توضیح دهید.
 \item
   \textbf{کالیبراسیون.} هر دو گروه قبول دارند که یادآوری \textbf{بعد از
   1 روز 0.60} و \textbf{بعد از 7 روز 0.35} است. پارامترهای هر مدل را که
@@ -1300,20 +1212,28 @@ alarm}ها دوجمله‌ای است)؛ فرض پیوند (وقتی شواهد 
   بیشینه کند، توضیح دهید چرا منطقی است، و با طرح خود یک مجموعه‌داده از
   \emph{هر} مدل شبیه‌سازی کنید. دو مجموعه‌داده را روی یک نمودار نشان دهید.
 \item
-  \textbf{تفسیر (حداکثر 300 کلمه).} کدام داده‌ها به نفع گروه \lr{C} و
-  کدام به نفع گروه \lr{R} هستند؟ تحلیل شما درباره‌ی اینکه چرا هر دو گروه
-  می‌توانند ادعا کنند «داده‌های منتشرشده» از آن‌ها حمایت می‌کند چه می‌گوید؟
-  یک فرض مدل‌هایتان را که ممکن است غلط باشد نام ببرید و بگویید چطور
-  نتیجه‌گیری‌تان را تغییر می‌دهد.
+  تحلیل شما درباره‌ی اینکه چرا هر دو گروه می‌توانند ادعا کنند «داده‌های
+  منتشرشده» از آن‌ها حمایت می‌کند چه می‌گوید؟ یک فرض مدل‌هایتان را که ممکن
+  است غلط باشد نام ببرید و بگویید چطور نتیجه‌گیری‌تان را تغییر می‌دهد.
 \end{enumerate}
 
 \textbf{روبریک نمره‌دهی (10 امتیاز، معادل 1.0 از نمره‌ی نهایی):}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering \lr{A1: }از کلامی به فرمال (1.0 نمره از 20؛ انتشار هفته‌ی 2، موعد ابتدای درس هفته‌ی 4)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+معیار
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+امتیاز
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+شرط نمره‌ی کامل
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 معیار
@@ -1329,8 +1249,8 @@ alarm}ها دوجمله‌ای است)؛ فرض پیوند (وقتی شواهد 
 فرمال‌سازی (کار 1) & 2 & هر پنج جزء برای هر دو مدل؛ دامنه‌ی درست
 پارامترها؛ ارتباط معادله و ادعای کلامی با نرخ نسبی فراموشی توضیح داده
 شده \\
-کد (کار 2) & 2 & درست، با توضیح \lr{(comment)}، قابل بازتولید \lr{(seed}
-ثابت)؛ توابع برداری‌شده یا با حلقه‌ی روشن \\
+پیش‌بینی‌ها (کار 2) & 2 &
+مقایسه‌ی کمی و روشن پیش‌بینی‌های دو مدل و تغییرپذیری دوجمله‌ای \\
 کالیبراسیون (کار 3) & 2 & استخراج بسته‌ی درست و بررسی عددی برای هر دو
 مدل \\
 اختلاف و طراحی (کارهای 4\lr{--}5) & 2.5 & \(D(t)\) درست؛ طرح انتخاب‌شده توجیه
@@ -1338,7 +1258,6 @@ alarm}ها دوجمله‌ای است)؛ فرض پیوند (وقتی شواهد 
 تفسیر (کار 6) & 1.5 & روشن، مشخص، با ارجاع به نتایج خودتان؛ یک محدودیت
 واقعی را نام می‌برد \\
 \end{longtable}
-}
 
 برای تحویل با تأخیر، روزی 10\% کسر می‌شود (حداکثر 3 روز).
 
@@ -1354,7 +1273,6 @@ alarm}ها دوجمله‌ای است)؛ فرض پیوند (وقتی شواهد 
 \item
   \textbf{\lr{Lee} \lr{\&} \lr{Wagenmakers} (2014)، فصل 11.} نظریه‌ی تشخیص
   علامت به‌عنوان یک مدل شناختی (بیزی)؛ در هفته‌های 9 و 13 به آن برمی‌گردیم.
-  بخش مقدمه را الان بخوانید و از کد بگذرید.
 \item
   \textbf{\lr{Verguts} (2022)} و \textbf{\lr{Anderson} (2014)}: فصل‌های
   مربوط به ساختن مدل و پارامترها {[}شماره‌ی فصل‌ها بررسی شود{]}.

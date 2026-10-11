@@ -16,11 +16,21 @@ speed/accuracy × easy/hard design.
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -72,7 +82,6 @@ trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلی�
 embedding & embedding \RL{\CMfa (بردار معنایی)} & \RL{\CMfa برداری که مدل برای یک
 کلمه یا متن می‌سازد} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -160,6 +169,8 @@ equations.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lecture notes}
 
 \paragraph{In plain words}
@@ -197,8 +208,12 @@ stimuli into categories A and B, then classify 7 new \textbf{transfer}
 stimuli without feedback. The commonly used stimulus set is {[}verify
 against Medin \& Schaffer, 1978, or Smith \& Minda, 2000{]}:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}lll@{}}
+\caption{\centering 1. The 5-4 category structure}\tabularnewline
+\toprule\noalign{}
+Category A & Category B & Transfer \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 Category A & Category B & Transfer \\
 \midrule\noalign{}
@@ -213,7 +228,6 @@ A5 0111 & & T5 0101 \\
 & & T6 0011 \\
 & & T7 0100 \\
 \end{longtable}
-}
 
 The category A prototype is 1111 and the B prototype is 0000. The
 critical comparison: \textbf{A1 (1110)} shares three features with the A
@@ -314,11 +328,21 @@ where \(dW\) is Gaussian white noise (a Wiener process). A response is
 made when \(X\) reaches \(a\) (correct) or \(0\) (error);
 \(\mathrm{RT} = T_{\text{decision}} + T_{er}\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. The drift-diffusion model (DDM)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Typical manipulation that changes it
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Parameter
@@ -342,7 +366,6 @@ time & Response modality, stimulus degradation \\
 \(s\) (within-trial noise) & Scaling constant & Fixed (by convention
 \(s = 0.1\) in EZ, \(s = 1\) elsewhere) \\
 \end{longtable}
-}
 
 The full DDM also includes across-trial variability in drift, starting
 point and non-decision time. Week 1, Exercise 5 showed that drift
@@ -360,10 +383,9 @@ its shape.
 evidence changes by a deterministic push \(v\,dt\) plus a random kick
 \(s\,dW\)''. \(dW\) is Gaussian noise whose variance is proportional to
 \(dt\) (so over a step of length \(dt\) the kick has SD \(s\sqrt{dt}\)).
-In the lab simulation this becomes exactly Week 1's random walk with
-small steps: \nolinkurl{x += v*dt + s*sqrt(dt)*randn()}. The table of
-parameters is the important part to memorize: \(v\) = evidence quality,
-\(a\) = caution, \(z\) = bias, \(T_{er}\) = non-decision time.
+The table of parameters is the important part to memorize: \(v\) =
+evidence quality, \(a\) = caution, \(z\) = bias, \(T_{er}\) =
+non-decision time.
 
 \subsubsection{4. EZ-diffusion}
 
@@ -398,9 +420,7 @@ corrections of Week 2.
 \textbf{Strengths and limits.} EZ is fast, needs no optimization and
 recovers parameters well when its assumptions hold (lab Part C). It
 ignores error RTs and the shape of the RT distribution beyond mean and
-variance, and it cannot estimate bias or across-trial variabilities. For
-those, fit the full DDM by MLE or with hierarchical Bayesian methods
-(e.g., the HDDM package or the Wiener likelihood in PyMC/Stan).
+variance, and it cannot estimate bias or across-trial variabilities.
 
 \paragraph{Reading the math}
 
@@ -423,10 +443,6 @@ memorize them.
   \(T_{er} = M_{RT} - \mathrm{MDT}\): whatever part of the mean RT is
   not decision time is non-decision time.
 \end{enumerate}
-
-Use the worked example (Part 2) to show each step with numbers; then let
-the computer do it (the function \nolinkurl{ez_diffusion} in the lab
-code).
 
 \paragraph{For an engineer}
 
@@ -493,6 +509,8 @@ code).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Worked example}
 
 \subsubsection{Part 1: one GCM prediction by hand}
@@ -500,12 +518,24 @@ code).
 Stimulus T3 (1111), equal attention \(w_m = 0.25\), sensitivity
 \(c = 2\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering Part 1: one GCM prediction by hand}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Exemplar
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mismatching dimensions
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Distance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Similarity \(e^{-2\,\mathrm{dist}}\)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Exemplar
@@ -532,7 +562,6 @@ B3 0001 & 3 & 0.75 & 0.223 \\
 B4 0000 & 4 & 1.00 & 0.135 \\
 \textbf{Sum B} & & & \textbf{1.094} \\
 \end{longtable}
-}
 
 \[
 P(A\mid \text{T3}) = \frac{2.794}{2.794 + 1.094} = 0.719.
@@ -575,6 +604,8 @@ values for a moderately difficult task.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lab (2 hours)}
 
 \subsubsection{Goals}
@@ -583,7 +614,7 @@ values for a moderately difficult task.
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Implement the GCM and the prototype model for the 5-4 structure;
+  Formulate and evaluate the GCM and the prototype model for the 5-4 structure;
   simulate data from the GCM.
 \item
   Fit both models by MLE, compare them, and examine the critical
@@ -598,53 +629,7 @@ values for a moderately difficult task.
 \textbf{Timing:} Part A 20 min · Part B 25 min · Part C 15 min · Part D
 40 min · Part E 20 min.
 
-\subsubsection{Part A: the 5-4 structure and two models (20 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{20\baselineskip}
-\begin{Verbatim}
-stimulus features  P(A) true  A responses / 20
-      A1     1110       0.84                15
-      A2     1010       0.88                18
-      A3     1011       0.91                18
-      A4     1101       0.60                10
-      A5     0111       0.60                11
-      B1     1100       0.47                10
-      B2     0110       0.47                11
-      B3     0001       0.16                 4
-      B4     0000       0.12                 2
-      T1     1001       0.58                11
-      T2     1000       0.48                11
-      T3     1111       0.87                20
-      T4     0010       0.48                10
-      T5     0101       0.26                 6
-      T6     0011       0.58                12
-      T7     0100       0.19                 4
-\end{Verbatim}
-
 \subsubsection{Part B: fit and compare (25 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-GCM       NLL =  28.36  AIC =  64.72  BIC =  79.79  c = 3.82  w = [0.397 0.111 0.426 0.066]
-prototype NLL =  30.02  AIC =  68.04  BIC =  83.11  c = 1.90  w = [0.435 0.009 0.461 0.095]
-stimulus  observed   GCM  prototype
-      A1      0.75 0.842      0.822
-      A2      0.90 0.884      0.818
-\end{Verbatim}
 
 \textbf{Interpret:} 1. Which model is preferred, and how strong is the
 evidence? (\(\Delta\mathrm{AIC} = 3.3\), so Akaike weights of about 0.84
@@ -658,22 +643,6 @@ does that make sense given the category structure?
 
 \subsubsection{Part C: is the GCM recoverable at this design? (15 min)}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output} (about 1 minute):
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-c: r(true, recovered) = 0.08
-w1: r(true, recovered) = 0.91
-w2: r(true, recovered) = 0.76
-w3: r(true, recovered) = 0.89
-w4: r(true, recovered) = 0.85
-\end{Verbatim}
-
 \textbf{What to notice:} the attention weights are recovered well (r =
 0.76--0.91), but the sensitivity \(c\) is essentially \textbf{not
 recoverable} at this design (r = 0.08). With only 16 stimuli and 20
@@ -685,40 +654,16 @@ interpret the attention weights from Part B but \textbf{not} the value
 prior on \(c\) would help. This is exactly the kind of result a recovery
 study is for (Week 7).
 
-\subsubsection{Part D: drift-diffusion and EZ (40 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output} (about 30 s):
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-instruction difficulty    Pc   MRT  v_true  v_EZ  a_true  a_EZ  Ter_EZ
-      speed       easy 0.870 0.423    0.25 0.243    0.08 0.078   0.304
-      speed       hard 0.732 0.466    0.12 0.115    0.08 0.088   0.288
-   accuracy       easy 0.975 0.572    0.25 0.261    0.14 0.140   0.317
-   accuracy       hard 0.818 0.697    0.12 0.111    0.14 0.135   0.313
-\end{Verbatim}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
 \subsubsection{Part E: interpret the 2 × 2 experiment (20 min)}
 
-Answer in your notebook: 1. Which EZ parameter changes with the
-\textbf{instruction} manipulation, and which with \textbf{difficulty}?
-Did either manipulation affect the parameter it should \emph{not}
-affect? 2. Describe how the RT distribution changes from speed to
-accuracy instructions (Part D figure). Which part of the distribution
-changes most: the leading edge or the tail? 3. A clinical study finds
-that patients are slower than controls but equally accurate. Sketch two
-different DDM accounts of this result, and say which data would
-distinguish them.
+Which EZ parameter changes with the \textbf{instruction} manipulation,
+and which with \textbf{difficulty}? Did either manipulation affect the
+parameter it should \emph{not} affect? 2. Describe how the RT
+distribution changes from speed to accuracy instructions (Part D
+figure). Which part of the distribution changes most: the leading edge
+or the tail? 3. A clinical study finds that patients are slower than
+controls but equally accurate. Sketch two different DDM accounts of this
+result, and say which data would distinguish them.
 
 \subsubsection{Exercises (increasing difficulty)}
 
@@ -741,9 +686,8 @@ compare EZ estimates with the true values. Which parameter is recovered
 worst? Then add across-trial drift variability to the simulator (Week 1,
 Exercise 5) and check which EZ estimate becomes biased.
 
-\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: Bayesian GCM).} Fit the GCM in PyMC
-with priors \(c \sim \mathrm{Gamma}(2, \text{scale } 2)\) and
-\(w \sim \mathrm{Dirichlet}(1, 1, 1, 1)\). Compare the posterior of the
+\(c \sim \mathrm{Gamma}(2, \text{scale } 2)\) ·
+\(w \sim \mathrm{Dirichlet}(1, 1, 1, 1)\) Compare the posterior of the
 attention weights with the MLE, and run a posterior predictive check on
 the A1-vs-A2 difference. (See Lee \& Wagenmakers, chapter 17, for a
 hierarchical version.)
@@ -769,24 +713,9 @@ word with no extra similarity ratings. Whether embedding distances match
 human similarity is an empirical question, and you can test it with the
 tools of this course.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-P(fruit | tomato) = 0.902
-P(fruit | knife) = 0.094
-P(fruit | nutcracker) = 0.370
-\end{Verbatim}
-
-\textbf{Try it (no API needed).} - \ensuremath{\star} Change \(c\) to 1 and to 10. How do
-the three predictions change, and why does ``nutcracker'' change the
-most? - \ensuremath{\star}\ensuremath{\star} Suppose 20 participants classified the three probes, with 19,
-1 and 12 ``fruit'' responses. Fit \(c\) by MLE (binomial likelihood,
+How do the three predictions change, and why does ``nutcracker'' change
+the most? - \ensuremath{\star}\ensuremath{\star} Suppose 20 participants classified the three probes, with
+19, 1 and 12 ``fruit'' responses. Fit \(c\) by MLE (binomial likelihood,
 Week 4) and run a \(G^2\) test. Does the embedding space with a single
 parameter fit? - \ensuremath{\star}\ensuremath{\star} Discussion: the embeddings were learned from text,
 not from perception. For which categories might text-based similarity
@@ -880,10 +809,6 @@ noise \(s\).
 \item
   \textbf{A5 (MCMC from scratch)} is due at the start of this week's
   lecture.
-\item
-  No new assignment: work on the \textbf{final project}. If your project
-  uses the GCM or DDM, today's code is a good starting point; cite the
-  course materials and say what you changed.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}

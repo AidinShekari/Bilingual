@@ -46,7 +46,7 @@ A 16-week bilingual Cognitive Modeling course, organized into six academic chapt
 |---|---|---|
 | 11 | [Week 11: Monte Carlo Methods and the Metropolis–Hastings Algorithm](05-monte-carlo/week11/en/week11-en.pdf) | [هفته‌ی 11: روش‌های Monte Carlo و الگوریتم Metropolis–Hastings](05-monte-carlo/week11/fa/week11-fa.pdf) |
 | 12 | [Week 12: Gibbs Sampling and Convergence Diagnostics](05-monte-carlo/week12/en/week12-en.pdf) | [هفته‌ی 12: نمونه‌گیری Gibbs و تشخیص همگرایی](05-monte-carlo/week12/fa/week12-fa.pdf) |
-| 13 | [Week 13: Probabilistic Programming and Hierarchical Models](05-monte-carlo/week13/en/week13-en.pdf) | [هفته‌ی 13: برنامه‌نویسی احتمالاتی و مدل‌های سلسله‌مراتبی](05-monte-carlo/week13/fa/week13-fa.pdf) |
+| 13 | [Week 13: Hierarchical Models](05-monte-carlo/week13/en/week13-en.pdf) | [هفته‌ی 13: مدل‌های سلسله‌مراتبی](05-monte-carlo/week13/fa/week13-fa.pdf) |
 
 ### 6. Applications in Cognitive Science · کاربردها در علوم شناختی
 
@@ -65,4 +65,4 @@ A 16-week bilingual Cognitive Modeling course, organized into six academic chapt
 
 Build with `make all`; validate with `make check`. `make lecture WEEK=08` compiles one week in both languages. The XeTeX engine is supplied by Tectonic. See the style, font, RTL/LTR and notation guides for implementation details.
 
-The original material references companion `code/` and `assessments/` files that were not supplied. Those references are retained as text, not linked to nonexistent files. No unrelated Advanced Communication Networks content is part of this course.
+The original material is archived unchanged in `source/`. The generated LaTeX lectures and PDFs omit software lessons, executable examples, notebook instructions, and code-output excerpts while retaining the modeling theory, mathematics, and course structure. Tables receive centered captions above them, and repeated headers on subsequent pages.

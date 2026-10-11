@@ -1,8 +1,9 @@
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering Syllabus: Cognitive Modeling}\tabularnewline
 \toprule\noalign{}
+\endfirsthead
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
@@ -12,15 +13,12 @@ h) = 48 h \\
 \textbf{Format} & 16 weeks × (1 h lecture + 2 h hands-on lab) \\
 \textbf{Audience} & MSc students and final-year BSc students in
 cognitive science, psychology, computer science and AI \\
-\textbf{Prerequisites} & Statistical methods in cognitive science;
-experimental methods in cognitive psychology. Basic probability,
-statistics and introductory programming are assumed; Bayesian statistics
-is \emph{not} assumed. \\
+\textbf{Prerequisites} &
+Statistical methods in cognitive science; experimental methods in cognitive psychology. Basic probability, statistics and introductory are assumed; Bayesian statistics is not assumed. \\
 \textbf{Instructor} & \emph{{[}name, office, e-mail, office hours{]}} \\
 \textbf{Teaching assistant} & \emph{{[}name, e-mail, lab hours{]}} \\
 \textbf{Course page} & \emph{{[}LMS link{]}} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -29,14 +27,9 @@ is \emph{not} assumed. \\
 Cognitive models are explicit, mathematical or computational
 descriptions of the processes behind behavior. This course teaches how
 to build such models, fit them to experimental data, evaluate them, and
-interpret what they say about the mind. We move from intuition to
-formalism to code to interpretation: from the logic of a model, through
-least-squares and maximum-likelihood estimation, model evaluation and
-Bayesian inference, to Markov chain Monte Carlo and hierarchical models.
-We finish with models from memory, perception, categorization, decision
-making and learning, and their links to artificial intelligence. Every
-week includes a two-hour lab in Python in which students fit, evaluate
-and interpret a model on (simulated or real) experimental data.
+interpret what they say about the mind. We finish with models from
+memory, perception, categorization, decision making and learning, and
+their links to artificial intelligence.
 
 \subsection{Learning goals}
 
@@ -46,7 +39,7 @@ modeling; 2. how to design a model to address a cognitive problem; 3.
 applications of modeling in cognitive science and artificial
 intelligence.
 
-\textbf{Specific goals.} Students will gain the skills to: 1. implement
+\textbf{Specific goals.} Students will gain the skills to: 1. formulate and evaluate
 modeling methods on experimental data; 2. interpret research results
 obtained with cognitive models.
 
@@ -73,13 +66,27 @@ obtained with cognitive models.
 
 \subsection{Weekly schedule}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering Weekly schedule}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Week
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Chapter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lecture
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lab
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Due
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Week
@@ -96,8 +103,8 @@ Due
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-1 & 1 & What is a cognitive model? Marr's levels; notation & Install the
-course environment; simulate a random walk & --- \\
+1 & 1 & What is a cognitive model? Marr's levels; notation &
+simulate a random walk & --- \\
 2 & 1 & Anatomy of a model: SDT and forgetting curves & SDT, ROC/zROC;
 forgetting curves with binomial noise & A0 \\
 3 & 2 & Least squares, error surfaces and optimization & Grid search,
@@ -119,29 +126,34 @@ proposal \\
 factors by grid and Savage--Dickey; prior sensitivity & --- \\
 11 & 5 & Monte Carlo and Metropolis--Hastings & Metropolis from scratch;
 tuning & --- \\
-12 & 5 & Gibbs sampling; convergence diagnostics & Gibbs from scratch;
-R-hat and ESS; ArviZ & A4 \\
-13 & 5 & Probabilistic programming; hierarchical models & Hierarchical
-SDT in PyMC & Progress check \\
+12 & 5 & Gibbs sampling; convergence diagnostics &
+Gibbs from scratch; R-hat and ESS & A4 \\
+13 & 5 & Probabilistic ; hierarchical models & Hierarchical SDT in &
+Progress check \\
 14 & 6 & Categorization (GCM) and decisions (drift-diffusion) & GCM
 vs.~prototype; EZ-diffusion & A5 \\
 15 & 6 & Reinforcement learning, Bayesian cognition and AI & Q-learning
 fits and recovery; ideal observer & --- \\
 16 & --- & Synthesis and good modeling practice & \textbf{Project
 presentations} & Presentations \\
-Exam period & 1--6 & --- & \textbf{Final exam} (120 min) & Report + code
-(before the exam) \\
+Exam period & 1--6 & --- & \textbf{Final exam} (120 min) &
+report (before the exam \\
 \end{longtable}
-}
-
-Detailed materials for each week are in \nolinkurl{weekNN_*.md}.
 
 \subsection{Assessment (0--20 scale)}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering Assessment (0--20 scale)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Component
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Points
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Component
@@ -156,14 +168,10 @@ Lab check-offs (weekly in-lab exercises) & 2.0 \\
 Assignments A1--A5 (1.0 each; A0 required, ungraded) & 5.0 \\
 In-lecture quizzes (about 10; lowest 2 dropped) & 1.0 \\
 Midterm exam (Week 8) & 3.0 \\
-Final project: proposal 1.0 · presentation 2.0 · report + code 3.0 &
-6.0 \\
+Final project: proposal 1.0 · presentation 2.0 · report 3.0 & 6.0 \\
 Final exam (cumulative, emphasis on Chapters 4--6) & 3.0 \\
 \textbf{Total} & \textbf{20.0} \\
 \end{longtable}
-}
-
-Details, rubrics and policies are in \nolinkurl{assessments/README.md}.
 
 \subsection{Policies (summary)}
 
@@ -171,10 +179,6 @@ Details, rubrics and policies are in \nolinkurl{assessments/README.md}.
 \tightlist
 \item
   \textbf{Late work:} −10\% per day, maximum 3 days.
-\item
-  \textbf{Collaboration:} discuss freely; write your own code and text
-  (the project is a team product for pairs). Acknowledge discussions and
-  reused code.
 \item
   \textbf{AI tools:} allowed for debugging, explanations and language
   editing. State how you used them; you must be able to explain
@@ -190,32 +194,20 @@ Details, rubrics and policies are in \nolinkurl{assessments/README.md}.
   the instructor in the first two weeks.
 \end{itemize}
 
-\subsection{Software}
-
-Python 3.11+ with numpy, scipy, pandas, matplotlib, JupyterLab, PyMC and
-ArviZ, installed on students' own laptops in Week 1
-(Miniforge/conda-forge recommended; Google Colab as fallback). See
-\nolinkurl{environment.yml}, \nolinkurl{requirements.txt} and the Week 1
-lab.
-
 \subsection{Readings}
 
-Main references (see \href{reading_list.md}{\nolinkurl{reading_list.md}}
-for the chapter mapping): - Farrell, S., \& Lewandowsky, S. (2018).
-\emph{Computational modeling of cognition and behavior.} Cambridge
-University Press. \textbf{(primary text, Weeks 1--8)} - Lee, M. D., \&
-Wagenmakers, E.-J. (2014). \emph{Bayesian cognitive modeling: A
-practical course.} Cambridge University Press. \textbf{(primary text,
+(2018). \emph{Computational modeling of cognition and behavior.}
+Cambridge University Press. \textbf{(primary text, Weeks 1--8)} - Lee,
+M. D., \& Wagenmakers, E.-J. (2014). \emph{Bayesian cognitive modeling:
+A practical course.} Cambridge University Press. \textbf{(primary text,
 Weeks 9--14)} - Kruschke, J. K. (2014). \emph{Doing Bayesian data
 analysis: A tutorial with R, JAGS, and Stan} (2nd ed.). Academic Press.
-- Martin, O. A., Kumar, R., \& Lao, J. (2021). \emph{Bayesian modeling
-and computation in Python.} Chapman and Hall/CRC. - Anderson, B. (2014).
-\emph{Computational neuroscience and cognitive modelling: A student's
-introduction to methods and procedures.} SAGE. - Verguts, T. (2022).
-\emph{Introduction to modeling cognitive processes.} MIT Press. -
-Ghodousian, A. (1401). \emph{Mabani-ye ravesh-haye mostaghim dar
-behine-sazi gheyr-khatti} {[}Foundations of direct methods in nonlinear
-optimization{]} (in Persian). - Azimifar, Z., \& Ahmadi, E. (1396).
-\emph{Shenasayi-ye amari-ye olgu: yadgiri-ye nazari-ye moghaddamati}
-{[}Statistical pattern recognition: Introductory learning theory{]},
-vol.~1 (in Persian).
+- Anderson, B. (2014). \emph{Computational neuroscience and cognitive
+modelling: A student's introduction to methods and procedures.} SAGE. -
+Verguts, T. (2022). \emph{Introduction to modeling cognitive processes.}
+MIT Press. - Ghodousian, A. (1401). \emph{Mabani-ye ravesh-haye
+mostaghim dar behine-sazi gheyr-khatti} {[}Foundations of direct methods
+in nonlinear optimization{]} (in Persian). - Azimifar, Z., \& Ahmadi, E.
+(1396). \emph{Shenasayi-ye amari-ye olgu: yadgiri-ye nazari-ye
+moghaddamati} {[}Statistical pattern recognition: Introductory learning
+theory{]}, vol.~1 (in Persian).

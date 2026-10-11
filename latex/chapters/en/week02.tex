@@ -15,11 +15,21 @@ Both return in Weeks 3--13.
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -75,7 +85,6 @@ free parameter & \RL{\CMfa پارامتر آزاد} & \RL{\CMfa پارامتری
 verbal theory & \RL{\CMfa نظریه‌ی کلامی} & \RL{\CMfa نظریه‌ای که فقط با کلمات بیان شده
 و پیش‌بینی دقیق نمی‌دهد} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -95,7 +104,7 @@ By the end of this week, students will be able to:
   including a correction for hit or false-alarm rates of 0 or 1, and
   \textbf{explain} why \(d'\) separates sensitivity from bias.
 \item
-  \textbf{Implement} exponential and power forgetting models with a
+  \textbf{Formulate and evaluate} exponential and power forgetting models with a
   binomial noise model, and \textbf{predict} qualitatively how each
   parameter changes the curves.
 \item
@@ -172,6 +181,8 @@ formal model.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lecture notes}
 
 \paragraph{In plain words}
@@ -210,12 +221,11 @@ to answer with data.
 \item
   \textbf{\(\Phi(x)\) (CDF):} the probability that a standard normal
   value is \emph{below} \(x\). \(\Phi(0) = 0.5\),
-  \(\Phi(1) \approx 0.84\), \(\Phi(1.96) \approx 0.975\). In Python:
-  \nolinkurl{norm.cdf(x)}.
+  \(\Phi(1) \approx 0.84\), \(\Phi(1.96) \approx 0.975\).
 \item
   \textbf{\(\Phi^{-1}(p)\) (inverse CDF, ``z-transform''):} the opposite
   question: below which value lies a proportion \(p\)?
-  \(\Phi^{-1}(0.84) \approx 1\). In Python: \nolinkurl{norm.ppf(p)}.
+  \(\Phi^{-1}(0.84) \approx 1\).
 \item
   \textbf{Binomial distribution \(\mathrm{Binomial}(n, p)\):} the number
   of successes in \(n\) independent tries, each with success probability
@@ -237,12 +247,24 @@ In Week 1 we wrote a model as a data-generating machine,
 practice, almost every model you will meet in this course can be taken
 apart into five pieces:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 1. The anatomy of a model}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Component
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+SDT
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Forgetting (exponential)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Component
@@ -274,7 +296,6 @@ prediction? & Hits \(\sim \mathrm{Binomial}(n_s, H)\); false alarms
 behavior? & ``Yes'' if internal evidence exceeds the criterion & Recall
 probability equals memory strength \(f(t)\) \\
 \end{longtable}
-}
 
 Some points about each component:
 
@@ -306,8 +327,12 @@ Some points about each component:
 observer answers ``yes'' (signal) or ``no''. The outcomes form a 2×2
 table:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}lll@{}}
+\caption{\centering 2. Signal detection theory (SDT)}\tabularnewline
+\toprule\noalign{}
+& Respond ``yes'' & Respond ``no'' \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 & Respond ``yes'' & Respond ``no'' \\
 \midrule\noalign{}
@@ -317,7 +342,6 @@ table:
 \textbf{Signal trial} & Hit & Miss \\
 \textbf{Noise trial} & False alarm (FA) & Correct rejection (CR) \\
 \end{longtable}
-}
 
 with hit rate \(H = \frac{\text{hits}}{\text{hits} + \text{misses}}\)
 and false-alarm rate \(F = \frac{\text{FAs}}{\text{FAs} + \text{CRs}}\).
@@ -446,10 +470,18 @@ both z-scores by the same amount, so the points lie on a line with slope
 SDT \emph{is} the detection theory of radar and communications, imported
 into psychology in the 1950s.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering For an engineer}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Psychology
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Telecom / radar
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Psychology
@@ -472,7 +504,6 @@ ROC curve & receiver operating characteristic (same name, same plot) \\
 liberal / conservative observer & low / high threshold (high / low
 \(P_{FA}\)) \\
 \end{longtable}
-}
 
 Differences in emphasis: an engineer usually \emph{chooses} the
 threshold (e.g.~Neyman--Pearson: fix \(P_{FA}\), maximize \(P_D\)). A
@@ -491,11 +522,20 @@ participant is tested on \(n\) items and recalls \(y_i\) of them.
 
 \textbf{Two candidate deterministic cores:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. Forgetting curves}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Exponential
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Power
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -519,7 +559,6 @@ Psychological reading & A memory loses the same \emph{proportion} of its
 strength per unit time, whatever its age & Older memories lose strength
 more slowly; they become more resistant \\
 \end{longtable}
-}
 
 The \textbf{relative loss rate} (in survival analysis, the
 \emph{hazard}) is the key interpretive difference. It is why the choice
@@ -667,9 +706,8 @@ the binomial likelihood (Week 4).
   what happens to \(H\) and \(F\); then pull the curves apart and ask
   again.
 \item
-  \textbf{Use \(\Phi\) tables or Python live.} Compute R1's \(d'\) with
-  \nolinkurl{norm.ppf} in front of the class. Students who are new to
-  statistics need to see that \(\Phi^{-1}\) is ``just a lookup''.
+  Students who are new to statistics need to see that \(\Phi^{-1}\) is
+  ``just a lookup''.
 \item
   \textbf{Connect to something they know:} a COVID or pregnancy test has
   a hit rate (sensitivity) and a false-alarm rate (1 − specificity).
@@ -696,13 +734,14 @@ the binomial likelihood (Week 4).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Worked example}
 
 \subsubsection{Part 1: Two radiologists (and a third)}
 
 Each radiologist reads 100 tumor scans and 100 healthy scans.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
@@ -713,6 +752,27 @@ Each radiologist reads 100 tumor scans and 100 healthy scans.
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
   >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\caption{\centering Part 1: Two radiologists (and a third)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Observer
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(H\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(F\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\Phi^{-1}(H)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\Phi^{-1}(F)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(d'\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(c\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Percent correct
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Observer
@@ -741,11 +801,9 @@ R2 (conservative) & 0.69 & 0.07 & 0.496 & −1.476 & 1.97 & +0.49 &
 81\% \\
 \end{longtable}
 \end{landscape}
-}
 
-\textbf{Step by step for R1:} 1. \(\Phi^{-1}(0.93) = 1.476\) and
-\(\Phi^{-1}(0.31) = -0.496\) (\nolinkurl{scipy.stats.norm.ppf}). 2.
-\(d' = 1.476 - (-0.496) = 1.972\). 3.
+\textbf{Step by step for R1:} 1. \(\Phi^{-1}(0.93) = 1.476\) ·
+\(\Phi^{-1}(0.31) = -0.496\) 2. \(d' = 1.476 - (-0.496) = 1.972\). 3.
 \(c = -\tfrac{1}{2}(1.476 + (-0.496)) = -0.490\), which is negative, so
 R1 is liberal. 4. Check by plugging back in:
 \(H = \Phi(1.972/2 + 0.490) = \Phi(1.476) = 0.93\). \ensuremath{\checkmark}
@@ -768,7 +826,6 @@ correction: \(H = 50.5/51 = 0.990\), \(F = 3.5/51 = 0.069\), so
 Take \(A = 0.95\) for both models, \(\lambda = 0.25\)/day for the
 exponential and \(d = 0.6\) for the power model.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
@@ -778,6 +835,25 @@ exponential and \(d = 0.6\) for the power model.
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\caption{\centering Part 2: Exponential vs.~power forgetting}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(t\) (days)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+7
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+14
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+30
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(t\) (days)
@@ -804,7 +880,6 @@ Power \(0.95\,(1+t)^{-0.6}\) & 0.950 & 0.627 & 0.491 & 0.273 & 0.187 &
 0.121 \\
 \end{longtable}
 \end{landscape}
-}
 
 \textbf{Half-life (time until recall halves from its initial level):} -
 Exponential:
@@ -823,6 +898,8 @@ lesson you will use in Assignment A1.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lab (2 hours)}
 
 \subsubsection{Goals}
@@ -831,13 +908,13 @@ lesson you will use in Assignment A1.
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Implement SDT as a generative model, simulate yes/no experiments, and
+  Formulate and evaluate SDT as a generative model, simulate yes/no experiments, and
   estimate \(d'\) and \(c\).
 \item
   Use ROC and zROC plots to \textbf{evaluate} the equal-variance
   assumption.
 \item
-  Implement exponential and power forgetting with binomial noise, and
+  Formulate and evaluate exponential and power forgetting with binomial noise, and
   explore their parameters.
 \item
   \textbf{Fit} both forgetting models by linearization,
@@ -848,95 +925,32 @@ lesson you will use in Assignment A1.
 \textbf{Timing:} Part A 30 min · Part B 25 min · Part C 30 min · Part D
 25 min · remaining time: exercises.
 
-\subsubsection{Setup}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
 \subsubsection{Part A: SDT as a generative model (30 min)}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
 Simulate one participant and recover the parameters:
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-Counts: {'hits': 68, 'misses': 32, 'fas': 11, 'crs': 89}
-Predicted H = 0.674, F = 0.147
-Estimated d' = 1.67 (true 1.5),  c = 0.37 (true 0.3)
-\end{Verbatim}
 
 One simulated participant tells us little about how good the
 \emph{estimator} is. Let's repeat the experiment many times: this is a
 preview of the \textbf{parameter recovery} logic of Week 7.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{9\baselineskip}
-\begin{Verbatim}
-            d_hat         c_hat
-             mean    std   mean    std
-n_per_type
-20          1.500  0.449  0.296  0.224
-50          1.489  0.290  0.295  0.143
-200         1.502  0.142  0.299  0.071
-\end{Verbatim}
-
 \textbf{What to notice:} the estimates scatter around the true values,
 and the scatter shrinks as the number of trials grows. With 20 trials
 per type, the SD of \(\hat d'\) is about 0.45, so individual estimates
 are often off by \ensuremath{\pm}0.5 or more, and roughly 4× more trials are needed to
-halve the scatter. On average the estimates are on target here. With
-higher \(d'\) and few trials, however, extreme rates become common, and
-the correction then pulls estimates toward 0 (try \nolinkurl{true_d = 3}
-with 20 trials). Keep this in mind whenever you compare \(d'\) across
-groups tested with different numbers of trials.
+halve the scatter. On average the estimates are on target here. Keep
+this in mind whenever you compare \(d'\) across groups tested with
+different numbers of trials.
 
 \subsubsection{Part B: ROC curves and the equal-variance assumption (25
 min)}
 
 First, the model's predicted ROCs:
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
 Now simulate a \textbf{confidence-rating} experiment. Responses are
 given on a 6-point scale (1 = ``sure noise'' \ldots{} 6 = ``sure
 signal''), which amounts to five criteria at once. We generate data from
 an equal-variance observer and from an \textbf{unequal-variance}
 observer whose signal distribution has SD 1.5.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-sigma_signal = 1.0: zROC slope = 0.96 (predicted 1.00); d' at each criterion = [1.52 1.48 1.48 1.43 1.43]
-sigma_signal = 1.5: zROC slope = 0.67 (predicted 0.67); d' at each criterion = [1.46 1.34 1.16 0.96 0.84]
-\end{Verbatim}
 
 \textbf{Evaluate and interpret.} For the equal-variance observer, the
 zROC slope is close to 1 and \(d'\) is about the same at every
@@ -950,42 +964,12 @@ signature prediction (here: zROC slope = 1) is a basic form of
 
 \subsubsection{Part C: Forgetting curves with binomial noise (30 min)}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 7 · \RL{\CMfa سلول}
-7
-\end{quote}
-
 Explore the parameters: how do \(A\) and the decay parameter change each
 curve?
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 8 · \RL{\CMfa سلول}
-8
-\end{quote}
 
 Now generate a \textbf{simulated experiment}. The data come from the
 \emph{power} model, with 50 items tested at each of 8 retention
 intervals:
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 9 · \RL{\CMfa سلول}
-9
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{12\baselineskip}
-\begin{Verbatim}
-       t  recalled   n  p_obs
-0   0.25        42  50   0.84
-1   1.00        30  50   0.60
-2   2.00        26  50   0.52
-3   4.00        25  50   0.50
-4   7.00        13  50   0.26
-5  14.00        13  50   0.26
-6  21.00        13  50   0.26
-7  30.00        14  50   0.28
-\end{Verbatim}
 
 \subsubsection{Part D: Fit by linearization, evaluate, interpret (25
 min)}
@@ -993,30 +977,9 @@ min)}
 \textbf{Fit.} Fit each model by a straight-line regression on the log
 scale (Lecture §5).
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 10 · \RL{\CMfa سلول}
-10
-\end{quote}
-
 \textbf{Evaluate.} Look at the fitted curves \emph{and} the residuals. A
 good model leaves residuals that scatter randomly around zero; a
 systematic pattern means the model's \emph{shape} is wrong.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 11 · \RL{\CMfa سلول}
-11
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-exp: A = 0.550, rate = 0.032, RMSD = 0.1308
-pow: A = 0.797, rate = 0.370, RMSD = 0.0628
-true (power): A = 0.9, d = 0.5
-\end{Verbatim}
-
-\textbf{Interpret (write 2--3 sentences for each in your notebook):}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -1054,9 +1017,13 @@ disagree most?
 from Ebbinghaus's 1885 self-experiments are often reported as follows
 {[}verify against the original source before using them in class{]}:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}llllllll@{}}
+\caption{\centering Exercises (increasing difficulty)}\tabularnewline
+\toprule\noalign{}
+Interval & 20 min & 1 h & 8.8 h & 1 day & 2 days & 6 days & 31 days \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 Interval & 20 min & 1 h & 8.8 h & 1 day & 2 days & 6 days & 31 days \\
 \midrule\noalign{}
@@ -1066,7 +1033,6 @@ Interval & 20 min & 1 h & 8.8 h & 1 day & 2 days & 6 days & 31 days \\
 Savings (\%) & 58.2 & 44.2 & 35.8 & 33.7 & 27.8 & 25.4 & 21.1 \\
 \end{longtable}
 \end{landscape}
-}
 
 Convert the intervals to days, fit both models by linearization, and
 compare their residuals. Which shape fits better? Then redo the analysis
@@ -1082,10 +1048,8 @@ binomial SDs with \(n = 50\). Which retention intervals would you test?
 
 \textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: zero counts).} Generate data from the
 exponential model with \(A = 0.9\), \(\lambda = 0.3\) at the intervals
-in Part C, with \(n = 20\) items. How often (out of 1000 simulated
-datasets) does at least one interval produce zero recalls, which breaks
-\nolinkurl{fit_linearized}? Propose and implement a quick fix (e.g.,
-adding 0.5 to counts) and check whether it biases the estimate of
+in Part C, with \(n = 20\) items. Propose and formulate and evaluate a quick fix
+(e.g., adding 0.5 to counts) and check whether it biases the estimate of
 \(\lambda\). Explain why this is a sign that we need a method that works
 on the original scale (Weeks 3--4).
 
@@ -1109,34 +1073,18 @@ of texts) and a \textbf{criterion} \(c\) (the threshold the user
 chooses). A false alarm means a student is wrongly accused, so the
 choice of criterion is an ethical decision, not only a technical one.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 12 · \RL{\CMfa سلول}
-12
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-threshold 0.0: H = 0.84, F = 0.49, d' = 1.03, c = -0.50
-threshold 0.6: H = 0.70, F = 0.28, d' = 1.11, c = 0.03
-threshold 1.2: H = 0.51, F = 0.09, d' = 1.35, c = 0.66
-\end{Verbatim}
-
 Moving the threshold changes \(c\) a lot (from −0.50 to 0.66), while
 \(d'\) stays near its true value of 1.2. The variation in \(d'\) is
 sampling noise from 200 texts per group.
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} Suppose 10\% of submitted essays
-are AI-written. At threshold 1.2, what is
-\(P(\text{AI-written} \mid \text{flagged})\)? (Use Bayes' rule with
-\(H\) and \(F\).) Would you act on a flag? - \ensuremath{\star}\ensuremath{\star} Plot the ROC of the
-detector (all thresholds from −2 to 3) and its zROC. Is the slope close
-to 1? Repeat with human-text scores of SD 1.5 (an unequal-variance
-detector). - \ensuremath{\star}\ensuremath{\star} Discussion: detectors have been reported to flag texts
-by non-native English writers more often {[}verify: Liang et al., 2023,
-\emph{Patterns}{]}. In SDT terms, what would that mean, and what should
-a university do?
+At threshold 1.2, what is \(P(\text{AI-written} \mid \text{flagged})\)?
+(Use Bayes' rule with \(H\) and \(F\).) Would you act on a flag? - \ensuremath{\star}\ensuremath{\star}
+Plot the ROC of the detector (all thresholds from −2 to 3) and its zROC.
+Is the slope close to 1? Repeat with human-text scores of SD 1.5 (an
+unequal-variance detector). - \ensuremath{\star}\ensuremath{\star} Discussion: detectors have been
+reported to flag texts by non-native English writers more often
+{[}verify: Liang et al., 2023, \emph{Patterns}{]}. In SDT terms, what
+would that mean, and what should a university do?
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -1154,9 +1102,7 @@ a university do?
   The formula is \(\Phi^{-1}(H) - \Phi^{-1}(F)\), with rates as
   proportions between 0 and 1.
 \item
-  \textbf{Forgetting the extreme-rate problem.} \(H = 1\) or \(F = 0\)
-  gives an infinite \(d'\); Python returns \nolinkurl{inf} without an
-  error. Always use (and report) a correction.
+  \(H = 1\) · \(F = 0\) Always use (and report) a correction.
 \item
   \textbf{Assuming \(d'\) is bias-free no matter what.} It is
   criterion-independent only under the equal-variance model. If the zROC
@@ -1233,6 +1179,8 @@ likelihood avoids these problems.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Assignment}
 
 \subsubsection{A1: From verbal to formal (1.0 point of 20; released Week
@@ -1246,11 +1194,8 @@ learned in a foreign-language course. - \textbf{Group C} says:
 Both groups claim that the published data (recall drops quickly and then
 levels off) support their view.
 
-\textbf{Tasks.} Submit a Jupyter notebook plus a PDF export.
-
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\tightlist
 \item
   \textbf{Formalize (Group C and Group R).} Write each verbal claim as a
   formal model with all five components from Lecture §1: design,
@@ -1258,9 +1203,7 @@ levels off) support their view.
   model, and linking assumption. Justify in 2--3 sentences why each
   equation captures its verbal claim (use the relative loss rate).
 \item
-  \textbf{Implement.} Write Python functions that (a) return predicted
-  recall probabilities and (b) simulate binomial recall counts for given
-  intervals and number of items \(n\).
+  Analyze the predicted recall probabilities and binomial variability at selected retention intervals; explain how the two models differ.
 \item
   \textbf{Calibrate.} Both groups agree that recall is \textbf{0.60
   after 1 day} and \textbf{0.35 after 7 days}. Derive, by hand and in
@@ -1290,11 +1233,21 @@ levels off) support their view.
 
 \textbf{Grading rubric (10 points, scaled to 1.0 of the final grade):}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering A1: From verbal to formal (1.0 point of 20; released Week 2, due at the start of the Week 4 lecture)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Criterion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Points
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Full marks require
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Criterion
@@ -1310,8 +1263,8 @@ Full marks require
 Formalization (Task 1) & 2 & All five components for both models;
 correct parameter ranges; the link between equation and verbal claim is
 explained via the relative loss rate \\
-Code (Task 2) & 2 & Correct, commented, reproducible (fixed seeds);
-functions are vectorized or clearly looped \\
+Predictions (Task 2) & 2 &
+Clear quantitative comparison of model predictions and binomial variability \\
 Calibration (Task 3) & 2 & Correct closed-form derivation and numerical
 check for both models \\
 Divergence and design (Tasks 4--5) & 2.5 & Correct \(D(t)\); the chosen
@@ -1319,7 +1272,6 @@ design is justified and actually maximizes the criterion; clear plots \\
 Interpretation (Task 6) & 1.5 & Clear, specific, refers to your own
 results; names a real limitation \\
 \end{longtable}
-}
 
 Late submissions lose 10\% per day (max. 3 days).
 
@@ -1336,7 +1288,7 @@ Late submissions lose 10\% per day (max. 3 days).
 \item
   \textbf{Lee \& Wagenmakers (2014), chapter 11.} Signal detection
   theory treated as a (Bayesian) cognitive model; we return to it in
-  Weeks 9 and 13. Read the introductory part now, skip the code.
+  Weeks 9 and 13.
 \item
   \textbf{Verguts (2022)} and \textbf{Anderson (2014)}: the chapters on
   model building and parameters {[}verify chapter numbers{]}.

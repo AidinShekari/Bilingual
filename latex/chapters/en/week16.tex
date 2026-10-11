@@ -13,11 +13,21 @@ Practice}
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -76,7 +86,6 @@ large language model (LLM) & \RL{\CMfa مدل بزرگ زبانی} & \RL{\CMfa �
 کلمه‌ی بعدی متن را پیش‌بینی می‌کند} \\
 accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -111,11 +120,11 @@ build on it. Over 15 weeks, every lab has followed the same arc:
 \textbf{formalize \ensuremath{\rightarrow} simulate \ensuremath{\rightarrow} fit \ensuremath{\rightarrow} evaluate \ensuremath{\rightarrow} recover \ensuremath{\rightarrow} interpret.}
 This week you show that arc in your own project, and you practice the
 other half of scientific modeling: reading someone else's model
-critically but fairly. The session ends with the practices that make
-modeling work trustworthy and reusable: reproducible code, transparent
-reporting, honest statements of limitations.
+critically but fairly.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lecture notes}
 
@@ -127,21 +136,28 @@ a model, \textbf{simulate} it to see what it predicts, \textbf{fit} it
 to data, \textbf{evaluate} it (does it fit, and does it beat
 alternatives?), check that the method can \textbf{recover} the truth at
 this design, and \textbf{interpret} the result in psychological terms,
-including what cannot be concluded. The checklist of good practice turns
-these steps into concrete things to verify in every report: reproducible
-code, reported uncertainty, adequacy checks, recovery and honest
-limitations.
+including what cannot be concluded.
 
 \textbf{Suggested timing (lecture slot, 60 min):} course synthesis 15 ·
 good-practice checklist 15 · first presentations 30.
 
 \subsubsection{1. The course in one table}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 1. The course in one table}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Question you face
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tools
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Week
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Question you face
@@ -169,12 +185,11 @@ Which model is better? & CV, LRT, AIC/BIC, Bayes factors & 6--7, 10 \\
 Can my design answer the question? & Parameter recovery, model recovery
 & 7 \\
 How do I get a posterior for complex models? & Grid \ensuremath{\rightarrow}
-Metropolis--Hastings \ensuremath{\rightarrow} Gibbs \ensuremath{\rightarrow} NUTS (PyMC); \(\hat R\), ESS, divergences
-& 9--13 \\
+Metropolis--Hastings \ensuremath{\rightarrow} Gibbs \ensuremath{\rightarrow} NUTS (); \(\hat R\), ESS, divergences &
+9--13 \\
 What do models look like in different fields? & SDT, forgetting,
 practice, GCM, DDM/EZ, RL, ideal observers & 2, 5, 14--15 \\
 \end{longtable}
-}
 
 \paragraph{For an engineer}
 
@@ -182,10 +197,18 @@ Looking back, most of the course maps onto tools you already know, and
 the table below can serve as your own summary when answering students'
 questions:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering For an engineer}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Course topic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Engineering counterpart
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Course topic
@@ -218,7 +241,6 @@ shrinkage \\
 Delta rule, cue combination (Week 15) & LMS adaptation, MRC / Kalman
 sensor fusion \\
 \end{longtable}
-}
 
 What is genuinely different in cognitive modeling: the ``system'' is a
 human being, the data are small and noisy, and the parameters themselves
@@ -243,21 +265,8 @@ reported. - {[} {]} Absolute fit (residuals, \(G^2\) or PPC) \emph{and}
 relative fit (CV/IC/BF) are reported. - {[} {]} Uncertainty is reported
 for every interpreted parameter.
 
-\textbf{Reporting and reproducibility} - {[} {]} All code and (where
-allowed) data are shared; random seeds are fixed. - {[} {]} Software
-versions are recorded (e.g.,
-\nolinkurl{conda env export > environment.yml}). - {[} {]} One command
-or notebook regenerates every number and figure in the report. - {[} {]}
-Limitations are stated: what the design cannot distinguish, which
-parameters are not recoverable, which assumptions were not tested.
-
-\textbf{Recording the computing environment} (include in every project
-notebook):
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week16.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
+- {[} {]} Limitations are stated: what the design cannot distinguish,
+which parameters are not recoverable, which assumptions were not tested.
 
 \subsubsection{3. Presentation format}
 
@@ -309,11 +318,21 @@ interpreted'') rather than general (``nice talk''), and
 
 \textbf{Peer-feedback form}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 4. Giving and receiving feedback}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Item
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Rating (1--4)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Comment
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Item
@@ -335,7 +354,6 @@ Conclusions followed from the results, and limitations were stated &
 \textbf{One thing that was particularly well done} & & \\
 \textbf{One concrete suggestion for the written report} & & \\
 \end{longtable}
-}
 
 \paragraph{For the instructor}
 
@@ -421,10 +439,9 @@ directly onto one week of this course.
 presentations; note the feedback you receive for your final report.
 
 \textbf{Logistics:} - Upload slides (PDF) to the course page
-\textbf{before} the session starts. - Bring your laptop with your
-project notebook in case of questions about the code. - Fill in the
-peer-feedback forms during the session (paper or online form) and submit
-them by the end of the day.
+\textbf{before} the session starts. - Fill in the peer-feedback forms
+during the session (paper or online form) and submit them by the end of
+the day.
 
 \textbf{After the presentations:} the instructor gives brief oral
 feedback to each team. Written feedback (instructor + peers) is returned
@@ -436,48 +453,25 @@ within 3 days so it can be used in the final report.
 
 \textbf{Good practice when AI is part of your modeling work.} AI tools
 now enter cognitive modeling in three roles, and each needs the course's
-habits of checking: 1. \textbf{As a coding assistant.} Generated code
-can look right and be wrong. Test it the modeling way: simulate data
-with known parameters and check that the code recovers them (parameter
-recovery as a unit test). 2. \textbf{As a ``simulated participant''.}
-Some studies give LLMs psychology experiments and compare the answers
-with human data, or even propose LLM-based models of human behavior
-(e.g., Binz \& Schulz, 2023; Dillion et al., 2023 {[}verify{]}).
-Evaluate such claims like any model: generalization to new tasks,
-comparison with simpler cognitive models, mimicry, and interpretability
-(Week 15). 3. \textbf{As an object of study.} If you test an LLM, record
-the model name and version, the date, the exact prompts, the temperature
-and the number of samples. Without these, the study cannot be
-reproduced.
+habits of checking: 1. 2. \textbf{As a ``simulated participant''.} Some
+studies give LLMs psychology experiments and compare the answers with
+human data, or even propose LLM-based models of human behavior (e.g.,
+Binz \& Schulz, 2023; Dillion et al., 2023 {[}verify{]}). Evaluate such
+claims like any model: generalization to new tasks, comparison with
+simpler cognitive models, mimicry, and interpretability (Week 15). 3.
+\textbf{As an object of study.} If you test an LLM, record the model
+name and version, the date, the exact prompts, the temperature and the
+number of samples. Without these, the study cannot be reproduced.
 
-The code below tests a pre-made SDT function ``written by an
-assistant''. It looks plausible, and it even passes the case \(c = 0\),
-but a recovery test shows that it gets the sign of \(c\) wrong.
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week16.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-true (d', c) = (1.5, 0.3) -> recovered (1.50, -0.30)  FAIL
-true (d', c) = (1.0, -0.4) -> recovered (1.00, 0.40)  FAIL
-true (d', c) = (2.0, 0.0) -> recovered (2.00, 0.00)  OK
-\end{Verbatim}
+It looks plausible, and it even passes the case \(c = 0\), but a
+recovery test shows that it gets the sign of \(c\) wrong.
 
 A liberal observer would be reported as conservative, which would
 reverse the conclusion of a bias study. The test with \(c = 0\) alone
 would not have caught it.
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} Fix the function and rerun the
-tests. - \ensuremath{\star}\ensuremath{\star} Write a similar recovery test for the EZ-diffusion function
-of Week 14, using the simulator from the same lab. - \ensuremath{\star}\ensuremath{\star} For your own
-project: add one paragraph to the reproducibility statement that
-describes how AI tools were used and how their output was verified (see
-\nolinkurl{assessments/project_brief.md}, section 6).
+- \ensuremath{\star}\ensuremath{\star} Write a similar recovery test for the EZ-diffusion function of Week
+14, using the simulator from the same lab.
 
 \emph{Optional reading:} Binz, M., \& Schulz, E. (2023). Using cognitive
 psychology to understand GPT-3. \emph{PNAS, 120}(6), e2218523120.
@@ -507,9 +501,6 @@ and reports)}
 \item
   \textbf{Overclaiming:} ``the model is correct'', ``the mind is
   Bayesian''. State what the evidence supports and what it does not.
-\item
-  \textbf{Irreproducible results:} missing seeds, unrecorded package
-  versions, notebook cells run out of order.
 \item
   \textbf{Running over time.} Practice the talk; one idea per slide.
 \end{enumerate}
@@ -573,24 +564,17 @@ targeting that feature is the next step.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Assignment}
 
-\subsubsection{Final project: written report and code}
+\subsubsection{Final project: written report}
 
 \begin{itemize}
 \tightlist
 \item
   \textbf{Due:} one week after this session, and in any case before the
   final exam (exact date on the course page).
-\item
-  \textbf{Submission:} report (PDF, max. 10 pages for individuals, 14
-  for pairs, excluding references and appendix) plus a code archive or
-  repository link that reproduces all results.
-\item
-  \textbf{Grading:} see the project brief and rubric
-  (\nolinkurl{assessments/project_brief.md}). The report and code are
-  worth 3 of the 6 project points; the proposal (1) and presentation (2)
-  are already graded.
 \item
   \textbf{Use the feedback} from today: the rubric rewards visible
   responses to presentation feedback.
@@ -599,8 +583,7 @@ targeting that feature is the next step.
 \subsubsection{Final exam}
 
 Written, cumulative (emphasis on Chapters 4--6), formula sheet provided,
-no laptops; worth 3 of 20 points. See
-\nolinkurl{assessments/final_exam.md} for the format and a sample paper.
+no laptops; worth 3 of 20 points.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 

@@ -15,11 +15,21 @@ the grid posterior we already have.
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -76,7 +86,6 @@ simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی
 MCSE & \RL{\CMfa خطای استاندارد} Monte Carlo & \RL{\CMfa خطای شبیه‌سازی در میانگین
 پسین} \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -96,7 +105,7 @@ By the end of this week, students will be able to:
   long-run distribution is the posterior, using only the
   \emph{unnormalized} posterior.
 \item
-  \textbf{Implement} the Metropolis (and Metropolis--Hastings) algorithm
+  \textbf{Formulate and evaluate} the Metropolis (and Metropolis--Hastings) algorithm
   from scratch for a one- and a two-parameter cognitive model.
 \item
   \textbf{Tune} the proposal distribution using the acceptance rate,
@@ -131,18 +140,15 @@ normalizing constant.
 simple trick: a random walk through parameter space that moves toward
 more probable values more often than toward less probable ones, in
 exactly the right proportions. After a while, the places the walker
-visits are draws from the posterior. The best-known version, the
-\textbf{Metropolis algorithm}, fits in 15 lines of Python, and you will
-write it today before using any library.
+visits are draws from the posterior.
 
 \paragraph{Where is this used?}
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{All modern Bayesian software} (PyMC, Stan, JAGS, BUGS) is
-  built on MCMC. Every hierarchical model in recent psychology and
-  neuroscience papers was fitted with some version of it.
+  Every hierarchical model in recent psychology and neuroscience papers
+  was fitted with some version of it.
 \item
   \textbf{Physics and chemistry} (where Metropolis was invented in 1953,
   to simulate particles), \textbf{epidemiology} (estimating infection
@@ -159,6 +165,8 @@ write it today before using any library.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lecture notes}
 
@@ -193,11 +201,21 @@ If \(\theta^{(1)}, \dots, \theta^{(S)}\) are independent draws from
 \mathbb{E}[g(\theta)\mid\mathbf{y}] = \int g(\theta)\, p(\theta\mid\mathbf{y})\, d\theta \;\approx\; \frac{1}{S}\sum_{s=1}^{S} g\big(\theta^{(s)}\big).
 \]
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 1. Monte Carlo integration}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Want
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Choose \(g(\theta)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Monte Carlo estimate
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Want
@@ -219,7 +237,6 @@ Credible interval & --- & Percentiles (or HDI) of the draws \\
 Marginal posterior of \(\theta_1\) & --- & Simply ignore the other
 columns \\
 \end{longtable}
-}
 
 The \textbf{Monte Carlo standard error} of the mean is
 \(\mathrm{SD}(g)/\sqrt{S}\) for independent draws, independent of the
@@ -368,12 +385,24 @@ accepted.
 
 The proposal SD \(\sigma_{\text{prop}}\) controls efficiency:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 5. Tuning and diagnosing a sampler}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\sigma_{\text{prop}}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Acceptance rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Behavior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Trace plot looks like
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(\sigma_{\text{prop}}\)
@@ -395,7 +424,6 @@ low-probability regions and are rejected; the chain sticks & Flat steps
 with long plateaus \\
 About right & \ensuremath{\approx} 0.2--0.5 & Good mixing & A ``fuzzy caterpillar'' \\
 \end{longtable}
-}
 
 Classic theoretical results suggest an optimal acceptance rate of about
 0.44 for one parameter, falling toward about 0.23 for many parameters.
@@ -490,7 +518,6 @@ draws.
 posterior: \(\mathrm{Beta}(8, 4)\), mean 0.667. Proposal:
 \(\theta' = \theta + \mathcal{N}(0, 0.1)\).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{landscape}\small
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
@@ -502,6 +529,29 @@ posterior: \(\mathrm{Beta}(8, 4)\), mean 0.667. Proposal:
   >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
   >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
   >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}@{}}
+\caption{\centering Worked example}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Step
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Current \(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Proposal \(\theta'\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tilde p(\theta)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tilde p(\theta')\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ratio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(u\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Decision
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+New \(\theta\)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Step
@@ -536,7 +586,6 @@ New \(\theta\)
 0.66 \\
 \end{longtable}
 \end{landscape}
-}
 
 \textbf{Chain so far:} 0.50, 0.58, 0.80, \textbf{0.80}, 0.66. The
 rejected step \emph{repeats} 0.80 in the chain. That is essential:
@@ -549,6 +598,8 @@ into the tail. Over thousands of steps, the proportion of time spent
 near each value converges to \(\mathrm{Beta}(8, 4)\).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{Lab (2 hours)}
 
@@ -573,49 +624,10 @@ near each value converges to \(\mathrm{Beta}(8, 4)\).
 \textbf{Timing:} Part A 15 min · Part B 25 min · Part C 35 min · Part D
 30 min · Part E 15 min.
 
-\subsubsection{Setup}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
 \subsubsection{Part A: Monte Carlo integration (15 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-Exact: mean = 0.5926, P(theta > 0.65) = 0.1967
-S =    100: mean = 0.5865 (MC s.e. 0.0065), P(theta > 0.65) = 0.1800
-S =   1000: mean = 0.5935 (MC s.e. 0.0021), P(theta > 0.65) = 0.2160
-S =  10000: mean = 0.5937 (MC s.e. 0.0007), P(theta > 0.65) = 0.2022
-S = 100000: mean = 0.5927 (MC s.e. 0.0002), P(theta > 0.65) = 0.1971
-\end{Verbatim}
 
 Ten times more draws gives about \(\sqrt{10} \approx 3.2\) times less
 Monte Carlo error.
-
-\subsubsection{Part B: a Metropolis sampler, validated (25 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-Acceptance rate: 0.59
-Metropolis: mean = 0.5930, SD = 0.0660, 95% interval = [0.458 0.718]
-Exact:      mean = 0.5926, SD = 0.0663, 95% interval = [0.46  0.719]
-\end{Verbatim}
 
 \subsubsection{Part C: Metropolis for the power forgetting model (35
 min)}
@@ -623,55 +635,11 @@ min)}
 Same priors as in Week 10: \(A \sim \mathrm{Beta}(8, 2)\),
 \(d \sim \mathrm{Gamma}(2, \text{scale } 0.3)\).
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-Acceptance rate: 0.49
-    mean     SD   2.5%  97.5%
-A  0.868  0.052  0.762   0.96
-d  0.418  0.048  0.325   0.51
-Week 10 grid posterior means for comparison: A = 0.867, d = 0.417
-\end{Verbatim}
-
 \textbf{Derived quantities} come for free. Compute the posterior of the
 half-life \(t_{1/2} = 2^{1/d} - 1\) (Week 2) and the predicted recall
 after 60 days:
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-half-life (days)       mean = 4.493, 95% interval = [2.889 7.443]
-P(recall) at 60 days   mean = 0.158, 95% interval = [0.113 0.211]
-P(half-life < 3 days | data) = 0.039
-\end{Verbatim}
-
 \subsubsection{Part D: tuning the proposal (30 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-too small    proposal SD = [0.002, 0.002]: acceptance = 0.97, lag-10 autocorrelation of d = 0.98, mean of d = 0.473
-about right  proposal SD = [0.04, 0.05]: acceptance = 0.50, lag-10 autocorrelation of d = 0.26, mean of d = 0.416
-too large    proposal SD = [0.5, 1.5]: acceptance = 0.00, lag-10 autocorrelation of d = 0.94, mean of d = 0.420
-\end{Verbatim}
 
 \textbf{What to notice:} the ``too small'' chain accepts almost
 everything but crawls (a slowly wandering trace with autocorrelation
@@ -685,11 +653,11 @@ like a fuzzy caterpillar and its autocorrelation decays quickly.
 
 \subsubsection{Part E: interpret (15 min)}
 
-Answer in your notebook: 1. Do the Metropolis posterior summaries for
-\((A, d)\) agree with the Week 10 grid? What does that agreement
-establish? 2. How would you report the half-life of this participant's
-memory, with uncertainty, in one sentence? 3. Why must rejected
-proposals be recorded as repeated values in the chain?
+Do the Metropolis posterior summaries for \((A, d)\) agree with the Week
+10 grid? What does that agreement establish? 2. How would you report the
+half-life of this participant's memory, with uncertainty, in one
+sentence? 3. Why must rejected proposals be recorded as repeated values
+in the chain?
 
 \subsubsection{Exercises (increasing difficulty)}
 
@@ -703,10 +671,8 @@ and \((0.9, 0.1)\). Plot all traces together. After how many iterations
 do they become indistinguishable? (This is the idea behind R-hat, Week
 12.)
 
-\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (exponential model).} Write
-\nolinkurl{log_post_exp} with the Week 10 priors, sample it, and compare
-the posterior with the grid. Then compute the posterior predictive
-distribution from your samples and reproduce the Week 10 PPC plot.
+Then compute the posterior predictive distribution from your samples and
+reproduce the Week 10 PPC plot.
 
 \textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (Metropolis--Hastings with an asymmetric
 proposal).} Sample \(d\) with a \textbf{log-normal} random-walk
@@ -741,31 +707,12 @@ a Monte Carlo question: we cannot compute the majority-vote accuracy
 easily in closed form, but we can simulate it and report the Monte Carlo
 standard error, as in this week's lab.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 7 · \RL{\CMfa سلول}
-7
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{7\baselineskip}
-\begin{Verbatim}
-k =  1 samples: majority-vote accuracy = 0.406 (MCSE 0.003)
-k =  5 samples: majority-vote accuracy = 0.506 (MCSE 0.004)
-k = 15 samples: majority-vote accuracy = 0.671 (MCSE 0.003)
-k = 45 samples: majority-vote accuracy = 0.873 (MCSE 0.002)
-\end{Verbatim}
-
-\textbf{Try it (no API needed).} - \ensuremath{\star} Change \nolinkurl{p_answer} so that
-one \emph{wrong} answer is the most likely (e.g.,
-\nolinkurl{[0.30, 0.35, 0.20, 0.15]}). What does majority voting do now?
-Why? - \ensuremath{\star}\ensuremath{\star} How many simulated questions (\nolinkurl{n_sim}) do you need
-for an MCSE of 0.001? Check your answer with the formula
-\(\sqrt{p(1-p)/n}\). - \ensuremath{\star}\ensuremath{\star} Connection to cognition: the ``wisdom of the
-crowd within'' idea says that averaging a person's repeated guesses
-improves accuracy. Which assumption of this simulation (independent
-samples) is unlikely to hold for repeated human guesses, or for an LLM
-at low temperature?
+What does majority voting do now? Why? Check your answer with the
+formula \(\sqrt{p(1-p)/n}\). - \ensuremath{\star}\ensuremath{\star} Connection to cognition: the ``wisdom
+of the crowd within'' idea says that averaging a person's repeated
+guesses improves accuracy. Which assumption of this simulation
+(independent samples) is unlikely to hold for repeated human guesses, or
+for an LLM at low temperature?
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -784,10 +731,7 @@ at low temperature?
   \textbf{Computing the ratio without logs.} Likelihoods underflow.
   Compare log densities.
 \item
-  \textbf{Forgetting the prior support.} Proposals outside the support
-  must get \(\ln\tilde p = -\infty\), otherwise the likelihood may be
-  evaluated at impossible values (e.g., negative probabilities produce
-  \nolinkurl{nan}).
+  \(\ln\tilde p = -\infty\)
 \item
   \textbf{Judging the sampler only by acceptance rate.} A 30\% rate does
   not guarantee convergence. Look at traces and autocorrelation, and run
@@ -854,9 +798,7 @@ needed; this is one of the big practical advantages of sampling.
 \subsection{Assignment}
 
 No new graded assignment this week. \textbf{A4 (Bayesian analysis by
-grid)} is due at the start of the Week 12 lecture. \textbf{A5 (MCMC from
-scratch)} is released in Week 12 and builds directly on today's
-\nolinkurl{metropolis} function, so keep your lab notebook tidy.
+grid)} is due at the start of the Week 12 lecture.
 
 \textbf{Optional practice (ungraded):} Exercise 2 (multiple starting
 points) is the best preparation for Week 12.
@@ -881,6 +823,4 @@ points) is the best preparation for Week 12.
 \end{itemize}
 
 \emph{Preview for Week 12:} Gibbs sampling (no rejections at all), and
-the question every MCMC user must answer: has my chain converged? We
-will compute R-hat and the effective sample size ourselves, then check
-them against ArviZ.
+the question every MCMC user must answer: has my chain converged?

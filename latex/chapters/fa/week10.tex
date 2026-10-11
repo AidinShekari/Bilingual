@@ -16,11 +16,21 @@ factor}}{هفته‌ی 10: مدل‌سازی بیزی 2: بررسی پیش‌ب�
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -73,7 +83,6 @@ factor}}{هفته‌ی 10: مدل‌سازی بیزی 2: بررسی پیش‌ب�
 \lr{trial} & کوشش \lr{(trial)} & یک بار انجام تکلیف توسط شرکت‌کننده \\
 \lr{accuracy} & دقت & نسبت پاسخ‌های درست \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -118,16 +127,12 @@ factor}}{هفته‌ی 10: مدل‌سازی بیزی 2: بررسی پیش‌ب�
 نه. این یک \emph{بررسی پیش‌بینی پسین} \lr{(posterior predictive check)}
 است؛ همتای بیزی نمودار باقی‌مانده‌ها و \(G^2\).
 
-\textbf{2. داده‌ها از کدام مدل بیشتر پشتیبانی می‌کنند؟} در هفته‌ی 7 مدل‌ها
-را با \lr{AIC} و \lr{BIC} مقایسه کردیم که تعداد پارامترها را جریمه
-می‌کنند. استنباط بیزی جوابی داخلی دارد: حساب کنیم هر مدل \emph{پیش از}
-برازش داده‌ها را چقدر خوب پیش‌بینی کرده بود، با میانگین‌گیری روی همه‌ی
-مقادیر پارامتری که پیشینش اجازه می‌دهد. این \textbf{\lr{marginal
-likelihood}} است، و نسبت دو \lr{marginal likelihood} \textbf{\lr{Bayes
-factor}} است. یک مدل منعطف پیش‌بینی‌هایش را روی مجموعه‌داده‌های ممکن زیادی
-پخش می‌کند، پس به هرکدام احتمال کمتری می‌دهد. بنابراین \lr{Bayes factor}
-تیغ اوکام را خودکار اجرا می‌کند، و به انعطاف شکل تابعی پاسخ می‌دهد، نه فقط
-به \(k\).
+استنباط بیزی جوابی داخلی دارد: حساب کنیم هر مدل \emph{پیش از} برازش
+داده‌ها را چقدر خوب پیش‌بینی کرده بود، با میانگین‌گیری روی همه‌ی مقادیر
+پارامتری که پیشینش اجازه می‌دهد. این \textbf{\lr{marginal likelihood}}
+است، و نسبت دو \lr{marginal likelihood} \textbf{\lr{Bayes factor}} است.
+بنابراین \lr{Bayes factor} تیغ اوکام را خودکار اجرا می‌کند، و به انعطاف
+شکل تابعی پاسخ می‌دهد، نه فقط به \(k\).
 
 \lr{Bayes factor}ها برای آزمون فرض صفر هم استفاده می‌شوند («آیا حساسیت
 صفر است؟»). برخلاف مقدار \(p\)، می‌توانند شواهد \textbf{به نفع} فرض صفر
@@ -143,11 +148,6 @@ factor}} است. یک مدل منعطف پیش‌بینی‌هایش را روی
   پشتیبانی کند؛ \lr{Bayes factor} می‌تواند («داده تحت فرض بدون اثر 8
   برابر محتمل‌تر است»).
 \item
-  \textbf{مجله‌ها و نرم‌افزارهای روان‌شناسی:} \lr{Bayes factor}ها با
-  ابزارهایی مثل \lr{JASP} و بسته‌ی \lr{BayesFactor} در \lr{R} به‌طور معمول
-  گزارش می‌شوند؛ هم برای \lr{t-test}، \lr{ANOVA} و همبستگی و هم برای
-  مدل‌های شناختی.
-\item
   \textbf{بررسی مدل در هر تحلیل بیزی:} \lr{posterior predictive check}
   گامی استاندارد پیش از اعتماد به هر نتیجه است (مثلاً در کارآزمایی‌های
   بالینی که به روش بیزی تحلیل می‌شوند و در مقاله‌های مدل‌سازی شناختی).
@@ -159,6 +159,8 @@ factor}} است. یک مدل منعطف پیش‌بینی‌هایش را روی
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{جزوه‌ی درس}
 
 \paragraph{به زبان ساده}
@@ -169,14 +171,11 @@ factor}} است. یک مدل منعطف پیش‌بینی‌هایش را روی
 کار را بارها تکرار کنید. اگر داده‌ی واقعی شبیه یک داده‌ی تصوری معمولی
 باشد، مدل کافی است؛ اگر داده‌ی واقعی بیرون از ابر داده‌های تصوری باشد، مدل
 چیزی را از قلم انداخته است. این یک \textbf{\lr{posterior predictive
-check}} است. \textbf{(2) داده از کدام‌یک از دو مدل بیشتر پشتیبانی می‌کند؟}
-از هر مدل بپرسید، \emph{پیش از برازش}، داده‌ای را که واقعاً به دست آوردیم
-چقدر محتمل می‌دانست، با میانگین گرفتن روی همه‌ی مقدارهای پارامتری که
-\lr{prior} آن اجازه می‌دهد. این عدد \textbf{\lr{marginal likelihood}} است
-و نسبت آن برای دو مدل \textbf{\lr{Bayes factor}} است. مدلی که روی همه‌چیز
-شرط می‌بندد (خیلی منعطف) باید شرط‌هایش را پخش کند، پس وقتی داده جایی
-می‌افتد که مدل ساده‌تر روی آن شرط بسته بود، کمتر برنده می‌شود. این همان تیغ
-اوکام است که در نظریه‌ی احتمال تعبیه شده. نکته‌ی مهم: \lr{Bayes factor} به
+check}} است. این عدد \textbf{\lr{marginal likelihood}} است و نسبت آن
+برای دو مدل \textbf{\lr{Bayes factor}} است. مدلی که روی همه‌چیز شرط
+می‌بندد (خیلی منعطف) باید شرط‌هایش را پخش کند، پس وقتی داده جایی می‌افتد که
+مدل ساده‌تر روی آن شرط بسته بود، کمتر برنده می‌شود. این همان تیغ اوکام است
+که در نظریه‌ی احتمال تعبیه شده. نکته‌ی مهم: \lr{Bayes factor} به
 \lr{prior} بستگی دارد، پس باید گزارش کنید که با \lr{prior}های معقول چطور
 تغییر می‌کند.
 
@@ -210,9 +209,7 @@ p(\mathbf{y}^{\text{\lr{rep}}} \mid \mathbf{y}) = \int p(\mathbf{y}^{\text{\lr{r
 \(p_B = P\big(T(\mathbf{y}^{\text{\lr{rep}}}) \ge T(\mathbf{y}) \mid \mathbf{y}\big)\).
 مقادیر نزدیک 0 یا 1 نشان می‌دهند مدل نمی‌تواند این ویژگی را بازتولید کند.
 
-\lr{PPC}ها کفایت \textbf{مطلق} را می‌سنجند، یعنی اینکه مدل به اندازه‌ی
-کافی خوب است یا نه، نه اینکه کدام از دو مدل بهتر است. گام همیشگی هر
-تحلیل بیزی‌اند (هفته‌ی 13).
+گام همیشگی هر تحلیل بیزی‌اند (هفته‌ی 13).
 
 \paragraph{خواندن ریاضی}
 
@@ -222,11 +219,11 @@ p(\mathbf{y}^{\text{\lr{rep}}} \mid \mathbf{y}) = \int p(\mathbf{y}^{\text{\lr{r
   \(\mathbf{y}^{\text{\lr{rep}}}\): داده‌ی «تکرارشده»، یک تکرار تصوری از
   آزمایش.
 \item
-  \(\int p(\mathbf{y}^{\text{\lr{rep}}} \mid \boldsymbol\theta)\, p(\boldsymbol\theta \mid \mathbf{y})\, d\boldsymbol\theta\):
-  پیش‌بینی‌های مدل را روی همه‌ی مقدارهای پارامتر میانگین بگیر، هرکدام با
-  وزن معقول بودنش در \lr{posterior.} در عمل این انتگرال با دستور
-  شبیه‌سازی دومرحله‌ای جایگزین می‌شود: \(\boldsymbol\theta\) را از
-  \lr{posterior} بکش و بعد با آن داده شبیه‌سازی کن.
+
+  \(\int p(\mathbf{y}^{\text{\lr{rep}}} \mid \boldsymbol\theta)\, p(\boldsymbol\theta \mid \mathbf{y})\, d\boldsymbol\theta\)
+  در عمل این انتگرال با دستور شبیه‌سازی دومرحله‌ای جایگزین می‌شود:
+  \(\boldsymbol\theta\) را از \lr{posterior} بکش و بعد با آن داده
+  شبیه‌سازی کن.
 \item
   \(p_B = P(T(\mathbf{y}^{\text{\lr{rep}}}) \ge T(\mathbf{y}) \mid \mathbf{y})\):
   کسری از داده‌های تصوری که آماره‌ی خلاصه‌ی \(T\) آن‌ها دست‌کم به اندازه‌ی
@@ -270,8 +267,12 @@ likelihood} بالاتری می‌گیرد، حتی اگر مدل منعطف ه�
 \textbf{یک مقیاس رایج شواهد} (برگرفته از دسته‌بندی کلاسیک \lr{Jeffreys}،
 آن‌طور که \lr{Lee} و \lr{Wagenmakers} به کار می‌برند):
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}ll@{}}
+\caption{\centering \lr{2. marginal likelihood }و \lr{Bayes factor}}\tabularnewline
+\toprule\noalign{}
+\(\mathrm{BF}_{12}\) & شواهد به نفع \(\mathcal{M}_1\) \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \(\mathrm{BF}_{12}\) & شواهد به نفع \(\mathcal{M}_1\) \\
 \midrule\noalign{}
@@ -284,7 +285,6 @@ likelihood} بالاتری می‌گیرد، حتی اگر مدل منعطف ه�
 30\lr{--}100 & خیلی قوی \\
 \lr{\textgreater} 100 & فوق‌العاده قوی \\
 \end{longtable}
-}
 
 (مقادیر کمتر از 1 به همین شکل برای \(\mathcal{M}_2\) خوانده می‌شوند.) این
 برچسب‌ها کمک‌کننده‌اند، نه آستانه. خود عدد را گزارش کنید.
@@ -373,13 +373,27 @@ factor} روی دامنه‌ای از پهنای معقول پیشین.
 
 \subsubsection{5. مقایسه‌ی روش‌های ارزیابی مدل}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering 5. مقایسه‌ی روش‌های ارزیابی مدل}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+روش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+سؤال
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+چه چیزی را جریمه می‌کند
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پیشین لازم است؟
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+هفته
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 روش
@@ -400,15 +414,14 @@ factor} روی دامنه‌ای از پهنای معقول پیشین.
 & 4، 10 \\
 \lr{LRT} & آیا پارامتر اضافه برازش را بیش از شانس بهتر می‌کند؟ (فقط
 \lr{nested)} & \(\Delta k\) از راه \(\chi^2\) & نه & 7 \\
-\lr{AIC} / \lr{CV} & کدام مدل داده‌ی جدید را بهتر پیش‌بینی می‌کند؟ &
+\lr{AIC} / \lr{CV} & ام مدل داده‌ی جدید را بهتر پیش‌بینی می‌کند؟ &
 \lr{overfitting} تخمینی & نه & 6\lr{--}7 \\
-\lr{BIC} & به‌طور تقریبی: کدام مدل شواهد بیشتری دارد؟ & \(k \ln N\) &
-ضمنی & 7 \\
+\lr{BIC} & به‌طور تقریبی: ام مدل شواهد بیشتری دارد؟ & \(k \ln N\) & ضمنی
+& 7 \\
 \lr{Bayes factor} & داده‌ها بخت بین مدل‌ها را چقدر تغییر می‌دهند؟ &
 پراکندگی پیش‌بینی پیشین (انعطاف واقعی) & \textbf{بله، و نتیجه به آن بستگی
 دارد} & 10 \\
 \end{longtable}
-}
 
 \begin{quote}
 \textbf{پیشرفته: \lr{Bayes factor} در برابر معیارهای پیش‌بینی.}
@@ -452,20 +465,15 @@ factor} روی دامنه‌ای از پهنای معقول پیشین.
 \begin{itemize}
 \tightlist
 \item
-  \textbf{تیغ اوکام را با داستان شرط‌بندی توضیح دهید.} دو پیش‌بینی‌کننده
-  هرکدام 100 ژتون دارند که باید روی نتیجه‌های ممکن بگذارند. یکی ژتون‌ها را
-  روی همه‌چیز پخش می‌کند؛ دیگری بیشتر ژتون‌ها را روی یک محدوده‌ی باریک
-  می‌گذارد. اگر نتیجه در آن محدوده‌ی باریک بیفتد، پیش‌بینی‌کننده‌ی متمرکز
-  بیشتر می‌برد. \lr{marginal likelihood} همان مبلغ برد است.
-\item
-  \textbf{حساسیت به \lr{prior} را زنده نشان دهید.} در کد \lr{lab} پهنای
-  \lr{prior} تحت \(\mathcal{M}_1\) را تغییر دهید و ببینید \lr{BF} چطور
-  جابه‌جا می‌شود. این از هر هشداری قانع‌کننده‌تر است.
+  یکی ژتون‌ها را روی همه‌چیز پخش می‌کند؛ دیگری بیشتر ژتون‌ها را روی یک
+  محدوده‌ی باریک می‌گذارد. اگر نتیجه در آن محدوده‌ی باریک بیفتد،
+  پیش‌بینی‌کننده‌ی متمرکز بیشتر می‌برد. \lr{marginal likelihood} همان مبلغ
+  برد است.
 \item
   \textbf{دو سؤال را از هم جدا نگه دارید.} روی تخته بنویسید «آیا مدل
-  کافی است؟ \ensuremath{\leftarrow} \lr{PPC»} و «کدام مدل بهتر است؟ \ensuremath{\leftarrow} \lr{BF} / \lr{CV} /
-  \lr{AIC».} دانشجوها اغلب از \lr{BF} برای ادعای \emph{خوب} بودن یک مدل
-  استفاده می‌کنند؛ \lr{BF} فقط می‌گوید \emph{از دیگری بهتر} است.
+  کافی است؟ \ensuremath{\leftarrow} \lr{BF} / \lr{CV} / \lr{AIC».} دانشجوها اغلب از \lr{BF}
+  برای ادعای \emph{خوب} بودن یک مدل استفاده می‌کنند؛ \lr{BF} فقط می‌گوید
+  \emph{از دیگری بهتر} است.
 \item
   \textbf{سؤال‌های رایج.}
 
@@ -486,6 +494,8 @@ factor} روی دامنه‌ای از پهنای معقول پیشین.
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{مثال حل‌شده}
 
@@ -521,12 +531,24 @@ factor} روی دامنه‌ای از پهنای معقول پیشین.
 
 \textbf{داده‌ی بیشتر:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering بخش 1: آیا یادآوری در حد شانس است؟ یک \lr{Bayes factor }با دست}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+داده
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(p\) (آزمون دوجمله‌ای دوطرفه)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathrm{BF}_{01}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+خوانش
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 داده
@@ -547,7 +569,6 @@ factor} روی دامنه‌ای از پهنای معقول پیشین.
 70/100 & \lr{\textless} 0.001 & 0.0023 (\(\mathrm{BF}_{10} \approx 430\)) &
 شواهد فوق‌العاده قوی علیه شانس \\
 \end{longtable}
-}
 
 \textbf{تفسیر.} با 60/100، مقدار \(p\) نزدیک .05 پژوهشگران را وسوسه
 می‌کند ادعای اثر کنند، ولی \lr{Bayes factor} می‌گوید داده‌ها تحت هر دو
@@ -569,6 +590,8 @@ factor} روی دامنه‌ای از پهنای معقول پیشین.
 بستگی دارند.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
@@ -593,81 +616,28 @@ factor} روی دامنه‌ای از پهنای معقول پیشین.
 \textbf{زمان‌بندی:} بخش \lr{A} 35 دقیقه · بخش \lr{B} 25 دقیقه · بخش
 \lr{C} 30 دقیقه · بخش \lr{D} 20 دقیقه · بخش \lr{E} 10 دقیقه.
 
-\subsubsection{آماده‌سازی}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week10.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-exp: posterior mean A = 0.655, rate = 0.049
-pow: posterior mean A = 0.867, rate = 0.417
-\end{Verbatim}
-\end{latin}
-
 \subsubsection{\texorpdfstring{بخش \lr{A:} بررسی‌های پیش‌بینی پسین (35
 دقیقه)}{بخش A: بررسی‌های پیش‌بینی پسین (35 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week10.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-exp: T(observed) = 0.267, mean T(rep) = 0.240, posterior predictive p = 0.302
-pow: T(observed) = 0.267, mean T(rep) = 0.243, posterior predictive p = 0.320
-\end{Verbatim}
-\end{latin}
 
 \textbf{تفسیر:} اول به نمودارها نگاه کنید. برای مدل نمایی، یادآوری
 مشاهده‌شده در کوتاه‌ترین فاصله (42/50) \emph{بالای} نوار 95\% و یادآوری در
 7 روز (13/50) \emph{پایین} آن است. مدل نمایی نمی‌تواند اول تند افت کند و
 بعد ثابت شود. نوار مدل توانی همه‌ی نقاط مشاهده‌شده را در بر دارد.
 
-با این حال بررسی عددی با \lr{\nolinkurl{T}} = میانگین یادآوری در سه
-فاصله‌ی طولانی‌تر برای \textbf{هر دو} مدل مقادیر \(p_B\) معمولی (حدود 0.3)
-می‌دهد. عدم برازش مدل نمایی در \emph{شکل} است (فاصله‌های اولیه در برابر
-میانی)، که این آماره به آن نگاه نمی‌کند. \textbf{یک \lr{PPC} فقط شکست‌هایی
-را تشخیص می‌دهد که آماره‌ی آزمونش به آن‌ها حساس است.} آماره‌هایی انتخاب کنید
-که ویژگی‌های متمایزکننده‌ی نظریه‌ها را هدف بگیرند؛ در تمرین 2 یک آماره‌ی
-«افت اول» مدل نمایی را لو می‌دهد (\(p_B \approx 0.02\)).
+عدم برازش مدل نمایی در \emph{شکل} است (فاصله‌های اولیه در برابر میانی)،
+که این آماره به آن نگاه نمی‌کند. \textbf{یک \lr{PPC} فقط شکست‌هایی را
+تشخیص می‌دهد که آماره‌ی آزمونش به آن‌ها حساس است.} آماره‌هایی انتخاب کنید که
+ویژگی‌های متمایزکننده‌ی نظریه‌ها را هدف بگیرند؛ در تمرین 2 یک آماره‌ی «افت
+اول» مدل نمایی را لو می‌دهد (\(p_B \approx 0.02\)).
 
 \subsubsection{\texorpdfstring{بخش \lr{B: Bayes factor} با انتگرال‌گیری
 شبکه‌ای (25
 دقیقه)}{بخش B: Bayes factor با انتگرال‌گیری شبکه‌ای (25 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week10.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{10\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-exp: log p(y|M) = -34.938   (prior mass inside grid = 0.9996)
-pow: log p(y|M) = -22.872   (prior mass inside grid = 0.9991)
-
-BF(pow vs exp) = exp(12.07) = 1.74e+05
-BIC approximation: BF(pow vs exp) = exp(9.98) = 2.16e+04
-\end{Verbatim}
-\end{latin}
-
 \textbf{تفسیر:} \(\mathrm{BF} \approx 1.7 \times 10^5\) شواهد فوق‌العاده
 قوی به نفع مدل توانی در برابر نمایی است. \lr{BIC} همان حکم را می‌دهد ولی
 با عدد دیگری (\(2 \times 10^4\)). چرا \lr{Bayes factor} شبکه‌ای و تقریب
-\lr{BIC} با هم فرق دارند؟ (راهنمایی: هرکدام از کدام پیشین استفاده می‌کند،
-و آیا دو مدل تحت پیشین‌های ما به یک اندازه منعطف‌اند؟)
+\lr{BIC} با هم فرق دارند؟
 
 \subsubsection{\texorpdfstring{بخش \lr{C: Savage\lr{--}Dickey:} آیا حساسیت
 این شرکت‌کننده صفر است؟ (30
@@ -678,46 +648,11 @@ BIC approximation: BF(pow vs exp) = exp(9.98) = 2.16e+04
 \(d' \sim \mathcal{N}(0, 1)\)، \(c \sim \mathcal{N}(0, 1)\).
 \(\mathcal{M}_0\): \(d' = 0\)، \(c \sim \mathcal{N}(0, 1)\).
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week10.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-BF01 Savage-Dickey = 1.328;  BF01 direct = 1.328;  posterior mean d' = 0.444
-MLE d' = 0.507
-\end{Verbatim}
-\end{latin}
-
-دو محاسبه با هم توافق دارند؛ بررسی مفیدی برای اینکه هر دو درست پیاده‌سازی
+دو محاسبه با هم توافق دارند؛ بررسی مفیدی برای اینکه هر دو درست صورت‌بندی
 شده‌اند.
 
 \subsubsection{\texorpdfstring{بخش \lr{D:} حساسیت به پیشین (20
 دقیقه)}{بخش D: حساسیت به پیشین (20 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week10.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{12\baselineskip}
-\begin{latin}
-\begin{Verbatim}
- prior SD of d'   BF01  BF10  posterior mean d'
-           0.25  0.938 1.066              0.144
-           0.50  0.972 1.028              0.313
-           1.00  1.328 0.753              0.444
-           2.00  2.314 0.432              0.496
-           5.00  5.541 0.180              0.513
-          10.00 11.011 0.091              0.515
-\end{Verbatim}
-\end{latin}
 
 \textbf{به این دقت کنید:} با پهن‌تر شدن پیشین \(d'\)، میانگین پسین \(d'\)
 سریع ثابت می‌شود، ولی \(\mathrm{BF}_{01}\) مدام به نفع فرض صفر بزرگ‌تر
@@ -734,14 +669,11 @@ factor} را با پیشین انتخابی‌تان گزارش کنید و پی
 
 \subsubsection{تمرین‌ها (به ترتیب سختی)}
 
-\textbf{تمرین 1 \ensuremath{\star}.} با انتگرال‌گیری عددی
-(\lr{\nolinkurl{scipy.integrate.quad}}) بررسی کنید که
-\(\int_0^1 \binom{10}{7}\theta^7(1-\theta)^3 d\theta = 1/11\).
+\(\int_0^1 \binom{10}{7}\theta^7(1-\theta)^3 d\theta = 1/11\)
 
 \textbf{تمرین 2 \ensuremath{\star}.} در بخش \lr{A} از یک آماره‌ی آزمون دیگر استفاده کنید:
-افت یادآوری از اولین به دومین فاصله. کدام مدل (اگر هست) در این بررسی
-شکست می‌خورد؟ (انتظار: مدل نمایی، \(p_B \approx 0.02\)؛ مدل توانی قبول
-می‌شود.)
+افت یادآوری از اولین به دومین فاصله. (انتظار: مدل نمایی،
+\(p_B \approx 0.02\)؛ مدل توانی قبول می‌شود.)
 
 \textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (حساسیت \lr{Bayes factor} فراموشی به پیشین).} بخش
 \lr{B} را با پیشین‌های نرخ پهن‌تر (مقیاس × 3) و باریک‌تر (مقیاس ÷ 3) تکرار
@@ -781,34 +713,15 @@ belief)} را با موفقیت انجام می‌دهند، یعنی آزمون
 \lr{Bayes factor} به اولین سؤال درست جواب می‌دهد: \emph{آیا داده اصلاً از
 عملکرد بالاتر از شانس، در مقایسه با شانس، پشتیبانی می‌کند؟}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week10.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{7\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-26/40 correct (65%): BF10 = 1.16
-130/200 correct (65%): BF10 = 785.26
-\end{Verbatim}
-\end{latin}
-
 همان 65\% با 40 آیتم اصلاً شاهدی نیست، و با 200 آیتم شاهدی قاطع است.
 عملکرد بالاتر از شانس هم فقط قدم اول است: بررسی پیش‌بینی پسین این هفته
 می‌پرسد مدل \emph{چطور} موفق می‌شود و شکست می‌خورد. مثلاً آیا دقیقاً روی
 داستان‌های تغییریافته شکست می‌خورد، جایی که یک انسان شکست نمی‌خورد؟
 
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} با یک پیشین متمرکز
-روی مقادیر بالاتر از شانس تکرار کنید، مثلاً \lr{Beta(5,} 2) محدودشده به
-\(\theta > 0.5\) (چگالی را دوباره نرمال کنید). \(\mathrm{BF}_{10}\) برای
-26/40 چطور تغییر می‌کند؟ - \ensuremath{\star}\ensuremath{\star} یک مدل «میان‌بُر» \lr{(shortcut)} شبیه‌سازی
-کنید که 90\% داستان‌های استاندارد و 30\% داستان‌های تغییریافته را درست
-جواب می‌دهد (نیمی از هرکدام). دقت کلی‌اش 60\% است. یک بررسی پیش‌بینی پسین
-طراحی کنید که میان‌بُر را آشکار کند. - \ensuremath{\star}\ensuremath{\star} بحث: «بالاتر از شانس در تکلیف‌های
-باور نادرست» ادعایی در سطح محاسباتی \lr{Marr} است یا الگوریتمی؟
+\(\theta > 0.5\) \(\mathrm{BF}_{10}\) برای 26/40 چطور تغییر می‌کند؟ دقت
+کلی‌اش 60\% است. یک بررسی پیش‌بینی پسین طراحی کنید که میان‌بُر را آشکار کند.
+- \ensuremath{\star}\ensuremath{\star} بحث: «بالاتر از شانس در تکلیف‌های باور نادرست» ادعایی در سطح
+محاسباتی \lr{Marr} است یا الگوریتمی؟
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -859,9 +772,7 @@ belief)} را با موفقیت انجام می‌دهند، یعنی آزمون
 
 \textbf{3.} چرا \lr{marginal likelihood} حتی بدون شمردن پارامترها مدل‌های
 منعطف را جریمه می‌کند؟ \textbf{پاسخ} احتمال روی مجموعه‌داده‌های ممکن باید
-جمعش 1 شود. یک مدل منعطف پیش‌بینی‌های پیشینش را روی مجموعه‌داده‌های زیادی
-پخش می‌کند و بنابراین به هرکدام، از جمله داده‌ی مشاهده‌شده، احتمال کمتری
-می‌دهد؛ مگر اینکه داده جایی بیفتد که فقط مدل منعطف پیش‌بینی‌اش می‌کند.
+جمعش 1 شود. مگر اینکه داده جایی بیفتد که فقط مدل منعطف پیش‌بینی‌اش می‌کند.
 
 \textbf{4.} \(\mathrm{BF}_{10} = 6\) و بخت پیشین 1:3 (علیه
 \(\mathcal{M}_1\)) است. بخت پسین و \(P(\mathcal{M}_1\mid\mathbf{y})\)
@@ -882,13 +793,15 @@ belief)} را با موفقیت انجام می‌دهند، یعنی آزمون
 می‌شود در حالی که درست‌نمایی فرض صفر تغییری نمی‌کند.
 
 \textbf{7.} \lr{BIC} مقدار \(\mathrm{BF}_{12} \approx 20\) می‌دهد، در
-حالی که محاسبه‌ی شبکه‌ای با پیشین‌های شما 3 می‌دهد. کدام را گزارش می‌کنید و
-چرا؟ \textbf{پاسخ} \lr{Bayes factor} شبکه‌ای را، چون از پیشین‌های واقعی
-استفاده می‌کند و انعطاف شکل تابعی را در نظر می‌گیرد؛ \lr{BIC} تقریبی برای
-نمونه‌ی بزرگ با یک پیشین ضمنی است. به اختلاف اشاره کنید و، در صورت امکان،
-یک تحلیل حساسیت به پیشین بیاورید.
+حالی که محاسبه‌ی شبکه‌ای با پیشین‌های شما 3 می‌دهد. \textbf{پاسخ} \lr{Bayes
+factor} شبکه‌ای را، چون از پیشین‌های واقعی استفاده می‌کند و انعطاف شکل
+تابعی را در نظر می‌گیرد؛ \lr{BIC} تقریبی برای نمونه‌ی بزرگ با یک پیشین
+ضمنی است. به اختلاف اشاره کنید و، در صورت امکان، یک تحلیل حساسیت به
+پیشین بیاورید.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{تکلیف}
 
@@ -896,9 +809,7 @@ belief)} را با موفقیت انجام می‌دهند، یعنی آزمون
 از 20؛ انتشار هفته‌ی 10، موعد ابتدای درس هفته‌ی
 12)}{A4: یک تحلیل بیزی با شبکه (1.0 نمره از 20؛ انتشار هفته‌ی 10، موعد ابتدای درس هفته‌ی 12)}}
 
-\textbf{داده:} مجموعه‌داده‌ی \lr{A2}
-(\lr{\nolinkurl{rng = np.random.default_rng(2024)}}، 9 فاصله، \(n = 20\)
-آیتم؛ هفته‌ی 4 را ببینید).
+\(n = 20\) هفته‌ی 4 را ببینید).
 
 \textbf{کارها.}
 

@@ -13,11 +13,21 @@ recall counts), plus a new SDT experiment with three payoff conditions.
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -76,7 +86,6 @@ token & token \RL{\CMfa (واحد متن)} & \RL{\CMfa کلمه یا بخشی ا
 perplexity & perplexity \RL{\CMfa (سردرگمی)} & e \RL{\CMfa به توان} NLL \RL{\CMfa هر}
 token \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -94,10 +103,6 @@ By the end of this week, students will be able to:
   \textbf{Derive} the likelihood and log-likelihood for binomial
   (Bernoulli) and Gaussian data models, and \textbf{show} that least
   squares is maximum likelihood under equal-variance Gaussian noise.
-\item
-  \textbf{Implement} maximum likelihood estimation (MLE) by minimizing
-  the negative log-likelihood (NLL) in Python, for forgetting curves and
-  for a multi-condition SDT model.
 \item
   \textbf{Evaluate} absolute goodness of fit with the deviance \(G^2\)
   and \textbf{compare} MLE with least-squares estimates.
@@ -162,6 +167,8 @@ object in this course.}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lecture notes}
 
 \paragraph{In plain words}
@@ -190,13 +197,27 @@ binomial MLE 15 · log-likelihood and NLL 10 · Gaussian case (LS = MLE)
 The same function \(p(\mathbf{y}\mid\boldsymbol\theta)\) can be read in
 two ways:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering 1. Probability vs.~likelihood}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Reading
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Fixed
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Varies
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Sums/integrates to 1?
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Reading
@@ -220,7 +241,6 @@ After the experiment & \(\mathbf{y}\) (observed) & \(\boldsymbol\theta\)
 \(L(\boldsymbol\theta) = p(\mathbf{y}\mid\boldsymbol\theta,\mathcal{M})\)
 & \textbf{No}, not over \(\boldsymbol\theta\) \\
 \end{longtable}
-}
 
 The likelihood is \textbf{not} the probability that the parameters are
 correct. It is the probability of the data \emph{under} each candidate
@@ -277,9 +297,7 @@ turns it into a \textbf{sum},
 strictly increasing, so it has the same maximizer. 3. Sums are easier to
 differentiate.
 
-Optimizers \emph{minimize}, so in code we minimize the \textbf{negative
-log-likelihood},
-\(\mathrm{NLL}(\boldsymbol\theta) = -\ell(\boldsymbol\theta)\).
+\(\mathrm{NLL}(\boldsymbol\theta) = -\ell(\boldsymbol\theta)\)
 
 \textbf{Analytic example (binomial).}
 \(\ell(\theta) = \text{const} + y\ln\theta + (n-y)\ln(1-\theta)\).
@@ -306,11 +324,6 @@ independent intervals:
 
 \begin{itemize}
 \tightlist
-\item
-  The binomial coefficient does not depend on \(\boldsymbol\theta\), so
-  it does not affect the MLE (but keep it if you want to compare
-  log-likelihoods across different data codings;
-  \nolinkurl{scipy.stats.binom.logpmf} includes it).
 \item
   Observations predicted to be near 0 or 1 have small variance, so a
   prediction that misses them is punished more heavily. MLE performs the
@@ -437,12 +450,24 @@ MLE makes it easy to fit \textbf{several conditions at once with some
 parameters shared}. Example: an SDT experiment with three payoff
 conditions (rewarding ``yes'' responses, neutral, rewarding ``no'').
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 6. Constrained models as hypotheses}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Free parameters
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Hypothesis
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Model
@@ -463,7 +488,6 @@ Separate & \(d'_1, d'_2, d'_3\); \(c_1, c_2, c_3\) & 6 & Payoffs may
 also change \emph{sensitivity} (this is the saturated model for 6
 rates) \\
 \end{longtable}
-}
 
 The joint log-likelihood is the sum over conditions of the binomial
 log-likelihoods of hits and false alarms. Comparing the two models'
@@ -553,19 +577,35 @@ weak prior (Week 9).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Worked example}
 
 \subsubsection{Part 1: likelihood of a single proportion}
 
 \(y = 7\) recalled out of \(n = 10\):
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering Part 1: likelihood of a single proportion}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{0.7}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.8
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \(\theta\)
@@ -586,7 +626,6 @@ weak prior (Week 9).
 \textbf{0.267} & 0.201 \\
 \(\ell(\theta)\) & −2.144 & −1.537 & \textbf{−1.321} & −1.603 \\
 \end{longtable}
-}
 
 The maximum is at \(\hat\theta = 7/10 = 0.7\). Note that the likelihood
 values do not sum to 1 across \(\theta\): likelihood is not a
@@ -627,6 +666,8 @@ model.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lab (2 hours)}
 
 \subsubsection{Goals}
@@ -649,47 +690,7 @@ model.
 \textbf{Timing:} Part A 15 min · Part B 35 min · Part C 15 min · Part D
 35 min · Part E 20 min (exercises).
 
-\subsubsection{Setup}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
-\subsubsection{Part A: the likelihood function (15 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{6\baselineskip}
-\begin{Verbatim}
-Area under L(theta): 0.091 (not 1: L is not a distribution over theta)
-Product of 2000 trial probabilities: 0.0
-Sum of their logs: -1239.52
-\end{Verbatim}
-
 \subsubsection{Part B: MLE for forgetting curves (35 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{9\baselineskip}
-\begin{Verbatim}
-model method      A   rate     NLL    SSE
-  exp    MLE 0.6377 0.0458 29.8123 0.1100
-  exp     LS 0.6568 0.0566 30.6983 0.1061
-  pow    MLE 0.8773 0.4214 19.8303 0.0262
-  pow     LS 0.8712 0.4251 19.8585 0.0259
-True (power): A = 0.9, d = 0.5
-\end{Verbatim}
 
 \textbf{What to notice:} - Each method wins on its \emph{own} criterion:
 MLE has the lowest NLL, LS the lowest SSE. - For the (true) power model
@@ -700,33 +701,14 @@ floor (long delays), so the ML curve decays more slowly in order to stay
 closer to them.
 
 \begin{quote}
-\textbf{Warning: a real optimizer trap.} Replace \nolinkurl{"L-BFGS-B"}
-with \nolinkurl{"Nelder-Mead"} in the ML fit above (keeping
-\nolinkurl{bounds=bounds}) and rerun. For the exponential model, scipy's
-bounded Nelder--Mead collapses against the bound \nolinkurl{A = 1} and
-reports \nolinkurl{success} with NLL = 79.5, far worse than the true
-minimum of 29.8 (it is even worse than the LS estimate's NLL). Bounded
-simplex methods can degenerate when vertices are pushed onto a bound.
-Two quick checks would catch this: an estimate sitting exactly on a
-bound, and a ``MLE'' whose NLL is \emph{higher} than that of some other
-parameter values you have tried. Multi-start (Week 3) is the general
-cure.
+Bounded simplex methods can degenerate when vertices are pushed onto a
+bound. Two quick checks would catch this: an estimate sitting exactly on
+a bound, and a ``MLE'' whose NLL is \emph{higher} than that of some
+other parameter values you have tried. Multi-start (Week 3) is the
+general cure.
 \end{quote}
 
 Now evaluate absolute fit with the deviance:
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-exp: G2 =  26.27, df = 6, p = 0.0002
-pow: G2 =   6.31, df = 6, p = 0.3895
-\end{Verbatim}
 
 \textbf{Interpret:} the exponential model misfits far more than binomial
 noise allows (\(p = .0002\)): we can \textbf{reject} it as a description
@@ -734,30 +716,12 @@ of these data. The power model's misfit is consistent with sampling
 noise. That does not prove it is the right model; it means these data
 give no reason to reject it.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
 \subsubsection{Part C: Gaussian MLE equals least squares (15 min)}
 
 Treat the proportions as continuous and assume Gaussian noise with a
 free \(\sigma\) (a third parameter). The estimates of \(A\) and \(d\)
 should match least squares, and \(\hat\sigma\) should equal
 \(\sqrt{\mathrm{SSE}/N}\).
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-Gaussian MLE: A = 0.8712, d = 0.4251, sigma = 0.0569
-Least squares: A = 0.8711, d = 0.4251, sqrt(SSE/N) = 0.0569
-\end{Verbatim}
 
 \subsubsection{Part D: a constrained multi-condition SDT model (35 min)}
 
@@ -767,52 +731,27 @@ payoff schemes: \textbf{liberal} (hits rewarded), \textbf{neutral}, and
 trials per condition. We simulate one participant whose sensitivity is
 the same in all conditions and whose criterion shifts with the payoffs.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 7 · \RL{\CMfa سلول}
-7
-\end{quote}
+With 80 trials per cell that is ordinary sampling error. Week 5 shows
+how to put a confidence interval around it.
 
-\textbf{Expected output:}
-
-\Needspace{12\baselineskip}
-\begin{Verbatim}
-      condition  hits  n_signal  fas  n_noise
-0       liberal    73        80   33       80
-1       neutral    58        80   16       80
-2  conservative    44        80    7       80
-
-Shared d':   d' = 1.496, c = [-0.555  0.124  0.618], NLL = 13.134
-Separate d': d' = [1.577 1.439 1.482], c = [-0.568  0.122  0.615], NLL = 13.043
-
-Likelihood-ratio statistic = 0.18, df = 2, p = 0.913
-\end{Verbatim}
-
-Note that the estimated \nolinkurl{d'} (about 1.5) is higher than the
-generating value of 1.2. With 80 trials per cell that is ordinary
-sampling error. Week 5 shows how to put a confidence interval around it.
-
-\textbf{Interpret (write in your notebook):} 1. Does constraining \(d'\)
-to be equal across payoff conditions cost much likelihood? What do you
-conclude about the effect of payoffs? 2. The separate-\(d'\) estimates
-differ from each other by a few tenths. Why is that not evidence that
-payoffs change sensitivity? 3. Check that the separate-\(d'\) model
-reproduces the observed hit and false-alarm rates exactly. Why must it?
+Does constraining \(d'\) to be equal across payoff conditions cost much
+likelihood? What do you conclude about the effect of payoffs? 2. The
+separate-\(d'\) estimates differ from each other by a few tenths. Why is
+that not evidence that payoffs change sensitivity? 3. Check that the
+separate-\(d'\) model reproduces the observed hit and false-alarm rates
+exactly. Why must it?
 
 \subsubsection{Exercises (increasing difficulty)}
 
-\textbf{Exercise 1 \ensuremath{\star}.} Derive by hand the MLE of \(\theta\) for a
-Bernoulli sequence with \(y\) successes in \(n\) trials, and check it
-numerically with \nolinkurl{minimize_scalar} for \(y = 13\), \(n = 40\).
+\(y = 13\) · \(n = 40\)
 
 \textbf{Exercise 2 \ensuremath{\star}.} In Part B, refit both models with the
 \textbf{Bernoulli} likelihood on item-level data (expand each count into
 0/1 responses). Show that the estimates are identical to the binomial
 fits and that the NLLs differ by a constant. What is the constant?
 
-\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (zero counts).} Set the last two counts to 0
-(\nolinkurl{recalled[-2:] = 0}). Which fitting methods from Weeks 2--4
-still work? Fit both models by MLE and comment on what happens to the
-estimates and to \(G^2\).
+Which fitting methods from Weeks 2--4 still work? Fit both models by MLE
+and comment on what happens to the estimates and to \(G^2\).
 
 \textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (a third SDT model).} Fit a model in which the
 criterion is the \emph{same} in all conditions but \(d'\) differs
@@ -853,31 +792,13 @@ familiar problem. Any word pair never seen in training gets probability
 = \ensuremath{\infty}). Smoothing solves this, in the same way that the log-linear
 correction of Week 2 solved hit rates of 1.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 8 · \RL{\CMfa سلول}
-8
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{8\baselineskip}
-\begin{Verbatim}
-P(cat | the) = 0.333
-'the dog sat on the mat .'   MLE      NLL =  3.584  perplexity =   1.82
-'the dog sat on the mat .'   add-one  NLL =  9.537  perplexity =   4.90
-'the dog saw the cat .'      MLE      NLL =    inf  perplexity =    inf
-'the dog saw the cat .'      add-one  NLL =  9.624  perplexity =   6.85
-\end{Verbatim}
-
-\textbf{Try it (no API needed).} - \ensuremath{\star} Which word pair in ``the dog saw
-the cat .'' was never seen in the corpus? Check by hand that the MLE of
-\(P(\text{cat}\mid\text{the})\) is 1/3. - \ensuremath{\star}\ensuremath{\star} Smoothing makes the
-\emph{training} sentence less likely (NLL 3.6 \ensuremath{\rightarrow} 9.5) but makes the new
-sentence possible. Replace add-one with add-\(k\) and choose \(k\) by
-leave-one-sentence-out cross-validation (a preview of Week 6). - \ensuremath{\star}\ensuremath{\star}
-Discussion: the MLE of a bigram model reproduces the training corpus as
-closely as possible. Why is ``maximizing likelihood on internet text''
-not the same as ``learning to tell the truth''?
+Check by hand that the MLE of \(P(\text{cat}\mid\text{the})\) is 1/3. -
+\ensuremath{\star}\ensuremath{\star} Smoothing makes the \emph{training} sentence less likely (NLL 3.6 \ensuremath{\rightarrow}
+9.5) but makes the new sentence possible. Replace add-one with add-\(k\)
+and choose \(k\) by leave-one-sentence-out cross-validation (a preview
+of Week 6). - \ensuremath{\star}\ensuremath{\star} Discussion: the MLE of a bigram model reproduces the
+training corpus as closely as possible. Why is ``maximizing likelihood
+on internet text'' not the same as ``learning to tell the truth''?
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -894,9 +815,8 @@ not the same as ``learning to tell the truth''?
   \textbf{Multiplying probabilities instead of summing logs.} The
   product underflows to 0 for realistic numbers of trials (Part A).
 \item
-  \textbf{Maximizing when the optimizer minimizes.} \nolinkurl{minimize}
-  needs the \textbf{negative} log-likelihood. Forgetting the minus sign
-  sends the optimizer to the \emph{worst} parameters.
+  Forgetting the minus sign sends the optimizer to the \emph{worst}
+  parameters.
 \item
   \textbf{Not clipping probabilities.} Predicted probabilities of
   exactly 0 or 1 produce \(-\infty\) log-likelihoods and crash the
@@ -973,18 +893,12 @@ negative value would indicate a bug.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Assignment}
 
 \subsubsection{A2: Least squares vs.~maximum likelihood (1.0 point of
 20; released Week 4, due at the start of the Week 6 lecture)}
-
-\textbf{Data.} Generate the dataset with exactly this code (everyone
-gets the same data):
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 9 · \RL{\CMfa سلول}
-9
-\end{quote}
 
 \textbf{Tasks.}
 
@@ -1011,9 +925,6 @@ gets the same data):
   structure of binomial data and to the near-floor counts (1--2 of 20)
   at the longest delays. What would happen to the Week 2 linearization
   method if one of those counts were 0?
-\item
-  \textbf{Code quality (1 pt).} Reproducible, commented notebook; seeds
-  fixed; functions reused rather than copy-pasted.
 \end{enumerate}
 
 Late submissions lose 10\% per day (max. 3 days).

@@ -14,11 +14,21 @@ large simulation studies at the same design.
 Important terms of this lesson, with their Persian equivalents (repeated
 even if they appeared in earlier weeks).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering Key terms}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 English
@@ -77,7 +87,6 @@ model mimicry & \RL{\CMfa تقلید مدل} & \RL{\CMfa تولید داده‌�
 in-context learning & \RL{\CMfa یادگیری درون‌متنی} & \RL{\CMfa یادگیری از مثال‌های
 داخل} prompt \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -162,6 +171,8 @@ fit \ensuremath{\rightarrow} evaluate \ensuremath{\rightarrow} \textbf{recover}'
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lecture notes}
 
 \paragraph{In plain words}
@@ -228,11 +239,20 @@ observations:
 \textbf{Lower is better.} Only \textbf{differences} between models
 fitted to the same data are meaningful.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 2. Information criteria}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+AIC (and AICc)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+BIC
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -254,7 +274,6 @@ As \(N \to \infty\) & May keep choosing over-complex models & Chooses
 the true model with probability \ensuremath{\rightarrow} 1 \\
 Small-sample correction & AICc (use when \(N/k < 40\)) & --- \\
 \end{longtable}
-}
 
 \textbf{What is \(N\)?} The number of \emph{independent observations}
 that enter the likelihood. For binomial recall data that is the number
@@ -482,13 +501,27 @@ Parameter recovery is the practical test of identifiability.
 The four forgetting models fitted by MLE to the Week 2 data (training
 NLLs from Week 6), with \(N = 400\) item responses:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering Worked example}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+NLL
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+AIC \(= 2\,\mathrm{NLL} + 2k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+BIC \(= 2\,\mathrm{NLL} + k\ln 400\)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Model
@@ -510,7 +543,6 @@ pow & 2 & 19.830 & \textbf{43.66} & \textbf{51.64} \\
 expasym & 3 & 18.919 & 43.84 & 55.81 \\
 two & 4 & 18.919 & 45.84 & 61.80 \\
 \end{longtable}
-}
 
 \textbf{Step 1: AIC for the power model.}
 \(2 \times 19.830 + 2 \times 2 = 43.66\).
@@ -544,6 +576,8 @@ is a question for model recovery (lab Part D).
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Lab (2 hours)}
 
 \subsubsection{Goals}
@@ -568,78 +602,18 @@ is a question for model recovery (lab Part D).
 \textbf{Timing:} Part A 15 min · Part B 15 min · Part C 35 min · Part D
 40 min · Part E 15 min.
 
-\subsubsection{Setup}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 1 · \RL{\CMfa سلول}
-1
-\end{quote}
-
 \subsubsection{Part A: likelihood-ratio test (15 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 2 · \RL{\CMfa سلول}
-2
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{5\baselineskip}
-\begin{Verbatim}
-NLL exp = 29.812, NLL expasym = 18.919
-LR statistic = 21.79, df = 1, naive p = 3.05e-06, boundary-corrected p = 1.52e-06
-\end{Verbatim}
 
 \textbf{Question:} why can't you use the same test to compare the power
 and exponential models?
 
 \subsubsection{Part B: information criteria and weights (15 min)}
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 3 · \RL{\CMfa سلول}
-3
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{9\baselineskip}
-\begin{Verbatim}
-         k     NLL     AIC    AICc     BIC  w_AIC  w_AICc  w_BIC
-model
-exp      2  29.812  63.625  63.655  71.608  0.000   0.000  0.000
-pow      2  19.830  43.661  43.691  51.644  0.444   0.449  0.884
-expasym  3  18.919  43.837  43.898  55.812  0.406   0.405  0.110
-two      4  18.919  45.837  45.939  61.803  0.150   0.146  0.006
-\end{Verbatim}
-
 \textbf{Sensitivity check:} recompute BIC with \(N = 8\) (the number of
 cells) instead of 400. Does the ranking change? Which choice of \(N\) is
 defensible here, and why?
 
 \subsubsection{Part C: parameter recovery (35 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 4 · \RL{\CMfa سلول}
-4
-\end{quote}
-
-\textbf{Expected output} (about 1 minute):
-
-\Needspace{15\baselineskip}
-\begin{Verbatim}
-pow:
-   r(true, rec)   bias   RMSE
-A         0.888  0.005  0.055
-d         0.965  0.003  0.070
-
-expasym:
-     r(true, rec)   bias   RMSE
-A           0.802  0.008  0.077
-lam         0.799  0.034  0.230
-s           0.918 -0.008  0.060
-
-expasym: corr(true lam, true s) = -0.08;  corr(recovered lam, recovered s) = 0.03
-\end{Verbatim}
 
 \textbf{Interpret:} 1. Which parameters are well recovered at this
 design? Which would you hesitate to interpret? 2. The expasym decay rate
@@ -654,38 +628,6 @@ design change would improve recovery of \(\lambda\) and \(s\)? Test one
 idea in Exercise 3.
 
 \subsubsection{Part D: model recovery (40 min)}
-
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 5 · \RL{\CMfa سلول}
-5
-\end{quote}
-
-\textbf{Expected output} (about 1--2 minutes):
-
-\Needspace{24\baselineskip}
-\begin{Verbatim}
-AIC confusion matrix (rows = generating model, columns = selected model):
-          exp   pow  expasym
-exp      0.91  0.00     0.09
-pow      0.03  0.82     0.15
-expasym  0.06  0.25     0.69
-AIC inversion matrix (rows = generating model, columns = selected model):
-          exp   pow  expasym
-exp      0.91  0.00     0.10
-pow      0.03  0.77     0.16
-expasym  0.06  0.23     0.74
-
-BIC confusion matrix (rows = generating model, columns = selected model):
-          exp   pow  expasym
-exp      0.99  0.01     0.00
-pow      0.05  0.94     0.01
-expasym  0.09  0.58     0.33
-BIC inversion matrix (rows = generating model, columns = selected model):
-          exp   pow  expasym
-exp      0.88  0.01     0.00
-pow      0.04  0.61     0.03
-expasym  0.08  0.38     0.97
-\end{Verbatim}
 
 \textbf{Interpret:} 1. Which model is most often confused with which?
 (With AIC, 25\% of expasym datasets are labeled power; with BIC, 58\%.)
@@ -751,28 +693,14 @@ model recovery and identifiability apply unchanged. The design matters
 as much as before: with few values of \(k\) and few test items, the two
 curves may be impossible to tell apart.
 
-\begin{quote}
-\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 6 · \RL{\CMfa سلول}
-6
-\end{quote}
-
-\textbf{Expected output:}
-
-\Needspace{4\baselineskip}
-\begin{Verbatim}
-{'exponential': 41.6, 'power': 40.4} Akaike weights: [0.362 0.638]
-\end{Verbatim}
-
 The data were generated by a power law, but the evidence is weak
 (weights 0.64 vs.~0.36).
 
-\textbf{Try it (no API needed).} - \ensuremath{\star} Run a model recovery (Week 7, Part
-D) at this design: 50 datasets from each curve. Build the confusion
-matrix. - \ensuremath{\star}\ensuremath{\star} Change the design: more values of \(k\) (up to 128) or 200
-test items per \(k\). Which change improves model recovery more? - \ensuremath{\star}\ensuremath{\star}
-Discussion: a paper concludes from one fitted curve that ``in-context
-learning follows a power law, like human practice''. What would you need
-to see before accepting the comparison with humans?
+Build the confusion matrix. - \ensuremath{\star}\ensuremath{\star} Change the design: more values of \(k\)
+(up to 128) or 200 test items per \(k\). Which change improves model
+recovery more? - \ensuremath{\star}\ensuremath{\star} Discussion: a paper concludes from one fitted curve
+that ``in-context learning follows a power law, like human practice''.
+What would you need to see before accepting the comparison with humans?
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -868,14 +796,14 @@ comparison.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{Assignment}
 
 \subsubsection{A3 continues (due at the start of the Week 9 lecture)}
 
 Tasks 4 (information criteria) and 5 (parameter and model recovery) of
-A3 use this week's material. The full brief is in Week 6. Reuse today's
-\nolinkurl{parameter_recovery} code and the model-recovery loop: they
-are designed to be adapted directly.
+A3 use this week's material. The full brief is in Week 6.
 
 \subsubsection{Final project: teams and proposal brief released}
 
@@ -894,9 +822,7 @@ are designed to be adapted directly.
 \item
   \textbf{Proposal (due at the start of the Week 9 lecture, max. 2
   pages):} research question, model(s) with equations, data source and
-  design, planned comparison and recovery analyses, and a timeline. The
-  full project brief and rubric are distributed separately
-  (\nolinkurl{project_brief.md}).
+  design, planned comparison and recovery analyses, and a timeline.
 \item
   \textbf{Not sure what to model?} The topics of Weeks 14--15 (exemplar
   categorization, drift-diffusion, reinforcement learning) all make good

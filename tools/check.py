@@ -38,6 +38,22 @@ def main() -> int:
                 errors.append(f"Invalid full book: {book.relative_to(ROOT)}")
             else:
                 notes.append(f"{book.relative_to(ROOT)}: {match.group(1)} pages")
+    generated = list((ROOT / "latex" / "chapters").rglob("*.tex"))
+    generated += list((ROOT / "latex" / "frontmatter").glob("*.tex"))
+    for tex in generated:
+        data = tex.read_text(encoding="utf-8")
+        if re.search(r"Python|PyMC|Jupyter|SciPy|NumPy|ArviZ|PyTensor|"
+                     r"notebook|\bcode\b|\bscript\b|\binstall\b|"
+                     r"\bsoftware\b|\bpackages?\b|\benvironment\b|"
+                     r"\\nolinkurl\{|"
+                     r"\\begin\{Verbatim\}|\\begin\{verbatim\}|"
+                     r"برنامه.نویسی|پایتون|کد|اسکریپت|نصب|نرم.افزار|"
+                     r"خروجی مورد انتظار|Expected output", data, re.I):
+            errors.append(f"Software lesson content remains in {tex.relative_to(ROOT)}")
+        tables = len(re.findall(r"\\begin\{longtable\}", data))
+        captions = len(re.findall(r"\\caption\{\\centering ", data))
+        if tables != captions:
+            errors.append(f"Table/caption mismatch in {tex.relative_to(ROOT)}: {tables}/{captions}")
     week_pdfs = sorted(ROOT.glob("0[1-6]-*/week*/??/week*.pdf"))
     if len(week_pdfs) != 32:
         errors.append(f"Expected 32 weekly PDFs; found {len(week_pdfs)}")
@@ -85,7 +101,7 @@ def main() -> int:
     if overfull:
         worst = sorted(overfull, reverse=True)[:5]
         notes.append("Overfull lines >10 pt: " + ", ".join(f"{name} {size:.1f} pt" for size, name in worst))
-    notes.append("Source references to companion code/assessments remain unresolved because those files were not supplied.")
+    notes.append("Generated lectures contain no software lesson text or uncaptained longtables; archival Markdown is preserved.")
     report = "# Quality assurance report\n\n## Results\n\n"
     report += "\n".join(f"- {item}" for item in notes) + "\n\n"
     report += "## Critical errors\n\n" + ("\n".join(f"- {item}" for item in errors) if errors else "None detected") + "\n"

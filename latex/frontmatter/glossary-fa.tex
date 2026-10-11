@@ -3,11 +3,21 @@
 شده یا کامل‌تر توضیح داده شده است. نمادگذاری مطابق جدول نمادهای هفته‌ی 1
 است.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌نامه}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+اصطلاح \lr{(English)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معادل فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تعریف
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 اصطلاح \lr{(English)}
@@ -57,9 +67,7 @@ factor} & نسبت درست‌نمایی‌های حاشیه‌ای
 سوگیری\lr{--}واریانس & خطای مورد انتظار پیش‌بینی = نویز + مربع سوگیری +
 واریانس. مدل‌های منعطف سوگیری را کم و واریانس را زیاد می‌کنند. \\
 \textbf{\lr{Bootstrap (parametric)}} {[}5{]} & \lr{bootstrap} پارامتری &
-از مدل برازش‌شده تعداد زیادی مجموعه‌داده شبیه‌سازی کنید، هرکدام را دوباره
-برازش کنید و پراکندگی برآوردها را به‌عنوان عدم قطعیت آن‌ها به کار
-ببرید. \\
+از مدل برازش‌شده تعداد زیادی مجموعه‌داده شبیه‌سازی کنید، هرام را دوباره برازش کنید و پراکندگی برآوردها را به‌عنوان عدم قطعیت آن‌ها به کار ببرید. \\
 \textbf{\lr{Boundary separation}} (\(a\)) {[}1, 14{]} & فاصله‌ی مرزها &
 پارامتر \lr{random walk} / \lr{DDM:} فاصله‌ی بین دو مرز پاسخ. نماینده‌ی
 احتیاط \lr{(caution).} \\
@@ -273,17 +281,26 @@ matrix} (بازیابی مدل) &
 \textbf{\lr{Weighted least squares}} {[}3{]} & کمترین مربعات وزنی & مربع
 خطاها با وزن معکوس واریانسشان. \\
 \end{longtable}
-}
 
 \subsection{\texorpdfstring{اصطلاحات هوش مصنوعی و \lr{LLM} (از بخش‌های
 «ارتباط با هوش مصنوعی و
 \lr{LLM}ها»)}{اصطلاحات هوش مصنوعی و LLM (از بخش‌های «ارتباط با هوش مصنوعی و LLMها»)}}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering اصطلاحات هوش مصنوعی و \lr{LLM (}از بخش‌های «ارتباط با هوش مصنوعی و \lr{LLM}ها»)}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+اصطلاح \lr{(English)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معادل فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تعریف
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 اصطلاح \lr{(English)}
@@ -331,4 +348,3 @@ matrix} (بازیابی مدل) &
 \textbf{\lr{Token}} {[}1{]} & \lr{token} & واحدی که مدل زبانی می‌خواند و
 پیش‌بینی می‌کند: یک کلمه یا بخشی از کلمه. \\
 \end{longtable}
-}

@@ -13,11 +13,21 @@
 واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
 باشند).
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering واژه‌های کلیدی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \lr{English}
@@ -36,8 +46,8 @@
 مرز \\
 \lr{verbal theory} & نظریه‌ی کلامی & نظریه‌ای که فقط با کلمات بیان شده و
 پیش‌بینی دقیق نمی‌دهد \\
-\lr{Marr's levels} & سطوح تحلیل \lr{Marr} & سطح محاسباتی، الگوریتمی و
-پیاده‌سازی \\
+\lr{Marr's levels} & سطوح تحلیل \lr{Marr} &
+سطح محاسباتی، الگوریتمی و تحلیل \\
 \lr{parameter} & پارامتر & کمیت قابل تنظیم مدل که بین افراد یا شرایط فرق
 می‌کند \\
 \lr{noise} & نویز & تغییرات تصادفی در شواهد یا در داده \\
@@ -60,8 +70,6 @@
 \lr{speed\lr{--}accuracy trade-off} & بده‌بستان سرعت و دقت & سریع‌تر پاسخ دادن
 به قیمت خطای بیشتر \\
 \lr{trial} & کوشش \lr{(trial)} & یک بار انجام تکلیف توسط شرکت‌کننده \\
-\lr{probabilistic programming} & برنامه‌نویسی احتمالاتی & تعریف مدل با کد
-و نمونه‌گیری خودکار \lr{(PyMC)} \\
 \lr{temperature} & دما \lr{(temperature)} & پارامتر نویز در انتخاب
 \lr{token}؛ \ensuremath{\beta} = \lr{1/T} \\
 \lr{random seed} & \lr{seed} تصادفی & عدد شروع مولد اعداد تصادفی برای
@@ -73,7 +81,6 @@
 \lr{token} & \lr{token} (واحد متن) & کلمه یا بخشی از کلمه که مدل زبانی
 پیش‌بینی می‌کند \\
 \end{longtable}
-}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -95,13 +102,6 @@
   \textbf{توضیح دهند} که چطور پارامترهای آزاد، یک هسته‌ی قطعی و یک مدل
   نویز \lr{(noise model)} با هم یک مدل را به یک ماشین \emph{تولید داده}
   تبدیل می‌کنند.
-\item
-  یک مدل تصمیم‌گیری \lr{random walk} را در \lr{Python} \textbf{پیاده‌سازی}
-  و \textbf{شبیه‌سازی کنند} و شبیه‌سازی را با پیش‌بینی‌های تحلیلی
-  \textbf{بررسی کنند}.
-\item
-  \textbf{تفسیر کنند} که تغییر پارامترهای مدل \lr{(drift}، مرز) با کدام
-  سازه‌های روان‌شناختی (کیفیت شواهد، احتیاط) متناظر است.
 \end{enumerate}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -131,16 +131,13 @@
   دستور «دقیق باشید»؟
 \end{itemize}
 
-این نظریه‌ی کلامی \textbf{به هیچ‌کدام از این سؤال‌ها نمی‌تواند جواب دهد}. هر
-جواب به تصمیم‌هایی بستگی دارد که نظریه هرگز نگرفته است: «شواهد» یعنی چه؟
-پیوسته می‌رسد یا تکه‌تکه؟ «کافی» یعنی چقدر؟ آستانه برای هر دو پاسخ یکی
+هر جواب به تصمیم‌هایی بستگی دارد که نظریه هرگز نگرفته است: «شواهد» یعنی
+چه؟ پیوسته می‌رسد یا تکه‌تکه؟ «کافی» یعنی چقدر؟ آستانه برای هر دو پاسخ یکی
 است؟
 
-به‌محض اینکه نظریه را به شکل یک مدل بنویسیم، مثلاً یک \textbf{\lr{random
-walk}} که گام‌به‌گام بالا یا پایین می‌رود تا به یک مرز برسد، هر کدام از این
-سؤال‌ها جواب مشخصی پیدا می‌کند. بعضی از این جواب‌ها \emph{غلط} از آب
-درمی‌آیند، و این خوب است: مدلی که می‌تواند غلط باشد، مدلی است که می‌شود از
-آن یاد گرفت. این پیام اصلی این درس است:
+بعضی از این جواب‌ها \emph{غلط} از آب درمی‌آیند، و این خوب است: مدلی که
+می‌تواند غلط باشد، مدلی است که می‌شود از آن یاد گرفت. این پیام اصلی این
+درس است:
 
 \begin{quote}
 مدل‌های فرمال \lr{(formal)} ما را مجبور می‌کنند فرض‌هایمان را صریح کنیم،
@@ -181,6 +178,8 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\Needspace{11\baselineskip}
 
 \subsection{جزوه‌ی درس}
 
@@ -245,11 +244,21 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 \textbf{مدل شناختی} توصیفی صریح، معمولاً ریاضی یا محاسباتی، از فرایندها
 یا بازنمایی‌هایی است که فرض می‌کنیم رفتار را تولید می‌کنند. سه جزء دارد:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 1. مدل شناختی چیست؟}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+جزء
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+به چه سؤالی جواب می‌دهد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مثال در \lr{random walk}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 جزء
@@ -264,13 +273,12 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 \endlastfoot
 \textbf{فرض‌ها / ساختار} & چه سازوکاری را فرض می‌کنیم؟ & شواهد در گام‌های
 گسسته بین دو مرز انباشته می‌شود \\
-\textbf{پارامترها} & کدام کمیت‌ها می‌توانند بین افراد یا شرایط تغییر کنند؟
-& \lr{drift} \(v\)، فاصله‌ی مرزها \(a\)، نقطه‌ی شروع \(z\) \\
+\textbf{پارامترها} & ام کمیت‌ها می‌توانند بین افراد یا شرایط تغییر کنند؟ &
+\lr{drift} \(v\)، فاصله‌ی مرزها \(a\)، نقطه‌ی شروع \(z\) \\
 \textbf{نگاشت به داده} & سازوکار چگونه پاسخ‌های قابل مشاهده تولید می‌کند؟
 & مرزی که به آن می‌رسیم انتخاب را تعیین می‌کند؛ تعداد گام‌ها زمان واکنش
 را \\
 \end{longtable}
-}
 
 سه اصطلاح مرتبط که به‌راحتی با هم قاطی می‌شوند:
 
@@ -326,12 +334,24 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 
 \textbf{بر اساس هدف:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\caption{\centering 3. انواع مدل‌های شناختی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+نوع
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+سؤال
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مثال
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+هفته‌ها
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 نوع
@@ -354,17 +374,26 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 \textbf{هنجاری \lr{(normative} / \lr{rational)}} & یک عامل ایده‌آل
 \emph{باید} چه کند؟ & مشاهده‌گر ایده‌آل بیزی برای ترکیب سرنخ‌ها & 15 \\
 \end{longtable}
-}
 
 مرزها مبهم‌اند: مدل \lr{SDT} تا حدی توصیفی و تا حدی فرایندی است.
 
 \textbf{بر اساس خانواده:}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 3. انواع مدل‌های شناختی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+خانواده
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ایده‌ی اصلی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مثال
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 خانواده
@@ -387,7 +416,6 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 بیزی (احتمالاتی) & شناخت به‌عنوان استنباط احتمالاتی & مدل‌های مشاهده‌گر
 بیزی \\
 \end{longtable}
-}
 
 \begin{quote}
 \textbf{مراقب باشید:} «مدل‌سازی بیزی» در این درس دو معنای متفاوت دارد.
@@ -403,11 +431,21 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 \lr{David Marr} پیشنهاد کرد که یک سیستم پردازش اطلاعات را در سه سطح مکمل
 تحلیل کنیم:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 4. سه سطح تحلیل \lr{Marr}}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+سطح
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+سؤال
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مثال تصمیم‌گیری
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 سطح
@@ -424,10 +462,9 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 انتخاب گزینه‌ی درست با برقراری تعادل بین سرعت و دقت \\
 \textbf{الگوریتمی / بازنمایی \lr{(algorithmic)}} & چه بازنمایی‌ها و
 رویه‌هایی آن را حل می‌کنند؟ & انباشت شواهد پرنویز تا رسیدن به یک مرز \\
-\textbf{پیاده‌سازی \lr{(implementational)}} & به‌طور فیزیکی چگونه محقق
-می‌شود؟ & نرخ شلیک نورون‌ها که تا یک آستانه بالا می‌رود \\
+تحلیل (\lr{implementational} & به‌طور فیزیکی چگونه محقق می‌شود؟ & نرخ شلیک
+نورون‌ها که تا یک آستانه بالا می‌رود \\
 \end{longtable}
-}
 
 مدل‌های هنجاری معمولاً در سطح محاسباتی‌اند، مدل‌های فرایندی در سطح
 الگوریتمی، و مدل‌های علوم اعصاب محاسباتی در سطح پیاده‌سازی. بیشتر مدل‌های
@@ -450,13 +487,27 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 
 این دو جهت استدلال به ما می‌دهد:
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\caption{\centering 5. مدل یک ماشین تولید داده است}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+جهت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+داده‌شده
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+خواسته‌شده
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نام
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+هفته‌ها
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 جهت
@@ -478,7 +529,6 @@ walk}} که گام‌به‌گام بالا یا پایین می‌رود تا �
 \textbf{معکوس \lr{(inverse)}} & \(\mathbf{y}\) مشاهده‌شده &
 \(\boldsymbol\theta\) محتمل & برآورد پارامتر / برازش & 3\lr{--}5، 9\lr{--}13 \\
 \end{longtable}
-}
 
 مسئله‌ی معکوس سخت‌تر است و همان چیزی است که منظورمان از «برازش مدل روی
 داده» است. چون همیشه می‌توان مدل را در جهت مستقیم اجرا کرد، می‌توانیم
@@ -610,10 +660,9 @@ P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
 (\(z = a/2\))، \lr{random walk} ساده پیش‌بینی می‌کند که پاسخ‌های درست و غلط
 \textbf{توزیع زمان واکنش یکسانی} دارند. در داده‌های واقعی، وقتی بر دقت
 تأکید می‌شود خطاها اغلب \emph{کندتر} از پاسخ‌های درست‌اند و گاهی تحت تأکید
-بر سرعت \emph{سریع‌تر}. مدل ساده هیچ‌کدام از این الگوها را نمی‌تواند تولید
-کند. اضافه کردن تغییرپذیری \lr{drift} یا نقطه‌ی شروع از \lr{trial}ی به
-\lr{trial} دیگر می‌تواند (تمرین 5 در \lr{lab).} پیدا کردن جایی که مدل
-شکست می‌خورد دقیقاً همان راه بهتر شدن مدل‌هاست.
+بر سرعت \emph{سریع‌تر}. اضافه کردن تغییرپذیری \lr{drift} یا نقطه‌ی شروع از
+\lr{trial}ی به \lr{trial} دیگر می‌تواند (تمرین 5 در \lr{lab).} پیدا کردن
+جایی که مدل شکست می‌خورد دقیقاً همان راه بهتر شدن مدل‌هاست.
 \end{quote}
 
 \paragraph{خواندن ریاضی}
@@ -702,11 +751,21 @@ P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
 
 \textbf{داده و طرح آزمایش}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 8. نمادگذاری کل درس}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+نماد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معنا
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+اولین استفاده
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 نماد
@@ -725,15 +784,24 @@ P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
 \(x_i\) & شرط آزمایشی / متغیر مستقل مشاهده‌ی \(i\) & هفته‌ی 2 \\
 \(j = 1,\dots,J\) & اندیس شرکت‌کننده؛ تعداد شرکت‌کنندگان & هفته‌ی 5 \\
 \end{longtable}
-}
 
 \textbf{مدل‌ها و پارامترها}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 8. نمادگذاری کل درس}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+نماد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معنا
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+اولین استفاده
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 نماد
@@ -757,14 +825,21 @@ P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
 \(\hat y_i\) & پیش‌بینی مدل برای مشاهده‌ی \(i\) & هفته‌ی 3 \\
 \(\varepsilon_i\) & جمله‌ی نویز (خطا) & هفته‌ی 2 \\
 \end{longtable}
-}
 
 \textbf{احتمال}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\caption{\centering 8. نمادگذاری کل درس}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+نماد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معنا
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 نماد
@@ -779,7 +854,7 @@ P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
 \(p(\cdot)\) & تابع جرم یا چگالی احتمال \\
 \(y \sim \mathcal{D}\) & «\(y\) توزیع \(\mathcal{D}\) دارد» \\
 \(\mathcal{N}(\mu, \sigma)\) & توزیع نرمال با میانگین \(\mu\) و
-\textbf{انحراف معیار} \(\sigma\) (مثل \lr{scipy} و \lr{PyMC)} \\
+\textbf{انحراف معیار} \(\sigma\) (مثل و ) \\
 \(\mathrm{Bernoulli}(\theta)\)، \(\mathrm{Binomial}(n, \theta)\) &
 توزیع‌های برنولی و دوجمله‌ای با احتمال موفقیت \(\theta\) \\
 \(\mathrm{Beta}(a_0, b_0)\)، \(\mathrm{Uniform}(l, u)\) & توزیع‌های
@@ -788,15 +863,24 @@ P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
 معکوس آن \\
 \(\mathbb{E}[\cdot]\)، \(\mathrm{Var}[\cdot]\) & امید ریاضی و واریانس \\
 \end{longtable}
-}
 
 \textbf{برازش، ارزیابی و استنباط بیزی}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 8. نمادگذاری کل درس}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+نماد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معنا
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+اولین استفاده
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 نماد
@@ -831,15 +915,24 @@ P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
 \(\hat R\)، \lr{ESS} & ضریب کاهش مقیاس بالقوه \lr{(R-hat)}؛ اندازه‌ی مؤثر
 نمونه & هفته‌ی 12 \\
 \end{longtable}
-}
 
 \textbf{نمادهای مخصوص هر مدل}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering 8. نمادگذاری کل درس}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+مدل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نمادها
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+اولین استفاده
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 مدل
@@ -865,7 +958,6 @@ P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
 temperature}؛ \(Q_t(o)\) ارزش گزینه‌ی \(o\) در \lr{trial} \(t\) & هفته‌ی
 15 \\
 \end{longtable}
-}
 
 \textbf{نمادهای دومعنایی (چون در منابع رایج‌اند نگه داشته شده‌اند):} \(c\)
 ملاک \lr{SDT} است، جز در هفته‌ی 14 که حساسیت \lr{GCM} است. \(t\) در
@@ -905,9 +997,6 @@ temperature}؛ \(Q_t(o)\) ارزش گزینه‌ی \(o\) در \lr{trial} \(t\) &
     \emph{«چرا میانگین زمان واکنش را با \lr{t-test} مقایسه نکنیم؟»}
     \lr{t-test} می‌گوید گروه‌ها \emph{فرق دارند}؛ مدل می‌گوید \emph{چطور}
     فرق دارند (احتیاط در برابر کیفیت شواهد).
-  \item
-    \emph{«کدام مدل درست است؟»} هیچ‌کدام. همه‌ی مدل‌ها ساده‌سازی‌اند؛ می‌پرسیم
-    کدام مفید است (جمله‌ی \lr{Box).}
   \end{itemize}
 \item
   \textbf{مدیریت زمان.} بخش‌های 3 و 4 (انواع مدل، \lr{Marr)} را در صورت
@@ -929,8 +1018,12 @@ temperature}؛ \(Q_t(o)\) ارزش گزینه‌ی \(o\) در \lr{trial} \(t\) &
 \textbf{قدم 2: شبیه‌سازی دستی یک \lr{trial.}} اعداد تصادفی یکنواخت
 \(u_n\) بکشید. اگر \(u_n < 0.6\) بالا بروید، وگرنه پایین.
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}llll@{}}
+\caption{\centering مثال حل‌شده}\tabularnewline
+\toprule\noalign{}
+گام \(n\) & \(u_n\) & \(\delta_n\) & \(X_n\) \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 گام \(n\) & \(u_n\) & \(\delta_n\) & \(X_n\) \\
 \midrule\noalign{}
@@ -944,7 +1037,6 @@ temperature}؛ \(Q_t(o)\) ارزش گزینه‌ی \(o\) در \lr{trial} \(t\) &
 4 & 0.12 & +1 & 5 \\
 5 & 0.48 & +1 & \textbf{6 = \lr{a}} \ensuremath{\leftarrow} توقف \\
 \end{longtable}
-}
 
 مسیر به مرز بالا می‌رسد: یک پاسخ \textbf{درست} بعد از \(T = 5\) گام، پس
 \(\mathrm{RT} = 300 + 5 \times 20 = 400\) \lr{ms.}
@@ -968,7 +1060,6 @@ P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0
 
 \textbf{قدم 5: دو دست‌کاری، دو ردپا.}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
@@ -976,6 +1067,23 @@ P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\caption{\centering مثال حل‌شده}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+شرط
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(v\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(a\) (\(z = a/2\))
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(P_c\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathbb{E}[T]\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathbb{E}[\mathrm{RT}]\) \lr{(ms)}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 شرط
@@ -998,7 +1106,6 @@ P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0
 «دقیق باشید!» (احتیاط بیشتر) & 0.2 & 10 & 0.884 & 19.18 & 683.6 \\
 محرک آسان‌تر (شواهد بهتر) & 0.3 & 6 & 0.865 & 7.30 & 446.0 \\
 \end{longtable}
-}
 
 \textbf{تفسیر.} دستور «دقیق باشید» حدود 11 درصد دقت بیشتر می‌خرد، به قیمت
 حدود 220 \lr{ms.} محرک آسان‌تر افزایش دقت \emph{مشابهی} می‌دهد، در حالی که
@@ -1009,6 +1116,8 @@ P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
 
 \subsubsection{اهداف}
@@ -1017,13 +1126,7 @@ P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  نصب یک محیط نرم‌افزاری سالم روی لپ‌تاپ خودتان، \emph{از جمله} ابزارهای
-  بیزی که در هفته‌ی 13 لازم‌اند.
-\item
-  تمرین کار پایه با \lr{numpy/matplotlib:} اعداد تصادفی، برداری‌سازی
-  \lr{(vectorization)}، رسم نمودار.
-\item
-  پیاده‌سازی مدل \lr{random walk}، شبیه‌سازی یک آزمایش، و \textbf{وارسی}
+  صورت‌بندی مدل \lr{random walk}، شبیه‌سازی یک آزمایش، و \textbf{وارسی}
   شبیه‌سازی با فرمول‌های تحلیلی.
 \item
   استفاده از مدل برای \textbf{تفسیر} \lr{trade-off} سرعت\lr{--}دقت.
@@ -1036,170 +1139,15 @@ P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0
 \lr{C} 30 دقیقه · بخش \lr{D} 15 دقیقه · بخش \lr{E} 25 دقیقه. تمرین‌هایی
 که در \lr{lab} تمام نشوند در خانه تمام می‌شوند.
 
-\subsubsection{\texorpdfstring{بخش \lr{A:} نصب محیط نرم‌افزاری (35
-دقیقه)}{بخش A: نصب محیط نرم‌افزاری (35 دقیقه)}}
-
-از \textbf{\lr{Miniforge}} استفاده می‌کنیم، یک نصب‌کننده‌ی رایگان برای
-\lr{\nolinkurl{conda}} که از کانال \lr{\nolinkurl{conda-forge}} استفاده
-می‌کند. این مطمئن‌ترین راه نصب \lr{PyMC} روی \lr{Windows}، \lr{macOS} و
-\lr{Linux} است.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \lr{Miniforge} را از سایت \lr{conda-forge} دانلود و نصب کنید
-  (سیستم‌عامل خود را انتخاب کنید؛ گزینه‌های پیش‌فرض را نگه دارید).
-\item
-  فایل زیر را با نام \lr{\nolinkurl{environment.yml}} در پوشه‌ی درس ذخیره
-  کنید:
-\end{enumerate}
-
-\Needspace{18\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-# Cognitive Modeling course environment (same as environment.yml in the course repository)
-name: cogmod
-channels:
-  - conda-forge
-dependencies:
-  - python=3.12
-  - numpy>=1.26
-  - scipy>=1.11
-  - pandas>=2.1
-  - matplotlib>=3.8
-  - jupyterlab
-  - pymc>=6.3    # Bayesian modeling (needed from Week 13)
-  - arviz>=1.3   # MCMC diagnostics
-\end{Verbatim}
-\end{latin}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
-\item
-  \textbf{\lr{Miniforge Prompt}} (در \lr{Windows)} یا یک \lr{terminal}
-  (در \lr{macOS/Linux)} را باز کنید، به پوشه‌ی درس بروید و محیط را
-  بسازید. بار اول 5 تا 15 دقیقه طول می‌کشد.
-\end{enumerate}
-
-\Needspace{6\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-conda env create -f environment.yml
-\end{Verbatim}
-\end{latin}
-
-\Needspace{6\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-conda activate cogmod
-\end{Verbatim}
-\end{latin}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{3}
-\tightlist
-\item
-  این اسکریپت را با نام \lr{\nolinkurl{check_install.py}} ذخیره کنید و
-  با \lr{\nolinkurl{python check_install.py}} اجرا کنید. با افزودن
-  \lr{\nolinkurl{--sample}} یک مدل کوچک \lr{PyMC} هم اجرا می‌شود؛ اجرای
-  اول حدود یک دقیقه طول می‌کشد چون \lr{PyMC} کامپایل می‌کند.
-\end{enumerate}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/check_install.py}}
-\lr{(save and run it as a separate script} · به‌صورت یک اسکریپت جدا اجرا
-شود)
-\end{quote}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{4}
-\tightlist
-\item
-  \lr{JupyterLab} را با \lr{\nolinkurl{jupyter lab}} اجرا کنید و یک
-  \lr{notebook} با نام \lr{\nolinkurl{week01_lab.ipynb}} بسازید. بقیه‌ی
-  کدها را در همین \lr{notebook}، هر بلوک در یک \lr{cell}، اجرا کنید.
-\end{enumerate}
-
-\begin{quote}
-\textbf{اگر اسکریپت هشداری مثل \lr{«g++ not available»} نشان داد:}
-\lr{PyMC} باز هم کار می‌کند ولی خیلی کندتر. معمولاً یعنی \lr{PyMC} با
-\lr{\nolinkurl{pip}} نصب شده، نه از محیط \lr{conda-forge} بالا. نصب
-\lr{conda-forge} معمولاً \lr{compiler} مورد نیاز \lr{PyMC} را هم می‌آورد
-{[}پیش از هفته‌ی 1 روی یک کامپیوتر \lr{Windows} در \lr{lab} بررسی شود{]}.
-محیط را دوباره با \lr{\nolinkurl{conda env create -f environment.yml}}
-بسازید.
-\end{quote}
-
-\begin{quote}
-\textbf{اگر نصب شکست خورد:} \lr{lab} امروز را در \textbf{\lr{Google
-Colab}} انجام دهید \lr{(numpy}، \lr{scipy}، \lr{pandas} و
-\lr{matplotlib} در آن از قبل نصب‌اند) و نصب محلی را پیش از هفته‌ی 3 با کمک
-مدرس درست کنید. نصب \lr{PyMC} باید تا هفته‌ی 12 کار کند.
-\end{quote}
-
-\subsubsection{\texorpdfstring{بخش \lr{B:} گرم کردن با \lr{Python} (15
-دقیقه)}{بخش B: گرم کردن با Python (15 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 1 ·
-سلول 1
-\end{quote}
-
-\textbf{خروجی مورد انتظار:} نسبتی نزدیک به 0.6 (با این \lr{seed} برابر
-0.574) و منحنی نسبت تجمعی که اول نوسان دارد و بعد نزدیک خط‌چین آرام
-می‌گیرد.
-
-\subsubsection{\texorpdfstring{بخش \lr{C:} پیاده‌سازی، شبیه‌سازی و وارسی
+\subsubsection{\texorpdfstring{بخش \lr{C:} صورت‌بندی، شبیه‌سازی و وارسی
 \lr{random walk} (30
-دقیقه)}{بخش C: پیاده‌سازی، شبیه‌سازی و وارسی random walk (30 دقیقه)}}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 2 ·
-سلول 2
-\end{quote}
+دقیقه)}{بخش C: صورت‌بندی، شبیه‌سازی و وارسی random walk (30 دقیقه)}}
 
 اول ببینید مدل چه می‌کند: چند مسیر شواهد را رسم کنید.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 3 ·
-سلول 3
-\end{quote}
 
 حالا یک آزمایش کامل را شبیه‌سازی کنید و نتیجه را با پیش‌بینی‌های تحلیلی
 مقایسه کنید. \textbf{همیشه شبیه‌سازی را با چیزی که جوابش را می‌دانید
 مقایسه کنید}؛ این عادت در این ترم بارها نجاتتان می‌دهد.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 4 ·
-سلول 4
-\end{quote}
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 5 ·
-سلول 5
-\end{quote}
-
-\textbf{خروجی مورد انتظار \lr{(seed} 42):}
-
-\Needspace{14\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Accuracy   simulated 0.764 | analytic 0.771
-Mean steps simulated 8.27  | analytic 8.14
-Mean RT    simulated 465.3 ms | analytic 462.9 ms
-
-Mean RT by response (1 = correct, 0 = error):
-        count   mean
-choice
-0        1180  466.1
-1        3820  465.1
-\end{Verbatim}
-\end{latin}
 
 \textbf{به این‌ها دقت کنید:} - شبیه‌سازی در حد نویز نمونه‌گیری با مقادیر
 تحلیلی جور است. - توزیع‌های زمان واکنش \textbf{چوله به راست} هستند (یک
@@ -1210,37 +1158,22 @@ choice
 \subsubsection{\texorpdfstring{بخش \lr{D:} تفسیر \lr{trade-off}
 سرعت\lr{--}دقت (15 دقیقه)}{بخش D: تفسیر trade-off سرعت\lr{--}دقت (15 دقیقه)}}
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 6 ·
-سلول 6
-\end{quote}
-
-\textbf{خروجی مورد انتظار:} سه منحنی که از پایین سمت چپ به سمت 1.0 بالا
-می‌روند. حرکت روی یک منحنی (افزایش \(a\)) سرعت را با دقت معاوضه می‌کند.
-حرکت \emph{بین} منحنی‌ها (افزایش \(v\)) دقت را با زمان واکنش برابر یا
-کمتر بالا می‌برد. جدول مثال حل‌شده را بازتولید می‌کند: مثلاً
-\(v = 0.2, a = 10\) دقت 0.884 و میانگین زمان واکنش 683.6 \lr{ms} می‌دهد.
+حرکت روی یک منحنی (افزایش \(a\)) سرعت را با دقت معاوضه می‌کند. حرکت
+\emph{بین} منحنی‌ها (افزایش \(v\)) دقت را با زمان واکنش برابر یا کمتر
+بالا می‌برد. جدول مثال حل‌شده را بازتولید می‌کند: مثلاً \(v = 0.2, a = 10\)
+دقت 0.884 و میانگین زمان واکنش 683.6 \lr{ms} می‌دهد.
 
 \textbf{با بغل‌دستی‌تان بحث کنید:} پژوهشگری می‌بیند که یک دارو شرکت‌کننده‌ها
-را کندتر \emph{و} دقیق‌تر می‌کند. به کدام پارامتر مشکوک می‌شوید؟ اگر دارو
-آن‌ها را کندتر و \emph{کم‌دقت‌تر} می‌کرد چه؟
+را کندتر \emph{و} دقیق‌تر می‌کند. اگر دارو آن‌ها را کندتر و \emph{کم‌دقت‌تر}
+می‌کرد چه؟
 
 \subsubsection{\texorpdfstring{بخش \lr{E:} اولین برازش، ارزیابی و تفسیر
 (25 دقیقه)}{بخش E: اولین برازش، ارزیابی و تفسیر (25 دقیقه)}}
 
-مدرس فایل \lr{\nolinkurl{week01_mystery.csv}} را به شما می‌دهد که داده‌های
-یک «شرکت‌کننده‌ی مرموز» است (1000 \lr{trial}، ستون‌های
-\lr{\nolinkurl{choice}} و \lr{\nolinkurl{rt}}). اگر فایل را ندارید، کد
-زیر یک مجموعه‌داده‌ی معادل با پارامترهایی که پشت یک \lr{seed} پنهان شده‌اند
-می‌سازد. \textbf{دزدکی نگاه نکنید}: سعی کنید آن‌ها را بازیابی کنید.
+\textbf{دزدکی نگاه نکنید}: سعی کنید آن‌ها را بازیابی کنید.
 
 فرض می‌کنیم \(t_0 = 300\) \lr{ms} و \(\Delta t = 20\) \lr{ms} معلوم‌اند و
 \(z = a/2\). فقط \(v\) و \(a\) آزادند (\(k = 2\)).
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 7 ·
-سلول 7
-\end{quote}
 
 \textbf{برازش با جستجوی شبکه‌ای \lr{(grid search).}} برای هر ترکیب \(v\)
 و \(a\) روی یک شبکه، دقت و میانگین زمان واکنش پیش‌بینی‌شده را حساب کنید و
@@ -1248,39 +1181,11 @@ choice
 استاندارد بیان می‌شود تا دقت و زمان واکنش مقیاس قابل مقایسه‌ای داشته
 باشند. هفته‌ی 3 این ایده را به‌طور کامل توضیح می‌دهد.
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 8 ·
-سلول 8
-\end{quote}
-
 \textbf{ارزیابی برازش.} فقط دو آماره‌ی خلاصه (دقت و میانگین زمان واکنش)
 را برازش کردیم. آزمون قوی‌تر این است که ببینیم مدل چیزی را که برازش
 \emph{نکرده‌ایم} هم بازتولید می‌کند یا نه: \textbf{شکل} توزیع زمان واکنش.
 \lr{quantile}های زمان واکنش پاسخ‌های درست در داده را با \lr{quantile}های
 یک شبیه‌سازی بزرگ با بهترین پارامترها مقایسه می‌کنیم.
-
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 9 ·
-سلول 9
-\end{quote}
-
-\textbf{خروجی مورد انتظار (داده‌ی جایگزین). فقط بعد از اجرای برازش باز
-کنید.}
-
-\Needspace{14\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-Observed: accuracy = 0.836, mean RT = 746.4 ms (N = 1000)
-Best fit: v = 0.15, a = 10 (pred. accuracy 0.819, pred. RT 725.7 ms, discrepancy 5.78)
-
-   quantile  observed   model
-0       0.1     440.0   440.0
-1       0.3     520.0   520.0
-2       0.5     640.0   640.0
-3       0.7     800.0   800.0
-4       0.9    1200.0  1160.0
-\end{Verbatim}
-\end{latin}
 
 مقادیر پنهان \(v^\ast = 0.16\) و \(a^\ast = 10\) بودند. جستجوی شبکه‌ای
 \(a\) را دقیقاً و \(v\) را با فاصله‌ی یک گام شبکه (0.15) بازیابی کرد. این
@@ -1292,28 +1197,20 @@ Best fit: v = 0.15, a = 10 (pred. accuracy 0.819, pred. RT 725.7 ms, discrepancy
 خوب بازتولید می‌کند و فقط دنباله‌ی کند را کمی کمتر برآورد می‌کند
 \lr{(quantile} 0.9).
 
-\textbf{سؤال‌های تفسیری (برای هرکدام 2 تا 3 جمله در \lr{notebook}
-بنویسید):} 1. به زبان روان‌شناختی، \(v\) و \(a\) بازیابی‌شده درباره‌ی این
-شرکت‌کننده چه می‌گویند؟ 2. برازش فقط از دو عدد داده استفاده کرد. چرا
-مقایسه‌ی \lr{quantile}ها بررسی قانع‌کننده‌تری از خود مقدار ناهمخوانی
-\lr{(discrepancy)} است؟ 3. اگر این شرکت‌کننده دوباره با دستور «تا جای
-ممکن سریع باشید» آزمون شود، طبق مدل کدام پارامتر باید تغییر کند و کدام
-ثابت بماند؟
+به زبان روان‌شناختی، \(v\) و \(a\) بازیابی‌شده درباره‌ی این شرکت‌کننده چه
+می‌گویند؟ 2. برازش فقط از دو عدد داده استفاده کرد. چرا مقایسه‌ی
+\lr{quantile}ها بررسی قانع‌کننده‌تری از خود مقدار ناهمخوانی
+\lr{(discrepancy)} است؟ 3.
 
 \subsubsection{تمرین‌ها (به ترتیب سختی)}
 
-\textbf{تمرین 1 \ensuremath{\star} (نویز نمونه‌گیری).} مدل پایه (\(v = 0.2\)، \(a = 6\))
-را با \(N = 20\)، \(100\) و \(1000\) \lr{trial}، هرکدام با پنج \lr{seed}
-مختلف، شبیه‌سازی کنید. جدولی از دقت‌های مشاهده‌شده بسازید. پراکندگی‌شان را
-با خطای استاندارد \(\sqrt{P_c(1-P_c)/N}\) مقایسه کنید. \emph{انتظار:} با
-\(N = 20\) دقت به‌راحتی بین حدود 0.6 تا 0.95 تغییر می‌کند. پراکندگی تقریباً
-به نسبت \(1/\sqrt{N}\) کم می‌شود.
+\(v = 0.2\) · \(a = 6\) · \(N = 20\) جدولی از دقت‌های مشاهده‌شده بسازید.
+پراکندگی‌شان را با خطای استاندارد \(\sqrt{P_c(1-P_c)/N}\) مقایسه کنید.
+\emph{انتظار:} با \(N = 20\) دقت به‌راحتی بین حدود 0.6 تا 0.95 تغییر
+می‌کند. پراکندگی تقریباً به نسبت \(1/\sqrt{N}\) کم می‌شود.
 
-\textbf{تمرین 2 \ensuremath{\star} (دو شرط).} یک شرط «سرعت» (\(a = 4\)) و یک شرط «دقت»
-(\(a = 10\)) با \(v = 0.2\) یکسان و هرکدام 1000 \lr{trial} شبیه‌سازی
-کنید. دقت و میانگین زمان واکنش هر شرط را گزارش کنید و هر دو توزیع زمان
-واکنش را رسم کنید. کدام جنبه‌ی توزیع زمان واکنش بیشتر تغییر می‌کند: کمینه،
-مُد، یا دنباله؟
+\(a = 4\) · \(a = 10\) · \(v = 0.2\) دقت و میانگین زمان واکنش هر شرط را
+گزارش کنید و هر دو توزیع زمان واکنش را رسم کنید.
 
 \textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (سوگیری پاسخ).} قرار دهید \(a = 8\) و \(z = 5\) (شروع
 نزدیک‌تر به مرز درست). \(P_c\) را تحلیلی و با شبیه‌سازی حساب کنید. بعد
@@ -1326,23 +1223,10 @@ Best fit: v = 0.15, a = 10 (pred. accuracy 0.819, pred. RT 725.7 ms, discrepancy
 شرایط سخت و با تأکید بر دقت، خطاهای کندتری نشان می‌دهند. آیا چنین
 داده‌هایی \lr{random walk} ساده را رد می‌کنند؟ چه چیزی را تغییر می‌دادید؟
 
-\textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: تغییرپذیری \lr{drift} بین \lr{trial}ها).}
-\lr{\nolinkurl{simulate_trial}} را طوری تغییر دهید که در هر \lr{trial
-drift} از \(v_i \sim \mathcal{N}(v, \eta)\) کشیده شود و به
-\([-0.95, 0.95]\) محدود شود. از \(v = 0.2\)، \(\eta = 0.2\)، \(a = 8\)
-استفاده کنید. نشان دهید که \textbf{حالا خطاها کندتر از پاسخ‌های درست‌اند}
-(انتظار با 20 000 \lr{trial:} دقت \ensuremath{\approx} 0.75، حدود 12 گام برای پاسخ‌های درست
-در برابر 14 گام برای خطاها) و توضیح دهید چرا. \emph{راهنمایی:} کدام
-\lr{trial}ها بیشترین احتمال را دارند که به خطا ختم شوند، و آن
-\lr{trial}ها چقدر طول می‌کشند؟
-
-\subsubsection{\texorpdfstring{\lr{lab check-off} (جزو نمره‌ی \lr{lab}
-حساب می‌شود)}{lab check-off (جزو نمره‌ی lab حساب می‌شود)}}
-
-به مدرس یا دستیار آموزشی نشان دهید: (1) خروجی
-\lr{\nolinkurl{check_install.py}} که همه‌ی بسته‌ها در آن
-\lr{\nolinkurl{[OK]}} باشند، (2) نمودار سرعت\lr{--}دقت از بخش \lr{D}، و (3)
-بهترین پارامترهای برازش و نمودار \lr{quantile}ها از بخش \lr{E.}
+\(v_i \sim \mathcal{N}(v, \eta)\) از \(v = 0.2\)، \(\eta = 0.2\)،
+\(a = 8\) استفاده کنید. نشان دهید که \textbf{حالا خطاها کندتر از پاسخ‌های
+درست‌اند} (انتظار با 20 000 \lr{trial:} دقت \ensuremath{\approx} 0.75، حدود 12 گام برای
+پاسخ‌های درست در برابر 14 گام برای خطاها) و توضیح دهید چرا.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -1367,28 +1251,10 @@ drift} از \(v_i \sim \mathcal{N}(v, \eta)\) کشیده شود و به
 و \(T\) بالا انتخاب‌های تصادفی‌تر می‌دهد. این همان قاعده‌ی \lr{softmax}
 هفته‌ی 15 است، با \(\beta = 1/T\).
 
-\begin{quote}
-\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week01.py}}, \lr{cell} 10 ·
-سلول 10
-\end{quote}
-
-\textbf{خروجی مورد انتظار:}
-
-\Needspace{8\baselineskip}
-\begin{latin}
-\begin{Verbatim}
-T = 0.2: P(A, B, C) = [0.993 0.007 0.   ], sampled shares = [0.994 0.006 0.   ]
-T = 1.0: P(A, B, C) = [0.652 0.24  0.108], sampled shares = [0.662 0.235 0.103]
-T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
-\end{Verbatim}
-\end{latin}
-
-\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} بزرگ‌ترین دمایی را
-پیدا کنید که در آن \lr{«A»} هنوز دست‌کم 90\% مواقع انتخاب می‌شود. - \ensuremath{\star} دمای
-\lr{LLM} به \emph{نویز}ی \lr{random walk} نزدیک‌تر است یا به \emph{مرز}
-آن (هفته‌ی 1، بخش \lr{C)}؟ توضیح دهید. - \ensuremath{\star}\ensuremath{\star} بحث: کسی می‌گوید \lr{«chatbot}
-وقتی دوباره پرسیدم جواب دیگری داد، پس جواب را نمی‌داند.» با استفاده از
-این کادر توضیح دهید چه چیز دیگری ممکن است در کار باشد.
+- \ensuremath{\star} دمای \lr{LLM} به \emph{نویز}ی \lr{random walk} نزدیک‌تر است یا به
+\emph{مرز} آن (هفته‌ی 1، بخش \lr{C)}؟ توضیح دهید. - \ensuremath{\star}\ensuremath{\star} بحث: کسی می‌گوید
+\lr{«chatbot} وقتی دوباره پرسیدم جواب دیگری داد، پس جواب را نمی‌داند.» با
+استفاده از این کادر توضیح دهید چه چیز دیگری ممکن است در کار باشد.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -1417,10 +1283,6 @@ T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
   (مثلاً اینکه \(t_0\) معلوم است). مدل را عوض کنید، ممکن است معنای «همان»
   پارامتر هم عوض شود.
 \item
-  \textbf{فراموش کردن \lr{seed} تصادفی.} شبیه‌سازی بدون \lr{seed} قابل
-  بازتولید نیست و هر بار که \lr{notebook} را اجرا کنید نتایج فرق می‌کند.
-  از \lr{\nolinkurl{np.random.default_rng(seed)}} استفاده کنید.
-\item
   \textbf{وارسی نکردن شبیه‌سازی‌ها.} باگ در شبیه‌ساز نتیجه‌گیری‌های غلطی
   می‌سازد که \emph{به نظر} معقول‌اند. با یک نتیجه‌ی تحلیلی، یک حالت حدی
   (مثلاً \(v \to 0\) باید \(P_c \to z/a\) بدهد) یا یک مقدار منتشرشده
@@ -1437,33 +1299,30 @@ T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
 
 \subsection{خودآزمایی}
 
-\textbf{1.} هرکدام را در یک جمله تعریف کنید: \emph{نظریه}، \emph{مدل
-شناختی} و \emph{مدل آماری}. \textbf{پاسخ} نظریه مجموعه‌ای از ادعاهای
-(معمولاً کلامی) درباره‌ی فرایندهای ذهنی است. مدل شناختی نمونه‌ی فرمال و
-صریحی از چنین ادعاهایی است که می‌تواند پیش‌بینی تولید کند و پارامترهایش
-کمیت‌های روان‌شناختی را نشان می‌دهند. مدل آماری ساختار داده‌ها (مثلاً میانگین
-گروه‌ها، شیب‌ها) را توصیف می‌کند بی‌آنکه به یک سازوکار شناختی متعهد باشد.
+\textbf{پاسخ} نظریه مجموعه‌ای از ادعاهای (معمولاً کلامی) درباره‌ی فرایندهای
+ذهنی است. مدل شناختی نمونه‌ی فرمال و صریحی از چنین ادعاهایی است که
+می‌تواند پیش‌بینی تولید کند و پارامترهایش کمیت‌های روان‌شناختی را نشان
+می‌دهند. مدل آماری ساختار داده‌ها (مثلاً میانگین گروه‌ها، شیب‌ها) را توصیف
+می‌کند بی‌آنکه به یک سازوکار شناختی متعهد باشد.
 
-\textbf{2.} هرکدام را توصیفی، فرایندی یا هنجاری دسته‌بندی کنید: (الف)
-\(\mathrm{RT} = A\,N^{-b}\) به‌عنوان تابعی از تعداد \lr{trial}های تمرین
-\(N\)؛ (ب) مدل \lr{random walk}؛ (ج) مشاهده‌گر ایده‌آلی که سرنخ‌های دیداری
-و لامسه‌ای را با وزن قابلیت اطمینانشان ترکیب می‌کند. \textbf{پاسخ} (الف)
-توصیفی: شکل داده‌ها را خلاصه می‌کند بی‌آنکه بگوید چرا. (ب) فرایندی:
-سازوکاری را مشخص می‌کند که انتخاب‌ها و زمان‌های واکنش را تولید می‌کند. (ج)
-هنجاری: رفتار بهینه را با توجه به اطلاعات موجود مشخص می‌کند.
+\(\mathrm{RT} = A\,N^{-b}\) (ب) مدل \lr{random walk}؛ (ج) مشاهده‌گر
+ایده‌آلی که سرنخ‌های دیداری و لامسه‌ای را با وزن قابلیت اطمینانشان ترکیب
+می‌کند. \textbf{پاسخ} (الف) توصیفی: شکل داده‌ها را خلاصه می‌کند بی‌آنکه
+بگوید چرا. (ب) فرایندی: سازوکاری را مشخص می‌کند که انتخاب‌ها و زمان‌های
+واکنش را تولید می‌کند. (ج) هنجاری: رفتار بهینه را با توجه به اطلاعات
+موجود مشخص می‌کند.
 
-\textbf{3.} مدل \lr{random walk} عمدتاً در کدام سطح \lr{Marr} قرار دارد؟
 یک مثال از ادعایی درباره‌ی همان تصمیم در سطح پیاده‌سازی بزنید.
 \textbf{پاسخ} سطح الگوریتمی/بازنمایی: یک رویه را توصیف می‌کند (انباشت
 شواهد تا رسیدن به مرز). یک ادعای سطح پیاده‌سازی مثلاً این است: «شواهد
 انباشته‌شده با نرخ شلیک نورون‌های یک ناحیه‌ی مشخص مغز حمل می‌شود و وقتی این
 نرخ به یک آستانه برسد پاسخ داده می‌شود.»
 
-\textbf{4.} تفاوت مسئله‌ی مستقیم و معکوس چیست؟ در بخش \lr{E lab} کدام را
-حل کردیم؟ \textbf{پاسخ} مستقیم: با داشتن پارامترها، داده تولید (پیش‌بینی)
-کنیم، یعنی شبیه‌سازی. معکوس: با داشتن داده، پارامترها را استنباط کنیم،
-یعنی برازش. بخش \lr{E} یک مسئله‌ی معکوس را حل کرد (با جستجوی شبکه‌ای)، ولی
-برای این کار مسئله‌ی مستقیم را بارها، یک بار برای هر نقطه‌ی شبکه، حل کرد.
+\textbf{4.} تفاوت مسئله‌ی مستقیم و معکوس چیست؟ \textbf{پاسخ} مستقیم: با
+داشتن پارامترها، داده تولید (پیش‌بینی) کنیم، یعنی شبیه‌سازی. معکوس: با
+داشتن داده، پارامترها را استنباط کنیم، یعنی برازش. بخش \lr{E} یک مسئله‌ی
+معکوس را حل کرد (با جستجوی شبکه‌ای)، ولی برای این کار مسئله‌ی مستقیم را
+بارها، یک بار برای هر نقطه‌ی شبکه، حل کرد.
 
 \textbf{5.} با استفاده از فرمول‌ها، وقتی \(v = 0\) باشد چه بر سر \(P_c\)
 می‌آید؟ (راهنمایی: به حد یا به تقارن حرکت فکر کنید.) \textbf{پاسخ} بدون
@@ -1488,20 +1347,16 @@ T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\Needspace{11\baselineskip}
+
 \subsection{تکلیف}
 
-\subsubsection{\texorpdfstring{\lr{A0:} نصب و «ممیزی نظریه‌ی کلامی» (بدون
-نمره ولی الزامی؛ موعد: ابتدای هفته‌ی
-2)}{A0: نصب و «ممیزی نظریه‌ی کلامی» (بدون نمره ولی الزامی؛ موعد: ابتدای هفته‌ی 2)}}
+\subsubsection{\texorpdfstring{\lr{A0: }ممیزی نظریه‌ی کلامی}{A0: ممیزی نظریه‌ی کلامی}}
 
 \lr{A0} نمره ندارد ولی الزامی است: اگر \lr{A0} ناقص باشد، باید پیش از
 \lr{lab check-off} هفته‌ی 2 اصلاح شود.
 
-\textbf{بخش 1: محیط نرم‌افزاری (الزامی).} خروجی متنی
-\lr{\nolinkurl{python check_install.py --sample}} را تحویل دهید که در آن
-همه‌ی بسته‌ها \lr{\nolinkurl{[OK]}} باشند و میانگین پسین \lr{PyMC} دیده
-شود. اگر \lr{PyMC} کار نکرد، پیام خطا و کارهایی را که امتحان کرده‌اید
-تحویل دهید؛ دستیار آموزشی کمک می‌کند.
+دستیار آموزشی کمک می‌کند.
 
 \textbf{بخش 2: ممیزی نظریه‌ی کلامی (حداکثر 1 صفحه).} یک نظریه‌ی کلامی از
 درس‌های قبلی‌تان انتخاب کنید، مثلاً «سطوح پردازش»، «توجه به‌عنوان نورافکن»،
@@ -1514,11 +1369,6 @@ T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
 \item
   نظریه را در 1 تا 2 جمله بیان کنید.
 \item
-  \textbf{دست‌کم پنج} تصمیمی را فهرست کنید که نظریه نامشخص گذاشته و یک
-  مدل فرمال باید بگیرد (مثلاً شکل تابعی، چه چیزی پرنویز است، پارامترهای
-  آزاد کدام‌اند، حالت‌های درونی چگونه به رفتار اندازه‌گیری‌شده نگاشت
-  می‌شوند).
-\item
   برای \textbf{دو} تا از این تصمیم‌ها یک انتخاب فرمال مشخص پیشنهاد کنید
   (یک معادله یا یک گام الگوریتمی).
 \item
@@ -1528,11 +1378,21 @@ T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
 
 \textbf{معیارهای بازخورد (قبول / نیاز به اصلاح):}
 
-{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{\centering \lr{A0: }ممیزی نظریه‌ی کلامی}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+معیار
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+قبول
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نیاز به اصلاح
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 معیار
@@ -1545,8 +1405,6 @@ T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-محیط نرم‌افزاری & همه‌ی بسته‌ها \lr{\nolinkurl{[OK]}}، یا گزارش روشن خطا
-همراه با تلاش‌های انجام‌شده & خروجی‌ای تحویل نشده \\
 نامشخص بودن نظریه & \ensuremath{\geq} 5 تصمیم متمایز و واقعاً نامشخص & کمتر از 5، یا
 تکرار خود نظریه \\
 فرمال‌سازی & دو انتخاب فرمال مشخص و بدون ابهام & مبهم («از یک تابع
@@ -1554,7 +1412,6 @@ T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
 پیش‌بینی متفاوت & یک پیش‌بینی مشخص به‌علاوه‌ی آزمایشی که انتخاب‌ها را از هم
 جدا کند & بدون پیش‌بینی، یا پیش‌بینی‌ای که به انتخاب بستگی ندارد \\
 \end{longtable}
-}
 
 بهترین ممیزی‌ها در ابتدای درس هفته‌ی 2 به‌طور مختصر بحث می‌شوند.
 
@@ -1580,6 +1437,4 @@ T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
   \emph{\lr{Vision.}} \lr{W. H. Freeman.} منبع اصلی سه سطح تحلیل.
 \end{itemize}
 
-\emph{پیش‌نمایش هفته‌ی 2:} نظریه‌ی تشخیص علامت و منحنی‌های فراموشی را به
-مدل‌های \lr{Python} تبدیل می‌کنیم و بررسی می‌کنیم هر پارامتر چگونه
-پیش‌بینی‌ها را شکل می‌دهد. تکلیف \lr{A1} منتشر می‌شود.
+تکلیف \lr{A1} منتشر می‌شود.
