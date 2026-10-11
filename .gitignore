@@ -17,11 +17,4 @@ __pycache__/
 *.pyc
 .DS_Store
 
-# Build system and tooling (kept locally, not part of the published repository)
-Makefile
-latexmkrc
-scripts/
-requirements.txt
-.github/
-PROGRESS.md
-CONTRIBUTING.md
+# Source, build scripts and documentation are published with the PDFs.
