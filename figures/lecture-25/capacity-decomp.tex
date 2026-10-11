@@ -1,0 +1,11 @@
+% Area-capacity growth from an LTE baseline to a 5G deployment, decomposed into factors (example of Sec. 6.2)
+\begin{tikzpicture}
+\begin{axis}[acnplot,ybar,bar width=18pt,height=5.4cm,
+  ylabel={\bil{growth factor}{ضریب رشد}},
+  symbolic x coords={spec,eff,dens,tot},xtick=data,
+  xticklabels={\bil{spectrum $B$}{طیف $B$},\bil{efficiency $\eta$}{بازدهی $\eta$},\bil{density $n$}{چگالی $n$},\bil{total}{کل}},
+  ymode=log,ymin=1,ymax=300,log origin=infty,nodes near coords,every node near coord/.append style={font=\ACNheadfont\scriptsize},
+  enlarge x limits=0.18]
+  \addplot[fill=acnsky,draw=acnnavy] coordinates {(spec,5) (eff,4) (dens,4) (tot,80)};
+\end{axis}
+\end{tikzpicture}

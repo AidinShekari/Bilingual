@@ -30,5 +30,5 @@ and no missing glyphs (except invisible U+200F marks), and pages were reviewed.
 | 22 | Quality of Service (QoS) | done | done | yes |
 | 23 | The 5G User Plane | done | done | yes |
 | 24 | The 5G Control Plane | done | done | yes |
-| 25 | | | | |
+| 25 | Network Evolution: a Grand Synthesis | done | done | yes |
 | 26 | | | | |
