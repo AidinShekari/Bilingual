@@ -26,35 +26,22 @@
 
 فایل‌های PDF آماده در پوشهٔ [`pdf/`](pdf) هستند: `lecture-NN-en.pdf`، `lecture-NN-fa.pdf`، `syllabus-en.pdf` و `syllabus-fa.pdf`.
 
-## ساخت
+## کامپایل یک سند
 
-نیازمندی‌ها: TeX Live نسخهٔ ۲۰۲۲ یا بعدتر با XeLaTeX، `xepersian`، `bidi`، `biblatex` و `biber`، TikZ/PGFPlots و `latexmk`؛ و Python 3.
+نیازمندی‌ها: TeX Live نسخهٔ ۲۰۲۲ یا بعدتر با XeLaTeX، `xepersian`، `bidi`، `biblatex` و `biber` و TikZ/PGFPlots. برای نمونه در پوشهٔ یک درس:
 
 </div>
 
 ```sh
-make all                    # همهٔ درس‌ها در هر دو زبان + طرح درس
-make english                # فقط نسخه‌های انگلیسی
-make persian                # فقط نسخه‌های فارسی
-make lecture LECTURE=07     # یک درس، هر دو زبان
-make check                  # بررسی گزارش‌های ساخت
-make validate               # بازمحاسبهٔ مقادیر مثال‌ها
-make clean
+cd lectures/lecture-07
+xelatex lecture-07-fa.tex && biber lecture-07-fa && xelatex lecture-07-fa.tex && xelatex lecture-07-fa.tex
 ```
 
 <div dir="rtl">
 
-## بررسی کیفیت
-
-* `scripts/check_logs.py`: خطاها، ارجاع‌ها و استنادهای تعریف‌نشده، نویسه‌های گمشده، جعبه‌های سرریز و مشکلات راست‌به‌چپ را گزارش می‌کند.
-* `scripts/lint_sources.py`: هم‌ارزی دو نسخه، ساختار چهارده‌بخشی، پوشش سرفصل و برچسب‌های فارسی شکل‌ها را بررسی می‌کند.
-* `scripts/validate_examples.py`: اعداد مثال‌ها و پاسخ‌ها را دوباره محاسبه می‌کند.
-
-گردش‌کار GitHub Actions در هر push کل ساخت و هر سه بررسی را اجرا و فایل‌های PDF را به‌عنوان خروجی بارگذاری می‌کند.
-
 ## مجوز
 
-متن و شکل‌ها: CC BY-SA 4.0. کد (اسکریپت‌ها، فایل‌های ساخت، قالب‌ها): MIT. قلم وزیرمتن: SIL Open Font License 1.1. پرونده‌ی [LICENSE](LICENSE) را ببینید.
+متن و شکل‌ها: CC BY-SA 4.0. قالب‌های LaTeX: MIT. قلم وزیرمتن: SIL Open Font License 1.1. پرونده‌ی [LICENSE](LICENSE) را ببینید.
 
 ## محدودیت‌ها
 

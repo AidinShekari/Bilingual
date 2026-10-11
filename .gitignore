@@ -16,3 +16,12 @@ build/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Build system and tooling (kept locally, not part of the published repository)
+Makefile
+latexmkrc
+scripts/
+requirements.txt
+.github/
+PROGRESS.md
+CONTRIBUTING.md

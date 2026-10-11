@@ -37,50 +37,20 @@ syllabus/syllabus-{en,fa}.tex                course syllabus
 templates/                                   preambles, cover, macros, strings, shared style
 references/acn.bib                           bibliography (biblatex, IEEE style)
 fonts/                                       Vazirmatn (SIL OFL 1.1)
-scripts/                                     QA and validation scripts (Python 3, stdlib only)
 pdf/                                         compiled PDFs
-Makefile, latexmkrc                          build system
-.github/workflows/build.yml                  continuous integration
 ```
 
-## Building
+## Compiling a document yourself
 
 Requirements: TeX Live 2022 or later with XeLaTeX, `xepersian`, `bidi`,
-`biblatex` + `biber`, TikZ/PGFPlots and `latexmk`; Python 3.
+`biblatex` + `biber` and TikZ/PGFPlots. From a lecture folder, for example:
 
 ```sh
-make all                    # every lecture in both languages + syllabus
-make english                # English editions only
-make persian                # Persian editions only
-make lecture LECTURE=07     # one lecture, both languages
-make syllabus
-make check                  # scan logs: errors, undefined refs, missing glyphs, overfull boxes
-make validate               # recompute worked-example values
-make clean                  # remove build/
+cd lectures/lecture-07
+xelatex lecture-07-en.tex && biber lecture-07-en && xelatex lecture-07-en.tex && xelatex lecture-07-en.tex
 ```
 
-On Debian/Ubuntu:
-
-```sh
-sudo apt-get install texlive-xetex texlive-lang-arabic texlive-latex-extra \
-  texlive-pictures texlive-science texlive-bibtex-extra texlive-fonts-recommended \
-  biber latexmk python3
-```
-
-Use `make -j4 all` for a parallel build.
-
-## Quality checks
-
-* `scripts/check_logs.py` — reports errors, undefined references and citations,
-  missing glyphs, overfull boxes and RTL/LTR problems for every built document.
-* `scripts/lint_sources.py [--fix]` — checks EN/FA parity (labels, equations,
-  figures, citations), the 14-section structure, syllabus coverage and Persian
-  figure labels; `--fix` applies safe automatic corrections.
-* `scripts/validate_examples.py` — recomputes selected numbers from worked
-  examples and solutions.
-
-The GitHub Actions workflow runs the full build and all three checks on every
-push and uploads the PDFs as an artifact.
+Run `biber` with `--input-directory ../../references` if it cannot find `acn.bib`.
 
 ## Conventions
 
@@ -91,7 +61,7 @@ English edition.
 
 ## License
 
-Text and figures: CC BY-SA 4.0. Code (scripts, build files, templates): MIT.
+Text, figures and PDFs: CC BY-SA 4.0. LaTeX templates: MIT.
 Vazirmatn font: SIL Open Font License 1.1. See [LICENSE](LICENSE).
 
 ## Limitations
