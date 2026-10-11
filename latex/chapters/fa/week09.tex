@@ -1,0 +1,951 @@
+\section{هفته‌ی 9: مدل‌سازی بیزی 1: پیشین، پسین و تقریب شبکه‌ای}
+
+\begin{quote}
+\textbf{فصل 4: مدل‌سازی بیزی} · درس 1 ساعت · \lr{lab} 2 ساعت
+\textbf{داده‌ی اصلی:} یک نسبت یادآوری (30 از 50) و شرکت‌کننده‌ی \lr{SDT}
+هفته‌ی 2 (68/100 \lr{hit}، 11/100 \lr{false alarm).}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{واژه‌های کلیدی}
+
+واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
+باشند).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\lr{prior} & توزیع پیشین \lr{(prior)} & باور درباره‌ی پارامتر پیش از دیدن
+داده \\
+\lr{posterior} & توزیع پسین \lr{(posterior)} & باور درباره‌ی پارامتر بعد
+از دیدن داده \\
+\lr{grid approximation} & تقریب شبکه‌ای \lr{(grid)} & محاسبه‌ی پسین روی
+شبکه‌ای از مقادیر \\
+\lr{signal detection theory (SDT)} & نظریه‌ی تشخیص علامت & مدلی که حساسیت
+را از سوگیری پاسخ جدا می‌کند \\
+\lr{hit} & اصابت \lr{(hit)} & پاسخ «بله» وقتی علامت وجود دارد \\
+\lr{Bayes' rule} & قاعده‌ی بیز & پسین \ensuremath{\propto} درست‌نمایی × پیشین \\
+\lr{parameter} & پارامتر & کمیت قابل تنظیم مدل که بین افراد یا شرایط فرق
+می‌کند \\
+\lr{likelihood} & درست‌نمایی & احتمال داده به‌عنوان تابعی از پارامترها \\
+\lr{evidence} & شواهد & اطلاعاتی که برای تصمیم جمع می‌شود \\
+\lr{beta-binomial model} & مدل \lr{beta-binomial} & پیشین \lr{Beta} با
+داده‌ی دوجمله‌ای \\
+\lr{binomial distribution} & توزیع دوجمله‌ای & توزیع تعداد موفقیت در
+\lr{n} کوشش \\
+\lr{MAP estimate} & برآورد \lr{MAP} & مُد توزیع پسین \\
+\lr{credible interval} / \lr{HDI} & بازه‌ی باورپذیر \lr{(credible
+interval)} & بازه‌ای که با احتمال مشخص پارامتر را دارد \\
+\lr{confidence interval (CI)} & بازه‌ی اطمینان & بازه‌ای که با روش مشخص
+پارامتر واقعی را در بر می‌گیرد \\
+\lr{prior predictive check} & بررسی پیش‌بینی پیشین & شبیه‌سازی داده از
+پیشین برای سنجش معقول بودن آن \\
+\lr{simulation} & شبیه‌سازی & تولید داده‌ی مصنوعی با اجرای مدل \\
+\lr{sensitivity (d′)} & حساسیت & فاصله‌ی توزیع علامت و نویز \\
+\lr{estimate} / \lr{estimator} & برآورد / برآوردگر & مقدار به‌دست‌آمده
+برای پارامتر / روش به دست آوردن آن \\
+\lr{maximum likelihood estimate (MLE)} & برآورد بیشینه‌ی درست‌نمایی &
+پارامترهایی که داده را محتمل‌ترین می‌کنند \\
+\lr{cognitive model} & مدل شناختی & توصیف دقیق و ریاضی یا محاسباتی از یک
+فرایند ذهنی \\
+\lr{trial} & کوشش \lr{(trial)} & یک بار انجام تکلیف توسط شرکت‌کننده \\
+\lr{conjugate prior} & پیشین مزدوج \lr{(conjugate)} & پیشینی که پسین
+هم‌خانواده می‌دهد \\
+\lr{forgetting curve} & منحنی فراموشی & کاهش یادآوری با گذشت زمان \\
+\lr{accuracy} & دقت & نسبت پاسخ‌های درست \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{اهداف یادگیری}
+
+در پایان این هفته، دانشجویان می‌توانند:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  قاعده‌ی بیز را برای پارامترها \textbf{بیان کنند} و نقش پیشین
+  \lr{(prior)}، درست‌نمایی، شواهد \lr{(evidence)} و پسین \lr{(posterior)}
+  را \textbf{مشخص کنند}.
+\item
+  پسین را برای مدل \lr{beta-binomial} به‌صورت تحلیلی و با تقریب شبکه‌ای
+  به‌صورت عددی، برای یک و دو پارامتر، \textbf{حساب کنند}.
+\item
+  یک پسین را \textbf{خلاصه کنند} (میانگین، میانه، \lr{MAP}، انحراف
+  معیار، بازه‌های دم‌برابر و بیشترین چگالی) و \lr{credible interval} را از
+  بازه‌ی اطمینان \textbf{متمایز کنند}.
+\item
+  \textbf{توضیح دهند} که پیشین و مقدار داده با هم چطور پسین را تعیین
+  می‌کنند، و با شبیه‌سازی پیش‌بینی پیشین \textbf{بررسی کنند} که پیشین معقول
+  است یا نه.
+\item
+  احتمال‌های پسین فرضیه‌های معنادار روان‌شناختی را \textbf{تفسیر کنند}
+  (مثلاً «\(P(d' > 1 \mid \text{\lr{data}})\)»).
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مقدمه}
+
+از هفته‌ی 3 پرسیده‌ایم: «کدام مقدار واحد پارامتر داده‌ها را بهتر توضیح
+می‌دهد؟» و بعد، در هفته‌ی 5، «این برآورد در تکرارهای خیالی چقدر تغییر
+می‌کرد؟» پژوهشگران اغلب می‌خواهند چیز مستقیم‌تری بگویند:
+
+\begin{quote}
+\emph{«با توجه به این داده‌ها، با احتمال 95\% حساسیت این شرکت‌کننده بین
+1.2 و 2.1 است.»} \emph{«احتمال اینکه دست‌کاری پاداش شرکت‌کننده‌ها را
+\lr{liberal}تر کرده باشد 0.98 است.»}
+\end{quote}
+
+بازه‌های اطمینان فراوانی‌گرا اجازه‌ی چنین جمله‌هایی را \textbf{نمی‌دهند}
+(هفته‌ی 5). استنباط بیزی می‌دهد، به یک قیمت: باید بگوییم \textbf{پیش از}
+دیدن داده درباره‌ی پارامترها چه باوری داشتیم، به شکل یک \textbf{توزیع
+پیشین}. بعد قاعده‌ی بیز پیشین را با درست‌نمایی (که بلدیم بنویسیم) ترکیب
+می‌کند و یک \textbf{توزیع پسین} می‌سازد: همه‌ی آنچه مدل و داده با هم
+درباره‌ی پارامترها می‌گویند.
+
+روش‌های بیزی چند دردسر قبلی ما را هم آسان‌تر می‌کنند: عدم قطعیت مجانی به
+دست می‌آید (بدون \lr{Hessian} یا \lr{bootstrap)}، مدل‌های سلسله‌مراتبی چند
+شرکت‌کننده طبیعی می‌شوند (هفته‌ی 13)، و مقایسه‌ی مدل‌ها یک جواب اصولی پیدا
+می‌کند (هفته‌ی 10). هزینه‌اش محاسبه است، و برای همین هفته‌های 11 تا 13
+درباره‌ی نمونه‌گیری‌اند.
+
+\begin{quote}
+\textbf{یادآوری (هفته‌ی 1):} این هفته درباره‌ی \textbf{تحلیل داده‌ی بیزی}
+است؛ روشی که ما پژوهشگران برای برآورد پارامترهای \emph{هر} مدلی به کار
+می‌بریم. هیچ ادعایی ندارد که ذهن بیزی است. \emph{مدل‌های بیزی شناخت} در
+هفته‌ی 15 می‌آیند.
+\end{quote}
+
+\paragraph{این موضوع کجا به کار می‌رود؟}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{نمونه‌های کوچک و موردهای تکی.} در عصب‌روان‌شناسی بالینی اغلب یک
+  بیمار و چند ده \lr{trial} داریم. تحلیل بیزی با یک \lr{prior} معقول،
+  عدم قطعیت صادقانه و قابل استفاده‌ای می‌دهد، جایی که \lr{MLE} ناپایدار
+  است.
+\item
+  \textbf{گزاره‌های احتمالی مستقیم} که پزشکان و سیاست‌گذاران می‌فهمند: «با
+  احتمال 97\% آموزش جدید حافظه را بهتر کرده».
+\item
+  \textbf{آزمون‌های تطبیقی \lr{(adaptive testing):}} آزمون‌های کامپیوتری
+  (مثلاً آزمون‌های بینایی و شنوایی، امتحان‌های تطبیقی) بعد از هر پاسخ
+  \lr{posterior} را به‌روز می‌کنند و آیتم بعدی را جایی انتخاب می‌کنند که
+  بیشترین اطلاعات را می‌دهد.
+\item
+  \textbf{ترکیب شواهد:} \lr{posterior} امروز \lr{prior} فرداست، پس نتایج
+  مطالعه‌های قبلی را می‌شود به‌طور رسمی وارد تحلیل کرد.
+\item
+  \textbf{نرم‌افزارهای امروزی مدل‌سازی شناختی} \lr{(PyMC}، \lr{Stan}،
+  \lr{JAGS)} بیزی‌اند؛ بیشتر مدل‌های سلسله‌مراتبی در مقاله‌های اخیر به همین
+  روش برازش می‌شوند (هفته‌ی 13).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{جزوه‌ی درس}
+
+\paragraph{به زبان ساده}
+
+تا اینجا \emph{یک} بهترین مقدار پارامتر پیدا می‌کردیم و بعد می‌پرسیدیم
+چقدر ممکن است تغییر کند. روش بیزی در عوض دانش ما درباره‌ی پارامتر را به
+شکل یک \textbf{توزیع احتمال} کامل توصیف می‌کند. پیش از داده،
+\textbf{\lr{prior} (پیشین)} می‌گوید کدام مقدارها را معقول می‌دانیم (مثلاً
+«احتمال یادآوری احتمالاً متوسط است، نه 0 یا 1»). بعد داده‌ها به هر مقدار
+ممکن به اندازه‌ی درست‌نمایی‌اش (هفته‌ی 4) وزن تازه می‌دهند. نتیجه،
+\textbf{\lr{posterior} (پسین)}، می‌گوید هر مقدار \emph{بعد} از دیدن داده
+چقدر معقول است. به زبان ساده: \emph{\lr{posterior} \ensuremath{\propto} \lr{likelihood} ×
+\lr{prior}}. از \lr{posterior} می‌توانیم یک بهترین حدس (میانگین آن)، یک
+عدم قطعیت (پراکندگی آن) و گزاره‌های مستقیمی مثل «احتمال اینکه \(d' > 1\)
+باشد 0.93 است» بخوانیم. با داده‌ی کم \lr{prior} اثر زیادی دارد؛ با داده‌ی
+زیاد \lr{posterior} زیر سلطه‌ی درست‌نمایی است و به \lr{MLE} نزدیک می‌شود.
+محاسبه‌ی \lr{posterior} برای یک یا دو پارامتر آسان است (روی \lr{grid)} و
+برای بیشتر از آن به روش‌های نمونه‌گیری نیاز دارد (هفته‌های 11 تا 13).
+
+\textbf{زمان‌بندی پیشنهادی (60 دقیقه):} قاعده‌ی بیز 10 · پیشین‌ها 10 ·
+\lr{beta-binomial} 12 · تقریب شبکه‌ای 10 · خلاصه‌ها و \lr{credible
+interval}ها 12 · بررسی پیش‌بینی پیشین 6.
+
+\subsubsection{1. قاعده‌ی بیز برای پارامترها}
+
+\[
+\underbrace{p(\boldsymbol\theta \mid \mathbf{y})}_{\text{\lr{posterior}}}
+= \frac{\overbrace{p(\mathbf{y} \mid \boldsymbol\theta)}^{\text{\lr{likelihood}}}\;\overbrace{p(\boldsymbol\theta)}^{\text{\lr{prior}}}}{\underbrace{p(\mathbf{y})}_{\text{\lr{evidence (marginal likelihood)}}}},
+\qquad
+p(\mathbf{y}) = \int p(\mathbf{y}\mid\boldsymbol\theta)\,p(\boldsymbol\theta)\,d\boldsymbol\theta.
+\]
+
+(این هفته «\(\mathcal{M}\)» را در نمادگذاری نمی‌نویسیم: همه‌چیز مشروط به
+مدل است.)
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{درست‌نمایی} دقیقاً همان تابع هفته‌ی 4 است.
+\item
+  \textbf{پیشین} آنچه را پیش از داده معلوم یا محتمل است بیان می‌کند.
+\item
+  \textbf{شواهد} \(p(\mathbf{y})\) به \(\boldsymbol\theta\) بستگی ندارد.
+  برای برآورد، فقط ثابت نرمال‌ساز است که انتگرال پسین را 1 می‌کند:
+\end{itemize}
+
+\[
+p(\boldsymbol\theta \mid \mathbf{y}) \propto p(\mathbf{y}\mid\boldsymbol\theta)\, p(\boldsymbol\theta).
+\]
+
+\textbf{پسین \ensuremath{\propto} درست‌نمایی × پیشین.} در هفته‌ی 10 شواهد ستاره‌ی مقایسه‌ی بیزی
+مدل‌ها می‌شود.
+
+\textbf{شهود.} پسین یک مصالحه است: جایی بالاست که مقادیر پارامتر هم
+\emph{از پیش} محتمل‌اند و هم داده را محتمل می‌کنند. با داده‌ی کم پیشین مهم
+است؛ با داده‌ی زیاد درست‌نمایی غالب می‌شود و پسین حول \lr{MLE} متمرکز
+می‌شود.
+
+\paragraph{خواندن ریاضی}
+
+\begin{itemize}
+\tightlist
+\item
+  \(p(\boldsymbol\theta \mid \mathbf{y})\): «احتمال (چگالی) مقدار
+  پارامتر \(\boldsymbol\theta\) \emph{به شرط} داده». این همان چیزی است
+  که می‌خواهیم.
+\item
+  \(p(\mathbf{y} \mid \boldsymbol\theta)\): درست‌نمایی، که به‌عنوان تابعی
+  از \(\boldsymbol\theta\) خوانده می‌شود (هفته‌ی 4).
+\item
+  \(p(\boldsymbol\theta)\): \lr{prior} که پیش از داده انتخاب می‌شود.
+\item
+  \(p(\mathbf{y}) = \int p(\mathbf{y}\mid\boldsymbol\theta)p(\boldsymbol\theta)\,d\boldsymbol\theta\):
+  انتگرال، «درست‌نمایی × \lr{prior»} را روی \emph{همه‌ی} مقدارهای ممکن
+  پارامتر جمع می‌کند. یک عدد است و برای همه‌ی \(\boldsymbol\theta\)ها
+  یکسان است، پس در برآورد فقط منحنی را طوری مقیاس می‌کند که مساحت کل 1
+  شود.
+\item
+  \(\propto\) یعنی «متناسب با»: برابر، به‌جز یک ضریب ثابت. در عمل
+  «درست‌نمایی × \lr{prior»} را در مقدارهای زیادی حساب می‌کنیم و بعد بر
+  جمعشان تقسیم می‌کنیم، دقیقاً مثل جدول چهارنقطه‌ای مثال حل‌شده (0.0004479 /
+  0.0009574 = 0.468).
+\end{itemize}
+
+\subsubsection{2. انتخاب پیشین‌ها}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+نوع
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مثال برای احتمال یادآوری \(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+چه وقت
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+تخت / یکنواخت & \(\mathrm{Beta}(1, 1)\) & وقتی هر مقدار در دامنه واقعاً
+به یک اندازه محتمل است (به‌ندرت درست است) \\
+ضعیف‌آگاهی‌بخش \lr{(weakly informative)} & \(\mathrm{Beta}(2, 2)\): ترجیح
+ملایم برای مقادیر میانی & \textbf{پیش‌فرض برای بیشتر مدل‌های شناختی}:
+مقادیر پوچ را کنار می‌گذارد و بقیه را به داده می‌سپارد \\
+آگاهی‌بخش \lr{(informative)} & \(\mathrm{Beta}(20, 5)\): «یادآوری بعد از
+یک روز حدود 0.8 است» & وقتی مطالعات قبلی یا نظریه دانش واقعی می‌دهند \\
+\end{longtable}
+}
+
+اصول: - پیشین‌ها باید \textbf{پیش از} دیدن داده تعیین شوند. - باید دامنه‌ی
+پارامتر را رعایت کنند (مثلاً هیچ جرم پیشینی روی نرخ زوال منفی نباشد). -
+باید با \textbf{شبیه‌سازی پیش‌بینی پیشین} بررسی شوند (بخش 6): پیشین کدام
+\emph{داده‌ها} را نتیجه می‌دهد؟ - یک پیشین «مبهم» روی یک مقیاس می‌تواند روی
+مقیاس دیگری خیلی آگاهی‌بخش باشد (بخش \lr{D lab).} - پیشین‌هایتان را گزارش
+کنید و حساسیت نتیجه‌گیری‌ها را به جایگزین‌های معقول بررسی کنید (هفته‌ی 10).
+
+\subsubsection{\texorpdfstring{3. یک حالت با جواب بسته: مدل
+\lr{beta-binomial}}{3. یک حالت با جواب بسته: مدل beta-binomial}}
+
+برای \(y\) موفقیت در \(n\) \lr{trial} دوجمله‌ای با پیشین
+\(\mathrm{Beta}(a_0, b_0)\) روی \(\theta\):
+
+\[
+p(\theta \mid y) \propto \underbrace{\theta^{y}(1-\theta)^{n-y}}_{\text{\lr{likelihood}}} \cdot \underbrace{\theta^{a_0 - 1}(1-\theta)^{b_0 - 1}}_{\text{\lr{prior}}}
+= \theta^{a_0 + y - 1}(1-\theta)^{b_0 + n - y - 1},
+\]
+
+پس پسین دوباره یک توزیع \lr{Beta} است:
+
+\[
+\theta \mid y \sim \mathrm{Beta}(a_0 + y,\; b_0 + n - y).
+\]
+
+وقتی پیشین و پسین از یک خانواده باشند، پیشین را \textbf{\lr{conjugate}}
+می‌نامند.
+
+\begin{itemize}
+\tightlist
+\item
+  \(a_0\) و \(b_0\) مثل \textbf{شمارش‌های کاذب} \lr{(pseudo-counts)}
+  موفقیت‌ها و شکست‌های پیشین عمل می‌کنند.
+\item
+  میانگین پسین: \(\dfrac{a_0 + y}{a_0 + b_0 + n}\)؛ میانگین وزنی میانگین
+  پیشین \(\frac{a_0}{a_0 + b_0}\) و نسبت مشاهده‌شده‌ی \(y/n\)، با وزن‌های
+  \(a_0 + b_0\) و \(n\).
+\item
+  \textbf{ارتباط با هفته‌های 2 و 4:} تصحیح \lr{log-linear}
+  \((y + 0.5)/(n + 1)\) دقیقاً میانگین پسین تحت پیشین
+  \(\mathrm{Beta}(0.5, 0.5)\)، به نام \emph{پیشین \lr{Jeffreys}}، است.
+  آن «تصحیح» یک برآورد بیزی در لباس مبدل بود.
+\end{itemize}
+
+\paragraph{خواندن ریاضی}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{توزیع \lr{Beta}} \(\mathrm{Beta}(a, b)\) یک منحنی زنگوله‌مانند
+  انعطاف‌پذیر روی بازه‌ی 0 تا 1 است و برای توصیف باور درباره‌ی یک احتمال
+  ایده‌آل است. میانگین آن \(a/(a+b)\) است. \(\mathrm{Beta}(1,1)\) صاف
+  است؛ \(\mathrm{Beta}(20, 5)\) یک برآمدگی باریک حول 0.8 است.
+\item
+  قاعده‌ی به‌روزرسانی
+  \(\mathrm{Beta}(a_0,\allowbreak b_0) \to \mathrm{Beta}(a_0 + y,\allowbreak b_0 + n - y)\)
+  فقط \textbf{شمردن} است: موفقیت‌های مشاهده‌شده را به \(a\) و شکست‌ها را به
+  \(b\) اضافه کن. \lr{prior} طوری رفتار می‌کند که انگار قبلاً \(a_0\)
+  موفقیت و \(b_0\) شکست دیده‌ایم (شمارش‌های ساختگی یا \lr{pseudo-counts).}
+\item
+  \textbf{مثال:} \lr{prior} برابر \(\mathrm{Beta}(2, 2)\) («انگار» 2
+  یادآوری و 2 شکست)، داده 7 از 10 \ensuremath{\leftarrow} \(\mathrm{Beta}(9, 5)\) با میانگین
+  \(9/14 = 0.643\). \lr{prior} مقدار مشاهده‌شده‌ی 0.70 را کمی به سمت 0.5
+  می‌کشد، چون 4 مشاهده‌ی ساختگی به 10 مشاهده‌ی واقعی اضافه می‌کند.
+\end{itemize}
+
+\subsubsection{\texorpdfstring{4. تقریب شبکه‌ای \lr{(grid
+approximation)}}{4. تقریب شبکه‌ای (grid approximation)}}
+
+بیشتر مدل‌های شناختی پیشین \lr{conjugate} ندارند. اگر فقط یک یا دو
+پارامتر باشد، می‌توانیم پسین را روی یک شبکه تقریب بزنیم:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  شبکه‌ای از مقادیر پارامتر
+  \(\boldsymbol\theta_1,\allowbreak \dots,\allowbreak \boldsymbol\theta_G\) تعریف کنید که همه‌ی
+  مقادیر معقول را بپوشاند.
+\item
+  در هر نقطه‌ی شبکه \textbf{لگاریتم} پیشین به‌علاوه‌ی \textbf{لگاریتم}
+  درست‌نمایی را حساب کنید (لگاریتم‌ها، مثل هفته‌ی 4، از سرریز جلوگیری
+  می‌کنند).
+\item
+  بیشینه را کم کنید، نمایی بگیرید و نرمال کنید تا جمع مقادیر 1 شود (یا
+  انتگرالشان 1 شود).
+\end{enumerate}
+
+نتیجه یک تقریب گسسته از پسین است که هر خلاصه‌ای را می‌شود از آن حساب کرد.
+تقریب شبکه‌ای تا حد دقت شبکه دقیق است و برای ساختن شهود ایده‌آل است. فراتر
+از 2 تا 3 پارامتر شکست می‌خورد (نفرین ابعاد، هفته‌ی 3)، و همین انگیزه‌ی
+\lr{MCMC} است (هفته‌های 11\lr{--}13).
+
+\subsubsection{5. خلاصه کردن یک پسین}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+خلاصه
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تعریف
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+میانگین پسین & \(\mathbb{E}[\theta \mid \mathbf{y}]\) & خطای مربع مورد
+انتظار را کمینه می‌کند \\
+میانه‌ی پسین & صدک 50 & در برابر چولگی مقاوم است \\
+\lr{MAP} & \(\arg\max_\theta p(\theta\mid\mathbf{y})\) & تحت پیشین تخت
+با \lr{MLE} برابر است \\
+انحراف معیار پسین & \(\sqrt{\mathrm{Var}[\theta\mid\mathbf{y}]}\) &
+همتای بیزی \lr{SE} \\
+بازه‌ی دم‌برابر 95\% & صدک 2.5 تا 97.5 & محاسبه‌اش آسان است \\
+\textbf{\lr{HDI}} 95\% (بازه‌ی بیشترین چگالی) & باریک‌ترین بازه‌ای که 95\%
+پسین را در بر دارد؛ هر مقدار داخل آن از هر مقدار بیرونش محتمل‌تر است &
+برای پسین‌های چوله ترجیح دارد \\
+\end{longtable}
+}
+
+\textbf{\lr{credible interval} در برابر بازه‌ی اطمینان.} \lr{credible
+interval} 95\% \emph{واقعاً} یعنی «با توجه به مدل، پیشین و داده، پارامتر
+با احتمال 0.95 در این بازه است». بازه‌ی اطمینان گزاره‌ای درباره‌ی رفتار
+بلندمدت یک رویه است (هفته‌ی 5). با پیشین‌های ضعیف و داده‌ی کافی، این دو
+اغلب از نظر عددی یکی می‌شوند، ولی تفسیرشان فرق دارد.
+
+\textbf{احتمال پسین فرضیه‌ها} مجانی به دست می‌آید:
+\(P(d' > 1 \mid \mathbf{y})\) فقط جرم پسین بالای 1 است.
+
+\subsubsection{\texorpdfstring{6. بررسی‌های پیش‌بینی پیشین \lr{(prior
+predictive
+checks)}}{6. بررسی‌های پیش‌بینی پیشین (prior predictive checks)}}
+
+\textbf{توزیع پیش‌بینی پیشین} داده‌هایی را توصیف می‌کند که مدل \emph{پیش
+از} دیدن هر داده‌ای انتظار دارد:
+
+\[
+p(\mathbf{y}^{\text{\lr{rep}}}) = \int p(\mathbf{y}^{\text{\lr{rep}}}\mid\boldsymbol\theta)\, p(\boldsymbol\theta)\, d\boldsymbol\theta.
+\]
+
+برای شبیه‌سازی از آن: \(\boldsymbol\theta\) را از پیشین بکشید و بعد از
+مدل داده شبیه‌سازی کنید. اگر داده‌های شبیه‌سازی‌شده پوچ به نظر برسند (مثلاً
+تقریباً همه‌ی نرخ‌های \lr{hit} دقیقاً 0 یا 1، یا یادآوری‌ای که طی یک ماه
+\emph{بیشتر} می‌شود)، پیشین نامعقول است. بررسی‌های پیش‌بینی پیشین نسخه‌ی
+بیزی عادت «پیش از برازش شبیه‌سازی کن» هفته‌ی 2 هستند.
+
+\begin{quote}
+\textbf{پیشرفته: پسین به‌عنوان پیشین به‌روزشده.} چون برای داده‌های مستقل
+\(p(\boldsymbol\theta\mid\mathbf{y}_1,\allowbreak \mathbf{y}_2) \propto p(\mathbf{y}_2\mid\boldsymbol\theta)\, p(\boldsymbol\theta\mid\mathbf{y}_1)\)،
+پسین امروز پیشین فرداست. پس به‌روزرسانی بیزی ذاتاً ترتیبی است، و به همین
+دلیل استنباط بیزی یک مدل هنجاری محبوب برای \emph{یادگیری} است (هفته‌ی
+15).
+\end{quote}
+
+\paragraph{برای یک مهندس}
+
+\begin{itemize}
+\tightlist
+\item
+  این همان \textbf{تخمین بیزی} در نظریه‌ی آشکارسازی و تخمین است:
+  \lr{posterior} چیزی است که تخمین‌گر \lr{MAP} یا \lr{MMSE} با آن کار
+  می‌کند. میانگین \lr{posterior} همان \textbf{تخمین \lr{MMSE}} است؛ مد
+  \lr{posterior} \textbf{تخمین \lr{MAP}} است؛ با \lr{prior} صاف،
+  \lr{MAP} = \lr{ML.}
+\item
+  \textbf{به‌روزرسانی \lr{conjugate} بتا\lr{--}دوجمله‌ای} همان ایده‌ی به‌روزرسانی
+  \lr{conjugate} گاوسی است، یعنی هسته‌ی اسکالر \textbf{فیلتر کالمن}
+  (میانگین و واریانس \lr{prior} + اندازه‌گیری \ensuremath{\leftarrow} میانگین و واریانس
+  \lr{posterior)}، فقط اینجا برای یک احتمال به جای یک حالت گاوسی.
+\item
+  \textbf{به‌روزرسانی ترتیبی} \lr{(«posterior} امروز \lr{prior} فرداست»)
+  دقیقاً همان فیلترینگ بیزی بازگشتی است.
+\item
+  تفاوت در روان‌شناسی: \lr{prior} معمولاً \textbf{ضعیف} است و باید
+  \emph{برای خواننده توجیه شود}، و خروجی اصلی یک تصمیم نیست، بلکه توصیف
+  عدم قطعیت درباره‌ی یک پارامتر روان‌شناختی است. بررسی پیش‌بینی پیشین
+  \lr{(prior predictive check)} عادتی است که \lr{prior}ها را قابل دفاع
+  می‌کند.
+\end{itemize}
+
+\paragraph{برای مدرس}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{grid} چهارنقطه‌ای را روی تخته انجام دهید} (مثال حل‌شده، بخش
+  1) با ستون‌هایی برای \lr{prior}، درست‌نمایی، حاصل‌ضرب و \lr{posterior.}
+  کل استنباط بیزی در همین یک جدول است. بعد \lr{prior} را به (0.1، 0.1،
+  0.4، 0.4) تغییر دهید و زنده دوباره حساب کنید: دانشجوها اثر \lr{prior}
+  را می‌بینند.
+\item
+  \textbf{از داستان شمارش‌های ساختگی \lr{Beta} استفاده کنید.} \lr{«prior}
+  برابر \lr{Beta(2,} 2) مثل این است که قبلاً 2 یادآوری و 2 شکست دیده
+  باشیم.» دانشجوهایی که \lr{prior} را دلبخواهی می‌دانند، وقتی آن را داده‌ی
+  خیالی ببینند آرام می‌شوند.
+\item
+  \textbf{مستقیماً به نگرانی «ذهنی بودن» جواب دهید.} هر تحلیلی فرض دارد
+  (درست‌نمایی هم یک فرض است)؛ تحلیل بیزی یکی دیگر از فرض‌ها را صریح می‌کند،
+  و تحلیل حساسیت (هفته‌ی 10) بررسی می‌کند که چقدر مهم است.
+\item
+  \textbf{سؤال‌های رایج.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{«کدام \lr{prior} درست است؟»} هیچ‌کدام تنها جواب درست نیست. از
+    \lr{prior}های \lr{weakly informative} استفاده کنید، آن‌ها را با
+    شبیه‌سازی پیش‌بینی پیشین بررسی کنید و حساسیت را گزارش کنید.
+  \item
+    \emph{«آیا \lr{credible interval} همان بازه‌ی اطمینان است؟»} با
+    \lr{prior} ضعیف و داده‌ی کافی اغلب از نظر عددی شبیه‌اند، ولی فقط
+    \lr{credible interval} یعنی «با احتمال 95\% پارامتر اینجاست».
+  \item
+    \emph{«پس مغز بیزی است؟»} این سؤال دیگری است (هفته‌ی 15). این هفته
+    بیز ابزاری برای پژوهشگر است.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مثال حل‌شده}
+
+\subsubsection{بخش 1: یک شبکه‌ی چهارنقطه‌ای با دست}
+
+یک شرکت‌کننده \(y = 7\) از \(n = 10\) آیتم را به یاد می‌آورد. برای ساده
+نگه داشتن حساب، فرض کنید \(\theta\) فقط می‌تواند مقادیر 0.2، 0.4، 0.6 یا
+0.8 را بگیرد، هرکدام با احتمال پیشین 1/4.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پیشین
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+درست‌نمایی \(\theta^7(1-\theta)^3\) (بدون ثابت)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پیشین × درست‌نمایی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پسین
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0.2 & 0.25 & 0.0000066 & 0.0000016 & \textbf{0.002} \\
+0.4 & 0.25 & 0.0003539 & 0.0000885 & \textbf{0.092} \\
+0.6 & 0.25 & 0.0017916 & 0.0004479 & \textbf{0.468} \\
+0.8 & 0.25 & 0.0016777 & 0.0004194 & \textbf{0.438} \\
+جمع & 1 & & 0.0009574 & 1.000 \\
+\end{longtable}
+}
+
+هر مقدار پسین = (پیشین × درست‌نمایی) / جمع. ضریب دوجمله‌ای حذف شد چون در
+نرمال‌سازی ساده می‌شود. تفسیر: بعد از داده، 0.6 و 0.8 تقریباً به یک اندازه
+محتمل‌اند و 0.2 عملاً کنار گذاشته شده است.
+
+\subsubsection{\texorpdfstring{بخش 2: همان داده با یک پیشین \lr{Beta}
+پیوسته}{بخش 2: همان داده با یک پیشین Beta پیوسته}}
+
+پیشین \(\mathrm{Beta}(2, 2)\) (میانگین 0.5، با ترجیح ملایم برای مقادیر
+میانی). پسین: \(\mathrm{Beta}(2 + 7,\allowbreak 2 + 3) = \mathrm{Beta}(9,\allowbreak 5)\).
+
+\begin{itemize}
+\tightlist
+\item
+  میانگین پسین \(= 9/14 = 0.643\): بین میانگین پیشین (0.5) و نسبت
+  مشاهده‌شده (0.7)، نزدیک‌تر به داده چون \(n = 10 > a_0 + b_0 = 4\).
+\item
+  \lr{MAP} (مُد) \(= (9 - 1)/(9 + 5 - 2) = 0.667\).
+\item
+  \lr{credible interval} دم‌برابر 95\% \(= [0.386, 0.861]\).
+\end{itemize}
+
+\textbf{تفسیر.} با یک پیشین ملایم و 10 آیتم، احتمال یادآوری احتمالاً حدود
+0.64 است، ولی هر مقداری از حدود 0.39 تا 0.86 هنوز \lr{credible} است. ده
+آیتم چیز زیادی به ما نمی‌گوید.
+
+\subsubsection{بخش 3: با داده‌ی بیشتر پیشین کمتر مهم است}
+
+با \(y = 30\) از \(n = 50\):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+پیشین
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پسین
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+میانگین
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{credible interval} 95\%
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathrm{Beta}(1,1)\) (تخت) & \(\mathrm{Beta}(31, 21)\) & 0.596 &
+{[}0.461, 0.724{]} \\
+\(\mathrm{Beta}(0.5, 0.5)\) \lr{(Jeffreys)} &
+\(\mathrm{Beta}(30.5, 20.5)\) & 0.598 & {[}0.462, 0.727{]} \\
+\(\mathrm{Beta}(20, 5)\) (آگاهی‌بخش، «\ensuremath{\approx} 0.8») & \(\mathrm{Beta}(50, 25)\)
+& 0.667 & {[}0.557, 0.768{]} \\
+\end{longtable}
+}
+
+پیشین‌های تخت و \lr{Jeffreys} عملاً یک جواب می‌دهند که با بازه‌ی \lr{profile
+likelihood} هفته‌ی 5، {[}0.462, 0.728{]}، هم برابر است. پیشین آگاهی‌بخش،
+که ارزشش 25 مشاهده‌ی کاذب است، هنوز برآورد را به‌طور قابل توجهی به سمت 0.8
+می‌کشد: 50 مشاهده برای غلبه بر یک پیشین قوی کافی نیست. اینکه این خوب است
+یا نه به درست بودن دانش پیشین بستگی دارد.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
+
+\subsubsection{اهداف}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  محاسبه‌ی پسین‌های \lr{beta-binomial} به‌صورت تحلیلی و با تقریب شبکه‌ای، و
+  دیدن مصالحه‌ی پیشین و داده.
+\item
+  تماشای تیزتر شدن پسین با داده (به‌روزرسانی ترتیبی).
+\item
+  محاسبه‌ی پسین شبکه‌ای دوبعدی برای \lr{SDT} (\(d'\)، \(c\))؛ خلاصه کردن
+  آن با میانگین‌ها، \lr{HDI}ها و احتمال‌های پسین.
+\item
+  استفاده از شبیه‌سازی پیش‌بینی پیشین برای افشای یک پیشین «مبهم» بد.
+\end{enumerate}
+
+\textbf{زمان‌بندی:} بخش \lr{A} 25 دقیقه · بخش \lr{B} 15 دقیقه · بخش
+\lr{C} 40 دقیقه · بخش \lr{D} 25 دقیقه · بخش \lr{E} 15 دقیقه.
+
+\subsubsection{آماده‌سازی}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week09.py}}, \lr{cell} 1 ·
+سلول 1
+\end{quote}
+
+\subsubsection{\texorpdfstring{بخش \lr{A: beta-binomial}، تحلیلی و روی
+شبکه (25 دقیقه)}{بخش A: beta-binomial، تحلیلی و روی شبکه (25 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week09.py}}, \lr{cell} 2 ·
+سلول 2
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{8\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+flat Beta(1,1)           grid mean = 0.5962, exact mean = 0.5962, 95% CI = [0.461 0.724]
+Jeffreys Beta(.5,.5)     grid mean = 0.5980, exact mean = 0.5980, 95% CI = [0.462 0.727]
+informative Beta(20,5)   grid mean = 0.6667, exact mean = 0.6667, 95% CI = [0.557 0.768]
+\end{Verbatim}
+\end{latin}
+
+پسین‌های شبکه‌ای و دقیق بر هم منطبق‌اند. ببینید هر پسین نسبت به پیشین و
+درست‌نمایی خودش کجا قرار می‌گیرد.
+
+\subsubsection{\texorpdfstring{بخش \lr{B:} به‌روزرسانی ترتیبی (15
+دقیقه)}{بخش B: به‌روزرسانی ترتیبی (15 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week09.py}}, \lr{cell} 3 ·
+سلول 3
+\end{quote}
+
+\textbf{به این دقت کنید:} پسین از خود پیشین شروع می‌شود، با جمع شدن
+آیتم‌ها باریک می‌شود و حول مقدار واقعی متمرکز می‌شود. پهنایش تقریباً مثل
+\(1/\sqrt{n}\) کم می‌شود، همان‌طور که \lr{SE} در هفته‌ی 5 کم می‌شد.
+
+\subsubsection{\texorpdfstring{بخش \lr{C:} یک پسین شبکه‌ای دوپارامتری
+برای \lr{SDT} (40
+دقیقه)}{بخش C: یک پسین شبکه‌ای دوپارامتری برای SDT (40 دقیقه)}}
+
+شرکت‌کننده‌ی هفته‌ی 2: 68 \lr{hit} از 100 \lr{trial} علامت و 11 \lr{false
+alarm} از 100 \lr{trial} نویز. پیشین‌ها: \(d' \sim \mathcal{N}(1, 1.5)\)
+(حساسیت معمولاً مثبت و به‌ندرت بالای 4 است) و \(c \sim \mathcal{N}(0, 1)\)
+(سوگیری معمولاً متوسط است).
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week09.py}}, \lr{cell} 4 ·
+سلول 4
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{11\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+    post. mean  post. SD    MAP  95% HDI low  95% HDI high
+d'       1.688     0.209  1.675        1.250         2.062
+c        0.376     0.106  0.375        0.163         0.575
+MLE (uncorrected formulas): d' = 1.694, c = 0.379
+P(d' > 1 | data) = 1.000;  P(c > 0 | data) = 1.000
+Posterior correlation of d' and c: 0.245
+\end{Verbatim}
+\end{latin}
+
+(«1.000» یعنی هیچ‌کدام از 20 000 نمونه‌ی پسین زیر آستانه نیفتادند، پس
+احتمال \lr{\textgreater} 0.9999 است. آن را همین‌طور گزارش کنید، نه به‌عنوان
+قطعیت.)
+
+\textbf{تفسیر (در \lr{notebook} بنویسید):} 1. میانگین پسین و \lr{MAP} در
+مقایسه با \lr{MLE} چطورند؟ چرا اینجا این‌قدر نزدیک‌اند؟ 2. \lr{HDI} مربوط
+به \(d'\) و \(P(c > 0 \mid \text{\lr{data}})\) را هرکدام به یک جمله‌ی ساده
+درباره‌ی این شرکت‌کننده ترجمه کنید. 3. انحراف معیار پیشین \(d'\) را به 10
+افزایش دهید، بعد به 0.3 کم کنید (با مرکز 1). کدام خلاصه‌ها تغییر می‌کنند و
+چقدر؟
+
+\subsubsection{\texorpdfstring{بخش \lr{D:} بررسی‌های پیش‌بینی پیشین (25
+دقیقه)}{بخش D: بررسی‌های پیش‌بینی پیشین (25 دقیقه)}}
+
+پیش از اعتماد به یک پیشین، به داده‌هایی که نتیجه می‌دهد نگاه کنید. پیشین
+ما را با یک پیشین «مبهم»، \(d' \sim \mathcal{N}(0, 10)\) و
+\(c \sim \mathcal{N}(0, 10)\)، مقایسه کنید که گاهی به این دلیل استفاده
+می‌شود که «بی‌اطلاع» است.
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week09.py}}, \lr{cell} 5 ·
+سلول 5
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{7\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+our prior: d'~N(1,1.5), c~N(0,1): 14% of simulated datasets have a rate of exactly 0 or 1; 24% have H < F
+'vague' prior: d'~N(0,10), c~N(0,10): 96% of simulated datasets have a rate of exactly 0 or 1; 23% have H < F
+\end{Verbatim}
+\end{latin}
+
+\textbf{به این دقت کنید:} پیشین «مبهم» اصلاً خنثی نیست. روی مقیاس احتمال،
+96\% مجموعه‌داده‌های شبیه‌سازی‌شده را در نرخ \lr{hit} یا \lr{false alarm}
+دقیقاً 0 یا 1 قرار می‌دهد؛ چیزی که در آزمایش‌های تشخیص واقعی عملاً هرگز
+اتفاق نمی‌افتد. این پیشین باوری قوی و پوچ درباره‌ی داده بیان می‌کند. ابهام
+روی مقیاس پارامتر، ابهام روی مقیاس داده نیست.
+
+پیشین خود ما هم کامل نیست: حدود یک‌چهارم مجموعه‌داده‌های شبیه‌سازی‌شده‌اش
+\(H < F\) دارند، چون \(\mathcal{N}(1, 1.5)\) حدود 25\% جرمش را روی
+\(d'\) منفی می‌گذارد. برای تکلیفی که می‌دانیم شرکت‌کننده‌ها بالاتر از شانس
+عمل می‌کنند، پیشینی محدود به \(d' > 0\) (مثلاً نیم‌نرمال یا \lr{Gamma)}
+قابل دفاع‌تر است. امتحانش کنید و ببینید آیا پسین این شرکت‌کننده را تغییر
+می‌دهد. (راهنمایی: با 200 \lr{trial} آگاهی‌بخش، تقریباً نه.)
+
+\subsubsection{\texorpdfstring{بخش \lr{E:} تفسیر (15
+دقیقه)}{بخش E: تفسیر (15 دقیقه)}}
+
+یک «پاراگراف نتایج» کوتاه (4 تا 6 جمله) برای این شرکت‌کننده بنویسید، طوری
+که در یک مقاله می‌آید. پیشین‌ها، میانگین‌های پسین و \lr{HDI}های 95\% برای
+\(d'\) و \(c\)، \(P(d' > 1 \mid \text{\lr{data}})\)، و یک جمله درباره‌ی حساسیت
+به پیشین (از سؤال 3 بخش \lr{C)} را گزارش کنید.
+
+\subsubsection{تمرین‌ها (به ترتیب سختی)}
+
+\textbf{تمرین 1 \ensuremath{\star}.} به‌صورت جبری نشان دهید که میانگین پسین مدل
+\lr{beta-binomial} میانگین وزنی میانگین پیشین و \(y/n\) است. وزن‌ها
+چیستند؟
+
+\textbf{تمرین 2 \ensuremath{\star}.} با شبکه‌ی بخش \lr{A}، \lr{HDI} 95\% و بازه‌ی دم‌برابر
+را برای \(\mathrm{Beta}(1 + 2, 1 + 18)\) (2 موفقیت از 20) حساب کنید. چرا
+با هم فرق دارند؟
+
+\textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (فراموشی با شبکه).} پسین شبکه‌ای \((A, d)\) را برای
+مدل فراموشی توانی با داده‌های هفته‌ی 2، با پیشین‌های
+\(A \sim \mathrm{Beta}(8, 2)\) و
+\(d \sim \mathrm{Gamma}(\text{\lr{shape }} 2, \text{\lr{scale }} 0.3)\) حساب کنید.
+میانگین‌های پسین و \lr{HDI}های 95\% را با \lr{MLE} و بازه‌های \lr{profile}
+و \lr{bootstrap} هفته‌ی 5 مقایسه کنید.
+
+\textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} (هم‌ارزی \lr{MAP} و \lr{MLE).}} در بخش \lr{C} هر دو
+پیشین را با پیشین‌های تخت روی شبکه جایگزین کنید. نشان دهید \lr{MAP} برابر
+\lr{MLE} است. چرا \emph{میانگین} پسین هنوز کمی فرق دارد؟
+
+\textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: ترتیبی در برابر یکجا).} برای مدل \lr{SDT}،
+پسین شبکه‌ای را \lr{trial} به \lr{trial} (پسین هر \lr{trial} پیشین
+\lr{trial} بعدی است) برای 200 \lr{trial} شبیه‌سازی‌شده به‌روز کنید و نشان
+دهید پسین نهایی (تا حد خطای عددی) با پسین یکجای همه‌ی \lr{trial}ها یکی
+است. انحراف معیار پسین \(d'\) را در برابر تعداد \lr{trial}ها رسم کنید.
+
+\subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
+
+نشان دهید: (1) نمودار سه‌قسمتی پیشین/درست‌نمایی/پسین از بخش \lr{A}، (2)
+جدول خلاصه‌ی \lr{SDT} و پسین مشترک از بخش \lr{C}، و (3) دو نمودار پیش‌بینی
+پیشین از بخش \lr{D} با یک جمله درباره‌ی اینکه پیشین مبهم چه مشکلی دارد.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{ارتباط با هوش مصنوعی و
+\lr{LLM}ها}{ارتباط با هوش مصنوعی و LLMها}}
+
+\textbf{مدل واقعاً چقدر خوب است؟ یک جواب بیزی برای ارزیابی‌های کوچک.}
+پژوهشگرها اغلب یک \lr{LLM} را روی مجموعه‌ی کوچکی از آیتم‌ها، مثلاً 25
+مسئله‌ی دست‌نویس، می‌آزمایند. مدل \lr{beta-binomial} این هفته همان چیزی را
+می‌دهد که چنین مطالعه‌هایی معمولاً ندارند: یک پسین کامل برای دقت، گزاره‌های
+احتمالی مستقیم («احتمال اینکه دقت از 60\% بیشتر باشد») و مقایسه‌ی مستقیم
+دو مدل.
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week09.py}}, \lr{cell} 6 ·
+سلول 6
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{8\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+Model A: posterior mean = 0.704, 95% interval = [0.522, 0.857], P(accuracy > 0.6) = 0.878
+Model B: posterior mean = 0.593, 95% interval = [0.406, 0.766], P(accuracy > 0.6) = 0.479
+P(A more accurate than B | data) = 0.807
+\end{Verbatim}
+\end{latin}
+
+با 25 آیتم، پهنای بازه‌های پسین حدود 0.35 است، و احتمال پسین 19\% وجود
+دارد که در واقع \lr{B} مدل بهتر باشد.
+
+\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} یک پیشین آگاهی‌بخش از
+یک ارزیابی قبلی و بزرگ‌تر استفاده کنید (مثلاً \lr{Beta(14,} 6) برای مدل
+\lr{A).} نتیجه‌گیری‌ها چقدر عوض می‌شوند؟ - \ensuremath{\star}\ensuremath{\star} مقایسه‌ی بالا دو مدل را مستقل
+در نظر می‌گیرد، با اینکه به همان آیتم‌ها جواب داده‌اند. چرا این مشکل است
+(کادر هفته‌ی 5 را ببینید)؟ طرح کلی مدلی را بکشید که جفت بودن را رعایت
+کند. - \ensuremath{\star}\ensuremath{\star} بحث: برای دقت یک مدل کاملاً تازه روی یک آزمون چهارگزینه‌ای چه
+پیشینی استفاده می‌کنید، و چرا نباید جرم زیادی زیر 0.25 بگذارد؟
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{اشتباهات رایج و برداشت‌های نادرست}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{«پیشین استنباط بیزی را ذهنی و نتایج را دلبخواهی می‌کند.»}
+  پیشین‌ها فرض‌های صریح‌اند، درست مثل انتخاب درست‌نمایی. گزارششان کنید،
+  توجیهشان کنید و حساسیت را بررسی کنید. با داده‌ی کافی، پیشین‌های معقول به
+  نتیجه‌گیری‌های مشابه می‌رسند.
+\item
+  \textbf{«پیشین‌های تخت یا خیلی پهن بی‌اطلاع‌اند.»} می‌توانند روی مقیاس
+  داده به‌شدت آگاهی‌بخش باشند (بخش \lr{D).} از پیشین‌های ضعیف‌آگاهی‌بخش
+  استفاده کنید و با شبیه‌سازی پیش‌بینی پیشین بررسی‌شان کنید.
+\item
+  \textbf{انتخاب پیشین بعد از نگاه کردن به داده.} این یعنی دو بار
+  استفاده از داده.
+\item
+  \textbf{ضرب احتمال‌ها روی شبکه بدون لگاریتم،} که سرریز می‌کند (هفته‌ی 4).
+  با لگاریتم پیشین + لگاریتم درست‌نمایی کار کنید و پیش از نمایی گرفتن
+  بیشینه را کم کنید.
+\item
+  \textbf{شبکه‌ی خیلی درشت یا خیلی باریک.} اگر پسین در لبه‌ی شبکه بریده
+  شود، همه‌ی خلاصه‌ها غلط‌اند. بررسی کنید که پسین در لبه‌ها نزدیک صفر باشد.
+\item
+  \textbf{خواندن \lr{credible interval} به جای بازه‌ی اطمینان یا برعکس.}
+  فقط \lr{credible interval} جمله‌ی «با احتمال 95\% پارامتر اینجاست» (با
+  توجه به مدل و پیشین) را پشتیبانی می‌کند.
+\item
+  \textbf{فقط گزارش \lr{MAP.}} نکته‌ی پسین کل توزیع است. یک مقدار مرکزی
+  \emph{و} یک بازه، و احتمال فرضیه‌هایی را که برایتان مهم‌اند گزارش کنید.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{خودآزمایی}
+
+\textbf{1.} قاعده‌ی بیز را برای پارامتر \(\theta\) بنویسید و هر جمله را
+نام ببرید. \textbf{پاسخ}
+\(p(\theta\mid y) = p(y\mid\theta)p(\theta)/p(y)\): پسین = درست‌نمایی ×
+پیشین / شواهد \lr{(marginal likelihood).} برای برآورد،
+\(p(\theta\mid y) \propto p(y\mid\theta)p(\theta)\).
+
+\textbf{2.} پیشین \(\mathrm{Beta}(3, 3)\)، داده: 12 یادآوری از 20. پسین
+و میانگینش چیست؟ \textbf{پاسخ}
+\(\mathrm{Beta}(3 + 12,\allowbreak 3 + 8) = \mathrm{Beta}(15,\allowbreak 11)\)، با میانگین
+\(15/26 = 0.577\).
+
+\textbf{3.} چرا با افزایش \(n\) پسین به \lr{MLE} نزدیک‌تر می‌شود؟
+\textbf{پاسخ} لگاریتم درست‌نمایی مجموعی روی مشاهدات است و با \(n\) بزرگ
+می‌شود، در حالی که لگاریتم پیشین ثابت می‌ماند. با داده‌ی زیاد درست‌نمایی بر
+حاصل‌ضرب غالب می‌شود و پسین حول بیشینه‌ی درست‌نمایی متمرکز می‌شود.
+
+\textbf{4.} تفاوت \lr{HDI} 95\% و بازه‌ی دم‌برابر 95\% چیست؟ کی بر هم
+منطبق‌اند؟ \textbf{پاسخ} \lr{HDI} باریک‌ترین بازه‌ای است که 95\% جرم پسین
+را در بر دارد و هر مقدار داخلش چگالی بیشتری از هر مقدار بیرونش دارد.
+بازه‌ی دم‌برابر از هر دم 2.5\% را می‌بُرد. برای پسین‌های متقارن تک‌مُدی بر هم
+منطبق‌اند و برای پسین‌های چوله فرق دارند.
+
+\textbf{5.} چرا تقریب شبکه‌ای برای مدل‌هایی با پارامترهای زیاد غیرعملی
+می‌شود؟ \textbf{پاسخ} تعداد نقاط شبکه با تعداد پارامترها به‌طور نمایی رشد
+می‌کند (مثلاً 100 نقطه برای هر پارامتر یعنی \(100^k\) ارزیابی). این نفرین
+ابعاد است. نمونه‌گیری \lr{MCMC} (هفته‌های 11\lr{--}13) از آن دوری می‌کند.
+
+\textbf{6.} همکاری «برای احتیاط» از \(d' \sim \mathcal{N}(0, 100)\)
+استفاده می‌کند. برای قانع کردنش که این ایده‌ی بدی است چه می‌کنید؟
+\textbf{پاسخ} یک شبیه‌سازی پیش‌بینی پیشین: نشان دهید این پیشین نرخ‌های
+\lr{hit} و \lr{false alarm}ی نتیجه می‌دهد که تقریباً همیشه دقیقاً 0 یا 1
+هستند؛ باوری پوچ درباره‌ی داده‌ی تشخیص واقعی. به‌جایش یک پیشین ضعیف‌آگاهی‌بخش
+پیشنهاد کنید.
+
+\textbf{7.} این جمله را توضیح دهید: «تصحیح \lr{log-linear} برای نرخ‌های
+حدی یک برآورد بیزی است». \textbf{پاسخ} نرخ تصحیح‌شده‌ی
+\((y + 0.5)/(n + 1)\) برابر میانگین پسین \(\theta\) تحت پیشین
+\(\mathrm{Beta}(0.5, 0.5)\) است: \((0.5 + y)/(0.5 + 0.5 + n)\). این
+تصحیح به‌طور ضمنی از هر نوع نیم مشاهده‌ی کاذب اضافه می‌کند.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{تکلیف}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{A3} (مقایسه و بازیابی مدل)} و \textbf{پیشنهاد پروژه} در
+  ابتدای درس این هفته تحویل داده می‌شوند.
+\item
+  این هفته تکلیف نمره‌دار جدیدی نداریم. \textbf{\lr{A4} (تحلیل بیزی با
+  شبکه)} در هفته‌ی 10 منتشر می‌شود.
+\item
+  \textbf{تمرین اختیاری (بدون نمره):} تمرین 3 \lr{lab} (فراموشی با شبکه)
+  هسته‌ی \lr{A4} است. اگر الان شروعش کنید در وقتتان صرفه‌جویی می‌شود.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مطالعه‌ی بیشتر}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{Kruschke} (2014)، فصل‌های 5\lr{--}6.} قاعده‌ی بیز، و استنباط یک
+  احتمال دوجمله‌ای با تحلیل ریاضی دقیق (مدل \lr{beta-binomial).} خیلی
+  ساده و تصویری. \emph{(منبع اصلی.)}
+\item
+  \textbf{\lr{Lee} \lr{\&} \lr{Wagenmakers} (2014)، فصل‌های 1 و 3.} مبانی
+  تحلیل بیزی، و استنباط با توزیع دوجمله‌ای.
+\item
+  \textbf{\lr{Martin, Kumar} \lr{\&} \lr{Lao} (2021)، فصل 1.} استنباط بیزی:
+  اجزای یک مدل بیزی و توزیع‌های پیش‌بینی پیشین/پسین، همراه با کد
+  \lr{Python.}
+\item
+  \textbf{\lr{Farrell} \lr{\&} \lr{Lewandowsky} (2018)، فصل 6.} برآورد بیزی
+  پارامتر: مفاهیم پایه، مرتبط با چارچوب درست‌نمایی هفته‌ی 4.
+\item
+  \textbf{عظیمی‌فر و احمدی (1396)}، جلد 1: بخش برآورد بیزی پارامتر و
+  ارتباطش با برآورد \lr{ML} {[}شماره‌ی فصل بررسی شود{]}.
+\end{itemize}
+
+\emph{پیش‌نمایش هفته‌ی 10:} پسین درباره‌ی پارامترها \emph{درون} یک مدل حرف
+می‌زند. هفته‌ی بعد می‌پرسیم داده‌ها باور ما را \emph{بین} مدل‌ها چطور تغییر
+می‌دهند، با استفاده از شواهد \(p(\mathbf{y}\mid\mathcal{M})\) که تا حالا
+به‌عنوان ثابت نرمال‌ساز نادیده‌اش گرفته‌ایم، و چطور بررسی کنیم که پیش‌بینی‌های
+پسین یک مدل شبیه داده‌ی واقعی هستند یا نه.

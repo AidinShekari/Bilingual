@@ -1,0 +1,299 @@
+Terms are listed alphabetically. The number in brackets is the week
+where the term is introduced or treated most fully. Notation follows the
+course-wide table in Week 1.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Term
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Definition
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Acceptance rate} {[}11{]} & Proportion of Metropolis proposals
+that are accepted. Very high: steps too small; very low: steps too
+large. A rough target is 0.2--0.5. \\
+\textbf{Aggregation artifact} {[}5{]} & A pattern in averaged data that
+no individual shows, e.g., a power-law curve from averaging exponential
+learners. \\
+\textbf{AIC / AICc} {[}7{]} & Akaike information criterion,
+\(2\,\mathrm{NLL} + 2k\); estimates out-of-sample predictive accuracy.
+AICc adds a small-sample correction. \\
+\textbf{Akaike weight} {[}7{]} & \(w_i \propto \exp(-\Delta_i/2)\):
+relative support for model \(i\) as the best predictor among the
+candidates. \\
+\textbf{Attention weight} (\(w_m\)) {[}14{]} & GCM parameter: the share
+of attention given to stimulus dimension \(m\) (weights sum to 1). \\
+\textbf{Bayes factor} (\(\mathrm{BF}_{12}\)) {[}10{]} & Ratio of
+marginal likelihoods
+\(p(\mathbf{y}\mid\mathcal{M}_1)/p(\mathbf{y}\mid\mathcal{M}_2)\): how
+much the data change the odds between two models. \\
+\textbf{Bayesian data analysis} {[}9{]} & Using Bayes' rule to infer
+parameters and models from data; a method of the scientist, applicable
+to any model. \\
+\textbf{Bayesian model of cognition} {[}15{]} & A hypothesis that the
+mind performs (approximately) Bayesian inference; a computational-level
+theory. \\
+\textbf{Beta-binomial model} {[}9{]} & A binomial likelihood with a Beta
+prior; the posterior is again a Beta distribution (conjugacy). \\
+\textbf{BIC} {[}7{]} & Bayesian information criterion,
+\(2\,\mathrm{NLL} + k\ln N\); approximates
+\(-2\ln p(\mathbf{y}\mid\mathcal{M})\) and favors simpler models than
+AIC. \\
+\textbf{Bias--variance trade-off} {[}6{]} & Expected prediction error =
+noise + bias² + variance. Flexible models lower bias but raise
+variance. \\
+\textbf{Bootstrap (parametric)} {[}5{]} & Simulate many datasets from
+the fitted model, refit each one, and use the spread of the estimates as
+their uncertainty. \\
+\textbf{Boundary separation} (\(a\)) {[}1, 14{]} & Random walk / DDM
+parameter: the distance between the response boundaries. Represents
+caution. \\
+\textbf{Burn-in (warm-up)} {[}11{]} & Initial MCMC iterations discarded
+because they still reflect the starting values. \\
+\textbf{Centered / non-centered parameterization} {[}13{]} & Two
+equivalent ways to write a hierarchical model; the non-centered form
+(\(d_j = \mu + \sigma z_j\)) avoids funnel geometry and divergences. \\
+\textbf{Complete / no / partial pooling} {[}5, 13{]} & One parameter set
+for everyone / independent parameters per person / individual parameters
+drawn from an estimated group distribution. \\
+\textbf{Confusion matrix (model recovery)} {[}7{]} &
+\(P(\text{selected model} \mid \text{generating model})\), estimated by
+simulation. \\
+\textbf{Conjugate prior} {[}9, 12{]} & A prior that yields a posterior
+in the same family (e.g., Beta for binomial data); enables Gibbs
+sampling. \\
+\textbf{Credible interval / HDI} {[}9{]} & An interval containing a
+stated posterior probability (e.g., 95\%); the HDI is the narrowest such
+interval. \\
+\textbf{Criterion} (\(c\)) {[}2{]} & SDT response-bias parameter: the
+criterion location relative to the midpoint between the noise and signal
+distributions. Positive values are conservative. \\
+\textbf{Cross-validation (K-fold, LOO)} {[}6{]} & Fit on part of the
+data and score predictions on the held-out part, rotating through \(K\)
+folds; LOO holds out one observation at a time. \\
+\textbf{\(d'\) (sensitivity)} {[}2{]} & SDT parameter: the distance
+between the signal and noise distributions in SD units. \\
+\textbf{Delta rule / Rescorla--Wagner rule} {[}15{]} & Error-driven
+update \(Q \leftarrow Q + \alpha(r - Q)\). \\
+\textbf{Deterministic core} {[}2{]} & The part of a model that gives its
+average prediction, \(f(x;\boldsymbol\theta)\). \\
+\textbf{Deviance} (\(G^2\)) {[}4{]} &
+\(2(\ell_{\text{sat}} - \hat\ell)\): misfit relative to the saturated
+model; approximately \(\chi^2\) with df = cells − \(k\). \\
+\textbf{Divergent transition} {[}13{]} & A NUTS trajectory whose
+numerical integration broke down; it signals unreliable exploration of
+part of the posterior. \\
+\textbf{Drift rate} (\(v\)) {[}1, 14{]} & Random walk / DDM parameter:
+the average rate of evidence accumulation. Represents evidence
+quality. \\
+\textbf{Drift-diffusion model (DDM)} {[}14{]} & Continuous evidence
+accumulation with noise between two boundaries; predicts choices and RT
+distributions. \\
+\textbf{Effective sample size (ESS)} {[}12{]} & The number of
+independent draws that would give the same precision as the
+autocorrelated MCMC draws. \\
+\textbf{Error surface} {[}3{]} & The discrepancy (SSE or NLL) as a
+function of the parameters; its shape reveals minima, valleys
+(trade-offs) and plateaus. \\
+\textbf{Evidence / marginal likelihood} {[}9, 10{]} &
+\(p(\mathbf{y}\mid\mathcal{M}) = \int p(\mathbf{y}\mid\boldsymbol\theta)p(\boldsymbol\theta)\,d\boldsymbol\theta\):
+how well the model predicted the data before fitting. \\
+\textbf{EZ-diffusion} {[}14{]} & Closed-form estimates of drift,
+boundary and non-decision time from accuracy and the mean and variance
+of correct RTs. \\
+\textbf{Flexibility (model complexity)} {[}6{]} & The range of data
+patterns a model can produce; it depends on the number of parameters
+\emph{and} the functional form. \\
+\textbf{Forward / inverse problem} {[}1{]} & Simulation (parameters \ensuremath{\rightarrow}
+data) vs.~estimation (data \ensuremath{\rightarrow} parameters). \\
+\textbf{Full conditional} {[}12{]} & The distribution of one parameter
+given all others and the data; Gibbs sampling draws from it. \\
+\textbf{GCM (Generalized Context Model)} {[}14{]} & Exemplar model of
+categorization: classification by summed similarity to stored
+exemplars. \\
+\textbf{Generalization criterion} {[}6{]} & Evaluating models by
+predicting new conditions (extrapolation) rather than new trials. \\
+\textbf{Gibbs sampling} {[}12{]} & MCMC that updates each parameter by
+drawing from its full conditional; every draw is accepted. \\
+\textbf{Grid approximation} {[}9{]} & Computing the posterior on a grid
+of parameter values; feasible for 1--2 parameters. \\
+\textbf{Hamiltonian Monte Carlo (HMC) / NUTS} {[}13{]} & Gradient-based
+MCMC that simulates physical dynamics to make distant, high-acceptance
+proposals; NUTS tunes the trajectory length automatically. \\
+\textbf{Hessian / observed Fisher information} {[}5{]} & Matrix of
+second derivatives of the NLL at the MLE; its inverse approximates the
+covariance of the estimates. \\
+\textbf{Hierarchical (multilevel) model} {[}13{]} & A model with
+individual-level parameters drawn from group-level distributions. \\
+\textbf{Identifiability (structural / practical)} {[}7{]} & Whether
+parameters can be uniquely determined, in principle (structural) or from
+the available data (practical). \\
+\textbf{Ideal observer} {[}15{]} & A model of optimal inference given
+the available information, e.g., reliability-weighted cue
+combination. \\
+\textbf{Inverse temperature} (\(\beta\)) {[}15{]} & Softmax parameter:
+the sensitivity of choices to value differences (exploration
+vs.~exploitation). \\
+\textbf{Inversion matrix (model recovery)} {[}7{]} &
+\(P(\text{generating model} \mid \text{selected model})\): how much to
+trust a model-selection outcome. \\
+\textbf{Learning rate} (\(\alpha\)) {[}15{]} & How strongly prediction
+errors update values. \\
+\textbf{Likelihood} (\(L\)), \textbf{log-likelihood} (\(\ell\)),
+\textbf{NLL} {[}4{]} & \(p(\mathbf{y}\mid\boldsymbol\theta)\) viewed as
+a function of \(\boldsymbol\theta\); its log; and the negative log,
+which optimizers minimize. \\
+\textbf{Likelihood-ratio test (LRT)} {[}7{]} & For nested models,
+\(2\Delta\ell \sim \chi^2_{\Delta k}\) under the simpler model. \\
+\textbf{Linking assumption} {[}2{]} & How model quantities map onto
+observable behavior. \\
+\textbf{Local minimum} {[}3{]} & A point lower than its surroundings but
+not the global minimum; found by single-start optimization. Use
+multi-start. \\
+\textbf{MAP} {[}9{]} & Maximum a posteriori estimate (posterior mode);
+equals the MLE under a flat prior. \\
+\textbf{Markov chain Monte Carlo (MCMC)} {[}11{]} & Sampling from a
+posterior by simulating a Markov chain whose stationary distribution is
+the posterior. \\
+\textbf{Maximum likelihood estimate (MLE)} {[}4{]} & The parameter
+values that maximize the likelihood. \\
+\textbf{MCSE} {[}12{]} & Monte Carlo standard error, posterior
+SD/\(\sqrt{\mathrm{ESS}}\): the simulation error of a posterior mean. \\
+\textbf{Metropolis / Metropolis--Hastings} {[}11{]} & MCMC that proposes
+a move and accepts it with probability \(\min(1, \text{ratio})\);
+Hastings adds a correction for asymmetric proposals. \\
+\textbf{Model mimicry} {[}7{]} & One model producing data that look as
+if generated by another. \\
+\textbf{Model recovery} {[}7{]} & Simulating from each candidate model
+and checking whether the comparison method selects the generating
+model. \\
+\textbf{Monte Carlo integration} {[}11{]} & Approximating an expectation
+by the average over random draws; error \ensuremath{\propto} \(1/\sqrt{S}\). \\
+\textbf{Multi-start} {[}3{]} & Running an optimizer from many starting
+values and keeping the best result. \\
+\textbf{Nelder--Mead simplex} {[}3{]} & Derivative-free optimizer that
+moves a simplex by reflection, expansion, contraction and shrinkage. \\
+\textbf{Nested models} {[}7{]} & One model is a special case of the
+other (obtained by fixing parameters). \\
+\textbf{Noise model} {[}2{]} & The distribution of observations around
+the deterministic prediction (e.g., binomial, Gaussian). \\
+\textbf{Non-decision time} (\(t_0\), \(T_{er}\)) {[}1, 14{]} & The part
+of RT not spent accumulating evidence (encoding and motor execution). \\
+\textbf{Overfitting} {[}6{]} & Fitting the noise of a sample, which
+improves fit but worsens prediction of new data. \\
+\textbf{Parameter recovery} {[}7{]} & Simulating data from known
+parameters at the actual design and checking that fitting returns
+them. \\
+\textbf{Parameter trade-off} {[}3, 5{]} & Changes in one parameter can
+be compensated by another, which shows up as a tilted valley in the
+error surface and correlated estimates. \\
+\textbf{Posterior} {[}9{]} &
+\(p(\boldsymbol\theta\mid\mathbf{y}) \propto p(\mathbf{y}\mid\boldsymbol\theta)p(\boldsymbol\theta)\). \\
+\textbf{Posterior predictive check (PPC)} {[}10{]} & Comparing data
+simulated from the fitted model with the observed data, to check
+adequacy. \\
+\textbf{Power / exponential forgetting} {[}2{]} & \(A(1+t)^{-d}\)
+(decreasing relative loss rate) vs.~\(Ae^{-\lambda t}\) (constant
+relative loss rate). \\
+\textbf{Prior / prior predictive check} {[}9{]} & The distribution of
+parameters before the data / simulating data from the prior to check
+that the prior is sensible. \\
+\textbf{Profile likelihood} {[}5{]} & The NLL minimized over the other
+parameters for each value of the parameter of interest; gives
+likelihood-ratio intervals. \\
+\textbf{Prototype model} {[}14{]} & Categorization by similarity to a
+single summary representation per category. \\
+\textbf{R-hat} (\(\hat R\)) {[}12{]} & Ratio comparing between-chain and
+within-chain variance; \ensuremath{\approx} 1 (\textless{} 1.01) when chains agree. \\
+\textbf{Random walk model} {[}1{]} & Discrete-step evidence accumulation
+to a boundary; the precursor of the DDM. \\
+\textbf{Relative loss rate (hazard)} {[}2{]} & \(-f'(t)/f(t)\): the
+proportional rate of forgetting at time \(t\). \\
+\textbf{Reparameterization} {[}3, 13{]} & Optimizing or sampling on a
+transformed scale (e.g., \(\lambda = e^{\eta}\)) to enforce constraints
+or improve geometry. \\
+\textbf{RMSD} {[}3{]} & Root mean squared deviation,
+\(\sqrt{\mathrm{SSE}/N}\), in data units. \\
+\textbf{ROC / zROC} {[}2{]} & Hit rate vs.~false-alarm rate as the
+criterion varies / the same on \(z\) (probit) axes. \\
+\textbf{Saturated model} {[}4{]} & A model with one free parameter per
+data cell, which reproduces the data exactly. \\
+\textbf{Savage--Dickey density ratio} {[}10{]} & For nested models,
+\(\mathrm{BF}_{01}\) = posterior density / prior density at the null
+value. \\
+\textbf{Shrinkage} {[}13{]} & The pull of individual estimates toward
+the group mean in hierarchical models, stronger for noisier data. \\
+\textbf{Signal detection theory (SDT)} {[}2{]} & A model of detection
+decisions with noisy evidence and a criterion; separates sensitivity
+from bias. \\
+\textbf{Softmax} {[}15{]} & \(P(o) \propto \exp(\beta Q(o))\): turns
+values into choice probabilities. \\
+\textbf{SSE / MSE} {[}3{]} & Sum / mean of squared errors between data
+and predictions. \\
+\textbf{Standard error} {[}5{]} & The SD of an estimator's sampling
+distribution. \\
+\textbf{Wald interval} {[}5{]} & \(\hat\theta \pm 1.96\,\mathrm{SE}\),
+with the SE from the Hessian; assumes approximate normality. \\
+\textbf{Weighted least squares} {[}3{]} & Squared errors weighted by the
+inverse of their variance. \\
+\end{longtable}
+}
+
+\subsection{AI \& LLM terms (from the ``Connection to AI \& LLMs''
+sections)}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Term
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Definition
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Benchmark contamination} {[}6{]} & Test items (or their answers)
+that appeared in a model's training data; a form of data leakage that
+inflates scores. \\
+\textbf{Bradley--Terry model} {[}15{]} &
+\(P(i \succ j) = 1/(1 + e^{-(r_i - r_j)})\): choice model for paired
+comparisons; used for RLHF reward models. Equivalent to a two-option
+softmax with \(\beta = 1\). \\
+\textbf{Cross-entropy loss} {[}4{]} & The training loss of language
+models: the negative log-likelihood of the next token, averaged over
+tokens. \\
+\textbf{Embedding} {[}14{]} & A vector that a model assigns to a word or
+text; distances between embeddings are often used as a proxy for
+similarity. \\
+\textbf{In-context learning} {[}7{]} & An LLM's improvement on a task
+from examples given in the prompt, without changing its parameters. \\
+\textbf{Large language model (LLM)} {[}1{]} & A neural network (usually
+a transformer) trained to predict the next token in very large text
+corpora. \\
+\textbf{Perplexity} {[}4{]} & \(\exp(\text{NLL per token})\): the
+effective number of equally likely next tokens; lower is better. \\
+\textbf{RLHF} {[}15{]} & Reinforcement learning from human feedback: a
+reward model is fitted to human preference choices, and the language
+model is then trained to maximize that reward. \\
+\textbf{Scaling law} {[}3{]} & An empirical (usually power-law) relation
+between model loss and model size, data size or compute. \\
+\textbf{Self-consistency} {[}11{]} & Sampling several answers from a
+model and taking the majority vote. \\
+\textbf{Temperature} {[}1{]} & Divides the logits before the softmax in
+an LLM; low temperature gives near-deterministic output, high
+temperature more random output (\(\beta = 1/T\)). \\
+\textbf{Token} {[}1{]} & The unit a language model reads and predicts: a
+word or part of a word. \\
+\end{longtable}
+}

@@ -1,0 +1,31 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{layout}[2026/10/11 Cognitive Modeling page design]
+\RequirePackage[a4paper,inner=28mm,outer=22mm,top=25mm,bottom=25mm,headheight=15pt]{geometry}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{setspace}
+\RequirePackage{needspace}
+\setstretch{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+\clubpenalty=3000
+\widowpenalty=3000
+\displaywidowpenalty=3000
+\interlinepenalty=50
+\RequirePackage{etoolbox}
+\pretocmd{\section}{\Needspace{6\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{5\baselineskip}}{}{}
+\pretocmd{\subsubsection}{\Needspace{4\baselineskip}}{}{}
+\titleformat{\chapter}[display]{\normalfont\bfseries\color{CMForest}}{\fontsize{13}{16}\selectfont\chaptertitlename\ \thechapter}{0.6em}{\fontsize{28}{34}\selectfont}
+\titleformat{\section}{\normalfont\bfseries\color{CMEmerald}\fontsize{16}{20}\selectfont}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalfont\bfseries\color{CMForest}\fontsize{13}{17}\selectfont}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalfont\bfseries\color{CMEmerald}\normalsize}{\thesubsubsection}{0.7em}{}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\color{CMForest}\nouppercase{\leftmark}}
+\fancyhead[RE,LO]{\small\color{CMEmerald}\CMcourse}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrule}{\color{CMSage}\hrule height 0.6pt}
+\pagestyle{fancy}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}

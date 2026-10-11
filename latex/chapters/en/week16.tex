@@ -1,0 +1,627 @@
+\section{Week 16: Final Project Presentations and Good Modeling
+Practice}
+
+\begin{quote}
+\textbf{Course wrap-up} · Lecture slot: synthesis + first presentations
+· Lab slot: presentations and peer feedback
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+peer feedback & \RL{\CMfa بازخورد همتا} & \RL{\CMfa نقد سازنده‌ی کار هم‌کلاسی‌ها} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+parameter recovery & \RL{\CMfa بازیابی پارامتر} & \RL{\CMfa آیا برازش، پارامترهای
+معلوم شبیه‌سازی را برمی‌گرداند} \\
+reproducibility & \RL{\CMfa بازتولیدپذیری} & \RL{\CMfa امکان به دست آوردن دوباره‌ی
+همان نتایج} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+Bayes factor (BF) & \RL{\CMfa عامل بیز} (Bayes factor) & \RL{\CMfa نسبت درست‌نمایی‌های
+حاشیه‌ای دو مدل} \\
+bounds / constraints & \RL{\CMfa کران‌ها} / \RL{\CMfa قیدها} & \RL{\CMfa محدودیت‌های مجاز
+برای مقدار پارامترها} \\
+posterior & \RL{\CMfa توزیع پسین} (posterior) & \RL{\CMfa باور درباره‌ی پارامتر بعد
+از دیدن داده} \\
+hierarchical model & \RL{\CMfa مدل سلسله‌مراتبی (چندسطحی)} & \RL{\CMfa پارامترهای
+فردی از یک توزیع گروهی می‌آیند} \\
+adequacy check & \RL{\CMfa بررسی کفایت مدل} & \RL{\CMfa آیا مدل ویژگی‌های اصلی داده
+را بازتولید می‌کند} \\
+posterior predictive check (PPC) & \RL{\CMfa بررسی پیش‌بینی پسین} & \RL{\CMfa مقایسه‌ی
+داده‌ی شبیه‌سازی‌شده از پسین با داده‌ی واقعی} \\
+cross-validation (CV) & \RL{\CMfa اعتبارسنجی متقابل} (cross-validation) &
+\RL{\CMfa برازش روی بخشی از داده و آزمون روی بخش کنارگذاشته} \\
+AIC / BIC & \RL{\CMfa معیار اطلاعاتی آکائیکه} / \RL{\CMfa بیزی} & \RL{\CMfa برازش به‌علاوه‌ی
+جریمه برای تعداد پارامتر} \\
+research design & \RL{\CMfa طرح آزمایش} & \RL{\CMfa شرایط، تعداد کوشش‌ها و
+نمونه‌ها} \\
+model recovery & \RL{\CMfa بازیابی مدل} & \RL{\CMfa آیا مقایسه‌ی مدل، مدل مولد را
+درست انتخاب می‌کند} \\
+drift-diffusion model (DDM) & \RL{\CMfa مدل} drift-diffusion
+\RL{\CMfa (رانش--انتشار)} & \RL{\CMfa انباشت پیوسته‌ی شواهد بین دو مرز} \\
+preregistration & \RL{\CMfa پیش‌ثبت} (preregistration) & \RL{\CMfa ثبت برنامه‌ی تحلیل
+پیش از دیدن داده} \\
+prior & \RL{\CMfa توزیع پیشین} (prior) & \RL{\CMfa باور درباره‌ی پارامتر پیش از دیدن
+داده} \\
+random seed & seed \RL{\CMfa تصادفی} & \RL{\CMfa عدد شروع مولد اعداد تصادفی برای
+تکرارپذیری} \\
+large language model (LLM) & \RL{\CMfa مدل بزرگ زبانی} & \RL{\CMfa شبکه‌ی عصبی‌ای که
+کلمه‌ی بعدی متن را پیش‌بینی می‌کند} \\
+accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Communicate} a complete modeling study (question, model,
+  fitting, evaluation, recovery, interpretation) clearly and within a
+  time limit.
+\item
+  \textbf{Critique} other modeling studies constructively, using the
+  course's evaluation criteria.
+\item
+  \textbf{Apply} a checklist of good modeling practice (reproducibility,
+  transparency, robustness) to their own project report.
+\item
+  \textbf{Integrate} the methods of the course into one coherent
+  workflow and \textbf{explain} when to use which.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+A model is only as useful as others' ability to understand, check and
+build on it. Over 15 weeks, every lab has followed the same arc:
+\textbf{formalize \ensuremath{\rightarrow} simulate \ensuremath{\rightarrow} fit \ensuremath{\rightarrow} evaluate \ensuremath{\rightarrow} recover \ensuremath{\rightarrow} interpret.}
+This week you show that arc in your own project, and you practice the
+other half of scientific modeling: reading someone else's model
+critically but fairly. The session ends with the practices that make
+modeling work trustworthy and reusable: reproducible code, transparent
+reporting, honest statements of limitations.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+The last week has no new method. Students present their projects, and
+the course is summarized as one workflow: \textbf{formalize} a theory as
+a model, \textbf{simulate} it to see what it predicts, \textbf{fit} it
+to data, \textbf{evaluate} it (does it fit, and does it beat
+alternatives?), check that the method can \textbf{recover} the truth at
+this design, and \textbf{interpret} the result in psychological terms,
+including what cannot be concluded. The checklist of good practice turns
+these steps into concrete things to verify in every report: reproducible
+code, reported uncertainty, adequacy checks, recovery and honest
+limitations.
+
+\textbf{Suggested timing (lecture slot, 60 min):} course synthesis 15 ·
+good-practice checklist 15 · first presentations 30.
+
+\subsubsection{1. The course in one table}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Question you face
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tools
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Week
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+How do I turn a theory into a model? & Five components; simulation;
+analytic checks & 1--2 \\
+How do I estimate parameters? & Least squares; maximum likelihood;
+optimization (grid, Nelder--Mead, L-BFGS-B), multi-start, bounds &
+3--4 \\
+How certain are the estimates? & Hessian SEs, profile likelihood,
+bootstrap; posterior intervals & 5, 9 \\
+How do I handle many participants? & Individual fits; aggregation
+artifacts; hierarchical models & 5, 13 \\
+Is the model adequate? & Residuals, \(G^2\), posterior predictive checks
+& 2--4, 10 \\
+Which model is better? & CV, LRT, AIC/BIC, Bayes factors & 6--7, 10 \\
+Can my design answer the question? & Parameter recovery, model recovery
+& 7 \\
+How do I get a posterior for complex models? & Grid \ensuremath{\rightarrow}
+Metropolis--Hastings \ensuremath{\rightarrow} Gibbs \ensuremath{\rightarrow} NUTS (PyMC); \(\hat R\), ESS, divergences
+& 9--13 \\
+What do models look like in different fields? & SDT, forgetting,
+practice, GCM, DDM/EZ, RL, ideal observers & 2, 5, 14--15 \\
+\end{longtable}
+}
+
+\paragraph{For an engineer}
+
+Looking back, most of the course maps onto tools you already know, and
+the table below can serve as your own summary when answering students'
+questions:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Course topic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Engineering counterpart
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Random walk / DDM (Weeks 1, 14) & Sequential detection (SPRT),
+first-passage times \\
+SDT, ROC (Week 2) & Binary detection, \(P_D\) / \(P_{FA}\), ROC \\
+Least squares, optimizers (Week 3) & LS estimation, gradient methods,
+Gauss--Newton \\
+Maximum likelihood, \(G^2\), LRT (Weeks 4, 7) & ML estimation,
+goodness-of-fit tests, GLRT \\
+Hessian SEs, bootstrap (Week 5) & Fisher information / CRLB, Monte Carlo
+performance evaluation \\
+CV, AIC, BIC (Weeks 6--7) & Model-order selection (AIC, MDL), validation
+data \\
+Parameter/model recovery (Week 7) & Testing estimators on synthetic data
+with known ground truth \\
+Bayesian inference, BF (Weeks 9--10) & MAP/MMSE estimation, Bayesian
+detection \\
+MCMC, \(\hat R\), ESS (Weeks 11--12) & Monte Carlo simulation, Markov
+processes, correlated-sample statistics \\
+Hierarchical models (Week 13) & Empirical Bayes, James--Stein
+shrinkage \\
+Delta rule, cue combination (Week 15) & LMS adaptation, MRC / Kalman
+sensor fusion \\
+\end{longtable}
+}
+
+What is genuinely different in cognitive modeling: the ``system'' is a
+human being, the data are small and noisy, and the parameters themselves
+are the scientific findings, so interpretation, uncertainty and recovery
+matter more than raw performance.
+
+\subsubsection{2. A checklist of good modeling practice}
+
+\textbf{Before fitting} - {[} {]} The research question is stated in
+terms of model parameters or model comparisons. - {[} {]} Candidate
+models (including at least one simpler alternative) are specified
+\emph{before} looking at the data, ideally preregistered. - {[} {]}
+Priors (if Bayesian) are justified and checked with prior predictive
+simulation. - {[} {]} Parameter and model recovery have been checked
+\textbf{at the actual design}.
+
+\textbf{Fitting and evaluation} - {[} {]} The likelihood matches the
+data type (binomial for counts, sequential for learning, \ldots). - {[}
+{]} Optimization uses multi-start and sensible bounds, and fits are
+checked visually; for MCMC, \(\hat R\), ESS and divergences are
+reported. - {[} {]} Absolute fit (residuals, \(G^2\) or PPC) \emph{and}
+relative fit (CV/IC/BF) are reported. - {[} {]} Uncertainty is reported
+for every interpreted parameter.
+
+\textbf{Reporting and reproducibility} - {[} {]} All code and (where
+allowed) data are shared; random seeds are fixed. - {[} {]} Software
+versions are recorded (e.g.,
+\nolinkurl{conda env export > environment.yml}). - {[} {]} One command
+or notebook regenerates every number and figure in the report. - {[} {]}
+Limitations are stated: what the design cannot distinguish, which
+parameters are not recoverable, which assumptions were not tested.
+
+\textbf{Recording the computing environment} (include in every project
+notebook):
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week16.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{3. Presentation format}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Length:} 8 minutes (individual) or 10 minutes (pairs), plus 4
+  minutes of questions. Strict timekeeping.
+\item
+  \textbf{Suggested structure} (one slide each, roughly):
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    The question and why it matters.
+  \item
+    The model(s): equations and the psychological meaning of every
+    parameter.
+  \item
+    Data and design.
+  \item
+    Fitting method and a fit figure (data + predictions).
+  \item
+    Evaluation: model comparison \emph{and} an adequacy check.
+  \item
+    Recovery: can the design answer the question?
+  \item
+    Interpretation and limitations.
+  \end{enumerate}
+\item
+  \textbf{Pairs:} both members present, and the Bayesian/MCMC or
+  hierarchical component must be shown.
+\item
+  \textbf{Schedule:} posted one week in advance; the order is drawn at
+  random. Sessions run across the lecture and lab slots (about 15--18
+  presentations in 3 hours, depending on enrolment).
+\end{itemize}
+
+\subsubsection{4. Giving and receiving feedback}
+
+Each student completes a \textbf{peer-feedback form} for three assigned
+presentations (below). Feedback is anonymous to the presenter, visible
+to the instructor, and counts toward participation (lab check-off). Good
+feedback is \textbf{specific} (``the recovery plot shows \(\beta\) is
+not identifiable, so the group difference in \(\beta\) should not be
+interpreted'') rather than general (``nice talk''), and
+\textbf{constructive} (it suggests a concrete improvement).
+
+\textbf{Peer-feedback form}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Item
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Rating (1--4)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Comment
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+The question was clear and the model matched it & & \\
+The model's parameters were explained in psychological terms & & \\
+The fit was shown and evaluated (adequacy + comparison) & & \\
+Recovery or identifiability was addressed & & \\
+Conclusions followed from the results, and limitations were stated &
+& \\
+\textbf{One thing that was particularly well done} & & \\
+\textbf{One concrete suggestion for the written report} & & \\
+\end{longtable}
+}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Grade with the rubric, comment with the checklist.} During
+  presentations, keep the good-practice checklist next to you and note
+  one strength and one concrete improvement per team; this makes the
+  written feedback fast and fair.
+\item
+  \textbf{Questions to ask presenters} (they map onto the course): Which
+  parameter answers your question? How do you know it is recoverable?
+  Does the model fit in absolute terms, not only better than the
+  alternative? What can your design \emph{not} tell us?
+\item
+  \textbf{Use the worked critique} (fictional Q-learning study) as a
+  model for how students should give feedback: specific, tied to a week
+  of the course, and constructive.
+\item
+  \textbf{Close the course with the one-table summary.} Ask students
+  which row they found hardest, and point them to the corresponding week
+  for exam revision.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example: critiquing a modeling study}
+
+\textbf{Summary of a (fictional) study.} \emph{``We fitted a Q-learning
+model to 30 patients and 30 controls who performed 60 trials of a
+two-armed bandit task with stable reward probabilities. Each participant
+was fitted by MLE. Patients had significantly lower learning rates
+(\(t(58) = 2.4\), \(p = .02\)). We conclude that the disorder impairs
+reward learning.''}
+
+\textbf{Critique using the checklist.}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Recovery at this design (Week 7, Week 15 lab).} With 60 trials
+  and \emph{stable} reward probabilities, the learning rate is weakly
+  identifiable, and \(\alpha\) and \(\beta\) trade off. Without a
+  recovery study, a difference in \(\hat\alpha\) could reflect a
+  difference in choice noise (\(\beta\)) or just estimation noise.
+  \emph{Suggestion:} report parameter recovery at this design, and
+  include reversals.
+\item
+  \textbf{Model comparison (Week 15, Part D).} Did Q-learning beat
+  simpler strategies (WSLS, perseveration) in both groups? If patients
+  are better described by a different strategy, comparing their
+  \(\alpha\) with controls' is not meaningful. \emph{Suggestion:} report
+  AIC/BIC or CV per group, with model recovery.
+\item
+  \textbf{Second-stage t-test on point estimates (Weeks 5, 13).} It
+  ignores the uncertainty of individual estimates, which is large with
+  60 trials. \emph{Suggestion:} a hierarchical model with a group effect
+  on \(\alpha\), reporting its posterior.
+\item
+  \textbf{Adequacy (Weeks 4, 10).} No posterior predictive check or
+  learning-curve plot is shown. Does the model reproduce each group's
+  learning curve?
+\item
+  \textbf{Interpretation.} ``Impairs reward learning'' is a strong
+  process claim. A lower \(\hat\alpha\) is also compatible with more
+  exploration, lower motivation (lower \(\beta\)), or different priors
+  on initial values. \emph{Suggestion:} temper the conclusion, or add a
+  design that separates these accounts.
+\end{enumerate}
+
+\textbf{Overall:} a reasonable first study whose conclusion is not yet
+supported. Three additions (recovery, model comparison, hierarchical
+estimation) would make it convincing. Notice that each point maps
+directly onto one week of this course.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours): presentations and peer feedback}
+
+\textbf{Goals:} present your project; give written feedback on three
+presentations; note the feedback you receive for your final report.
+
+\textbf{Logistics:} - Upload slides (PDF) to the course page
+\textbf{before} the session starts. - Bring your laptop with your
+project notebook in case of questions about the code. - Fill in the
+peer-feedback forms during the session (paper or online form) and submit
+them by the end of the day.
+
+\textbf{After the presentations:} the instructor gives brief oral
+feedback to each team. Written feedback (instructor + peers) is returned
+within 3 days so it can be used in the final report.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Good practice when AI is part of your modeling work.} AI tools
+now enter cognitive modeling in three roles, and each needs the course's
+habits of checking: 1. \textbf{As a coding assistant.} Generated code
+can look right and be wrong. Test it the modeling way: simulate data
+with known parameters and check that the code recovers them (parameter
+recovery as a unit test). 2. \textbf{As a ``simulated participant''.}
+Some studies give LLMs psychology experiments and compare the answers
+with human data, or even propose LLM-based models of human behavior
+(e.g., Binz \& Schulz, 2023; Dillion et al., 2023 {[}verify{]}).
+Evaluate such claims like any model: generalization to new tasks,
+comparison with simpler cognitive models, mimicry, and interpretability
+(Week 15). 3. \textbf{As an object of study.} If you test an LLM, record
+the model name and version, the date, the exact prompts, the temperature
+and the number of samples. Without these, the study cannot be
+reproduced.
+
+The code below tests a pre-made SDT function ``written by an
+assistant''. It looks plausible, and it even passes the case \(c = 0\),
+but a recovery test shows that it gets the sign of \(c\) wrong.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week16.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+true (d', c) = (1.5, 0.3) -> recovered (1.50, -0.30)  FAIL
+true (d', c) = (1.0, -0.4) -> recovered (1.00, 0.40)  FAIL
+true (d', c) = (2.0, 0.0) -> recovered (2.00, 0.00)  OK
+\end{Verbatim}
+
+A liberal observer would be reported as conservative, which would
+reverse the conclusion of a bias study. The test with \(c = 0\) alone
+would not have caught it.
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Fix the function and rerun the
+tests. - \ensuremath{\star}\ensuremath{\star} Write a similar recovery test for the EZ-diffusion function
+of Week 14, using the simulator from the same lab. - \ensuremath{\star}\ensuremath{\star} For your own
+project: add one paragraph to the reproducibility statement that
+describes how AI tools were used and how their output was verified (see
+\nolinkurl{assessments/project_brief.md}, section 6).
+
+\emph{Optional reading:} Binz, M., \& Schulz, E. (2023). Using cognitive
+psychology to understand GPT-3. \emph{PNAS, 120}(6), e2218523120.
+Dillion, D., Tandon, N., Gu, Y., \& Gray, K. (2023). Can AI language
+models replace human participants? \emph{Trends in Cognitive Sciences,
+27}, 597--600 {[}verify{]}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions (in project presentations
+and reports)}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Too much on the method, too little on the meaning.} Every
+  parameter and every result needs a psychological interpretation.
+\item
+  \textbf{Showing a fit statistic without a fit figure.} Always plot
+  data against predictions.
+\item
+  \textbf{Model comparison without an adequacy check,} or vice versa.
+\item
+  \textbf{Interpreting parameters that were not shown to be
+  recoverable.}
+\item
+  \textbf{Overclaiming:} ``the model is correct'', ``the mind is
+  Bayesian''. State what the evidence supports and what it does not.
+\item
+  \textbf{Irreproducible results:} missing seeds, unrecorded package
+  versions, notebook cells run out of order.
+\item
+  \textbf{Running over time.} Practice the talk; one idea per slide.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding (integrative review questions for
+the final exam)}
+
+\textbf{1.} A colleague has accuracy and RT data from a speed/accuracy
+manipulation and wants to know whether the manipulation affects caution
+or evidence quality. Outline a full modeling plan, naming the model, the
+fitting method, the evaluation, and the recovery check. \textbf{Answer}
+Model: drift-diffusion (EZ-diffusion for a first pass, or the full DDM
+by MLE / hierarchical Bayes). Fit per participant and condition. Compare
+models in which the manipulation affects only \(a\), only \(v\), or both
+(AIC/BIC or a hierarchical model with condition effects; PPC on RT
+quantiles). Recovery: simulate data at the actual design with each
+model, and check that parameters and the ``which parameter changed''
+conclusion are recovered. Interpret the condition effects on \(a\) and
+\(v\) with uncertainty.
+
+\textbf{2.} When would you choose a Bayes factor over cross-validation
+for comparing two models, and vice versa? \textbf{Answer} Bayes factor:
+when the question is which model is more probable given the data
+(evidence, including support for a null), when meaningful priors are
+available, and with a prior sensitivity analysis. CV: when the goal is
+predictive accuracy for new data of a specific kind, priors are hard to
+justify, or the BF is too sensitive to the priors.
+
+\textbf{3.} Explain how a parameter can be estimated very precisely
+(narrow CI or posterior) and yet be meaningless. \textbf{Answer}
+Precision only reflects the curvature of the likelihood under the
+assumed model. If the model is misspecified (fails PPC/\(G^2\)), if the
+parameter trades off with another so that its meaning depends on an
+arbitrary constraint, or if the optimizer or sampler failed (local
+minimum, bound, non-convergence), the precise estimate does not measure
+the intended construct.
+
+\textbf{4.} Why do hierarchical models often give better individual
+estimates than separate individual fits? \textbf{Answer} They share
+information across participants through the group distribution,
+shrinking noisy individual estimates toward the group mean in proportion
+to their uncertainty. This reduces estimation variance more than it adds
+bias, so estimates are on average closer to the truth.
+
+\textbf{5.} Name three different ways in which this course used
+simulation, and why each matters. \textbf{Answer} (i) Exploring a
+model's predictions before fitting (what can and can't it produce). (ii)
+Parameter and model recovery (can the design and method answer the
+question). (iii) Bootstrap and predictive checks (uncertainty and
+adequacy). Further: Monte Carlo and MCMC for computing posteriors.
+
+\textbf{6.} A model has the best AIC among four candidates but a
+posterior predictive check shows a systematic misfit at long delays.
+What do you report and conclude? \textbf{Answer} Report both. The model
+is the best of the candidates for prediction, but it is not adequate in
+absolute terms: none of the candidates captures the long-delay behavior.
+Conclusions should be restricted accordingly, and a model revision
+targeting that feature is the next step.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\subsubsection{Final project: written report and code}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Due:} one week after this session, and in any case before the
+  final exam (exact date on the course page).
+\item
+  \textbf{Submission:} report (PDF, max. 10 pages for individuals, 14
+  for pairs, excluding references and appendix) plus a code archive or
+  repository link that reproduces all results.
+\item
+  \textbf{Grading:} see the project brief and rubric
+  (\nolinkurl{assessments/project_brief.md}). The report and code are
+  worth 3 of the 6 project points; the proposal (1) and presentation (2)
+  are already graded.
+\item
+  \textbf{Use the feedback} from today: the rubric rewards visible
+  responses to presentation feedback.
+\end{itemize}
+
+\subsubsection{Final exam}
+
+Written, cumulative (emphasis on Chapters 4--6), formula sheet provided,
+no laptops; worth 3 of 20 points. See
+\nolinkurl{assessments/final_exam.md} for the format and a sample paper.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Farrell \& Lewandowsky (2018)}: the chapter on using models in
+  psychology (the role of models in theory development and common
+  pitfalls) {[}verify chapter number{]}.
+\item
+  \textbf{Lee \& Wagenmakers (2014)}: browse the case studies in Part IV
+  for ideas on how to extend your project.
+\item
+  \textbf{Martin, Kumar \& Lao (2021), chapter 9.} End-to-end Bayesian
+  workflows, a good model for structuring a report.
+\item
+  \emph{Optional, outside the course list:} Wilson, R. C., \& Collins,
+  A. G. E. (2019). Ten simple rules for the computational modeling of
+  behavioral data. \emph{eLife, 8}, e49547.
+\end{itemize}
+
+\textbf{Thank you for a great course, and keep modeling!}

@@ -1,0 +1,1044 @@
+\section{Week 4: Maximum Likelihood Estimation}
+
+\begin{quote}
+\textbf{Chapter 2: Parameter estimation methods} · Lecture 1 h · Lab 2 h
+\textbf{Running data:} the Week 2--3 forgetting experiment (binomial
+recall counts), plus a new SDT experiment with three payoff conditions.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش یادآوری با گذشت
+زمان} \\
+binomial distribution & \RL{\CMfa توزیع دوجمله‌ای} & \RL{\CMfa توزیع تعداد موفقیت در}
+n \RL{\CMfa کوشش} \\
+signal detection theory (SDT) & \RL{\CMfa نظریه‌ی تشخیص علامت} & \RL{\CMfa مدلی که
+حساسیت را از سوگیری پاسخ جدا می‌کند} \\
+log-likelihood / NLL & \RL{\CMfa لگاریتم درست‌نمایی} / \RL{\CMfa منفی آن} &
+\RL{\CMfa مقداری که بهینه‌سازها کمینه یا بیشینه می‌کنند} \\
+least squares & \RL{\CMfa کمترین مربعات} & \RL{\CMfa روش برازش با کمینه کردن مجموع
+مربع خطاها} \\
+maximum likelihood estimate (MLE) & \RL{\CMfa برآورد بیشینه‌ی درست‌نمایی} &
+\RL{\CMfa پارامترهایی که داده را محتمل‌ترین می‌کنند} \\
+noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شواهد یا در داده} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+deviance (G²) & \RL{\CMfa انحراف} (deviance) & \RL{\CMfa معیار عدم برازش نسبت به مدل
+اشباع‌شده} \\
+bounds / constraints & \RL{\CMfa کران‌ها} / \RL{\CMfa قیدها} & \RL{\CMfa محدودیت‌های مجاز
+برای مقدار پارامترها} \\
+response bias & \RL{\CMfa سوگیری پاسخ} & \RL{\CMfa تمایل به یک پاسخ، مستقل از
+محرک} \\
+sensitivity (d′) & \RL{\CMfa حساسیت} & \RL{\CMfa فاصله‌ی توزیع علامت و نویز} \\
+trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
+optimizer & \RL{\CMfa بهینه‌ساز} & \RL{\CMfa الگوریتمی که کمینه‌ی تابع را پیدا
+می‌کند} \\
+SSE / RMSD & \RL{\CMfa مجموع مربعات خطا} / \RL{\CMfa ریشه‌ی میانگین مربع انحراف} &
+\RL{\CMfa معیارهای فاصله‌ی داده و پیش‌بینی} \\
+saturated model & \RL{\CMfa مدل اشباع‌شده} & \RL{\CMfa مدلی که داده را دقیقاً بازتولید
+می‌کند} \\
+likelihood-ratio test (LRT) & \RL{\CMfa آزمون نسبت درست‌نمایی} & \RL{\CMfa مقایسه‌ی دو
+مدل تودرتو} \\
+exponential / power function & \RL{\CMfa تابع نمایی} / \RL{\CMfa توانی} & \RL{\CMfa دو شکل
+رایج برای منحنی فراموشی و یادگیری} \\
+liberal / conservative & \RL{\CMfa آسان‌گیر} / \RL{\CMfa محافظه‌کار} & \RL{\CMfa تمایل به
+گفتن «بله»} / \RL{\CMfa «نه»} \\
+token & token \RL{\CMfa (واحد متن)} & \RL{\CMfa کلمه یا بخشی از کلمه که مدل زبانی
+پیش‌بینی می‌کند} \\
+perplexity & perplexity \RL{\CMfa (سردرگمی)} & e \RL{\CMfa به توان} NLL \RL{\CMfa هر}
+token \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Distinguish} probability (data varying, parameters fixed) from
+  likelihood (data fixed, parameters varying).
+\item
+  \textbf{Derive} the likelihood and log-likelihood for binomial
+  (Bernoulli) and Gaussian data models, and \textbf{show} that least
+  squares is maximum likelihood under equal-variance Gaussian noise.
+\item
+  \textbf{Implement} maximum likelihood estimation (MLE) by minimizing
+  the negative log-likelihood (NLL) in Python, for forgetting curves and
+  for a multi-condition SDT model.
+\item
+  \textbf{Evaluate} absolute goodness of fit with the deviance \(G^2\)
+  and \textbf{compare} MLE with least-squares estimates.
+\item
+  \textbf{Interpret} constrained models (e.g., ``payoffs change bias,
+  not sensitivity'') as substantive psychological hypotheses.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+In Week 3, least squares treated every data point as equally reliable.
+But a recall proportion of 0.50 measured on 50 items is \emph{noisier}
+than a proportion of 0.95: binomial variance \(f(1-f)/n\) depends on
+\(f\). Least squares also has nothing to say about data that are not
+continuous numbers, such as a single yes/no response, a choice among
+options, or a confidence rating.
+
+Maximum likelihood replaces ``make predictions close to data'' with a
+sharper question:
+
+\begin{quote}
+\textbf{Which parameter values make the data we actually observed most
+probable?}
+\end{quote}
+
+To answer it, the model must say how probable \emph{any} possible
+dataset is, which is exactly the noise model (component 4 of Week 2's
+anatomy). Once we have it, MLE handles counts, choices, RTs and mixtures
+of these in the same way. It also gives us, for free, an absolute
+measure of misfit (the deviance), the basis for standard errors (Week
+5), information criteria (Week 7), and the likelihood term in Bayes'
+rule (Weeks 9--13). \textbf{The likelihood is the single most important
+object in this course.}
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Almost every published cognitive model} is fitted by maximum
+  likelihood or by its Bayesian extension (Weeks 9--13). When a paper
+  reports ``model fits'', ``AIC'' or ``log-likelihood'', MLE is
+  underneath.
+\item
+  \textbf{Choice data}: which option a person picks (in a memory test, a
+  gamble, a learning task) is not a continuous number, so least squares
+  does not apply. The likelihood handles choices naturally.
+\item
+  \textbf{Psychophysics}: the psychometric function (probability of
+  detecting a stimulus as a function of its strength) is fitted by
+  binomial MLE in every vision and hearing lab.
+\item
+  \textbf{Testing hypotheses inside a model}: ``does the payoff change
+  sensitivity or only bias?'' becomes a comparison of two likelihoods
+  (Section 6).
+\item
+  \textbf{AI}: large language models are trained by maximizing the
+  likelihood of text (see the AI \& LLMs section).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+Imagine trying different parameter values one by one. For each value,
+ask the model: ``if this were the true value, how probable would the
+data I actually collected be?'' That number is the \textbf{likelihood}
+of that parameter value. The \textbf{maximum likelihood estimate (MLE)}
+is the parameter value under which the observed data would have been
+most probable. Example: someone recalls 7 of 10 words. If their true
+recall probability were 0.5, getting exactly 7 would be fairly unlikely
+(0.117); if it were 0.7, it would be more likely (0.267). So 0.7 is the
+better explanation, and indeed the MLE is 7/10. In practice we work with
+the \textbf{logarithm} of the likelihood (so products become sums) and
+we let the computer \emph{minimize} its negative (NLL), using the
+optimizers of Week 3. Two bonuses: least squares turns out to be a
+special case of MLE, and the likelihood gives an absolute test of misfit
+(\(G^2\)).
+
+\textbf{Suggested timing (60 min):} probability vs.~likelihood 10 ·
+binomial MLE 15 · log-likelihood and NLL 10 · Gaussian case (LS = MLE)
+10 · goodness of fit \(G^2\) 10 · constrained models 5.
+
+\subsubsection{1. Probability vs.~likelihood}
+
+The same function \(p(\mathbf{y}\mid\boldsymbol\theta)\) can be read in
+two ways:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Reading
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Fixed
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Varies
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Sums/integrates to 1?
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Before the experiment & \(\boldsymbol\theta\) & \(\mathbf{y}\) &
+Probability (mass/density) of data & Yes, over \(\mathbf{y}\) \\
+After the experiment & \(\mathbf{y}\) (observed) & \(\boldsymbol\theta\)
+& \textbf{Likelihood}
+\(L(\boldsymbol\theta) = p(\mathbf{y}\mid\boldsymbol\theta,\mathcal{M})\)
+& \textbf{No}, not over \(\boldsymbol\theta\) \\
+\end{longtable}
+}
+
+The likelihood is \textbf{not} the probability that the parameters are
+correct. It is the probability of the data \emph{under} each candidate
+parameter value. (Turning it into a probability distribution over
+\(\boldsymbol\theta\) requires a prior: Bayes, Week 9.)
+
+\textbf{Example.} A participant recalls \(y = 7\) of \(n = 10\) items.
+Under a binomial model with recall probability \(\theta\):
+
+\[
+L(\theta) = \binom{10}{7}\theta^{7}(1-\theta)^{3}.
+\]
+
+\(L(0.5) = 0.117\), \(L(0.7) = 0.267\): the observed data are about 2.3
+times more probable if \(\theta = 0.7\) than if \(\theta = 0.5\).
+
+\paragraph{Reading the math}
+
+\(L(\theta) = \binom{10}{7}\theta^{7}(1-\theta)^{3}\):
+
+\begin{itemize}
+\tightlist
+\item
+  \(\theta^7\): the probability that 7 specific items are recalled (each
+  with probability \(\theta\)).
+\item
+  \((1-\theta)^3\): the probability that the other 3 are forgotten.
+\item
+  \(\binom{10}{7} = 120\) (``10 choose 7''): the number of different
+  ways to pick which 7 of the 10 items are the recalled ones. It does
+  not depend on \(\theta\), so it never changes \emph{where} the maximum
+  is.
+\item
+  Plug in \(\theta = 0.7\):
+  \(120 \times 0.7^7 \times 0.3^3 = 120 \times 0.0824 \times 0.027 = 0.267\).
+\end{itemize}
+
+The key mental switch: in probability, \(\theta\) is fixed and we ask
+about different data; in likelihood, the data are fixed (we already have
+them) and we compare different \(\theta\).
+
+\subsubsection{2. The maximum likelihood estimate}
+
+\[
+\hat{\boldsymbol\theta}_{\text{ML}} = \arg\max_{\boldsymbol\theta} L(\boldsymbol\theta) = \arg\max_{\boldsymbol\theta} \ell(\boldsymbol\theta),
+\qquad \ell(\boldsymbol\theta) = \ln L(\boldsymbol\theta).
+\]
+
+\textbf{Why the log?} 1. With independent observations the likelihood is
+a \textbf{product}, \(L = \prod_i p(y_i\mid\boldsymbol\theta)\), which
+underflows to 0 on a computer for even a few hundred trials. The log
+turns it into a \textbf{sum},
+\(\ell = \sum_i \ln p(y_i\mid\boldsymbol\theta)\). 2. The log is
+strictly increasing, so it has the same maximizer. 3. Sums are easier to
+differentiate.
+
+Optimizers \emph{minimize}, so in code we minimize the \textbf{negative
+log-likelihood},
+\(\mathrm{NLL}(\boldsymbol\theta) = -\ell(\boldsymbol\theta)\).
+
+\textbf{Analytic example (binomial).}
+\(\ell(\theta) = \text{const} + y\ln\theta + (n-y)\ln(1-\theta)\).
+Setting the derivative to zero:
+
+\[
+\frac{d\ell}{d\theta} = \frac{y}{\theta} - \frac{n-y}{1-\theta} = 0 \quad\Rightarrow\quad \hat\theta = \frac{y}{n}.
+\]
+
+The MLE of a probability is the observed proportion, which is
+reassuring. For cognitive models the predicted probability is a
+\emph{function} of the parameters,
+\(\theta_i = f(x_i;\boldsymbol\theta)\), and we usually need a numerical
+optimizer.
+
+\subsubsection{3. The binomial likelihood for forgetting curves}
+
+With \(y_i\) items recalled out of \(n_i\) at interval \(t_i\), and
+independent intervals:
+
+\[
+\ell(\boldsymbol\theta) = \sum_{i=1}^{N}\Big[\ln\binom{n_i}{y_i} + y_i \ln f(t_i;\boldsymbol\theta) + (n_i - y_i)\ln\big(1 - f(t_i;\boldsymbol\theta)\big)\Big].
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  The binomial coefficient does not depend on \(\boldsymbol\theta\), so
+  it does not affect the MLE (but keep it if you want to compare
+  log-likelihoods across different data codings;
+  \nolinkurl{scipy.stats.binom.logpmf} includes it).
+\item
+  Observations predicted to be near 0 or 1 have small variance, so a
+  prediction that misses them is punished more heavily. MLE performs the
+  variance weighting of Week 3's weighted least squares
+  \emph{automatically}.
+\item
+  \textbf{Numerical safety:} if the model predicts \(f = 0\) where
+  \(y > 0\), then \(\ln 0 = -\infty\). Clip predictions to
+  \([\epsilon, 1-\epsilon]\) with, e.g., \(\epsilon = 10^{-10}\).
+\end{itemize}
+
+\textbf{Bernoulli vs.~binomial.} If we keep the individual 0/1
+responses, \(\ell = \sum_{\text{trials}} [y\ln f + (1-y)\ln(1-f)]\).
+This differs from the binomial version only by the constant binomial
+coefficients, so it gives the same MLE.
+
+\paragraph{Reading the math}
+
+The forgetting log-likelihood is the single-proportion log-likelihood
+from Section 2, written once per retention interval and added up:
+
+\begin{itemize}
+\tightlist
+\item
+  for interval \(i\): \(y_i \ln f(t_i)\) rewards predicting a high
+  recall probability where many items were recalled;
+  \((n_i - y_i)\ln(1 - f(t_i))\) rewards predicting a low recall
+  probability where many were forgotten.
+\item
+  Adding over intervals is allowed because the intervals are assumed
+  \textbf{independent}: the log of a product of probabilities is the sum
+  of the logs.
+\item
+  Why it weights points automatically: if the model predicts
+  \(f = 0.95\) but only 40 of 50 are recalled, the term
+  \(10 \ln(0.05) \approx -30\) is very costly. Near \(f = 0.5\), the
+  same absolute miss costs much less. Points that \emph{should} be
+  precise are trusted more.
+\end{itemize}
+
+\subsubsection{4. The Gaussian case: least squares is maximum
+likelihood}
+
+Suppose \(y_i = f(x_i;\boldsymbol\theta) + \varepsilon_i\) with
+\(\varepsilon_i \sim \mathcal{N}(0, \sigma)\), independent and with the
+\textbf{same} \(\sigma\). Then
+
+\[
+\ell(\boldsymbol\theta, \sigma) = \sum_{i=1}^{N}\ln\left[\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{(y_i - f(x_i;\boldsymbol\theta))^2}{2\sigma^2}\right)\right]
+= -\frac{N}{2}\ln(2\pi\sigma^2) - \frac{\mathrm{SSE}(\boldsymbol\theta)}{2\sigma^2}.
+\]
+
+For any fixed \(\sigma\), maximizing \(\ell\) over \(\boldsymbol\theta\)
+means minimizing SSE. So \textbf{least squares = MLE under i.i.d.
+equal-variance Gaussian noise}. Maximizing over \(\sigma\) as well gives
+\(\hat\sigma^2 = \mathrm{SSE}/N\).
+
+This explains \emph{when} least squares is appropriate (continuous,
+roughly symmetric noise with constant variance) and when it is not
+(counts, proportions, choices, skewed RTs).
+
+\begin{quote}
+\textbf{Advanced: properties of the MLE.} Under regularity conditions
+(identifiable model, true parameters not on the boundary, \(N\) large),
+the MLE is \emph{consistent} (converges to the true value),
+\emph{asymptotically normal}, and \emph{asymptotically efficient} (no
+consistent estimator has smaller variance in the limit). Its sampling
+variance is approximated by the inverse of the \textbf{Fisher
+information}, the curvature of \(-\ell\) at its minimum. Week 5 uses
+exactly this to compute standard errors. In small samples the MLE can be
+biased (e.g., \(\hat\sigma^2 = \mathrm{SSE}/N\) underestimates
+\(\sigma^2\)).
+\end{quote}
+
+\subsubsection{\texorpdfstring{5. Absolute goodness of fit: the deviance
+\(G^2\)}{5. Absolute goodness of fit: the deviance G\^{}2}}
+
+The log-likelihood value alone has no absolute meaning. To judge it,
+compare the model with the \textbf{saturated model}, which has one free
+probability per data cell and therefore reproduces every observed
+proportion exactly (\(\hat f_i = y_i/n_i\)). The \textbf{deviance} is
+
+\[
+G^2 = 2\big[\ell_{\text{saturated}} - \ell(\hat{\boldsymbol\theta})\big]
+= 2\sum_i \left[y_i \ln\frac{y_i}{n_i \hat f_i} + (n_i - y_i)\ln\frac{n_i - y_i}{n_i(1-\hat f_i)}\right],
+\]
+
+with \(0 \ln 0 = 0\). If the model is correct and counts are not too
+small, \(G^2\) approximately follows a \(\chi^2\) distribution with
+\(\text{df} = (\text{number of cells}) - k\). A large \(G^2\) (small
+\(p\)) means the model misfits \emph{more than sampling noise can
+explain}.
+
+Caveats: with very large \(N\), any small misfit becomes
+``significant''; with small \(N\), real misfit can go undetected. A
+non-significant \(G^2\) does \textbf{not} prove the model is right (Week
+6).
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  The \textbf{saturated model} is the ``cheating'' model that predicts
+  every observed proportion exactly. Its log-likelihood is the best any
+  model could possibly achieve on these data.
+\item
+  \(G^2 = 2(\ell_{\text{saturated}} - \ell(\hat{\boldsymbol\theta}))\)
+  measures how far our model falls short of that ceiling. \(G^2 = 0\)
+  would be a perfect fit.
+\item
+  \textbf{Degrees of freedom} = number of data cells − number of fitted
+  parameters. With 8 intervals and 2 parameters, df = 6.
+\item
+  If the model is true, \(G^2\) behaves like a \(\chi^2\) variable with
+  that df, whose average is df. So \(G^2 \approx 6\) with df = 6 is a
+  normal amount of misfit (just noise); \(G^2 = 26\) with df = 6
+  (\(p = .0002\)) means the model systematically misses the data.
+\end{itemize}
+
+\subsubsection{6. Constrained models as hypotheses}
+
+MLE makes it easy to fit \textbf{several conditions at once with some
+parameters shared}. Example: an SDT experiment with three payoff
+conditions (rewarding ``yes'' responses, neutral, rewarding ``no'').
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Free parameters
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Hypothesis
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Shared sensitivity & \(d'\); \(c_1, c_2, c_3\) & 4 & Payoffs change
+\emph{bias} only \\
+Separate & \(d'_1, d'_2, d'_3\); \(c_1, c_2, c_3\) & 6 & Payoffs may
+also change \emph{sensitivity} (this is the saturated model for 6
+rates) \\
+\end{longtable}
+}
+
+The joint log-likelihood is the sum over conditions of the binomial
+log-likelihoods of hits and false alarms. Comparing the two models'
+maximized log-likelihoods tests a substantive question. With nested
+models like these, \(2(\ell_{6} - \ell_{4})\) is approximately
+\(\chi^2\) with 2 df: the \textbf{likelihood-ratio test}, developed in
+Week 7.
+
+\begin{quote}
+\textbf{Advanced: SDT MLE and the formulas.} For a single condition, the
+MLE of \((d', c)\) from counts is exactly what the Week 2 formulas give
+\emph{without} correction, because the model is saturated (2 parameters,
+2 rates) and the MLE reproduces the observed rates. The log-linear
+correction is \emph{not} MLE; it is closer to a Bayesian estimate with a
+weak prior (Week 9).
+\end{quote}
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  This is \textbf{maximum-likelihood estimation} exactly as in
+  estimation theory (ML channel or frequency estimation, ML sequence
+  detection). The only change is the noise model: binomial counts
+  instead of AWGN.
+\item
+  \textbf{LS = ML under AWGN} (Section 4) is a result you already use:
+  with white Gaussian noise of known, equal variance, the ML estimator
+  minimizes the squared error.
+\item
+  The \textbf{Fisher information} and the asymptotic variance of the MLE
+  (Advanced box) are the same quantities as in the \textbf{Cramér--Rao
+  lower bound}. Week 5 uses them to compute standard errors.
+\item
+  Comparing a constrained and a free model with
+  \(2(\ell_{\text{free}} - \ell_{\text{constrained}})\) is the
+  \textbf{generalized likelihood-ratio test (GLRT)}: both hypotheses
+  have unknown parameters that are replaced by their ML estimates.
+\item
+  \textbf{Payoffs and criterion shifts}: in Bayesian detection the
+  optimal threshold moves with the costs and priors. Section 6 tests
+  whether \emph{people} move only their threshold (\(c\)) when the
+  payoffs change, while their ``SNR'' (\(d'\)) stays the same.
+\end{itemize}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{The one sentence to repeat:} ``the likelihood is the
+  probability of the data we observed, as a function of the
+  parameters''. Write it on the board and leave it there all session.
+\item
+  \textbf{Plot it.} Draw \(L(\theta)\) for 7 of 10 (worked example, Part
+  1) as a curve over \(\theta\) from 0 to 1. Ask: where is the peak?
+  Does the area under the curve equal 1? (No.) Then draw it for 70 of
+  100: same peak, much narrower curve. That narrowness is precision, the
+  topic of Week 5.
+\item
+  \textbf{Use your background.} Many students find MLE abstract; you can
+  present it as ``the estimation method engineers use when the noise is
+  not Gaussian''.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``Is the likelihood the probability that \(\theta\) is
+    correct?''} No.~That needs a prior (Week 9).
+  \item
+    \emph{``Why minimize NLL instead of maximizing \(L\)?''} Same
+    answer, but sums of logs avoid numerical underflow, and optimizers
+    are written to minimize.
+  \item
+    \emph{``Is a non-significant \(G^2\) proof the model is right?''}
+    No: it only means the misfit is not larger than the noise, and with
+    few data, real misfit can hide.
+  \end{itemize}
+\item
+  \textbf{Time management.} Section 4 (Gaussian case) can be shown
+  quickly as ``LS is a special case''. Spend the saved time on Section 5
+  (\(G^2\)).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\subsubsection{Part 1: likelihood of a single proportion}
+
+\(y = 7\) recalled out of \(n = 10\):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{0.7}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0.8
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(L(\theta) = \binom{10}{7}\theta^7(1-\theta)^3\) & 0.117 & 0.215 &
+\textbf{0.267} & 0.201 \\
+\(\ell(\theta)\) & −2.144 & −1.537 & \textbf{−1.321} & −1.603 \\
+\end{longtable}
+}
+
+The maximum is at \(\hat\theta = 7/10 = 0.7\). Note that the likelihood
+values do not sum to 1 across \(\theta\): likelihood is not a
+probability distribution over parameters.
+
+\subsubsection{Part 2: a two-interval forgetting experiment}
+
+\(y = (30, 13)\) items recalled out of \(n = 50\) at \(t = (1, 7)\)
+days. Model: \(f(t) = A e^{-\lambda t}\).
+
+\textbf{Step 1: NLL for a candidate.} For
+\((A, \lambda) = (0.70, 0.15)\): \(f(1) = 0.7e^{-0.15} = 0.6025\),
+\(f(7) = 0.7e^{-1.05} = 0.2450\).
+
+\[
+\ell = \ln\mathrm{Binom}(30; 50, 0.6025) + \ln\mathrm{Binom}(13; 50, 0.2450) = -2.167 + (-2.088) = -4.255,
+\]
+
+so NLL \(= 4.255\).
+
+\textbf{Step 2: compare.} For \((0.70, 0.12)\): \(f = (0.621, 0.302)\)
+and NLL \(= 4.488\), which is worse. The first candidate makes the data
+more probable.
+
+\textbf{Step 3: the MLE.} With 2 parameters and 2 data points the model
+can match both observed proportions exactly: \(A e^{-\lambda} = 0.60\)
+and \(A e^{-7\lambda} = 0.26\). Dividing gives
+\(e^{6\lambda} = 0.60/0.26\), so \(\hat\lambda = \ln(2.308)/6 = 0.139\)
+and \(\hat A = 0.60\,e^{0.139} = 0.690\), with NLL \(= 4.225\) (the
+minimum). A numerical optimizer gives the same values.
+
+\textbf{Interpretation.} The MLE says this participant recalls about
+69\% at the start and loses about 13\% of what remains per day
+(\(1 - e^{-0.139}\)). Because \(k = N\) here, \(G^2 = 0\): the model
+\emph{cannot} misfit, so the perfect fit carries no evidence for the
+exponential form. Only data with more cells than parameters can test a
+model.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Plot a likelihood function and see why we work with log-likelihoods.
+\item
+  Fit exponential and power forgetting models by MLE; compare with least
+  squares; evaluate with \(G^2\).
+\item
+  Verify numerically that Gaussian MLE equals least squares.
+\item
+  Fit a constrained multi-condition SDT model and \textbf{interpret}
+  what it says about payoffs.
+\end{enumerate}
+
+\textbf{Timing:} Part A 15 min · Part B 35 min · Part C 15 min · Part D
+35 min · Part E 20 min (exercises).
+
+\subsubsection{Setup}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{Part A: the likelihood function (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+Area under L(theta): 0.091 (not 1: L is not a distribution over theta)
+Product of 2000 trial probabilities: 0.0
+Sum of their logs: -1239.52
+\end{Verbatim}
+
+\subsubsection{Part B: MLE for forgetting curves (35 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{9\baselineskip}
+\begin{Verbatim}
+model method      A   rate     NLL    SSE
+  exp    MLE 0.6377 0.0458 29.8123 0.1100
+  exp     LS 0.6568 0.0566 30.6983 0.1061
+  pow    MLE 0.8773 0.4214 19.8303 0.0262
+  pow     LS 0.8712 0.4251 19.8585 0.0259
+True (power): A = 0.9, d = 0.5
+\end{Verbatim}
+
+\textbf{What to notice:} - Each method wins on its \emph{own} criterion:
+MLE has the lowest NLL, LS the lowest SSE. - For the (true) power model
+the two methods agree closely. - For the exponential model the two
+methods differ more (decay rate 0.046 vs.~0.057). The binomial
+likelihood gives more weight to the precisely measured points near the
+floor (long delays), so the ML curve decays more slowly in order to stay
+closer to them.
+
+\begin{quote}
+\textbf{Warning: a real optimizer trap.} Replace \nolinkurl{"L-BFGS-B"}
+with \nolinkurl{"Nelder-Mead"} in the ML fit above (keeping
+\nolinkurl{bounds=bounds}) and rerun. For the exponential model, scipy's
+bounded Nelder--Mead collapses against the bound \nolinkurl{A = 1} and
+reports \nolinkurl{success} with NLL = 79.5, far worse than the true
+minimum of 29.8 (it is even worse than the LS estimate's NLL). Bounded
+simplex methods can degenerate when vertices are pushed onto a bound.
+Two quick checks would catch this: an estimate sitting exactly on a
+bound, and a ``MLE'' whose NLL is \emph{higher} than that of some other
+parameter values you have tried. Multi-start (Week 3) is the general
+cure.
+\end{quote}
+
+Now evaluate absolute fit with the deviance:
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+exp: G2 =  26.27, df = 6, p = 0.0002
+pow: G2 =   6.31, df = 6, p = 0.3895
+\end{Verbatim}
+
+\textbf{Interpret:} the exponential model misfits far more than binomial
+noise allows (\(p = .0002\)): we can \textbf{reject} it as a description
+of these data. The power model's misfit is consistent with sampling
+noise. That does not prove it is the right model; it means these data
+give no reason to reject it.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\subsubsection{Part C: Gaussian MLE equals least squares (15 min)}
+
+Treat the proportions as continuous and assume Gaussian noise with a
+free \(\sigma\) (a third parameter). The estimates of \(A\) and \(d\)
+should match least squares, and \(\hat\sigma\) should equal
+\(\sqrt{\mathrm{SSE}/N}\).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+Gaussian MLE: A = 0.8712, d = 0.4251, sigma = 0.0569
+Least squares: A = 0.8711, d = 0.4251, sqrt(SSE/N) = 0.0569
+\end{Verbatim}
+
+\subsubsection{Part D: a constrained multi-condition SDT model (35 min)}
+
+\textbf{The experiment.} Participants detect a faint tone under three
+payoff schemes: \textbf{liberal} (hits rewarded), \textbf{neutral}, and
+\textbf{conservative} (false alarms penalized). 80 signal and 80 noise
+trials per condition. We simulate one participant whose sensitivity is
+the same in all conditions and whose criterion shifts with the payoffs.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 7 · \RL{\CMfa سلول}
+7
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{12\baselineskip}
+\begin{Verbatim}
+      condition  hits  n_signal  fas  n_noise
+0       liberal    73        80   33       80
+1       neutral    58        80   16       80
+2  conservative    44        80    7       80
+
+Shared d':   d' = 1.496, c = [-0.555  0.124  0.618], NLL = 13.134
+Separate d': d' = [1.577 1.439 1.482], c = [-0.568  0.122  0.615], NLL = 13.043
+
+Likelihood-ratio statistic = 0.18, df = 2, p = 0.913
+\end{Verbatim}
+
+Note that the estimated \nolinkurl{d'} (about 1.5) is higher than the
+generating value of 1.2. With 80 trials per cell that is ordinary
+sampling error. Week 5 shows how to put a confidence interval around it.
+
+\textbf{Interpret (write in your notebook):} 1. Does constraining \(d'\)
+to be equal across payoff conditions cost much likelihood? What do you
+conclude about the effect of payoffs? 2. The separate-\(d'\) estimates
+differ from each other by a few tenths. Why is that not evidence that
+payoffs change sensitivity? 3. Check that the separate-\(d'\) model
+reproduces the observed hit and false-alarm rates exactly. Why must it?
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star}.} Derive by hand the MLE of \(\theta\) for a
+Bernoulli sequence with \(y\) successes in \(n\) trials, and check it
+numerically with \nolinkurl{minimize_scalar} for \(y = 13\), \(n = 40\).
+
+\textbf{Exercise 2 \ensuremath{\star}.} In Part B, refit both models with the
+\textbf{Bernoulli} likelihood on item-level data (expand each count into
+0/1 responses). Show that the estimates are identical to the binomial
+fits and that the NLLs differ by a constant. What is the constant?
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (zero counts).} Set the last two counts to 0
+(\nolinkurl{recalled[-2:] = 0}). Which fitting methods from Weeks 2--4
+still work? Fit both models by MLE and comment on what happens to the
+estimates and to \(G^2\).
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (a third SDT model).} Fit a model in which the
+criterion is the \emph{same} in all conditions but \(d'\) differs
+(\(k = 4\)). Compare its NLL with the shared-\(d'\) model. Both have
+\(k = 4\); why can you compare them directly by NLL here? Which one is
+psychologically more plausible for a payoff manipulation?
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: LS vs.~MLE by simulation).} Simulate
+500 datasets from the power model (\(A = 0.9\), \(d = 0.5\), the 8
+intervals, \(n = 50\)), fit each by LS and by MLE, and compare the two
+estimators of \(d\): mean (bias), SD, and root-mean-squared error. Which
+is better here? Repeat with \(n = 10\). (This is good preparation for
+A2.)
+
+\subsubsection{Lab check-off}
+
+Show: (1) the LS-vs-MLE table and \(G^2\) results from Part B, (2) the
+Gaussian-vs-LS comparison from Part C, and (3) your answers to the
+interpretation questions of Part D.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{LLMs are trained by maximum likelihood.} The ``cross-entropy
+loss'' used to train every language model is the negative log-likelihood
+of the next token, averaged over a huge text corpus. Training an LLM is
+therefore an MLE problem with billions of parameters, solved by gradient
+descent instead of Nelder--Mead. Two quantities you meet in AI papers
+are this week's quantities in disguise: \textbf{loss} = NLL per token,
+and \textbf{perplexity} = \(e^{\text{NLL per token}}\), the effective
+number of equally likely choices the model is ``confused'' between.
+
+The simplest language model, a \textbf{bigram model}, has a closed-form
+MLE: \(P(w_2\mid w_1)\) = count(\(w_1 w_2\))/count(\(w_1\)). It shows a
+familiar problem. Any word pair never seen in training gets probability
+0, so a single new pair makes the likelihood of a whole sentence 0 (NLL
+= \ensuremath{\infty}). Smoothing solves this, in the same way that the log-linear
+correction of Week 2 solved hit rates of 1.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 8 · \RL{\CMfa سلول}
+8
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+P(cat | the) = 0.333
+'the dog sat on the mat .'   MLE      NLL =  3.584  perplexity =   1.82
+'the dog sat on the mat .'   add-one  NLL =  9.537  perplexity =   4.90
+'the dog saw the cat .'      MLE      NLL =    inf  perplexity =    inf
+'the dog saw the cat .'      add-one  NLL =  9.624  perplexity =   6.85
+\end{Verbatim}
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Which word pair in ``the dog saw
+the cat .'' was never seen in the corpus? Check by hand that the MLE of
+\(P(\text{cat}\mid\text{the})\) is 1/3. - \ensuremath{\star}\ensuremath{\star} Smoothing makes the
+\emph{training} sentence less likely (NLL 3.6 \ensuremath{\rightarrow} 9.5) but makes the new
+sentence possible. Replace add-one with add-\(k\) and choose \(k\) by
+leave-one-sentence-out cross-validation (a preview of Week 6). - \ensuremath{\star}\ensuremath{\star}
+Discussion: the MLE of a bigram model reproduces the training corpus as
+closely as possible. Why is ``maximizing likelihood on internet text''
+not the same as ``learning to tell the truth''?
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{``The likelihood is the probability that the parameters are
+  true.''} It is the probability (density) of the \emph{data} given the
+  parameters. It does not integrate to 1 over \(\boldsymbol\theta\).
+\item
+  \textbf{Multiplying probabilities instead of summing logs.} The
+  product underflows to 0 for realistic numbers of trials (Part A).
+\item
+  \textbf{Maximizing when the optimizer minimizes.} \nolinkurl{minimize}
+  needs the \textbf{negative} log-likelihood. Forgetting the minus sign
+  sends the optimizer to the \emph{worst} parameters.
+\item
+  \textbf{Not clipping probabilities.} Predicted probabilities of
+  exactly 0 or 1 produce \(-\infty\) log-likelihoods and crash the
+  optimizer.
+\item
+  \textbf{Comparing NLLs across different datasets or data codings.} NLL
+  depends on the number of observations and on constants (e.g., binomial
+  coefficients). Compare only models fitted to the same data, coded the
+  same way.
+\item
+  \textbf{Using least squares for choices or counts by default.} It
+  ignores the data's noise structure. Use the likelihood that matches
+  how the data were generated.
+\item
+  \textbf{Reading a non-significant \(G^2\) as proof the model is
+  correct.} It only says the misfit is not detectably larger than
+  sampling noise at this sample size.
+\item
+  \textbf{Forgetting that a saturated or exactly-determined model always
+  fits perfectly} (worked example, Part D separate-\(d'\) model). A
+  perfect fit is then uninformative.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} In one sentence each: what varies and what is fixed in a
+probability distribution vs.~a likelihood function? \textbf{Answer}
+Probability: parameters fixed, data vary, and it sums/integrates to 1
+over data. Likelihood: data fixed at the observed values, parameters
+vary, and it need not integrate to 1 over parameters.
+
+\textbf{2.} Give two reasons for working with log-likelihoods.
+\textbf{Answer} (i) Numerical: products of many probabilities underflow,
+while sums of logs do not. (ii) The log is monotone, so the maximizer is
+unchanged, and sums are easier to differentiate and optimize.
+
+\textbf{3.} Under what assumptions is least squares equivalent to
+maximum likelihood? Show the key step. \textbf{Answer} Independent
+Gaussian errors with equal variance \(\sigma^2\). Then
+\(\ell = -\tfrac{N}{2}\ln(2\pi\sigma^2) - \mathrm{SSE}/(2\sigma^2)\), so
+for any \(\sigma\), maximizing \(\ell\) over \(\boldsymbol\theta\) is
+minimizing SSE.
+
+\textbf{4.} A model with 2 parameters is fitted to 8 binomial cells and
+gives \(G^2 = 4.1\). What are the df, and what do you conclude?
+\textbf{Answer} df = 8 − 2 = 6. A \(\chi^2_6\) has mean 6, so 4.1 is
+well within the range expected from sampling noise (\(p \approx 0.66\)).
+There is no evidence of misfit, but that does not prove the model
+correct.
+
+\textbf{5.} Why does MLE with a binomial likelihood weight data points
+differently than plain least squares does? \textbf{Answer} The binomial
+log-likelihood reflects the variance \(f(1-f)/n\): points predicted near
+0 or 1 (small variance) are fitted more tightly, and points with larger
+\(n\) count more. Plain least squares weights every squared error
+equally.
+
+\textbf{6.} In the payoff experiment, what psychological hypothesis does
+the shared-\(d'\) model express, and how would you test it?
+\textbf{Answer} That payoffs change only response bias (criterion), not
+perceptual sensitivity. Test it by comparing the maximized
+log-likelihood with the separate-\(d'\) model:
+\(2(\ell_6 - \ell_4) \sim \chi^2_2\) approximately (likelihood-ratio
+test), or with AIC/BIC (Week 7).
+
+\textbf{7.} You fit a model and the optimizer returns NLL = −35.2
+(negative). Is something wrong? \textbf{Answer} Not necessarily. For
+continuous data, densities can exceed 1 (e.g., a narrow Gaussian), so
+log-densities can be positive and the NLL negative. For discrete data
+(binomial), probabilities are \ensuremath{\leq} 1, so the NLL must be \ensuremath{\geq} 0, and a
+negative value would indicate a bug.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\subsubsection{A2: Least squares vs.~maximum likelihood (1.0 point of
+20; released Week 4, due at the start of the Week 6 lecture)}
+
+\textbf{Data.} Generate the dataset with exactly this code (everyone
+gets the same data):
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week04.py}, cell 9 · \RL{\CMfa سلول}
+9
+\end{quote}
+
+\textbf{Tasks.}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Fit (2 pts).} Fit the exponential and power models to these
+  data by (a) least squares on proportions and (b) binomial MLE. Report
+  all estimates in one table with SSE and NLL.
+\item
+  \textbf{Evaluate (2 pts).} Compute \(G^2\), df and \(p\) for each
+  model's MLE fit. Plot the data with 95\% binomial intervals, both
+  fitted curves, and residuals. Which model, if any, can be rejected?
+\item
+  \textbf{Simulation study (3 pts).} Treat the power model with
+  \(A = 0.95\), \(d = 0.7\) as the truth. Simulate 500 datasets with the
+  same design, fit each with LS and MLE, and report the bias, SD and
+  RMSE of \(\hat d\) for each method. Show histograms. Repeat with
+  \(n = 100\) items and describe what changes.
+\item
+  \textbf{Interpret (2 pts, max. 300 words).} Which estimator would you
+  recommend for recall data, and why? Relate your answer to the noise
+  structure of binomial data and to the near-floor counts (1--2 of 20)
+  at the longest delays. What would happen to the Week 2 linearization
+  method if one of those counts were 0?
+\item
+  \textbf{Code quality (1 pt).} Reproducible, commented notebook; seeds
+  fixed; functions reused rather than copy-pasted.
+\end{enumerate}
+
+Late submissions lose 10\% per day (max. 3 days).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 4.} Maximum likelihood
+  parameter estimation: likelihood functions for common data types,
+  log-likelihood, and fitting in practice. \emph{(Main reading.)}
+\item
+  \textbf{Azimifar \& Ahmadi (1396)}, \emph{Shenasayi-ye amari-ye olgu},
+  vol.~1 (in Persian): the section on maximum likelihood parameter
+  estimation, with the statistical-learning view {[}verify chapter{]}.
+\item
+  \textbf{Lee \& Wagenmakers (2014), chapter 3.} Inferences with
+  binomials. Read it now for the binomial set-up; we revisit it from the
+  Bayesian side in Week 9.
+\end{itemize}
+
+\emph{Preview for Week 5:} an estimate without an uncertainty is half a
+result. We compute standard errors and confidence intervals from the
+curvature of the likelihood and by bootstrapping, and we discover how
+averaging participants can create a ``law'' that no individual follows.

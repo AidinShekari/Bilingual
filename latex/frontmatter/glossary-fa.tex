@@ -1,0 +1,334 @@
+اصطلاحات به ترتیب الفبای انگلیسی آمده‌اند تا با متن‌های انگلیسی و کتاب‌ها
+راحت تطبیق داده شوند. عدد داخل کروشه هفته‌ای است که اصطلاح در آن معرفی
+شده یا کامل‌تر توضیح داده شده است. نمادگذاری مطابق جدول نمادهای هفته‌ی 1
+است.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+اصطلاح \lr{(English)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معادل فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تعریف
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{\lr{Acceptance rate}} {[}11{]} & نرخ پذیرش & نسبت پیشنهادهای
+\lr{(proposals)} الگوریتم \lr{Metropolis} که پذیرفته می‌شوند. خیلی بالا
+یعنی گام‌ها خیلی کوچک‌اند؛ خیلی پایین یعنی گام‌ها خیلی بزرگ‌اند. هدف تقریبی:
+0.2 تا 0.5. \\
+\textbf{\lr{Aggregation artifact}} {[}5{]} & خطای ناشی از میانگین‌گیری &
+الگویی در داده‌های میانگین‌گیری‌شده که در هیچ فردی دیده نمی‌شود؛ مثلاً منحنی
+توانی که از میانگین‌گیری یادگیرنده‌های نمایی به دست می‌آید. \\
+\textbf{\lr{AIC} / \lr{AICc}} {[}7{]} & معیار اطلاعاتی آکائیکه &
+\(2\,\mathrm{NLL} + 2k\)؛ دقت پیش‌بینی روی داده‌ی جدید را تخمین می‌زند.
+\lr{AICc} یک تصحیح برای نمونه‌های کوچک اضافه می‌کند. \\
+\textbf{\lr{Akaike weight}} {[}7{]} & وزن آکائیکه &
+\(w_i \propto \exp(-\Delta_i/2)\): پشتیبانی نسبی از مدل \(i\) به‌عنوان
+بهترین پیش‌بینی‌کننده در میان مدل‌های رقیب. \\
+\textbf{\lr{Attention weight}} (\(w_m\)) {[}14{]} & وزن توجه & پارامتر
+\lr{GCM:} سهمی از توجه که به بُعد \(m\) محرک داده می‌شود (مجموع وزن‌ها 1
+است). \\
+\textbf{\lr{Bayes factor}} (\(\mathrm{BF}_{12}\)) {[}10{]} & \lr{Bayes
+factor} & نسبت درست‌نمایی‌های حاشیه‌ای
+\(p(\mathbf{y}\mid\mathcal{M}_1)/p(\mathbf{y}\mid\mathcal{M}_2)\):
+داده‌ها چقدر نسبت بخت \lr{(odds)} دو مدل را تغییر می‌دهند. \\
+\textbf{\lr{Bayesian data analysis}} {[}9{]} & تحلیل داده‌ی بیزی &
+استفاده از قاعده‌ی بیز برای استنباط پارامترها و مدل‌ها از داده؛ روشی که
+پژوهشگر به کار می‌برد و برای هر مدلی قابل استفاده است. \\
+\textbf{\lr{Bayesian model of cognition}} {[}15{]} & مدل بیزی شناخت &
+این فرضیه که ذهن (به‌طور تقریبی) استنباط بیزی انجام می‌دهد؛ نظریه‌ای در سطح
+محاسباتی. \\
+\textbf{\lr{Beta-binomial model}} {[}9{]} & مدل \lr{beta-binomial} &
+درست‌نمایی دوجمله‌ای با پیشین \lr{Beta}؛ پسین هم دوباره \lr{Beta} است
+\lr{(conjugacy).} \\
+\textbf{\lr{BIC}} {[}7{]} & معیار اطلاعاتی بیزی &
+\(2\,\mathrm{NLL} + k\ln N\)؛ تقریبی از
+\(-2\ln p(\mathbf{y}\mid\mathcal{M})\) است و مدل‌های ساده‌تری از \lr{AIC}
+را ترجیح می‌دهد. \\
+\textbf{\lr{Bias\lr{--}variance trade-off}} {[}6{]} & \lr{trade-off}
+سوگیری\lr{--}واریانس & خطای مورد انتظار پیش‌بینی = نویز + مربع سوگیری +
+واریانس. مدل‌های منعطف سوگیری را کم و واریانس را زیاد می‌کنند. \\
+\textbf{\lr{Bootstrap (parametric)}} {[}5{]} & \lr{bootstrap} پارامتری &
+از مدل برازش‌شده تعداد زیادی مجموعه‌داده شبیه‌سازی کنید، هرکدام را دوباره
+برازش کنید و پراکندگی برآوردها را به‌عنوان عدم قطعیت آن‌ها به کار
+ببرید. \\
+\textbf{\lr{Boundary separation}} (\(a\)) {[}1, 14{]} & فاصله‌ی مرزها &
+پارامتر \lr{random walk} / \lr{DDM:} فاصله‌ی بین دو مرز پاسخ. نماینده‌ی
+احتیاط \lr{(caution).} \\
+\textbf{\lr{Burn-in (warm-up)}} {[}11{]} & دوره‌ی گرم‌شدن \lr{(burn-in)} &
+تکرارهای اولیه‌ی \lr{MCMC} که دور ریخته می‌شوند چون هنوز تحت تأثیر مقدار
+شروع‌اند. \\
+\textbf{\lr{Centered} / \lr{non-centered parameterization}} {[}13{]} &
+پارامترسازی \lr{centered} / \lr{non-centered} & دو روش هم‌ارز برای نوشتن
+یک مدل سلسله‌مراتبی؛ شکل \lr{non-centered} (\(d_j = \mu + \sigma z_j\))
+از هندسه‌ی قیفی و \lr{divergence} جلوگیری می‌کند. \\
+\textbf{\lr{Complete} / \lr{no} / \lr{partial pooling}} {[}5, 13{]} &
+\lr{complete pooling} / \lr{no pooling} / \lr{partial pooling} & یک
+مجموعه پارامتر برای همه / پارامترهای مستقل برای هر فرد / پارامترهای فردی
+که از یک توزیع گروهی برآوردشده می‌آیند. \\
+\textbf{\lr{Confusion matrix (model recovery)}} {[}7{]} & \lr{confusion
+matrix} (بازیابی مدل) &
+\(P(\text{مدل انتخاب‌شده} \mid \text{مدل تولیدکننده})\) که با شبیه‌سازی
+تخمین زده می‌شود. \\
+\textbf{\lr{Conjugate prior}} {[}9, 12{]} & پیشین \lr{conjugate} &
+پیشینی که پسینی از همان خانواده می‌دهد (مثلاً \lr{Beta} برای داده‌ی
+دوجمله‌ای)؛ نمونه‌گیری \lr{Gibbs} را ممکن می‌کند. \\
+\textbf{\lr{Credible interval} / \lr{HDI}} {[}9{]} & \lr{credible
+interval} / بازه‌ی بیشترین چگالی & بازه‌ای که احتمال پسین مشخصی (مثلاً
+95\%) را در بر دارد؛ \lr{HDI} باریک‌ترین چنین بازه‌ای است. \\
+\textbf{\lr{Criterion}} (\(c\)) {[}2{]} & ملاک \lr{(criterion)} &
+پارامتر سوگیری پاسخ در \lr{SDT:} محل ملاک نسبت به نقطه‌ی میانی توزیع‌های
+نویز و علامت. مقدار مثبت یعنی محافظه‌کار. \\
+\textbf{\lr{Cross-validation (K-fold, LOO)}} {[}6{]} &
+\lr{cross-validation} & مدل را روی بخشی از داده برازش کنید و پیش‌بینی‌هایش
+را روی بخش کنارگذاشته بسنجید و این کار را بین \(K\) بخش \lr{(fold)}
+بچرخانید؛ \lr{LOO} هر بار یک مشاهده را کنار می‌گذارد. \\
+\textbf{\(d'\) \lr{(sensitivity)}} {[}2{]} & حساسیت & پارامتر \lr{SDT:}
+فاصله‌ی بین توزیع‌های علامت و نویز بر حسب واحد انحراف معیار. \\
+\textbf{\lr{Delta rule} / \lr{Rescorla\lr{--}Wagner rule}} {[}15{]} & قاعده‌ی
+دلتا / قاعده‌ی \lr{Rescorla\lr{--}Wagner} & به‌روزرسانی مبتنی بر خطا:
+\(Q \leftarrow Q + \alpha(r - Q)\). \\
+\textbf{\lr{Deterministic core}} {[}2{]} & هسته‌ی قطعی & بخشی از مدل که
+پیش‌بینی میانگین را می‌دهد، \(f(x;\boldsymbol\theta)\). \\
+\textbf{\lr{Deviance}} (\(G^2\)) {[}4{]} & انحراف \lr{(deviance)} &
+\(2(\ell_{\text{\lr{sat}}} - \hat\ell)\): میزان عدم برازش نسبت به مدل
+اشباع‌شده؛ تقریباً \(\chi^2\) با درجه‌ی آزادی = تعداد خانه‌ها \ensuremath{-} \(k\). \\
+\textbf{\lr{Divergent transition}} {[}13{]} & \lr{divergence} & مسیری در
+\lr{NUTS} که انتگرال‌گیری عددی‌اش شکسته است؛ نشان می‌دهد بخشی از پسین
+به‌خوبی کاوش نشده است. \\
+\textbf{\lr{Drift rate}} (\(v\)) {[}1, 14{]} & \lr{drift rate} & پارامتر
+\lr{random walk} / \lr{DDM:} نرخ میانگین انباشت شواهد. نماینده‌ی کیفیت
+شواهد. \\
+\textbf{\lr{Drift-diffusion model (DDM)}} {[}14{]} & مدل
+\lr{drift-diffusion} & انباشت پیوسته و پرنویز شواهد بین دو مرز؛ انتخاب‌ها
+و توزیع زمان‌های واکنش را پیش‌بینی می‌کند. \\
+\textbf{\lr{Effective sample size (ESS)}} {[}12{]} & اندازه‌ی مؤثر نمونه
+& تعداد نمونه‌های مستقلی که همان دقت نمونه‌های خودهمبسته‌ی \lr{MCMC} را
+می‌دهند. \\
+\textbf{\lr{Error surface}} {[}3{]} & سطح خطا & معیار ناهمخوانی
+\lr{(SSE} یا \lr{NLL)} به‌صورت تابعی از پارامترها؛ شکلش کمینه‌ها، دره‌ها
+\lr{(trade-off} پارامترها) و فلات‌ها را نشان می‌دهد. \\
+\textbf{\lr{Evidence} / \lr{marginal likelihood}} {[}9, 10{]} & شواهد /
+\lr{marginal likelihood} &
+\(p(\mathbf{y}\mid\mathcal{M}) = \int p(\mathbf{y}\mid\boldsymbol\theta)p(\boldsymbol\theta)\,d\boldsymbol\theta\):
+مدل پیش از برازش، داده‌ها را چقدر خوب پیش‌بینی کرده بود. \\
+\textbf{\lr{EZ-diffusion}} {[}14{]} & \lr{EZ-diffusion} & برآورد بسته
+\lr{(closed-form) drift rate}، فاصله‌ی مرزها و \lr{non-decision time} از
+دقت و میانگین و واریانس زمان واکنش پاسخ‌های درست. \\
+\textbf{\lr{Flexibility (model complexity)}} {[}6{]} & انعطاف‌پذیری
+(پیچیدگی مدل) & دامنه‌ی الگوهای داده‌ای که یک مدل می‌تواند تولید کند؛ به
+تعداد پارامترها \emph{و} شکل تابعی بستگی دارد. \\
+\textbf{\lr{Forward} / \lr{inverse problem}} {[}1{]} & مسئله‌ی مستقیم /
+معکوس & شبیه‌سازی (پارامتر \ensuremath{\leftarrow} داده) در برابر برآورد (داده \ensuremath{\leftarrow} پارامتر). \\
+\textbf{\lr{Full conditional}} {[}12{]} & \lr{full conditional} & توزیع
+یک پارامتر به شرط همه‌ی پارامترهای دیگر و داده؛ \lr{Gibbs} از آن نمونه
+می‌گیرد. \\
+\textbf{\lr{GCM (Generalized Context Model)}} {[}14{]} & مدل بافت
+تعمیم‌یافته & مدل \lr{exemplar} دسته‌بندی: دسته‌بندی بر اساس مجموع شباهت به
+نمونه‌های ذخیره‌شده. \\
+\textbf{\lr{Generalization criterion}} {[}6{]} & معیار تعمیم & ارزیابی
+مدل‌ها با پیش‌بینی شرایط جدید (برون‌یابی) به‌جای \lr{trial}های جدید. \\
+\textbf{\lr{Gibbs sampling}} {[}12{]} & نمونه‌گیری \lr{Gibbs} & نوعی
+\lr{MCMC} که هر پارامتر را با نمونه‌گیری از \lr{full conditional}ش به‌روز
+می‌کند؛ همه‌ی نمونه‌ها پذیرفته می‌شوند. \\
+\textbf{\lr{Grid approximation}} {[}9{]} & تقریب شبکه‌ای & محاسبه‌ی پسین
+روی شبکه‌ای از مقادیر پارامتر؛ برای 1 تا 2 پارامتر شدنی است. \\
+\textbf{\lr{Hamiltonian Monte Carlo (HMC)} / \lr{NUTS}} {[}13{]} &
+\lr{Hamiltonian Monte Carlo} / \lr{NUTS} & \lr{MCMC} مبتنی بر گرادیان که
+با شبیه‌سازی دینامیک فیزیکی پیشنهادهای دور با احتمال پذیرش بالا می‌سازد؛
+\lr{NUTS} طول مسیر را خودکار تنظیم می‌کند. \\
+\textbf{\lr{Hessian} / \lr{observed Fisher information}} {[}5{]} &
+ماتریس \lr{Hessian} / اطلاع فیشر مشاهده‌شده & ماتریس مشتق‌های دوم \lr{NLL}
+در نقطه‌ی \lr{MLE}؛ معکوسش تقریبی از کوواریانس برآوردهاست. \\
+\textbf{\lr{Hierarchical (multilevel) model}} {[}13{]} & مدل سلسله‌مراتبی
+(چندسطحی) & مدلی که پارامترهای سطح فرد از توزیع‌های سطح گروه می‌آیند. \\
+\textbf{\lr{Identifiability (structural} / \lr{practical)}} {[}7{]} &
+\lr{identifiability} (ساختاری / عملی) & آیا پارامترها به‌طور یکتا قابل
+تعیین‌اند؛ در اصل (ساختاری) یا با داده‌های موجود (عملی). \\
+\textbf{\lr{Ideal observer}} {[}15{]} & مشاهده‌گر ایده‌آل & مدل استنباط
+بهینه با توجه به اطلاعات موجود؛ مثلاً ترکیب سرنخ‌ها با وزن‌دهی بر اساس
+قابلیت اطمینان. \\
+\textbf{\lr{Inverse temperature}} (\(\beta\)) {[}15{]} & \lr{inverse
+temperature} & پارامتر \lr{softmax:} حساسیت انتخاب‌ها به تفاوت ارزش‌ها
+(اکتشاف در برابر بهره‌برداری). \\
+\textbf{\lr{Inversion matrix (model recovery)}} {[}7{]} & \lr{inversion
+matrix} (بازیابی مدل) &
+\(P(\text{مدل تولیدکننده} \mid \text{مدل انتخاب‌شده})\): چقدر می‌توان به
+نتیجه‌ی انتخاب مدل اعتماد کرد. \\
+\textbf{\lr{Learning rate}} (\(\alpha\)) {[}15{]} & نرخ یادگیری & میزان
+تأثیر خطای پیش‌بینی بر به‌روزرسانی ارزش‌ها. \\
+\textbf{\lr{Likelihood}} (\(L\)), \textbf{\lr{log-likelihood}}
+(\(\ell\)), \textbf{\lr{NLL}} {[}4{]} & درست‌نمایی، لگاریتم درست‌نمایی،
+منفی لگاریتم درست‌نمایی & \(p(\mathbf{y}\mid\boldsymbol\theta)\) به‌عنوان
+تابعی از \(\boldsymbol\theta\)؛ لگاریتم آن؛ و منفی لگاریتم آن که
+بهینه‌سازها کمینه‌اش می‌کنند. \\
+\textbf{\lr{Likelihood-ratio test (LRT)}} {[}7{]} & آزمون نسبت درست‌نمایی
+& برای مدل‌های \lr{nested}، تحت مدل ساده‌تر
+\(2\Delta\ell \sim \chi^2_{\Delta k}\). \\
+\textbf{\lr{Linking assumption}} {[}2{]} & فرض پیوند & اینکه کمیت‌های مدل
+چگونه به رفتار قابل مشاهده نگاشت می‌شوند. \\
+\textbf{\lr{Local minimum}} {[}3{]} & کمینه‌ی محلی & نقطه‌ای پایین‌تر از
+اطرافش ولی نه کمینه‌ی سراسری؛ بهینه‌سازی تک‌شروعی ممکن است در آن گیر کند.
+از \lr{multi-start} استفاده کنید. \\
+\textbf{\lr{MAP}} {[}9{]} & برآورد بیشینه‌ی پسین & مُد پسین؛ تحت پیشین تخت
+با \lr{MLE} برابر است. \\
+\textbf{\lr{Markov chain Monte Carlo (MCMC)}} {[}11{]} & مونت‌کارلوی
+زنجیره‌ی مارکوف & نمونه‌گیری از پسین با شبیه‌سازی یک زنجیره‌ی مارکوف که
+توزیع ایستایش همان پسین است. \\
+\textbf{\lr{Maximum likelihood estimate (MLE)}} {[}4{]} & برآورد بیشینه
+درست‌نمایی & مقادیری از پارامترها که درست‌نمایی را بیشینه می‌کنند. \\
+\textbf{\lr{MCSE}} {[}12{]} & خطای استاندارد مونت‌کارلو & انحراف معیار
+پسین تقسیم بر \(\sqrt{\mathrm{ESS}}\): خطای شبیه‌سازی در میانگین پسین. \\
+\textbf{\lr{Metropolis} / \lr{Metropolis\lr{--}Hastings}} {[}11{]} &
+\lr{Metropolis} / \lr{Metropolis\lr{--}Hastings} & \lr{MCMC} که یک حرکت
+پیشنهاد می‌دهد و آن را با احتمال \(\min(1, \text{نسبت})\) می‌پذیرد؛
+\lr{Hastings} برای پیشنهادهای نامتقارن یک تصحیح اضافه می‌کند. \\
+\textbf{\lr{Model mimicry}} {[}7{]} & تقلید مدل & وقتی یک مدل داده‌هایی
+تولید می‌کند که انگار مدل دیگری تولیدشان کرده است. \\
+\textbf{\lr{Model recovery}} {[}7{]} & بازیابی مدل & شبیه‌سازی از هر مدل
+رقیب و بررسی اینکه آیا روش مقایسه، مدل تولیدکننده را انتخاب می‌کند. \\
+\textbf{\lr{Monte Carlo integration}} {[}11{]} & انتگرال‌گیری مونت‌کارلو &
+تقریب یک امید ریاضی با میانگین نمونه‌های تصادفی؛ خطا متناسب با
+\(1/\sqrt{S}\). \\
+\textbf{\lr{Multi-start}} {[}3{]} & چندشروعی & اجرای بهینه‌ساز از تعداد
+زیادی مقدار شروع و نگه‌داشتن بهترین نتیجه. \\
+\textbf{\lr{Nelder\lr{--}Mead simplex}} {[}3{]} & سیمپلکس \lr{Nelder\lr{--}Mead} &
+بهینه‌ساز بدون مشتق که یک سیمپلکس را با بازتاب، گسترش، انقباض و جمع‌شدن
+حرکت می‌دهد. \\
+\textbf{\lr{Nested models}} {[}7{]} & مدل‌های \lr{nested} & یکی حالت خاصی
+از دیگری است (با ثابت کردن برخی پارامترها). \\
+\textbf{\lr{Noise model}} {[}2{]} & مدل نویز & توزیع مشاهدات حول پیش‌بینی
+قطعی (مثلاً دوجمله‌ای، گاوسی). \\
+\textbf{\lr{Non-decision time}} (\(t_0\), \(T_{er}\)) {[}1, 14{]} &
+\lr{non-decision time} & بخشی از زمان واکنش که صرف انباشت شواهد نمی‌شود
+(رمزگذاری و اجرای حرکتی). \\
+\textbf{\lr{Overfitting}} {[}6{]} & \lr{overfitting} & برازش نویز یک
+نمونه، که برازش را بهتر و پیش‌بینی داده‌ی جدید را بدتر می‌کند. \\
+\textbf{\lr{Parameter recovery}} {[}7{]} & بازیابی پارامتر & شبیه‌سازی
+داده از پارامترهای معلوم با همان طرح آزمایش واقعی و بررسی اینکه آیا
+برازش همان‌ها را برمی‌گرداند. \\
+\textbf{\lr{Parameter trade-off}} {[}3, 5{]} & \lr{trade-off} پارامترها
+& تغییر یک پارامتر با پارامتر دیگری جبران می‌شود؛ به شکل دره‌ی مورب در سطح
+خطا و برآوردهای همبسته دیده می‌شود. \\
+\textbf{\lr{Posterior}} {[}9{]} & پسین &
+\(p(\boldsymbol\theta\mid\mathbf{y}) \propto p(\mathbf{y}\mid\boldsymbol\theta)p(\boldsymbol\theta)\). \\
+\textbf{\lr{Posterior predictive check (PPC)}} {[}10{]} & بررسی پیش‌بینی
+پسین & مقایسه‌ی داده‌های شبیه‌سازی‌شده از مدل برازش‌شده با داده‌های مشاهده‌شده
+برای بررسی کفایت مدل. \\
+\textbf{\lr{Power} / \lr{exponential forgetting}} {[}2{]} & فراموشی
+توانی / نمایی & \(A(1+t)^{-d}\) (نرخ نسبی فراموشی کاهشی) در برابر
+\(Ae^{-\lambda t}\) (نرخ نسبی ثابت). \\
+\textbf{\lr{Prior} / \lr{prior predictive check}} {[}9{]} & پیشین /
+بررسی پیش‌بینی پیشین & توزیع پارامترها پیش از داده / شبیه‌سازی داده از
+پیشین برای اطمینان از منطقی بودن پیشین. \\
+\textbf{\lr{Profile likelihood}} {[}5{]} & \lr{profile likelihood} &
+\lr{NLL} کمینه‌شده روی پارامترهای دیگر برای هر مقدار از پارامتر مورد نظر؛
+بازه‌های نسبت درست‌نمایی را می‌دهد. \\
+\textbf{\lr{Prototype model}} {[}14{]} & مدل پیش‌نمونه \lr{(prototype)} &
+دسته‌بندی بر اساس شباهت به یک بازنمایی خلاصه برای هر دسته. \\
+\textbf{\lr{R-hat}} (\(\hat R\)) {[}12{]} & \lr{R-hat} & نسبتی که
+واریانس بین زنجیره‌ها و درون زنجیره‌ها را مقایسه می‌کند؛ وقتی زنجیره‌ها
+هم‌خوان‌اند \ensuremath{\approx} 1 (کمتر از 1.01). \\
+\textbf{\lr{Random walk model}} {[}1{]} & مدل گام تصادفی & انباشت گسسته‌ی
+شواهد تا رسیدن به مرز؛ پیش‌درآمد \lr{DDM.} \\
+\textbf{\lr{Relative loss rate (hazard)}} {[}2{]} & نرخ نسبی فراموشی
+\lr{(hazard)} & \(-f'(t)/f(t)\): نرخ تناسبی فراموشی در زمان \(t\). \\
+\textbf{\lr{Reparameterization}} {[}3, 13{]} & \lr{reparameterization} &
+بهینه‌سازی یا نمونه‌گیری روی مقیاس تبدیل‌شده (مثلاً \(\lambda = e^{\eta}\))
+برای اعمال قیدها یا بهبود هندسه. \\
+\textbf{\lr{RMSD}} {[}3{]} & ریشه‌ی میانگین مربع انحراف &
+\(\sqrt{\mathrm{SSE}/N}\)، بر حسب واحد داده. \\
+\textbf{\lr{ROC} / \lr{zROC}} {[}2{]} & منحنی \lr{ROC} / \lr{zROC} & نرخ
+\lr{hit} در برابر نرخ \lr{false alarm} با تغییر ملاک / همین منحنی روی
+محورهای \(z\) \lr{(probit).} \\
+\textbf{\lr{Saturated model}} {[}4{]} & مدل اشباع‌شده & مدلی با یک
+پارامتر آزاد برای هر خانه‌ی داده که داده‌ها را دقیقاً بازتولید می‌کند. \\
+\textbf{\lr{Savage\lr{--}Dickey density ratio}} {[}10{]} & نسبت چگالی
+\lr{Savage\lr{--}Dickey} & برای مدل‌های \lr{nested}، \(\mathrm{BF}_{01}\) =
+چگالی پسین / چگالی پیشین در مقدار صفر \lr{(null).} \\
+\textbf{\lr{Shrinkage}} {[}13{]} & \lr{shrinkage} & کشیده شدن برآوردهای
+فردی به سمت میانگین گروه در مدل‌های سلسله‌مراتبی؛ برای داده‌های پرنویزتر
+قوی‌تر است. \\
+\textbf{\lr{Signal detection theory (SDT)}} {[}2{]} & نظریه‌ی تشخیص علامت
+& مدل تصمیم‌های تشخیص با شواهد پرنویز و یک ملاک؛ حساسیت را از سوگیری جدا
+می‌کند. \\
+\textbf{\lr{Softmax}} {[}15{]} & \lr{softmax} &
+\(P(o) \propto \exp(\beta Q(o))\): ارزش‌ها را به احتمال انتخاب تبدیل
+می‌کند. \\
+\textbf{\lr{SSE} / \lr{MSE}} {[}3{]} & مجموع / میانگین مربعات خطا &
+مجموع یا میانگین مربع تفاوت‌های داده و پیش‌بینی. \\
+\textbf{\lr{Standard error}} {[}5{]} & خطای استاندارد & انحراف معیار
+توزیع نمونه‌گیری یک برآوردگر. \\
+\textbf{\lr{Wald interval}} {[}5{]} & بازه‌ی \lr{Wald} &
+\(\hat\theta \pm 1.96\,\mathrm{SE}\) با \lr{SE} به‌دست‌آمده از
+\lr{Hessian}؛ نرمال بودن تقریبی را فرض می‌کند. \\
+\textbf{\lr{Weighted least squares}} {[}3{]} & کمترین مربعات وزنی & مربع
+خطاها با وزن معکوس واریانسشان. \\
+\end{longtable}
+}
+
+\subsection{\texorpdfstring{اصطلاحات هوش مصنوعی و \lr{LLM} (از بخش‌های
+«ارتباط با هوش مصنوعی و
+\lr{LLM}ها»)}{اصطلاحات هوش مصنوعی و LLM (از بخش‌های «ارتباط با هوش مصنوعی و LLMها»)}}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+اصطلاح \lr{(English)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+معادل فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تعریف
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{\lr{Benchmark contamination}} {[}6{]} & آلودگی \lr{benchmark} &
+آیتم‌های آزمون (یا جواب‌هایشان) که در داده‌ی آموزشی مدل بوده‌اند؛ نوعی نشت
+داده که نمره را بیش از واقع نشان می‌دهد. \\
+\textbf{\lr{Bradley\lr{--}Terry model}} {[}15{]} & مدل \lr{Bradley\lr{--}Terry} &
+\(P(i \succ j) = 1/(1 + e^{-(r_i - r_j)})\): مدل انتخاب برای مقایسه‌های
+جفتی؛ برای مدل‌های پاداش \lr{RLHF} استفاده می‌شود. هم‌ارز \lr{softmax}
+دوگزینه‌ای با \(\beta = 1\). \\
+\textbf{\lr{Cross-entropy loss}} {[}4{]} & تابع زیان \lr{cross-entropy}
+& تابع زیان آموزش مدل‌های زبانی: منفی لگاریتم درست‌نمایی \lr{token} بعدی،
+میانگین‌گرفته روی \lr{token}ها. \\
+\textbf{\lr{Embedding}} {[}14{]} & بردار \lr{embedding} (بازنمایی
+برداری) & برداری که یک مدل به یک کلمه یا متن نسبت می‌دهد؛ فاصله‌ی
+\lr{embedding}ها اغلب به جای شباهت استفاده می‌شود. \\
+\textbf{\lr{In-context learning}} {[}7{]} & یادگیری درون‌بافتی & بهتر شدن
+یک \lr{LLM} در یک تکلیف با مثال‌هایی که در \lr{prompt} داده می‌شود، بدون
+تغییر پارامترهایش. \\
+\textbf{\lr{Large language model (LLM)}} {[}1{]} & مدل بزرگ زبانی & یک
+شبکه‌ی عصبی (معمولاً \lr{transformer)} که برای پیش‌بینی \lr{token} بعدی در
+\lr{corpus}های متنی خیلی بزرگ آموزش دیده. \\
+\textbf{\lr{Perplexity}} {[}4{]} & \lr{perplexity} (سردرگمی) &
+\(\exp(\text{\lr{NLL per token}})\): تعداد مؤثر \lr{token}های بعدی هم‌احتمال؛
+کمتر بهتر است. \\
+\textbf{\lr{RLHF}} {[}15{]} & یادگیری تقویتی از بازخورد انسانی & یک مدل
+پاداش روی انتخاب‌های ترجیحی انسان برازش می‌شود، و بعد مدل زبانی برای
+بیشینه کردن آن پاداش آموزش می‌بیند. \\
+\textbf{\lr{Scaling law}} {[}3{]} & قانون مقیاس & رابطه‌ای تجربی (معمولاً
+توانی) بین زیان مدل و اندازه‌ی مدل، اندازه‌ی داده یا محاسبات. \\
+\textbf{\lr{Self-consistency}} {[}11{]} & \lr{self-consistency}
+(خودسازگاری) & نمونه‌گیری چند جواب از یک مدل و گرفتن رأی اکثریت. \\
+\textbf{\lr{Temperature}} {[}1{]} & دما & \lr{logit}ها را پیش از
+\lr{softmax} در یک \lr{LLM} تقسیم می‌کند؛ دمای پایین خروجی تقریباً قطعی و
+دمای بالا خروجی تصادفی‌تر می‌دهد (\(\beta = 1/T\)). \\
+\textbf{\lr{Token}} {[}1{]} & \lr{token} & واحدی که مدل زبانی می‌خواند و
+پیش‌بینی می‌کند: یک کلمه یا بخشی از کلمه. \\
+\end{longtable}
+}

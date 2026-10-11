@@ -1,0 +1,886 @@
+\section{Week 11: Monte Carlo Methods and the Metropolis--Hastings
+Algorithm}
+
+\begin{quote}
+\textbf{Chapter 5: Parameter estimation with data-driven methods (MCMC)}
+· Lecture 1 h · Lab 2 h \textbf{Running data:} the Week 2 forgetting
+data with the Week 10 priors, so that we can check the sampler against
+the grid posterior we already have.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Monte Carlo & Monte Carlo \RL{\CMfa (مونت‌کارلو)} & \RL{\CMfa تقریب با میانگین
+نمونه‌های تصادفی} \\
+Metropolis algorithm & \RL{\CMfa الگوریتم} Metropolis & \RL{\CMfa پیشنهاد یک حرکت و
+پذیرش یا رد آن} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+Markov chain Monte Carlo (MCMC) & \RL{\CMfa زنجیره‌ی مارکوف} Monte Carlo &
+\RL{\CMfa نمونه‌گیری از پسین با یک زنجیره‌ی تصادفی} \\
+forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش یادآوری با گذشت
+زمان} \\
+prior & \RL{\CMfa توزیع پیشین} (prior) & \RL{\CMfa باور درباره‌ی پارامتر پیش از دیدن
+داده} \\
+sampler & \RL{\CMfa نمونه‌گیر} (sampler) & \RL{\CMfa الگوریتمی که از توزیع نمونه
+می‌گیرد} \\
+grid approximation & \RL{\CMfa تقریب شبکه‌ای} (grid) & \RL{\CMfa محاسبه‌ی پسین روی
+شبکه‌ای از مقادیر} \\
+posterior & \RL{\CMfa توزیع پسین} (posterior) & \RL{\CMfa باور درباره‌ی پارامتر بعد
+از دیدن داده} \\
+chain & \RL{\CMfa زنجیره} & \RL{\CMfa دنباله‌ی نمونه‌های} MCMC \\
+proposal & \RL{\CMfa پیشنهاد} (proposal) & \RL{\CMfa مقدار جدیدی که الگوریتم امتحان
+می‌کند} \\
+acceptance rate & \RL{\CMfa نرخ پذیرش} & \RL{\CMfa نسبت پیشنهادهای پذیرفته‌شده} \\
+trace plot & \RL{\CMfa نمودار} trace & \RL{\CMfa مقدار نمونه‌ها در برابر شماره‌ی
+تکرار} \\
+autocorrelation & \RL{\CMfa خودهمبستگی} & \RL{\CMfa وابستگی نمونه‌های پشت سر هم} \\
+burn-in / warm-up & \RL{\CMfa دوره‌ی گرم‌شدن} (burn-in) & \RL{\CMfa نمونه‌های اولیه که
+دور ریخته می‌شوند} \\
+sensitivity (d′) & \RL{\CMfa حساسیت} & \RL{\CMfa فاصله‌ی توزیع علامت و نویز} \\
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+starting point & \RL{\CMfa نقطه‌ی شروع} & \RL{\CMfa سوگیری اولیه به سمت یکی از
+پاسخ‌ها} \\
+response bias & \RL{\CMfa سوگیری پاسخ} & \RL{\CMfa تمایل به یک پاسخ، مستقل از
+محرک} \\
+large language model (LLM) & \RL{\CMfa مدل بزرگ زبانی} & \RL{\CMfa شبکه‌ی عصبی‌ای که
+کلمه‌ی بعدی متن را پیش‌بینی می‌کند} \\
+self-consistency & self-consistency \RL{\CMfa (رأی اکثریت)} & \RL{\CMfa چند بار
+نمونه‌گیری جواب و انتخاب رأی اکثریت} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+MCSE & \RL{\CMfa خطای استاندارد} Monte Carlo & \RL{\CMfa خطای شبیه‌سازی در میانگین
+پسین} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Explain} why posterior quantities are integrals, and how Monte
+  Carlo sampling turns integrals into averages, with an error that
+  shrinks like \(1/\sqrt{S}\).
+\item
+  \textbf{Describe} the logic of Markov chain Monte Carlo: a chain whose
+  long-run distribution is the posterior, using only the
+  \emph{unnormalized} posterior.
+\item
+  \textbf{Implement} the Metropolis (and Metropolis--Hastings) algorithm
+  from scratch for a one- and a two-parameter cognitive model.
+\item
+  \textbf{Tune} the proposal distribution using the acceptance rate,
+  trace plots and autocorrelation, and \textbf{identify} burn-in.
+\item
+  \textbf{Compute} posterior summaries and derived quantities (e.g., a
+  half-life) from samples, and \textbf{validate} a sampler against a
+  known answer.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+Everything we want from a posterior is an \textbf{integral}: the
+posterior mean \(\int \theta\, p(\theta\mid\mathbf{y})\,d\theta\), a
+marginal posterior (integrating out other parameters),
+\(P(d' > 1\mid\mathbf{y})\), the posterior predictive distribution, the
+marginal likelihood. In Weeks 9--10 we did these integrals on grids.
+That worked for two parameters. A hierarchical SDT model for 20
+participants (Week 13) has more than 40 parameters; a grid with only 10
+points per parameter would need \(10^{40}\) evaluations.
+
+\textbf{Monte Carlo} methods replace integration by \textbf{sampling}:
+if we could draw many values from the posterior, any integral becomes an
+average over the draws, and the accuracy depends on the number of draws,
+not on the number of parameters. The problem is that we cannot sample
+from a posterior directly; we usually cannot even compute its
+normalizing constant.
+
+\textbf{Markov chain Monte Carlo (MCMC)} solves this with a beautifully
+simple trick: a random walk through parameter space that moves toward
+more probable values more often than toward less probable ones, in
+exactly the right proportions. After a while, the places the walker
+visits are draws from the posterior. The best-known version, the
+\textbf{Metropolis algorithm}, fits in 15 lines of Python, and you will
+write it today before using any library.
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{All modern Bayesian software} (PyMC, Stan, JAGS, BUGS) is
+  built on MCMC. Every hierarchical model in recent psychology and
+  neuroscience papers was fitted with some version of it.
+\item
+  \textbf{Physics and chemistry} (where Metropolis was invented in 1953,
+  to simulate particles), \textbf{epidemiology} (estimating infection
+  parameters), \textbf{phylogenetics} (reconstructing evolutionary
+  trees) and \textbf{finance} all rely on MCMC.
+\item
+  \textbf{Cognitive science also uses sampling as a \emph{theory of the
+  mind}}: some researchers propose that people approximate Bayesian
+  inference by mentally sampling a few possibilities, which explains
+  certain biases.
+\item
+  \textbf{AI}: sampling answers from a language model is Monte Carlo
+  (see the AI \& LLMs section).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+Every question we ask a posterior (``what is the average value?'',
+``what is the probability that \(d' > 1\)?'') is an integral, and grids
+cannot compute integrals over many parameters. \textbf{Monte Carlo}
+replaces the integral with an average: if we had many random values
+\emph{drawn from} the posterior, the average of those values would be
+the posterior mean, the fraction above 1 would be \(P(d' > 1)\), and so
+on. The difficulty is getting those draws. The \textbf{Metropolis
+algorithm} gets them with a clever random walk. Stand at some parameter
+value, propose a small random step, and compare how plausible
+(likelihood × prior) the new spot is. If it is more plausible, move
+there. If it is less plausible, move there only \emph{sometimes}, with
+probability equal to the ratio of plausibilities; otherwise stay where
+you are and record the current value again. Run this long enough and the
+places you have visited are a sample from the posterior. Remarkably, you
+never need the hard normalizing constant, because only ratios are used.
+
+\textbf{Suggested timing (60 min):} Monte Carlo integration 12 · Markov
+chains 8 · the Metropolis algorithm 18 · Metropolis--Hastings 5 ·
+tuning, burn-in and autocorrelation 12 · preview 5.
+
+\subsubsection{1. Monte Carlo integration}
+
+If \(\theta^{(1)}, \dots, \theta^{(S)}\) are independent draws from
+\(p(\theta\mid\mathbf{y})\), then for any function \(g\):
+
+\[
+\mathbb{E}[g(\theta)\mid\mathbf{y}] = \int g(\theta)\, p(\theta\mid\mathbf{y})\, d\theta \;\approx\; \frac{1}{S}\sum_{s=1}^{S} g\big(\theta^{(s)}\big).
+\]
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Want
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Choose \(g(\theta)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Monte Carlo estimate
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Posterior mean & \(\theta\) & Average of the draws \\
+\(P(\theta > 1 \mid \mathbf{y})\) & indicator \(\mathbb{1}[\theta > 1]\)
+& Proportion of draws above 1 \\
+Posterior of a derived quantity, e.g., half-life \(2^{1/d} - 1\) &
+\(g(d)\) & Apply \(g\) to each draw, then summarize \\
+Credible interval & --- & Percentiles (or HDI) of the draws \\
+Marginal posterior of \(\theta_1\) & --- & Simply ignore the other
+columns \\
+\end{longtable}
+}
+
+The \textbf{Monte Carlo standard error} of the mean is
+\(\mathrm{SD}(g)/\sqrt{S}\) for independent draws, independent of the
+number of parameters. That is why sampling beats grids in high
+dimensions.
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathbb{E}[g(\theta)\mid\mathbf{y}] = \int g(\theta)\,p(\theta\mid\mathbf{y})\,d\theta\):
+  the posterior average of some quantity \(g(\theta)\). Choosing \(g\)
+  chooses the question (see the table).
+\item
+  \(\approx \frac{1}{S}\sum_{s} g(\theta^{(s)})\): replace the integral
+  by the plain average over \(S\) draws
+  \(\theta^{(1)}, \dots, \theta^{(S)}\). The superscript \((s)\) is the
+  draw number.
+\item
+  \textbf{Error:} \(\mathrm{SD}(g)/\sqrt{S}\). To halve the error you
+  need four times as many draws, whatever the number of parameters.
+\item
+  \textbf{Example:} 10,000 draws from \(\mathrm{Beta}(8,4)\); 9,000 of
+  them are above 0.5, so
+  \(P(\theta > 0.5 \mid \mathbf{y}) \approx 0.90\), with Monte Carlo
+  error \(\sqrt{0.9 \times 0.1/10000} = 0.003\).
+\end{itemize}
+
+\subsubsection{2. Markov chains in one paragraph}
+
+A \textbf{Markov chain} is a sequence
+\(\theta^{(1)}, \theta^{(2)}, \dots\) in which each value is generated
+from the previous one only, by a fixed transition rule. Under mild
+conditions, a chain ``forgets'' its starting point and settles into a
+\textbf{stationary distribution}: the long-run proportion of time it
+spends in each region. MCMC constructs a transition rule whose
+stationary distribution is the posterior. Two consequences: - The early
+part of the chain still reflects the starting point. It is discarded as
+\textbf{burn-in} (warm-up). - Successive draws are \textbf{correlated},
+so \(S\) correlated draws carry less information than \(S\) independent
+ones (the effective sample size, Week 12).
+
+\subsubsection{3. The Metropolis algorithm}
+
+Let \(\tilde p(\theta) = p(\mathbf{y}\mid\theta)\,p(\theta)\) be the
+\textbf{unnormalized} posterior (likelihood × prior). Choose a symmetric
+\textbf{proposal distribution}, usually a normal random walk
+\(\theta' \sim \mathcal{N}(\theta, \sigma_{\text{prop}})\).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Start at some \(\theta^{(0)}\).
+\item
+  For \(s = 1, 2, \dots, S\):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Propose
+    \(\theta' \sim \mathcal{N}(\theta^{(s-1)}, \sigma_{\text{prop}})\).
+  \item
+    Compute the acceptance probability \[
+    \alpha_{\text{acc}} = \min\left(1,\ \frac{\tilde p(\theta')}{\tilde p(\theta^{(s-1)})}\right).
+    \]
+  \item
+    Draw \(u \sim \mathrm{Uniform}(0, 1)\). If
+    \(u < \alpha_{\text{acc}}\), \textbf{accept}:
+    \(\theta^{(s)} = \theta'\). Otherwise \textbf{reject}:
+    \(\theta^{(s)} = \theta^{(s-1)}\) (the current value is
+    \emph{repeated} in the chain).
+  \end{itemize}
+\end{enumerate}
+
+\textbf{Why it works intuitively:} uphill moves are always accepted;
+downhill moves are accepted with probability equal to the density ratio.
+So the chain spends time in each region in proportion to its posterior
+probability.
+
+\textbf{Why only the unnormalized posterior is needed:} the evidence
+\(p(\mathbf{y})\) appears in both numerator and denominator of the ratio
+and cancels. This is the key to MCMC's usefulness.
+
+\textbf{Practical details:} - Work in \textbf{logs}: accept if
+\(\ln u < \ln\tilde p(\theta') - \ln\tilde p(\theta)\). -
+\textbf{Bounded parameters:} if a proposal falls outside the support
+(e.g., \(A > 1\)), its prior is 0, so \(\ln\tilde p = -\infty\) and the
+proposal is automatically rejected. (Alternatively, sample on a
+transformed, unbounded scale, as in Week 3; then the Jacobian must be
+added to the log posterior.) - \textbf{Multiple parameters:} propose all
+parameters at once with a vector of proposal SDs, or update one
+parameter at a time (which leads to Gibbs sampling, Week 12).
+
+\begin{quote}
+\textbf{Advanced: detailed balance.} A transition rule
+\(T(\theta \to \theta')\) leaves \(\pi\) stationary if
+\(\pi(\theta)\,T(\theta \to \theta') = \pi(\theta')\,T(\theta' \to \theta)\)
+for all pairs. Check it for Metropolis with
+\(\tilde p(\theta') < \tilde p(\theta)\): the left side is
+\(\pi(\theta)\, q(\theta'\mid\theta)\, \tilde p(\theta')/\tilde p(\theta)\)
+and the right side is \(\pi(\theta')\, q(\theta\mid\theta') \cdot 1\).
+With symmetric \(q\) and \(\pi \propto \tilde p\), the two are equal.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\tilde p(\theta) = p(\mathbf{y}\mid\theta)\,p(\theta)\): likelihood
+  × prior, \emph{without} dividing by the evidence. The tilde
+  (\textasciitilde) marks ``unnormalized''.
+\item
+  \(\alpha_{\text{acc}} = \min(1, \tilde p(\theta')/\tilde p(\theta))\):
+  if the proposal is more plausible, the ratio is \textgreater{} 1 and
+  \(\min\) caps it at 1 (always accept). If it is half as plausible,
+  accept with probability 0.5.
+\item
+  ``Draw \(u \sim \mathrm{Uniform}(0,1)\); accept if \(u < \alpha\)'' is
+  simply a way to make an event happen with probability \(\alpha\) (a
+  biased coin).
+\item
+  \textbf{Worked example, step 3:} the proposal 0.95 is only 0.052 times
+  as plausible as 0.80; \(u = 0.30 > 0.052\), so it is rejected and 0.80
+  is written into the chain a second time.
+\end{itemize}
+
+\subsubsection{4. Metropolis--Hastings: asymmetric proposals}
+
+If the proposal is not symmetric,
+\(q(\theta'\mid\theta) \ne q(\theta\mid\theta')\) (e.g., a log-normal
+proposal for a positive rate), the acceptance probability needs a
+correction:
+
+\[
+\alpha_{\text{acc}} = \min\left(1,\ \frac{\tilde p(\theta')\, q(\theta \mid \theta')}{\tilde p(\theta)\, q(\theta' \mid \theta)}\right).
+\]
+
+Metropolis is the special case where the \(q\) terms cancel. Gibbs
+sampling (Week 12) is another special case, in which every proposal is
+accepted.
+
+\subsubsection{5. Tuning and diagnosing a sampler}
+
+The proposal SD \(\sigma_{\text{prop}}\) controls efficiency:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\sigma_{\text{prop}}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Acceptance rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Behavior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Trace plot looks like
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Too small & Very high (\textgreater{} 0.9) & Tiny steps; explores
+slowly; strong autocorrelation & A slowly wandering line \\
+Too large & Very low (\textless{} 0.1) & Most proposals land in
+low-probability regions and are rejected; the chain sticks & Flat steps
+with long plateaus \\
+About right & \ensuremath{\approx} 0.2--0.5 & Good mixing & A ``fuzzy caterpillar'' \\
+\end{longtable}
+}
+
+Classic theoretical results suggest an optimal acceptance rate of about
+0.44 for one parameter, falling toward about 0.23 for many parameters.
+Treat these as targets, not laws. Tune \(\sigma_{\text{prop}}\) during a
+preliminary run (not during the run you keep). Good proposal SDs are of
+the order of the posterior SDs, and correlated posteriors need
+correlated (or reparameterized) proposals.
+
+\textbf{Burn-in.} Discard the initial part of the chain before it
+reaches the high-probability region; the trace plot shows where.
+\textbf{Thinning} (keeping every \(m\)-th draw) reduces storage but
+throws away information. It is not needed for correct inference.
+
+\textbf{Autocorrelation.} The lag-\(h\) autocorrelation is the
+correlation between \(\theta^{(s)}\) and \(\theta^{(s+h)}\). High
+autocorrelation means slow exploration and fewer effectively independent
+draws.
+
+\textbf{Always validate} a new sampler on a problem with a known answer
+(here, the conjugate beta-binomial and the Week 10 grid).
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Monte Carlo integration} is what you do when you estimate a
+  BER or an outage probability by simulation: average an indicator over
+  many random realizations. The \(1/\sqrt{S}\) error law is the same,
+  and it is why low error rates need very long simulations.
+\item
+  An MCMC chain is a \textbf{Markov process} whose stationary
+  distribution is designed to be the posterior; burn-in is the
+  transient, the stationary part is the steady state.
+\item
+  \textbf{Autocorrelation} of the chain is exactly the autocorrelation
+  of a random process. Correlated samples carry less information, just
+  as correlated noise samples average out more slowly; Week 12 turns
+  this into the ``effective sample size''.
+\item
+  \textbf{Proposal tuning} is a step-size problem like choosing the step
+  size of an adaptive filter: too small converges slowly, too large
+  becomes unstable (here: most steps are rejected).
+\item
+  The difference from ordinary simulation: we cannot generate
+  independent samples from the target directly, so we build a process
+  that converges to it.
+\end{itemize}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Walk the chain on the board.} Draw the curve
+  \(\theta^7(1-\theta)^3\) and run the four steps of the worked example
+  with a student rolling the ``\(u\)'' values (a random number app
+  works). The rejected step that \emph{repeats} 0.80 is the key moment;
+  ask why it must be recorded.
+\item
+  \textbf{An analogy that works:} a tourist exploring a city at night
+  who prefers lit streets. Brighter street: always go. Darker street: go
+  only sometimes. After a long walk, the time spent on each street is
+  proportional to its brightness.
+\item
+  \textbf{Show the three trace plots} (too small, good, too large) from
+  lab Part D side by side. Students learn to read trace plots in five
+  minutes this way.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``Why not just use a fine grid?''} With 40 parameters, a grid
+    is impossible; sampling cost does not grow that way.
+  \item
+    \emph{``How do we know the chain has converged?''} That is Week 12
+    (multiple chains, \(\hat R\)).
+  \item
+    \emph{``Why throw away burn-in?''} Early draws still reflect the
+    arbitrary starting point, not the posterior.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\textbf{Model:} recall \(y = 7\) of \(n = 10\) with a flat prior, so
+\(\tilde p(\theta) = \theta^7(1-\theta)^3\) (constants dropped). Exact
+posterior: \(\mathrm{Beta}(8, 4)\), mean 0.667. Proposal:
+\(\theta' = \theta + \mathcal{N}(0, 0.1)\).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{landscape}\small
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Step
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Current \(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Proposal \(\theta'\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tilde p(\theta)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tilde p(\theta')\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ratio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(u\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Decision
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+New \(\theta\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.50 & 0.58 & 0.000977 & 0.001636 & 1.675 & 0.42 & accept (uphill) &
+0.58 \\
+2 & 0.58 & 0.80 & 0.001636 & 0.001678 & 1.026 & 0.71 & accept (uphill) &
+0.80 \\
+3 & 0.80 & 0.95 & 0.001678 & 0.000087 & 0.052 & 0.30 & \textbf{reject}:
+\(u > 0.052\) & 0.80 \\
+4 & 0.80 & 0.66 & 0.001678 & 0.002144 & 1.278 & 0.88 & accept (uphill) &
+0.66 \\
+\end{longtable}
+\end{landscape}
+}
+
+\textbf{Chain so far:} 0.50, 0.58, 0.80, \textbf{0.80}, 0.66. The
+rejected step \emph{repeats} 0.80 in the chain. That is essential:
+repeated values are how the chain records that 0.80 is more probable
+than 0.95. Dropping them would bias the sample.
+
+\textbf{Interpretation.} In four steps the chain moved from the start
+into the region of high posterior density (0.6--0.8) and refused a jump
+into the tail. Over thousands of steps, the proportion of time spent
+near each value converges to \(\mathrm{Beta}(8, 4)\).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Monte Carlo integration with independent draws: see the \(1/\sqrt{S}\)
+  error.
+\item
+  Write a Metropolis sampler and validate it on the beta-binomial model.
+\item
+  Sample the posterior of the power forgetting model, compare with the
+  Week 10 grid, and compute a derived quantity.
+\item
+  Tune the proposal: compare too-small, good and too-large proposal SDs
+  with trace plots, acceptance rates and autocorrelation.
+\end{enumerate}
+
+\textbf{Timing:} Part A 15 min · Part B 25 min · Part C 35 min · Part D
+30 min · Part E 15 min.
+
+\subsubsection{Setup}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{Part A: Monte Carlo integration (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+Exact: mean = 0.5926, P(theta > 0.65) = 0.1967
+S =    100: mean = 0.5865 (MC s.e. 0.0065), P(theta > 0.65) = 0.1800
+S =   1000: mean = 0.5935 (MC s.e. 0.0021), P(theta > 0.65) = 0.2160
+S =  10000: mean = 0.5937 (MC s.e. 0.0007), P(theta > 0.65) = 0.2022
+S = 100000: mean = 0.5927 (MC s.e. 0.0002), P(theta > 0.65) = 0.1971
+\end{Verbatim}
+
+Ten times more draws gives about \(\sqrt{10} \approx 3.2\) times less
+Monte Carlo error.
+
+\subsubsection{Part B: a Metropolis sampler, validated (25 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+Acceptance rate: 0.59
+Metropolis: mean = 0.5930, SD = 0.0660, 95% interval = [0.458 0.718]
+Exact:      mean = 0.5926, SD = 0.0663, 95% interval = [0.46  0.719]
+\end{Verbatim}
+
+\subsubsection{Part C: Metropolis for the power forgetting model (35
+min)}
+
+Same priors as in Week 10: \(A \sim \mathrm{Beta}(8, 2)\),
+\(d \sim \mathrm{Gamma}(2, \text{scale } 0.3)\).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+Acceptance rate: 0.49
+    mean     SD   2.5%  97.5%
+A  0.868  0.052  0.762   0.96
+d  0.418  0.048  0.325   0.51
+Week 10 grid posterior means for comparison: A = 0.867, d = 0.417
+\end{Verbatim}
+
+\textbf{Derived quantities} come for free. Compute the posterior of the
+half-life \(t_{1/2} = 2^{1/d} - 1\) (Week 2) and the predicted recall
+after 60 days:
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+half-life (days)       mean = 4.493, 95% interval = [2.889 7.443]
+P(recall) at 60 days   mean = 0.158, 95% interval = [0.113 0.211]
+P(half-life < 3 days | data) = 0.039
+\end{Verbatim}
+
+\subsubsection{Part D: tuning the proposal (30 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+too small    proposal SD = [0.002, 0.002]: acceptance = 0.97, lag-10 autocorrelation of d = 0.98, mean of d = 0.473
+about right  proposal SD = [0.04, 0.05]: acceptance = 0.50, lag-10 autocorrelation of d = 0.26, mean of d = 0.416
+too large    proposal SD = [0.5, 1.5]: acceptance = 0.00, lag-10 autocorrelation of d = 0.94, mean of d = 0.420
+\end{Verbatim}
+
+\textbf{What to notice:} the ``too small'' chain accepts almost
+everything but crawls (a slowly wandering trace with autocorrelation
+near 1 even at lag 60); the ``too large'' chain rejects almost
+everything and sits still for long stretches (flat steps). Both give
+unreliable estimates from 10 000 iterations: the ``too small'' chain's
+mean of \(d\) (0.473) is far from the true posterior mean (0.417), and
+the ``too large'' chain's mean happens to be close only because it
+barely moved from its starting value (0.42). The well-tuned chain looks
+like a fuzzy caterpillar and its autocorrelation decays quickly.
+
+\subsubsection{Part E: interpret (15 min)}
+
+Answer in your notebook: 1. Do the Metropolis posterior summaries for
+\((A, d)\) agree with the Week 10 grid? What does that agreement
+establish? 2. How would you report the half-life of this participant's
+memory, with uncertainty, in one sentence? 3. Why must rejected
+proposals be recorded as repeated values in the chain?
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star}.} Using the Part B sampler, estimate
+\(P(\theta > 0.65\mid\mathbf{y})\) for 30/50 and compare with the exact
+value from Part A. How many iterations do you need to get within \ensuremath{\pm}0.01?
+
+\textbf{Exercise 2 \ensuremath{\star}.} Run the Part C sampler from four very different
+starting points, e.g., \((0.3, 0.05)\), \((0.99, 2.5)\), \((0.5, 1.0)\)
+and \((0.9, 0.1)\). Plot all traces together. After how many iterations
+do they become indistinguishable? (This is the idea behind R-hat, Week
+12.)
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (exponential model).} Write
+\nolinkurl{log_post_exp} with the Week 10 priors, sample it, and compare
+the posterior with the grid. Then compute the posterior predictive
+distribution from your samples and reproduce the Week 10 PPC plot.
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (Metropolis--Hastings with an asymmetric
+proposal).} Sample \(d\) with a \textbf{log-normal} random-walk
+proposal, \(\ln d' \sim \mathcal{N}(\ln d, 0.1)\), which never proposes
+negative values. Derive the Hastings correction
+\(q(d\mid d')/q(d'\mid d) = d'/d\) and include it. Show that omitting
+the correction biases the posterior.
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: adaptive tuning).} Write a warm-up
+phase that adjusts the proposal SDs every 500 iterations to push the
+acceptance rate toward 0.3 (e.g., multiply the SD by 1.2 if the rate is
+too high, by 0.8 if too low), then freezes them for the main run. Why
+must the adaptation stop before the samples you keep?
+
+\subsubsection{Lab check-off}
+
+Show: (1) the validation of your sampler against the exact Beta
+posterior (Part B), (2) the trace plots and summary for the power model
+with the comparison to the grid (Part C), and (3) the tuning figure with
+acceptance rates (Part D).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Sampling answers from an LLM is Monte Carlo.} Because an LLM
+samples its output (Week 1 box), asking the same question several times
+gives different answers. A popular trick called
+\textbf{self-consistency} samples \(k\) answers and takes the majority
+vote {[}Wang et al., 2023, ICLR{]}. Does it help, and how much? This is
+a Monte Carlo question: we cannot compute the majority-vote accuracy
+easily in closed form, but we can simulate it and report the Monte Carlo
+standard error, as in this week's lab.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week11.py}, cell 7 · \RL{\CMfa سلول}
+7
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{7\baselineskip}
+\begin{Verbatim}
+k =  1 samples: majority-vote accuracy = 0.406 (MCSE 0.003)
+k =  5 samples: majority-vote accuracy = 0.506 (MCSE 0.004)
+k = 15 samples: majority-vote accuracy = 0.671 (MCSE 0.003)
+k = 45 samples: majority-vote accuracy = 0.873 (MCSE 0.002)
+\end{Verbatim}
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Change \nolinkurl{p_answer} so that
+one \emph{wrong} answer is the most likely (e.g.,
+\nolinkurl{[0.30, 0.35, 0.20, 0.15]}). What does majority voting do now?
+Why? - \ensuremath{\star}\ensuremath{\star} How many simulated questions (\nolinkurl{n_sim}) do you need
+for an MCSE of 0.001? Check your answer with the formula
+\(\sqrt{p(1-p)/n}\). - \ensuremath{\star}\ensuremath{\star} Connection to cognition: the ``wisdom of the
+crowd within'' idea says that averaging a person's repeated guesses
+improves accuracy. Which assumption of this simulation (independent
+samples) is unlikely to hold for repeated human guesses, or for an LLM
+at low temperature?
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Dropping rejected steps} instead of repeating the current
+  value. This biases the sample toward the tails.
+\item
+  \textbf{Using the normalized posterior.} Not needed and usually
+  impossible; the evidence cancels in the ratio.
+\item
+  \textbf{Computing the ratio without logs.} Likelihoods underflow.
+  Compare log densities.
+\item
+  \textbf{Forgetting the prior support.} Proposals outside the support
+  must get \(\ln\tilde p = -\infty\), otherwise the likelihood may be
+  evaluated at impossible values (e.g., negative probabilities produce
+  \nolinkurl{nan}).
+\item
+  \textbf{Judging the sampler only by acceptance rate.} A 30\% rate does
+  not guarantee convergence. Look at traces and autocorrelation, and run
+  several chains (Week 12).
+\item
+  \textbf{Keeping the burn-in} or tuning the proposal during the samples
+  you keep. Both bias the results.
+\item
+  \textbf{``More iterations always fix it.''} If the chain is stuck in
+  one mode, or the proposal is badly scaled, more iterations of the same
+  chain may not help in practical time. Diagnose first.
+\item
+  \textbf{Forgetting the Hastings correction} with asymmetric proposals.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} Why is the Monte Carlo error independent of the number of
+parameters, while grid approximation is not? \textbf{Answer} The MC
+estimate is an average of \(S\) draws, and its standard error is
+\(\mathrm{SD}/\sqrt{S}\) regardless of the dimension of \(\theta\). A
+grid must cover the whole parameter space, so its size grows
+exponentially with the number of parameters.
+
+\textbf{2.} In the Metropolis algorithm, why do we not need the evidence
+\(p(\mathbf{y})\)? \textbf{Answer} Acceptance depends only on the
+\emph{ratio} of posterior densities at the proposed and current values;
+\(p(\mathbf{y})\) appears in both and cancels.
+
+\textbf{3.} Current \(\tilde p(\theta) = 0.004\), proposed
+\(\tilde p(\theta') = 0.001\), and \(u = 0.18\). Accept or reject? What
+if \(u = 0.31\)? \textbf{Answer} The ratio is 0.25. With
+\(u = 0.18 < 0.25\), accept; with \(u = 0.31 > 0.25\), reject and repeat
+the current value.
+
+\textbf{4.} A chain has acceptance rate 0.97. What is probably wrong,
+and how does its trace look? \textbf{Answer} The proposal SD is too
+small: almost every tiny step is accepted, the chain explores very
+slowly, and the trace looks like a slowly wandering line with high
+autocorrelation. Increase the proposal SD.
+
+\textbf{5.} What is burn-in, and how do you decide its length?
+\textbf{Answer} The initial iterations, before the chain has reached the
+high-probability region, which still reflect the arbitrary starting
+value. Choose the length from trace plots (and from several chains
+started at different points), and discard those iterations.
+
+\textbf{6.} When is the Hastings correction needed? Give an example.
+\textbf{Answer} When the proposal is asymmetric,
+\(q(\theta'\mid\theta) \ne q(\theta\mid\theta')\), e.g., a log-normal
+proposal for a positive rate, or a proposal that depends on the current
+value's position in a bounded interval.
+
+\textbf{7.} How do you obtain the posterior of the half-life
+\(t_{1/2} = 2^{1/d} - 1\) from MCMC samples of \(d\)? \textbf{Answer}
+Transform every sample of \(d\) into a half-life and summarize the
+transformed samples (mean, percentiles, HDI). No extra derivation is
+needed; this is one of the big practical advantages of sampling.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+No new graded assignment this week. \textbf{A4 (Bayesian analysis by
+grid)} is due at the start of the Week 12 lecture. \textbf{A5 (MCMC from
+scratch)} is released in Week 12 and builds directly on today's
+\nolinkurl{metropolis} function, so keep your lab notebook tidy.
+
+\textbf{Optional practice (ungraded):} Exercise 2 (multiple starting
+points) is the best preparation for Week 12.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Kruschke (2014), chapter 7.} Markov chain Monte Carlo: an
+  intuitive introduction to the Metropolis algorithm (the ``politician''
+  example), its logic and representativeness of samples. \emph{(Main
+  reading.)}
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 7.} Bayesian parameter
+  estimation with MCMC, applied to cognitive models.
+\item
+  \textbf{Martin, Kumar \& Lao (2021)}: the sections on inference
+  engines and MCMC {[}verify chapter{]}.
+\end{itemize}
+
+\emph{Preview for Week 12:} Gibbs sampling (no rejections at all), and
+the question every MCMC user must answer: has my chain converged? We
+will compute R-hat and the effective sample size ourselves, then check
+them against ArviZ.

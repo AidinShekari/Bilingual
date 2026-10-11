@@ -1,20 +1,18 @@
-# LaTeX build products (all builds go to build/)
 build/
+node_modules/
 *.aux
 *.log
-*.out
 *.toc
+*.out
+*.synctex.gz
+*.bcf
+*.run.xml
 *.xdv
 *.bbl
-*.bcf
 *.blg
-*.run.xml
 *.fls
 *.fdb_latexmk
-*.synctex.gz
-# Python
 __pycache__/
 *.pyc
 .DS_Store
-
-# Source, build scripts and documentation are published with the PDFs.
+latex/fonts/BNazanin.ttf

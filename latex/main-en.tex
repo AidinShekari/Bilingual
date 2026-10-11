@@ -1,0 +1,36 @@
+% !TEX program = xelatex
+\documentclass[11pt,a4paper,openany]{book}
+\newif\ifCMpersian\CMpersianfalse
+\input{preamble}
+\def\CMcoverdetail{16 weeks · 6 chapters}
+\begin{document}
+\frontmatter\input{frontmatter/cover}\tableofcontents
+\mainmatter
+\chapter*{Syllabus}\addcontentsline{toc}{chapter}{Syllabus}\input{frontmatter/syllabus-en}
+\chapter*{Course blueprint}\addcontentsline{toc}{chapter}{Course blueprint}\input{frontmatter/blueprint-en}
+\chapter{Fundamentals of Cognitive Modeling}
+\input{chapters/en/week01}
+\input{chapters/en/week02}
+\chapter{Parameter Estimation Methods}
+\input{chapters/en/week03}
+\input{chapters/en/week04}
+\input{chapters/en/week05}
+\chapter{Evaluation of Cognitive Models}
+\input{chapters/en/week06}
+\input{chapters/en/week07}
+\input{chapters/en/week08}
+\chapter{Bayesian Modeling}
+\input{chapters/en/week09}
+\input{chapters/en/week10}
+\chapter{Parameter Estimation with MCMC}
+\input{chapters/en/week11}
+\input{chapters/en/week12}
+\input{chapters/en/week13}
+\chapter{Applications in Cognitive Science}
+\input{chapters/en/week14}
+\input{chapters/en/week15}
+\input{chapters/en/week16}
+\chapter*{Glossary}\addcontentsline{toc}{chapter}{Glossary}\input{frontmatter/glossary-en}
+\chapter*{Reading list}\addcontentsline{toc}{chapter}{Reading list}\input{frontmatter/readings-en}
+
+\end{document}

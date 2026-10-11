@@ -1,0 +1,736 @@
+\section{Week 8: Midterm Review: The Whole Pipeline in One Case Study}
+
+\begin{quote}
+\textbf{Chapters 1--3 review} · Lecture 1 h (integrated case study) ·
+Lab slot: \textbf{midterm exam} (90 min) + project consultation (30 min)
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+formal model / formalize & \RL{\CMfa مدل فرمال} / \RL{\CMfa فرمال کردن} & \RL{\CMfa نوشتن
+نظریه به شکل معادله یا الگوریتم} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+parameter recovery & \RL{\CMfa بازیابی پارامتر} & \RL{\CMfa آیا برازش، پارامترهای
+معلوم شبیه‌سازی را برمی‌گرداند} \\
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+criterion (c) & \RL{\CMfa ملاک} & \RL{\CMfa آستانه‌ی تصمیم؛ نشان‌دهنده‌ی سوگیری
+پاسخ} \\
+least squares & \RL{\CMfa کمترین مربعات} & \RL{\CMfa روش برازش با کمینه کردن مجموع
+مربع خطاها} \\
+cross-validation (CV) & \RL{\CMfa اعتبارسنجی متقابل} (cross-validation) &
+\RL{\CMfa برازش روی بخشی از داده و آزمون روی بخش کنارگذاشته} \\
+sensitivity (d′) & \RL{\CMfa حساسیت} & \RL{\CMfa فاصله‌ی توزیع علامت و نویز} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+SSE / RMSD & \RL{\CMfa مجموع مربعات خطا} / \RL{\CMfa ریشه‌ی میانگین مربع انحراف} &
+\RL{\CMfa معیارهای فاصله‌ی داده و پیش‌بینی} \\
+log-likelihood / NLL & \RL{\CMfa لگاریتم درست‌نمایی} / \RL{\CMfa منفی آن} &
+\RL{\CMfa مقداری که بهینه‌سازها کمینه یا بیشینه می‌کنند} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شواهد یا در داده} \\
+deviance (G²) & \RL{\CMfa انحراف} (deviance) & \RL{\CMfa معیار عدم برازش نسبت به مدل
+اشباع‌شده} \\
+AIC / BIC & \RL{\CMfa معیار اطلاعاتی آکائیکه} / \RL{\CMfa بیزی} & \RL{\CMfa برازش به‌علاوه‌ی
+جریمه برای تعداد پارامتر} \\
+research design & \RL{\CMfa طرح آزمایش} & \RL{\CMfa شرایط، تعداد کوشش‌ها و
+نمونه‌ها} \\
+confusion matrix & \RL{\CMfa ماتریس درهم‌ریختگی} (confusion matrix) & P(\RL{\CMfa مدل
+انتخاب‌شده} \\
+hit & \RL{\CMfa اصابت} (hit) & \RL{\CMfa پاسخ «بله» وقتی علامت وجود دارد} \\
+response time (RT) & \RL{\CMfa زمان واکنش} & \RL{\CMfa فاصله‌ی ارائه‌ی محرک تا
+پاسخ} \\
+signal detection theory (SDT) & \RL{\CMfa نظریه‌ی تشخیص علامت} & \RL{\CMfa مدلی که
+حساسیت را از سوگیری پاسخ جدا می‌کند} \\
+evidence & \RL{\CMfa شواهد} & \RL{\CMfa اطلاعاتی که برای تصمیم جمع می‌شود} \\
+exponential / power function & \RL{\CMfa تابع نمایی} / \RL{\CMfa توانی} & \RL{\CMfa دو شکل
+رایج برای منحنی فراموشی و یادگیری} \\
+training / test data & \RL{\CMfa داده‌ی آموزش} / \RL{\CMfa آزمون} & \RL{\CMfa داده‌ی برازش}
+/ \RL{\CMfa داده‌ی کنارگذاشته برای سنجش} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Execute} the complete modeling pipeline (formalize \ensuremath{\rightarrow} simulate
+  \ensuremath{\rightarrow} fit \ensuremath{\rightarrow} evaluate \ensuremath{\rightarrow} recover \ensuremath{\rightarrow} interpret) on a new problem without
+  step-by-step guidance.
+\item
+  \textbf{Select} an appropriate likelihood, fitting method and
+  evaluation method for a given dataset, and \textbf{justify} each
+  choice.
+\item
+  \textbf{Interpret} a set of competing model fits, information criteria
+  and recovery results, and \textbf{write} a defensible conclusion that
+  states its limits.
+\item
+  \textbf{Recall} and \textbf{apply} the key formulas of Weeks 1--7 (the
+  midterm formula sheet).
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+Over seven weeks we built a toolkit piece by piece: formal models (Weeks
+1--2), least squares and optimization (Week 3), maximum likelihood (Week
+4), uncertainty and multiple participants (Week 5), cross-validation
+(Week 6), information criteria and recovery (Week 7). Each lab practiced
+one or two pieces. Real research needs all of them at once, in the right
+order, with judgment about what matters.
+
+Today's lecture runs the entire pipeline on a \textbf{new} problem: does
+studying a word more often make it more \emph{memorable} (higher
+sensitivity), and if so, how does sensitivity grow with repetitions? The
+case study is also the best preparation for the midterm, which asks you
+to make and justify the same kinds of decisions.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+This week puts all the pieces of the first half together on one new
+question: \emph{does studying a word more often make it easier to
+recognize later?} We write the theory as an SDT model in which
+sensitivity \(d'\) depends on the number of repetitions. We propose
+three versions of that dependence (no effect, a smooth increase, any
+pattern), fit all three by maximum likelihood, check whether each
+misfits (\(G^2\)), compare them (LRT, AIC, BIC), check that the method
+works at this design (recovery), and finally interpret the winner in
+plain psychological language, including what the data \emph{cannot} tell
+us. If you can follow this one example from start to end, you understand
+the first half of the course.
+
+\textbf{Suggested timing (60 min):} concept map 10 · case study 40 ·
+exam briefing 10.
+
+\subsubsection{1. Concept map of Weeks 1--7}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Pipeline step
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tools
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Week
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Formalize & What exactly does the theory claim? & Five components of a
+model; parameters as psychological constructs & 1--2 \\
+Simulate & What can (and can't) the model do? & Forward simulation,
+analytic checks, prediction plots & 1--2 \\
+Fit & Which parameter values best account for the data? & SSE / least
+squares; NLL / MLE; grid, Nelder--Mead, L-BFGS-B; multi-start; bounds
+and reparameterization & 3--4 \\
+Quantify uncertainty & How precise are the estimates? & Hessian (Wald)
+SEs, profile likelihood, bootstrap & 5 \\
+Evaluate (absolute) & Does the model misfit beyond noise? & Residuals,
+\(G^2\) & 2--4 \\
+Evaluate (relative) & Which model generalizes best? & CV, LRT,
+AIC/AICc/BIC, weights & 6--7 \\
+Recover & Can the method work at this design? & Parameter recovery,
+model recovery (confusion and inversion matrices) & 7 \\
+Interpret & What does it mean psychologically, and what can't we
+conclude? & Parameter meaning, design limits, aggregation artifacts &
+all \\
+\end{longtable}
+}
+
+\textbf{Decision guide for the likelihood:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Natural noise model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Week
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Counts out of \(n\) (recall, hits, false alarms) & Binomial & 2, 4 \\
+Single binary choices & Bernoulli & 4 \\
+Continuous, roughly symmetric, equal variance (e.g., block-mean RTs) &
+Gaussian (= least squares) & 4--5 \\
+\end{longtable}
+}
+
+\subsubsection{2. Case study: does repetition increase memory
+sensitivity?}
+
+\textbf{Design.} In a recognition-memory experiment, words are studied
+1, 2 or 4 times. At test, 100 old words per repetition condition and 100
+new words (lures) are presented, and the participant says ``old'' or
+``new''. Because lures were never studied, there is \textbf{one}
+false-alarm rate, shared by all conditions, and \textbf{three} hit
+rates.
+
+\textbf{Formalization (SDT with an absolute criterion).} New words
+produce evidence \(X \sim \mathcal{N}(0, 1)\); old words studied \(r\)
+times produce \(X \sim \mathcal{N}(d'_r, 1)\); the participant says
+``old'' if \(X > \kappa\), with one criterion \(\kappa\) for all test
+items (they are intermixed, so the participant cannot know an item's
+condition). Then
+
+\[
+H_r = \Phi(d'_r - \kappa), \qquad F = \Phi(-\kappa).
+\]
+
+\textbf{Three candidate models of how \(d'\) depends on repetitions:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(d'_r\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Claim
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathcal{M}_0\) (no effect) & \(\delta_0\) & 2 & Repetition does not
+change sensitivity \\
+\(\mathcal{M}_1\) (log-linear) & \(\delta_0 + \delta_1 \log_2 r\) & 3 &
+Each \emph{doubling} of study adds the same sensitivity \\
+\(\mathcal{M}_2\) (free) & \(d'_1, d'_2, d'_4\) & 4 & Any pattern
+(saturated: 4 parameters for 4 rates) \\
+\end{longtable}
+}
+
+\(\mathcal{M}_0 \subset \mathcal{M}_1 \subset \mathcal{M}_2\), so all
+pairs are nested.
+
+\textbf{Likelihood.} Binomial for each of the four counts (three hit
+counts, one false-alarm count).
+
+The lab code below runs every step. Students run it at home as exam
+preparation; the lecture walks through the outputs.
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(H_r = \Phi(d'_r - \kappa)\) and \(F = \Phi(-\kappa)\): the same SDT
+  as Week 2, but the criterion is written as an \textbf{absolute}
+  position \(\kappa\) on the evidence axis (measured from the center of
+  the ``new word'' curve) instead of relative to the midpoint. New
+  words: curve at 0, so \(F\) is the area right of \(\kappa\),
+  i.e.~\(\Phi(-\kappa)\). Old words studied \(r\) times: curve at
+  \(d'_r\), so \(H_r = \Phi(d'_r - \kappa)\).
+\item
+  One \(\kappa\) for all conditions: all test words are mixed together,
+  so the participant cannot use a different threshold for words studied
+  once and words studied four times.
+\item
+  \(\log_2 r\): the base-2 logarithm, so \(\log_2 1 = 0\),
+  \(\log_2 2 = 1\), \(\log_2 4 = 2\). In model \(\mathcal{M}_1\),
+  \(d'_r = \delta_0 + \delta_1\log_2 r\) means: \(\delta_0\) is the
+  sensitivity after one study, and every \emph{doubling} of study adds
+  \(\delta_1\).
+\item
+  \textbf{Numbers from the worked example:} \(\hat\kappa = 1.04\) gives
+  \(F = \Phi(-1.04) = 0.15\) \ensuremath{\checkmark}. With \(\hat d'_1 = 0.82\):
+  \(H_1 = \Phi(0.82 - 1.04) = \Phi(-0.22) = 0.41\), close to the
+  observed 0.40 \ensuremath{\checkmark}.
+\end{itemize}
+
+\paragraph{For an engineer}
+
+The pipeline of the concept map is the \textbf{system identification}
+workflow you know: choose candidate model structures, estimate
+parameters (ML), validate (residual tests \ensuremath{\approx} \(G^2\)), select the model
+order (LRT/AIC/BIC \ensuremath{\approx} GLRT/AIC/MDL), and verify the procedure on
+simulated data with known truth (recovery). Two differences deserve
+emphasis in class: the ``system'' is a person whose parameters are
+themselves the scientific result, and the amount of data is tiny by
+engineering standards (400 binary responses), so uncertainty and
+recovery matter much more.
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Use the concept-map table as the backbone of the session.} For
+  each row, point to the corresponding output of the case study
+  (e.g.~``Evaluate (absolute)'' \ensuremath{\rightarrow} the \(G^2\) column). Students see that
+  every tool has a place.
+\item
+  \textbf{Ask the class to interpret before you do.} Show the results
+  table without the interpretation paragraph and let small groups write
+  two sentences: ``what do we conclude, and what can't we conclude?''
+  Then compare with the text. This is exactly the skill the midterm
+  tests.
+\item
+  \textbf{Exam briefing:} tell students that the exam rewards
+  \emph{justified decisions} (which likelihood, which criterion, why
+  recovery matters) more than computation. Show one past-style question
+  from the ``Check your understanding'' section.
+\item
+  \textbf{Project consultation (lab slot):} ask each team three
+  questions: What is your cognitive question? Which parameter or model
+  comparison answers it? Can your design recover it? Most weak proposals
+  fail on the third.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+The case-study results for one simulated participant (true model
+\(\mathcal{M}_1\) with \(\delta_0 = 0.8\), \(\delta_1 = 0.6\),
+\(\kappa = 1.0\)), from the code in the lab section. Numbers are
+rounded.
+
+\textbf{Step 1: data.}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Condition & Old words & ``Old'' responses & Rate \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(r = 1\) & 100 & 40 & 0.40 \\
+\(r = 2\) & 100 & 66 & 0.66 \\
+\(r = 4\) & 100 & 80 & 0.80 \\
+New (lures) & 100 & 15 & 0.15 \\
+\end{longtable}
+}
+
+\textbf{Step 2: fit and evaluate} (MLE, \(N = 400\) responses):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{landscape}\small
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+NLL
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(G^2\) (df, \(p\))
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+AIC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+BIC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(w_{\text{AIC}}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(w_{\text{BIC}}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\hat d'_{1,2,4}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\hat\kappa\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathcal{M}_0\) none & 2 & 27.27 & 35.55 (2, \textless{} .001) & 58.54
+& 66.52 & 0.00 & 0.00 & 1.34, 1.34, 1.34 & 1.04 \\
+\(\mathcal{M}_1\) log-linear & 3 & 9.77 & 0.54 (1, .46) & \textbf{25.53}
+& \textbf{37.51} & \textbf{0.67} & \textbf{0.94} & 0.82, 1.37, 1.93 &
+1.04 \\
+\(\mathcal{M}_2\) free & 4 & 9.50 & 0 (saturated) & 26.99 & 42.96 & 0.33
+& 0.06 & 0.78, 1.45, 1.88 & 1.04 \\
+\end{longtable}
+\end{landscape}
+}
+
+Likelihood-ratio tests: \(\mathcal{M}_0\) vs.~\(\mathcal{M}_1\):
+\(\Lambda = 35.01\), df = 1, \(p < .001\); \(\mathcal{M}_1\)
+vs.~\(\mathcal{M}_2\): \(\Lambda = 0.54\), df = 1, \(p = .46\).
+
+\textbf{Recovery at this design} (lab code, second block):
+\(\mathcal{M}_1\)'s parameters are well recovered
+(\(r = 0.89\)--\(0.93\)), and BIC identifies the generating model in
+87--98\% of simulations.
+
+\textbf{Step 3: interpret.} Repetition clearly increases sensitivity:
+the no-effect model misfits badly (\(G^2 = 35.5\), \(p < .001\)) and is
+rejected by every criterion. The log-linear model fits as well as the
+saturated model (LRT \(p = .46\)) with one parameter fewer, and both AIC
+and BIC prefer it. Its estimate \(\hat\delta_1 \approx 0.55\) means each
+doubling of study adds roughly half a \(d'\) unit. Recovery results show
+that, at this design, both the parameters and the model choice can be
+trusted. Caveats: this is one simulated participant; with only three
+repetition levels, a log-linear trend cannot be distinguished from many
+other increasing curves (e.g., a power function of \(r\)); and a single
+criterion \(\kappa\) assumes the participant cannot tell how often an
+item was studied before responding.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours): midterm exam + project consultation}
+
+\subsubsection{Midterm exam (90 minutes, in the lab slot)}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Format:} written, closed book. A \textbf{formula sheet}
+  (below) is provided. No laptops: questions involve reading short code
+  fragments and interpreting outputs, not writing code from scratch.
+\item
+  \textbf{Coverage:} Weeks 1--7 (Chapters 1--3), with the emphasis on
+  \emph{understanding and interpretation} (the course's specific goal
+  2).
+\item
+  \textbf{Question types:} (1) short conceptual questions; (2) one
+  calculation by hand (e.g., \(d'\) and \(c\), a likelihood or NLL,
+  AIC/BIC and weights); (3) reading code and predicting or explaining
+  its output; (4) interpreting a fit table, a residual plot or a
+  recovery/confusion matrix; (5) one short design question (``what would
+  you change, and why?'').
+\item
+  \textbf{Weight:} 3 of 20 points.
+\item
+  The midterm exam itself, with model answers, is in the course
+  assessments (Stage 3 materials).
+\end{itemize}
+
+\textbf{Formula sheet provided at the exam:}
+
+\[
+\begin{aligned}
+&d' = \Phi^{-1}(H) - \Phi^{-1}(F), \quad c = -\tfrac12[\Phi^{-1}(H) + \Phi^{-1}(F)], \quad H = \Phi(d'/2 - c), \quad F = \Phi(-d'/2 - c)\\
+&f_{\exp}(t) = A e^{-\lambda t}, \quad f_{\text{pow}}(t) = A(1+t)^{-d}, \quad P_c^{\text{RW}} = \frac{1-r^z}{1-r^a},\ r = \frac{1-v}{1+v}, \quad \mathbb{E}[T] = \frac{aP_c - z}{v}\\
+&\mathrm{SSE} = \textstyle\sum_i (y_i - \hat y_i)^2, \quad \mathrm{RMSD} = \sqrt{\mathrm{SSE}/N}\\
+&\ell(\boldsymbol\theta) = \textstyle\sum_i \big[\ln\binom{n_i}{y_i} + y_i\ln f_i + (n_i - y_i)\ln(1-f_i)\big], \quad \mathrm{NLL} = -\ell\\
+&G^2 = 2(\ell_{\text{sat}} - \hat\ell), \quad \Lambda = 2(\hat\ell_1 - \hat\ell_0) \sim \chi^2_{\Delta k}\\
+&\mathrm{SE} \approx \sqrt{\mathrm{diag}(\mathbf{H}^{-1})}, \quad \text{Wald CI: } \hat\theta \pm 1.96\,\mathrm{SE}, \quad \text{profile CI: } 2(\mathrm{NLL}_{\text{prof}} - \mathrm{NLL}_{\min}) \le 3.84\\
+&\mathrm{AIC} = 2\,\mathrm{NLL} + 2k, \quad \mathrm{AICc} = \mathrm{AIC} + \tfrac{2k(k+1)}{N-k-1}, \quad \mathrm{BIC} = 2\,\mathrm{NLL} + k\ln N, \quad w_i = \tfrac{e^{-\Delta_i/2}}{\sum_j e^{-\Delta_j/2}}
+\end{aligned}
+\]
+
+Critical values: \(\chi^2_{1,.95} = 3.84\), \(\chi^2_{2,.95} = 5.99\),
+\(\chi^2_{3,.95} = 7.81\). Quantiles: \(\Phi^{-1}(0.84) \approx 1.0\),
+\(\Phi^{-1}(0.975) = 1.96\). Logs: \(\ln 2 = 0.693\),
+\(\ln 10 = 2.303\), \(\ln 100 = 4.605\), \(\ln 400 = 5.991\).
+
+\subsubsection{Project consultation (30 minutes, after the exam)}
+
+Teams meet the instructor or TA for 5--10 minutes each to discuss their
+project idea before the proposal deadline (start of Week 9). Bring a
+one-paragraph description of your question, model and data.
+
+\subsubsection{Self-study: the case study in code (run before the exam)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week08.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week08.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output (first block):}
+
+\Needspace{11\baselineskip}
+\begin{Verbatim}
+hits per condition: [40 66 80]  false alarms: 15
+           k     NLL      G2  df  p(G2)     AIC     BIC            d'_1,2,4  kappa  w_AIC  w_BIC
+model
+M0_none    2  27.269  35.549   2  0.000  58.538  66.521  [1.34, 1.34, 1.34]   1.04  0.000  0.000
+M1_loglin  3   9.766   0.543   1  0.461  25.533  37.507  [0.82, 1.37, 1.93]   1.04  0.674  0.938
+M2_free    4   9.495   0.000   0    NaN  26.990  42.956  [0.78, 1.45, 1.88]   1.04  0.326  0.062
+
+LRT M0 vs M1: 35.01 (df 1, p = 0.0000);  M1 vs M2: 0.54 (df 1, p = 0.461)
+\end{Verbatim}
+
+\textbf{Expected output (second block, about 1 minute):}
+
+\Needspace{12\baselineskip}
+\begin{Verbatim}
+M1 recovery delta0 : r = 0.895, RMSE = 0.181
+M1 recovery delta1 : r = 0.930, RMSE = 0.113
+M1 recovery kappa  : r = 0.887, RMSE = 0.142
+
+BIC model recovery, P(selected | generated):
+           M0_none  M1_loglin  M2_free
+M0_none       0.98       0.02     0.00
+M1_loglin     0.05       0.93     0.02
+M2_free       0.10       0.03     0.87
+\end{Verbatim}
+
+Note on the \(\mathcal{M}_2\) generator in model recovery: its three
+\(d'\) values are drawn so that \(d'_4\) lies \emph{between} \(d'_1\)
+and \(d'_2\), a non-monotone pattern that \(\mathcal{M}_1\) cannot
+produce. Otherwise \(\mathcal{M}_2\) data would often be perfectly
+consistent with \(\mathcal{M}_1\), and ``confusions'' would be
+meaningless.
+
+\textbf{Self-check questions on the case study} (discussed in the
+lecture): 1. Why is there only one false-alarm rate, and how does that
+change the SDT model compared with Week 2? 2. Which model does each
+criterion favor, and do the LRTs agree? 3. Is \(\delta_1\) recoverable
+at this design? Is \(\mathcal{M}_1\) distinguishable from
+\(\mathcal{M}_0\) and \(\mathcal{M}_2\)? 4. Write the one-sentence
+psychological conclusion, with its main caveat.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Chatbots as study partners: trust, but verify.} Many students
+use LLMs to explain concepts and check exam answers. That can help, but
+LLMs can produce fluent, confident and wrong calculations. Treat a
+chatbot's answer as you would a model's prediction: check it against
+something you can compute. The code below checks a pre-made chatbot
+answer to midterm question B3 (AIC for three models). The chatbot used
+\(2\,\mathrm{NLL} + k\) instead of \(2\,\mathrm{NLL} + 2k\).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week08.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{7\baselineskip}
+\begin{Verbatim}
+M1: chatbot 222.0, correct 224.0  WRONG
+M2: chatbot 218.0, correct 221.0  WRONG
+M3: chatbot 218.8, correct 223.8  WRONG
+Akaike weights, chatbot: [0.07 0.55 0.37]  correct: [0.15 0.68 0.17]
+\end{Verbatim}
+
+The chatbot happens to pick the right winner (\(\mathcal{M}_2\)), but
+every number is wrong, and it doubles the support for the most complex
+model. A grader would give little credit, and in a real analysis the
+error would favor overfitting.
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Which error in the formula produces
+exactly the chatbot's numbers? What would BIC look like with the same
+error? - \ensuremath{\star}\ensuremath{\star} Write three small ``test cases'' (inputs with known answers)
+for the SDT formulas of Week 2 that you could use to check any answer,
+from a chatbot or a classmate. - Reminder: no AI tools are allowed in
+the exam itself, and the course policy on AI use for assignments is in
+\nolinkurl{assessments/README.md}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions (top 10 from Weeks 1--7)}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Treating a good fit as evidence that a model is true (Weeks 3, 6).
+\item
+  Forgetting the minus sign: optimizers minimize the \textbf{negative}
+  log-likelihood (Week 4).
+\item
+  Not clipping probabilities, so \(\ln 0\) crashes the fit (Week 4).
+\item
+  Trusting \nolinkurl{success=True}, a single start, or a bounded
+  Nelder--Mead that has collapsed against a bound (Weeks 3--4).
+\item
+  Least squares for counts or choices without thinking about the noise
+  model (Weeks 3--4).
+\item
+  Reporting estimates without uncertainty, or using Wald intervals near
+  bounds (Week 5).
+\item
+  Drawing conclusions about individuals from averaged curves (Week 5).
+\item
+  Leaking test data into training in cross-validation (Week 6).
+\item
+  Comparing non-nested models with an LRT, or reading AIC values on
+  their own instead of as differences (Week 7).
+\item
+  Interpreting parameters or model comparisons without a recovery study
+  at the actual design (Week 7).
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding (practice questions in exam style)}
+
+\textbf{1. (Concept)} Explain in three sentences why the
+exponential-with-asymptote model fitted the Week 2 data better than the
+power model, although the power model generated the data.
+\textbf{Answer} The asymptote model has an extra parameter, so it can
+adapt to the particular noise of the sample, here the flat-looking
+long-delay points. Better training fit is guaranteed for more flexible
+models and is not evidence of truth. Generalization measures (CV,
+AIC/BIC) and recovery studies are needed to judge it.
+
+\textbf{2. (Calculation)} An observer has \(H = 0.84\) and \(F = 0.16\).
+Compute \(d'\) and \(c\) (use \(\Phi^{-1}(0.84) \approx 1.0\)).
+\textbf{Answer} \(d' = 1.0 - (-1.0) = 2.0\);
+\(c = -\tfrac12(1.0 + (-1.0)) = 0\), so the observer is unbiased.
+
+\textbf{3. (Calculation)} Two models are fitted to \(N = 100\) binary
+responses. Model A: \(k = 2\), NLL = 60.0. Model B: \(k = 4\), NLL =
+57.5. Compute AIC and BIC for both. Which does each criterion prefer?
+(\(\ln 100 = 4.605\)) \textbf{Answer} AIC: A = 124.0, B = 123.0, so AIC
+prefers B (slightly). BIC: A = 120 + 9.21 = 129.21; B = 115 + 18.42 =
+133.42, so BIC prefers A. The criteria disagree because BIC penalizes
+each parameter by 4.6 instead of 2.
+
+\textbf{4. (Code reading)} What is wrong with this NLL function, and
+what will the optimizer do?
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week08.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Answer} (i) It returns the log-likelihood, not its negative, so
+\nolinkurl{minimize} will drive the parameters toward the \emph{worst}
+fit (log-likelihood toward −\ensuremath{\infty}). (ii) \nolinkurl{p} is not clipped, so
+predicted values of 0 or above 1 give −inf or nan. Fix:
+\nolinkurl{return -np.sum(binom.logpmf(y, n, np.clip(p, EPS, 1 - EPS)))}.
+
+\textbf{5. (Interpretation)} A recovery study gives
+\(r(\text{true}, \text{recovered}) = 0.95\) for parameter \(A\) and
+\(0.35\) for parameter \(B\). What do you conclude about a paper
+reporting group differences in \(B\) at this design? \textbf{Answer}
+\(B\) is poorly recoverable at this design: estimates are dominated by
+noise or trade-offs, so group differences in estimated \(B\) are not
+interpretable. The paper should improve the design or not interpret
+\(B\).
+
+\textbf{6. (Interpretation)} A BIC confusion matrix has P(selected =
+power \textbar{} generated = asymptote) = 0.58. Your real data's BIC
+winner is the power model. What should you write? \textbf{Answer} That
+the power model is preferred by BIC but, at this design, BIC often
+selects the power model for data generated by the asymptote model, so
+the evidence does not discriminate between them well. Report the
+inversion probabilities, AIC/CV results, and recommend a design with
+longer delays.
+
+\textbf{7. (Design)} You want to know whether a drug changes caution
+(boundary \(a\)) or evidence quality (drift \(v\)) in the random walk
+model. What data must you collect, and why is accuracy alone not enough?
+\textbf{Answer} Choices \textbf{and} RTs (ideally whole RT
+distributions) under drug and placebo. Both a larger \(a\) and a larger
+\(v\) raise accuracy, but \(a\) slows responses while \(v\) speeds them,
+so only the joint pattern separates them (Week 1).
+
+\textbf{8. (Concept)} Why must cross-validation folds for the forgetting
+data be formed within intervals if we want to test prediction of new
+trials? \textbf{Answer} So that every training set contains all
+retention intervals (conditions), and the test asks about new items in
+known conditions. Leaving out whole intervals would test extrapolation
+to new conditions, which is a different generalization claim.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{A3 (model comparison and recovery)} is due at the start of the
+  Week 9 lecture.
+\item
+  \textbf{Project proposal} is due at the start of the Week 9 lecture
+  (max. 2 pages; see Week 7).
+\item
+  No new assignment this week. Prepare for the midterm by running the
+  case study above and answering the practice questions without looking
+  at the answers.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapters 2--5 and 10.} Reread
+  the chapter summaries as a review of the whole first half of the
+  course.
+\item
+  \textbf{Lee \& Wagenmakers (2014), chapter 11} (SDT). Read the model
+  description as preparation for Week 9, where we start treating
+  parameters as random variables with priors.
+\end{itemize}
+
+\emph{Preview for Week 9:} the second half of the course turns Bayesian.
+Instead of a single best estimate plus a confidence interval, we will
+compute the full probability distribution of the parameters given the
+data.

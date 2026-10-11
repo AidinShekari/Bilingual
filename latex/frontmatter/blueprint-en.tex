@@ -1,0 +1,256 @@
+\begin{landscape}
+\textbf{Credits:} 2 units (1 theory + 1 practical), 48 h in total ·
+\textbf{Format:} 1 h lecture + 2 h lab per week \textbf{Audience:} MSc
+and final-year BSc students · \textbf{Prerequisites:} statistical
+methods in cognitive science; experimental methods in cognitive
+psychology \textbf{Language / tools:} English · Python 3 (numpy, scipy,
+pandas, matplotlib; PyMC + ArviZ from Week 13), run on students' own
+laptops
+
+\subsection{Design principles}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{One modeling pipeline used all term.} Every lab follows the
+  same steps: \emph{simulate \ensuremath{\rightarrow} fit \ensuremath{\rightarrow} evaluate \ensuremath{\rightarrow} recover \ensuremath{\rightarrow} interpret}.
+\item
+  \textbf{A few datasets come back again and again.} Forgetting curves
+  and signal detection theory (SDT) run through Weeks 2--13, so new
+  methods are compared on familiar data. Chapter 6 adds categorization
+  (GCM), response times (drift-diffusion) and reinforcement learning.
+\item
+  \textbf{``Write it yourself, then use the library.''} Students write
+  least squares, maximum likelihood, grid posteriors,
+  Metropolis--Hastings, Gibbs and R-hat by hand before using
+  \nolinkurl{scipy.optimize}, PyMC or ArviZ.
+\item
+  \textbf{Chapter weighting.} Ch1: 2 weeks · Ch2: 3 · Ch3: 2 · Ch4: 2 ·
+  Ch5: 3 · Ch6: 2. One more week each goes to orientation, the midterm
+  and project presentations.
+\item
+  \textbf{``Metropolis--Gibbs'' means two separate algorithms:}
+  Metropolis--Hastings (Week 11) and Gibbs sampling (Week 12).
+  MH-within-Gibbs is covered as an Advanced box.
+\end{itemize}
+
+\subsection{Weekly plan}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Wk
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ch
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lecture (1 h)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lab (2 h)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Learning outcomes
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Readings
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Assignment / milestone
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 1 & \textbf{Orientation: what is a cognitive model?} Why we model;
+verbal vs.~formal theories; Marr's three levels; model families
+(symbolic, connectionist, stochastic/dynamical, Bayesian); course
+roadmap; \textbf{notation table} & \textbf{Laptop setup}
+(Miniforge/conda environment with the full course stack \emph{including
+PyMC}, run an install-check script; Colab as fallback); simulate a
+random walk to a bound and plot simulated ``data'' & Distinguish
+descriptive, process and normative models; explain why verbal theories
+are underspecified; run and plot a model simulation & F\&L ch.~1--2;
+Verguts, introductory chapter {[}verify{]}; Anderson, introductory
+chapter {[}verify{]} & \textbf{A0} (ungraded): install check plus a
+one-page note: ``Pick a verbal theory; list what it leaves
+unspecified'' \\
+2 & 1 & \textbf{Anatomy of a model:} data, free vs.~fixed parameters,
+model equations, noise (data) model; simulation as a thinking tool;
+first models: SDT (\(d'\), \(c\)) and exponential vs.~power forgetting &
+Implement SDT (\(d'\), \(c\), ROC curves); simulate exponential and
+power forgetting; explore how each parameter changes the predictions &
+Identify the components of a formal model; compute \(d'\) and \(c\);
+predict how parameters shape model output & F\&L ch.~2; L\&W ch.~11
+(SDT, a preview) & \textbf{A1 released:} ``From verbal to formal'' (due
+Wk 4) \\
+3 & 2 & \textbf{Least squares \& optimization:} SSE, MSE, RMSD; error
+surfaces; grid search, Nelder--Mead, gradient methods; local minima,
+starting values, bounds and reparameterization & Fit forgetting curves
+by grid search, then with \nolinkurl{scipy.optimize.minimize}; plot the
+error surface; multi-start fitting & Implement an LS fit from scratch;
+compare optimizers; diagnose failed fits & F\&L ch.~3; Ghodousian
+(direct search methods) & --- \\
+4 & 2 & \textbf{Maximum likelihood:} probability vs.~likelihood;
+log-likelihood; Bernoulli, binomial and Gaussian likelihoods; LS as MLE
+under Gaussian noise & MLE for forgetting data (binomial recall counts)
+and for SDT; compare MLE and LS estimates & Derive a likelihood;
+implement NLL minimization; explain when LS and MLE agree & F\&L ch.~4;
+Azimifar \& Ahmadi (ML estimation) & \textbf{A1 due · A2 released:} LS
+vs.~MLE (due Wk 6) \\
+5 & 2 & \textbf{Uncertainty \& multiple participants:} Hessian standard
+errors, profile likelihood, parametric bootstrap; individual
+vs.~aggregate fitting; aggregation artifacts & Bootstrap CIs; averaging
+exponential learners produces a spurious ``power law of practice'';
+individual fits & Quantify estimation uncertainty; explain aggregation
+artifacts; choose a fitting level & F\&L ch.~5 & --- \\
+6 & 3 & \textbf{Evaluation I, fit vs.~generalization:} \(R^2\), RMSD and
+deviance and their limits; flexibility and overfitting; hold-out, k-fold
+and LOO cross-validation & Polynomial overfitting demo; cross-validated
+comparison of three forgetting models & Explain why good fit \ensuremath{\neq} good
+model; implement k-fold CV; interpret CV results & F\&L ch.~10; Azimifar
+\& Ahmadi (generalization) & \textbf{A2 due · A3 released:} comparison +
+recovery (due Wk 9) \\
+7 & 3 & \textbf{Evaluation II, selection \& recovery:} likelihood-ratio
+test; AIC, AICc, BIC, Akaike weights; parameter and model recovery;
+identifiability and trade-offs & Recovery study: true vs.~recovered
+parameter plots; model-recovery confusion matrix (AIC/BIC) & Interpret
+information criteria; design a recovery study; detect
+non-identifiability & F\&L ch.~10 & \textbf{Project teams (1--2
+students) formed; proposal brief released} \\
+8 & 1--3 & \textbf{Midterm review:} integrated case study of the full
+pipeline & \textbf{Midterm exam} (lab slot, 90 min): conceptual
+questions + code reading/interpretation, Ch. 1--3 & --- & Review of
+Weeks 1--7 & \textbf{Midterm} \\
+9 & 4 & \textbf{Bayesian modeling I:} prior, likelihood, posterior,
+evidence; beta-binomial conjugacy; grid approximation; posterior
+summaries and HDI; credible vs.~confidence intervals & Grid posterior
+for a recall probability; 2-D grid for SDT; vary prior and sample size;
+prior predictive simulation & Compute a grid posterior; explain the role
+of the prior; interpret credible intervals & K ch.~5--6; L\&W ch.~1, 3;
+MKL ch.~1; F\&L ch.~6; Azimifar \& Ahmadi (Bayesian estimation) &
+\textbf{A3 due · Project proposal due} \\
+10 & 4 (+3) & \textbf{Bayesian modeling II:} posterior predictive
+checks; marginal likelihood and \textbf{Bayes factors}; Savage--Dickey;
+prior sensitivity; BIC as an approximation & PPCs for the forgetting
+model; Savage--Dickey BF for \(d' > 0\); BF between retention models via
+grid integration & Conduct a PPC; compute and interpret a Bayes factor;
+evaluate prior sensitivity & L\&W ch.~7; F\&L ch.~11; K ch.~10 &
+\textbf{A4 released:} Bayesian analysis by grid (due Wk 12) \\
+11 & 5 & \textbf{Monte Carlo \& Metropolis--Hastings:} Monte Carlo
+integration; Markov chains; MH; proposal tuning, acceptance rate,
+burn-in & \textbf{MH from scratch} for the forgetting model; trace
+plots; compare with the grid posterior & Explain why MCMC works;
+implement MH; tune a proposal & K ch.~7; F\&L ch.~7 & --- \\
+12 & 5 & \textbf{Gibbs sampling \& convergence diagnostics:} full
+conditionals; Gibbs for a normal model; MH-within-Gibbs (Advanced);
+multiple chains, \textbf{R-hat}, ESS, autocorrelation & \textbf{Gibbs
+from scratch}; implement R-hat and ESS and check against ArviZ; break
+convergence and diagnose it & Implement Gibbs; interpret R-hat, ESS and
+trace plots; judge chain trustworthiness & K ch.~7; MKL ch.~2; F\&L
+ch.~7 & \textbf{A4 due · A5 released:} MCMC + diagnostics (due Wk 14) \\
+13 & 5 & \textbf{Probabilistic programming \& hierarchical models:}
+PyMC; HMC/NUTS conceptually (Advanced); partial pooling and shrinkage
+(linked to Week 5) & \textbf{Hierarchical SDT in PyMC}: ArviZ
+diagnostics, PPCs, comparison with individual MLE fits; (Advanced)
+LOO/WAIC & Specify a PyMC model; explain partial pooling; report a full
+Bayesian workflow & L\&W ch.~11; K ch.~9; F\&L ch.~9; MKL ch.~2, 10 &
+\textbf{Project progress check} (feedback only) \\
+14 & 6 & \textbf{Modeling in cognitive science I:} categorization
+(prototype vs.~exemplar; \textbf{GCM}); choice/RT
+(\textbf{drift-diffusion}, EZ-diffusion) & Fit the GCM by MLE to 5--4
+category-structure data; EZ-diffusion on simulated RTs; interpret the
+parameters & Fit an exemplar model; map DDM parameters to cognitive
+constructs & L\&W ch.~17; F\&L ch.~14 {[}verify{]}; Verguts (relevant
+chapters {[}verify{]}) & \textbf{A5 due} \\
+15 & 6 & \textbf{Modeling in cognitive science II:} Rescorla--Wagner and
+Q-learning with softmax; Bayesian \emph{models of cognition}
+vs.~Bayesian \emph{data analysis}; connectionist models and links to AI
+& Fit Q-learning (\(\alpha\), \(\beta\)) to simulated bandit data;
+parameter recovery; (Advanced) hierarchical version in PyMC & Fit an RL
+model; assess identifiability; contrast Bayesian cognition with Bayesian
+statistics & Verguts (learning/RL chapters {[}verify{]}); F\&L ch.~13
+{[}verify{]}; Anderson (relevant chapters {[}verify{]}) & Final project
+work \\
+16 & --- & \textbf{Final project presentations}; wrap-up on good
+modeling practice & Presentations continue; peer feedback & Communicate
+and critique a modeling study & --- & \textbf{Presentations} · report +
+code due before the final exam \\
+Exam period & 1--6 & \textbf{Final exam} (written, cumulative, emphasis
+on Ch. 4--6; formula sheet provided; code reading/interpretation, no
+laptops) & --- & --- & --- & \textbf{Final exam} \\
+\end{longtable}
+}
+
+\textbf{Abbreviations:} F\&L = Farrell \& Lewandowsky (2018) · L\&W =
+Lee \& Wagenmakers (2014) · K = Kruschke (2014) · MKL = Martin, Kumar \&
+Lao (2021). Chapter numbers were written from memory. The ones marked
+{[}verify{]} are less certain; please check all of them against the
+books.
+
+\subsection{Grading (0--20 scale)}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Component
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Points
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Lab check-offs (weekly in-lab exercises) & 2.0 \\
+Assignments A1--A5 (1.0 each) & 5.0 \\
+Short in-lecture quizzes (\ensuremath{\approx}10, drop the lowest 2) & 1.0 \\
+Midterm exam (Week 8) & 3.0 \\
+Final project: proposal 1.0 · presentation 2.0 · report + reproducible
+code 3.0 & 6.0 \\
+Final exam (cumulative) & 3.0 \\
+\textbf{Total} & \textbf{20.0} \\
+\end{longtable}
+}
+
+\subsection{Final project (overview; the full brief and rubric come in
+Stage 3)}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Teams of 1--2.} The scope grows with team size. Everyone fits
+  at least two candidate models, runs one model comparison and one
+  parameter-recovery analysis. \textbf{Pairs also} do a Bayesian/MCMC
+  analysis (or a hierarchical model) and submit an individual
+  contribution statement.
+\item
+  \textbf{Data:} simulated data, an open dataset, or the student's own
+  experimental data.
+\item
+  \textbf{Milestones:} team formation (Wk 7) \ensuremath{\rightarrow} proposal (Wk 9) \ensuremath{\rightarrow}
+  progress check (Wk 13) \ensuremath{\rightarrow} presentation (Wk 16) \ensuremath{\rightarrow} report + code (before
+  the final exam).
+\end{itemize}
+
+\subsection{Computing on students' own laptops}
+
+\begin{itemize}
+\tightlist
+\item
+  The full environment, PyMC included, is installed in \textbf{Week 1},
+  so Windows/macOS installation problems are solved long before Week 13.
+\item
+  Recommended route: \textbf{Miniforge (conda-forge)} with a course
+  \nolinkurl{environment.yml}, plus a pip \nolinkurl{requirements.txt}
+  as an alternative (both delivered in Stage 4).
+\item
+  \textbf{Fallback:} every notebook also runs on Google Colab.
+\end{itemize}
+
+\end{landscape}

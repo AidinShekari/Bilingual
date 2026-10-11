@@ -1,0 +1,917 @@
+\section{هفته‌ی 13: برنامه‌نویسی احتمالاتی و مدل‌های سلسله‌مراتبی}
+
+\begin{quote}
+\textbf{فصل 5: برآورد پارامتر با روش‌های داده‌محور \lr{(MCMC)}}، پلی به
+فصل 6 · درس 1 ساعت · \lr{lab} 2 ساعت \textbf{داده‌ی اصلی:} یک آزمایش
+بازشناسی/تشخیص با 12 شرکت‌کننده و فقط 50 + 50 \lr{trial} برای هر نفر:
+\lr{SDT} سلسله‌مراتبی در \lr{PyMC.}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{واژه‌های کلیدی}
+
+واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
+باشند).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\lr{hierarchical model} & مدل سلسله‌مراتبی (چندسطحی) & پارامترهای فردی از
+یک توزیع گروهی می‌آیند \\
+\lr{parameter} & پارامتر & کمیت قابل تنظیم مدل که بین افراد یا شرایط فرق
+می‌کند \\
+\lr{estimate} / \lr{estimator} & برآورد / برآوردگر & مقدار به‌دست‌آمده
+برای پارامتر / روش به دست آوردن آن \\
+\lr{trial} & کوشش \lr{(trial)} & یک بار انجام تکلیف توسط شرکت‌کننده \\
+\lr{probabilistic programming} & برنامه‌نویسی احتمالاتی & تعریف مدل با کد
+و نمونه‌گیری خودکار \lr{(PyMC)} \\
+\lr{prior} & توزیع پیشین \lr{(prior)} & باور درباره‌ی پارامتر پیش از دیدن
+داده \\
+\lr{likelihood} & درست‌نمایی & احتمال داده به‌عنوان تابعی از پارامترها \\
+\lr{prior predictive check} & بررسی پیش‌بینی پیشین & شبیه‌سازی داده از
+پیشین برای سنجش معقول بودن آن \\
+\lr{posterior} & توزیع پسین \lr{(posterior)} & باور درباره‌ی پارامتر بعد
+از دیدن داده \\
+\lr{posterior predictive check (PPC)} & بررسی پیش‌بینی پسین & مقایسه‌ی
+داده‌ی شبیه‌سازی‌شده از پسین با داده‌ی واقعی \\
+\lr{HMC} / \lr{NUTS} & \lr{Hamiltonian Monte Carlo} / \lr{NUTS} &
+\lr{MCMC} مبتنی بر گرادیان \\
+\lr{divergent transition} & \lr{divergence} (گذار واگرا) & هشدار
+\lr{NUTS} برای ناحیه‌ای که درست کاوش نشده \\
+\lr{complete} / \lr{no} / \lr{partial pooling} & ادغام کامل / بدون ادغام
+/ ادغام جزئی \lr{(pooling)} & یک پارامتر برای همه / جدا برای هر فرد /
+سلسله‌مراتبی \\
+\lr{shrinkage} & انقباض به سمت میانگین \lr{(shrinkage)} & کشیده شدن
+برآوردهای پرنویز به سمت میانگین گروه \\
+\lr{centered} / \lr{non-centered parameterization} & پارامتری‌سازی
+\lr{centered} / \lr{non-centered} & دو شکل نوشتن مدل سلسله‌مراتبی \\
+\lr{group-level parameter} & پارامتر سطح گروه & میانگین و پراکندگی
+پارامترها در جمعیت \\
+\lr{fit} / \lr{fitting} & برازش & تنظیم پارامترها تا مدل با داده جور
+شود \\
+\lr{hit} & اصابت \lr{(hit)} & پاسخ «بله» وقتی علامت وجود دارد \\
+\lr{sensitivity (d′)} & حساسیت & فاصله‌ی توزیع علامت و نویز \\
+\lr{gradient} & گرادیان & جهت و شیب تغییر تابع \\
+\lr{simulation} & شبیه‌سازی & تولید داده‌ی مصنوعی با اجرای مدل \\
+\lr{reparameterization} & بازپارامتری‌سازی & نوشتن پارامتر در مقیاس دیگر،
+مثلاً \ensuremath{\lambda} = \lr{e\^{}\ensuremath{\eta}} \\
+\lr{standard error (SE)} & خطای استاندارد & پراکندگی برآورد در تکرارهای
+فرضی آزمایش \\
+\lr{benchmark} & \lr{benchmark} (مجموعه‌آزمون استاندارد) & مجموعه سؤال
+برای مقایسه‌ی مدل‌های هوش مصنوعی \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{اهداف یادگیری}
+
+در پایان این هفته، دانشجویان می‌توانند:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  یک مدل شناختی را در \lr{PyMC} \textbf{تعریف کنند} (پیشین‌ها، تبدیل‌های
+  قطعی، درست‌نمایی) و یک گردش کار بیزی کامل را \textbf{اجرا کنند}: بررسی
+  پیش‌بینی پیشین، نمونه‌گیری، تشخیص همگرایی، بررسی پیش‌بینی پسین.
+\item
+  به‌طور مفهومی \textbf{توضیح دهند} که \lr{Hamiltonian Monte Carlo} /
+  \lr{NUTS} چه فرقی با \lr{Metropolis} گام تصادفی دارد و یک
+  \lr{divergence} نشانه‌ی چیست.
+\item
+  یک مدل سلسله‌مراتبی (چندسطحی) را \textbf{صورت‌بندی کنند} و \lr{partial
+  pooling} و \lr{shrinkage} را \textbf{توضیح دهند}، در مقایسه با
+  رویکردهای \lr{complete pooling} و \lr{no pooling} هفته‌ی 5.
+\item
+  یک پارامترسازی \lr{non-centered} را \textbf{پیاده‌سازی کنند} و
+  استفاده‌اش را \textbf{توجیه کنند}.
+\item
+  پسین‌های سطح گروه و سطح فرد را \textbf{تفسیر کنند} و طبق چک‌لیست هفته‌ی
+  12 \textbf{گزارش کنند}.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مقدمه}
+
+در هفته‌ی 5 با یک دوراهی روبه‌رو شدیم. برازش \textbf{میانگین} همه‌ی
+شرکت‌کننده‌ها پایدار است ولی می‌تواند مدل را تحریف کند (خطای میانگین‌گیری) و
+تفاوت‌های فردی را نادیده می‌گیرد. برازش \textbf{هر شرکت‌کننده جداگانه}
+تفاوت‌ها را رعایت می‌کند، ولی با \lr{trial}های کم برای هر نفر برآوردها
+پرنویزند. بعضی‌شان حدی یا بی‌نهایت می‌شوند (شرکت‌کننده‌ای با 50/50 \lr{hit}
+بدون تصحیح \(d' = \infty\) دارد). آماره‌های مرحله‌ی دوم روی این برآوردها
+هم نادیده می‌گیرند که بعضی از بقیه خیلی نامطمئن‌ترند.
+
+\textbf{مدل‌های سلسله‌مراتبی} این دوراهی را حل می‌کنند. فرض می‌کنند هر
+شرکت‌کننده پارامتر خودش را دارد، \emph{و} این پارامترهای فردی از یک توزیع
+سطح گروه می‌آیند که میانگین و پراکندگی‌اش هم برآورد می‌شود. آن‌وقت هر برآورد
+فردی از بقیه نیرو قرض می‌گیرد: برآوردهای پرنویز و حدی دقیقاً به اندازه‌ای
+که عدم قطعیتشان ایجاب می‌کند به سمت میانگین گروه کشیده \lr{(«shrink»)}
+می‌شوند. پارامترهای سطح گروه به سؤال جمعیت («حساسیت معمول چقدر است و
+آدم‌ها چقدر با هم فرق دارند؟») با در نظر گرفتن همه‌ی منابع عدم قطعیت جواب
+می‌دهند.
+
+نوشتن نمونه‌گیر برای چنین مدل‌هایی با دست خودش یک پروژه‌ی پژوهشی است.
+\textbf{زبان‌های برنامه‌نویسی احتمالاتی} مثل \lr{PyMC} به ما اجازه می‌دهند
+مدل را در چند خط \emph{توصیف} کنیم و خودکار از یک نمونه‌گیر پیشرفته،
+\lr{NUTS}، استفاده کنیم. نمونه‌گیرهای دست‌سازِ هفته‌های 11\lr{--}12 همان چیزی‌اند
+که این جعبه‌ی سیاه را برایتان شفاف می‌کنند.
+
+\paragraph{این موضوع کجا به کار می‌رود؟}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{بیشتر مطالعه‌های امروزی مدل‌سازی شناختی با شرکت‌کننده‌های زیاد}
+  مدل‌های سلسله‌مراتبی برازش می‌کنند: مدل‌های \lr{drift-diffusion}
+  سلسله‌مراتبی (بسته‌ی \lr{HDDM)}، مدل‌های یادگیری تقویتی سلسله‌مراتبی در
+  روان‌پزشکی محاسباتی، و \lr{SDT} سلسله‌مراتبی در پژوهش حافظه.
+\item
+  \textbf{مطالعه‌های بالینی و رشدی با جلسه‌های کوتاه:} کودکان و بیماران
+  نمی‌توانند صدها \lr{trial} انجام دهند، پس برآوردهای فردی پرنویزند؛
+  \lr{partial pooling} آن‌ها را قابل استفاده می‌کند.
+\item
+  \textbf{آموزش و علوم اجتماعی:} دانش‌آموزان درون کلاس‌ها درون مدرسه‌ها
+  (مدل‌های چندسطحی) مثال کتاب‌درسی ساختار سلسله‌مراتبی است.
+\item
+  \textbf{تحلیل ورزشی و پزشکی:} برآورد مهارت یک بازیکن یا نرخ موفقیت یک
+  بیمارستان از چند مشاهده‌ی کم با کمک گرفتن از گروه، همین ایده است.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{جزوه‌ی درس}
+
+\paragraph{به زبان ساده}
+
+وقتی هر نفر فقط کمی داده به ما می‌دهد، برآوردهای فردی پرنویزند و بعضی‌شان
+بی‌معنی از آب درمی‌آیند (نمره‌ی کامل یعنی \(d' = \infty\)). یک \textbf{مدل
+سلسله‌مراتبی} می‌گوید: هر نفر پارامتر خودش را دارد، \emph{ولی} آدم‌ها به هم
+شبیه‌اند، پس پارامترهایشان از یک توزیع گروهی مشترک می‌آیند که میانگین و
+پراکندگی آن را هم برآورد می‌کنیم. نتیجه یک مصالحه‌ی معقول است: کسی که
+داده‌ی کم یا حدی دارد به سمت میانگین گروه کشیده می‌شود
+(\textbf{\lr{shrinkage}})، و کسی که داده‌ی زیادی دارد برآوردی نزدیک به
+برآورد خودش نگه می‌دارد. شدت این کشش به این بستگی دارد که آدم‌ها چقدر با
+هم فرق دارند، و این از روی داده یاد گرفته می‌شود. نوشتن نمونه‌گیر برای
+چنین مدلی با دست سخت است، پس از \textbf{\lr{PyMC}} استفاده می‌کنیم: مدل
+را تقریباً مثل ریاضی آن می‌نویسیم و \lr{PyMC} یک نمونه‌گیر پیشرفته
+(\textbf{\lr{NUTS}}) را برایمان اجرا می‌کند. بخش آخر هفته یک \textbf{گردش
+کار \lr{(workflow)}} قدم‌به‌قدم برای انجام امن این کار است.
+
+\textbf{زمان‌بندی پیشنهادی (60 دقیقه):} برنامه‌نویسی احتمالاتی 10 · مفاهیم
+\lr{HMC/NUTS} 10 · مدل‌های سلسله‌مراتبی 20 · پارامترسازی و
+\lr{divergence}ها 10 · گردش کار بیزی 10.
+
+\subsubsection{\texorpdfstring{1. برنامه‌نویسی احتمالاتی با
+\lr{PyMC}}{1. برنامه‌نویسی احتمالاتی با PyMC}}
+
+یک مدل \lr{PyMC} رونویسی مستقیم مدل ریاضی است:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+ریاضی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{PyMC}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mu_{d} \sim \mathcal{N}(1, 1)\) &
+\lr{\nolinkurl{mu_d = pm.Normal("mu_d", 1, 1)}} \\
+\(\sigma_d \sim \mathcal{N}^{+}(0,\allowbreak 1)\) &
+\lr{\nolinkurl{sigma_d = pm.HalfNormal("sigma_d", 1)}} \\
+\(d'_j = \mu_d + \sigma_d z_j\) &
+\lr{\nolinkurl{d = pm.Deterministic("d", mu_d + sigma_d * z_d)}} \\
+\(H_j = \Phi(d'_j/2 - c_j)\) & \lr{\nolinkurl{H = Phi(d / 2 - c)}} (یک
+عبارت که با \lr{\nolinkurl{pm.math}} ساخته می‌شود) \\
+\(\text{\lr{hits}}_j \sim \mathrm{Binomial}(n_s, H_j)\) &
+\lr{\nolinkurl{pm.Binomial("hits", n=n_s, p=H, observed=hits)}} \\
+\end{longtable}
+}
+
+بعد \lr{\nolinkurl{pm.sample()}} مدل را کامپایل می‌کند، گرادیان‌ها را
+خودکار حساب می‌کند و \lr{NUTS} را اجرا می‌کند. نتیجه یک شیء
+\lr{\nolinkurl{InferenceData}}/\lr{\nolinkurl{DataTree}} در \lr{ArviZ}
+است با گروه‌هایی مثل \lr{\nolinkurl{posterior}}،
+\lr{\nolinkurl{sample_stats}}، \lr{\nolinkurl{prior_predictive}} و
+\lr{\nolinkurl{posterior_predictive}} که \lr{ArviZ} آن‌ها را خلاصه و
+تشخیص می‌کند (هفته‌ی 12).
+
+\textbf{نکته‌های عملی:} وقتی یک اسکریپت ساده‌ی \lr{\nolinkurl{.py}} را در
+\lr{Windows} اجرا می‌کنید از \lr{\nolinkurl{cores=1}} استفاده کنید (یا کد
+را داخل \lr{\nolinkurl{if __name__ == "__main__":}} بگذارید)؛ به هر
+متغیر یک نام یکتا بدهید؛ برای برچسب زدن شرکت‌کننده‌ها از
+\lr{\nolinkurl{dims}}/\lr{\nolinkurl{coords}} استفاده کنید.
+
+\subsubsection{\texorpdfstring{2. \lr{Hamiltonian Monte Carlo} و
+\lr{NUTS} (به‌طور
+مفهومی)}{2. Hamiltonian Monte Carlo و NUTS (به‌طور مفهومی)}}
+
+\lr{Metropolis} گام تصادفی گام‌های کورکورانه پیشنهاد می‌دهد و در ابعاد
+بالا یا در امتداد \lr{ridge}های همبسته بیشترشان را هدر می‌دهد (هفته‌های
+11\lr{--}12). \textbf{\lr{Hamiltonian Monte Carlo}} \lr{(HMC)} منفی لگاریتم
+پسین را یک منظره و بردار فعلی پارامتر را یک توپ بدون اصطکاک در نظر
+می‌گیرد. به توپ یک ضربه‌ی تصادفی (تکانه) بدهید، بگذارید مدتی با دنبال کردن
+گرادیان منظره بغلتد، و جایی را که به آن می‌رسد پیشنهاد دهید. پیشنهادها
+می‌توانند دور باشند و هنوز در نواحی پراحتمال، پس پذیرش بالا و خودهمبستگی
+پایین است. \textbf{\lr{NUTS}} \lr{(No-U-Turn Sampler)} زمان غلتیدن را
+خودکار تنظیم می‌کند. \lr{HMC} به گرادیان نیاز دارد که \lr{PyMC} برایتان
+حساب می‌کند.
+
+\textbf{\lr{Divergence}ها.} غلتیدن به‌صورت عددی در گام‌های کوچک شبیه‌سازی
+می‌شود. جایی که انحنای پسین ناگهان تغییر می‌کند (معمولاً در «قیف‌ها»، در
+ادامه)، شبیه‌سازی نادقیق می‌شود و \lr{NUTS} یک \textbf{\lr{divergence}}
+\lr{(divergent transition)} را علامت می‌زند. حتی چند \lr{divergence} یعنی
+پسین آنجا به‌طور قابل اعتماد کاوش نمی‌شود. نادیده‌شان نگیرید؛
+\lr{reparameterize} کنید.
+
+\begin{quote}
+\textbf{پیشرفته:} \lr{HMC} دینامیک هامیلتونی با انرژی
+\(H(\boldsymbol\theta,\allowbreak \mathbf{p}) = -\ln\tilde p(\boldsymbol\theta) + \tfrac12\mathbf{p}^\top M^{-1}\mathbf{p}\)
+را با انتگرال‌گیر \lr{leapfrog} شبیه‌سازی می‌کند. دینامیک دقیق \(H\) را
+پایسته نگه می‌دارد، پس پیشنهادها همیشه پذیرفته می‌شدند. خطای \lr{leapfrog}
+یک تصحیح \lr{Metropolis} را لازم می‌کند، و یک \lr{divergence} مسیری است
+که خطای انرژی‌اش منفجر می‌شود.
+\end{quote}
+
+\subsubsection{3. مدل‌های سلسله‌مراتبی}
+
+\textbf{ساختار (برای \lr{SDT} با \(J\) شرکت‌کننده):}
+
+\[
+\begin{aligned}
+&\text{\lr{Group level:}} && \mu_d \sim \mathcal{N}(1, 1),\ \ \sigma_d \sim \mathcal{N}^{+}(0, 1),\ \ \mu_c \sim \mathcal{N}(0, 1),\ \ \sigma_c \sim \mathcal{N}^{+}(0, 1)\\
+&\text{\lr{Individual level:}} && d'_j \sim \mathcal{N}(\mu_d, \sigma_d),\ \ c_j \sim \mathcal{N}(\mu_c, \sigma_c), \quad j = 1, \dots, J\\
+&\text{\lr{Data:}} && \text{\lr{hits}}_j \sim \mathrm{Binomial}\big(n_s, \Phi(d'_j/2 - c_j)\big),\ \ \text{\lr{FAs}}_j \sim \mathrm{Binomial}\big(n_n, \Phi(-d'_j/2 - c_j)\big)
+\end{aligned}
+\]
+
+\textbf{سه راه ترکیب اطلاعات (مقایسه با هفته‌ی 5):}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+رویکرد
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مدل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فرضش چیست
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\lr{complete pooling} & یک \(d'\) و یک \(c\) برای همه &
+\(\sigma_d = \sigma_c = 0\): بدون تفاوت فردی \\
+\lr{no pooling} & \(d'_j\) و \(c_j\) جداگانه با پیشین‌های ثابت و مستقل &
+\(\sigma \to \infty\): شرکت‌کننده‌ها هیچ چیزی درباره‌ی هم به ما نمی‌گویند \\
+\textbf{\lr{partial pooling}} & سلسله‌مراتبی؛ \(\sigma_d\) و \(\sigma_c\)
+\emph{برآورد می‌شوند} & داده‌ها تصمیم می‌گیرند شرکت‌کننده‌ها چقدر شبیه
+هم‌اند \\
+\end{longtable}
+}
+
+\textbf{\lr{shrinkage.}} با یک تقریب نرمال، برآورد سلسله‌مراتبی
+شرکت‌کننده‌ی \(j\) میانگین وزنی (با وزن دقت) برآورد خودش \(\hat d_j\) (با
+خطای استاندارد \(\mathrm{SE}_j\)) و میانگین گروه است:
+
+\[
+\mathbb{E}[d'_j \mid \text{\lr{data}}] \approx \frac{\hat d_j/\mathrm{SE}_j^2 + \mu_d/\sigma_d^2}{1/\mathrm{SE}_j^2 + 1/\sigma_d^2}.
+\]
+
+شرکت‌کننده‌هایی با داده‌ی \textbf{پرنویزتر} (\(\mathrm{SE}_j\) بزرگ‌تر)
+\textbf{بیشتر} \lr{shrink} می‌شوند. اگر آدم‌ها واقعاً خیلی با هم فرق داشته
+باشند (\(\sigma_d\) بزرگ)، \lr{shrinkage} ضعیف است؛ اگر شبیه هم باشند،
+قوی است. این از روی داده یاد گرفته می‌شود.
+
+\textbf{چرا \lr{shrinkage} خوب است، نه تحریف:} در کل شرکت‌کننده‌ها،
+برآوردهای \lr{shrink}شده به‌طور میانگین \emph{به مقادیر واقعی نزدیک‌ترند}
+تا برآوردهای فردی خام. این یک نتیجه‌ی معروف در آمار است (پارادوکس
+\lr{Stein).} برآوردهای خام حدی تا حدی از روی شانس حدی‌اند، و
+\lr{shrinkage} این بازگشت به میانگین را جبران می‌کند.
+
+\textbf{سؤال‌های سطح گروه} مستقیماً با پسین‌های \(\mu_d\) (حساسیت معمول) و
+\(\sigma_d\) (تفاوت‌های فردی) جواب داده می‌شوند، و مقایسه‌ی گروه‌ها با
+افزودن اثرهای گروه یا شرط به سطح گروه انجام می‌شود.
+
+\paragraph{خواندن ریاضی}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{دو سطح.} سطح گروه: \(\mu_d\) (حساسیت معمول) و \(\sigma_d\)
+  (آدم‌ها چقدر با هم فرق دارند). سطح فرد:
+  \(d'_j \sim \mathcal{N}(\mu_d,\allowbreak \sigma_d)\)، یعنی حساسیت نفر \(j\) از
+  توزیع گروه کشیده می‌شود. سطح داده: \lr{hit}ها و \lr{false alarm}های نفر
+  \(j\) فقط به \(d'_j\) و \(c_j\) همان نفر بستگی دارند.
+\item
+  \(\mathcal{N}^{+}(0, 1)\): توزیع «نیم‌نرمال» \lr{(half-normal)}، یک
+  منحنی نرمال که در 0 تا شده و فقط مقدارهای مثبت در آن مانده‌اند (انحراف
+  معیار نمی‌تواند منفی باشد).
+\item
+  \textbf{فرمول \lr{shrinkage}} یک میانگین وزنی با دقت است (مثل هفته‌ی
+  12): برآورد خود فرد \(\hat d_j\) دقت \(1/\mathrm{SE}_j^2\) دارد و
+  توزیع گروه دقت \(1/\sigma_d^2\). مثال حل‌شده: \(\mathrm{SE} = 0.40\)
+  دقت 6.25 می‌دهد و گروه 4، پس برآورد
+  \((6.25 \times 2.4 + 4 \times 1.3)/10.25 = 1.97\) است: مقدار خام 2.4،
+  40\% راه را به سمت میانگین گروه یعنی 1.3 می‌رود.
+\item
+  اگر آدم‌ها واقعاً خیلی با هم فرق داشته باشند (\(\sigma_d\) بزرگ)، دقت
+  گروه کم و \lr{shrinkage} ضعیف است. اگر شبیه هم باشند، \lr{shrinkage}
+  قوی است.
+\end{itemize}
+
+\subsubsection{\texorpdfstring{4. پارامترسازی \lr{centered} در برابر
+\lr{non-centered}}{4. پارامترسازی centered در برابر non-centered}}
+
+نوشتن مستقیم \(d'_j \sim \mathcal{N}(\mu_d,\allowbreak \sigma_d)\) (شکل
+\textbf{\lr{centered}}) در پسین یک «قیف» می‌سازد: وقتی \(\sigma_d\) کوچک
+است همه‌ی \(d'_j\)ها باید به هم فشرده شوند و وقتی بزرگ است می‌توانند پخش
+شوند. \lr{NUTS} با این هندسه‌ی متغیر به زحمت می‌افتد و \lr{divergence}
+تولید می‌کند، به‌خصوص با داده‌ی کم برای هر شرکت‌کننده. شکل
+\textbf{\lr{non-centered}} انحراف‌های استانداردشده را نمونه‌گیری می‌کند و
+\(d'_j\) را به‌طور قطعی می‌سازد:
+
+\[
+z_j \sim \mathcal{N}(0, 1), \qquad d'_j = \mu_d + \sigma_d z_j.
+\]
+
+همان مدل را توصیف می‌کند ولی هندسه‌ی خیلی دوستانه‌تری دارد. وقتی داده برای
+هر شرکت‌کننده کم است، به‌طور پیش‌فرض از آن استفاده کنید.
+
+\paragraph{خواندن ریاضی}
+
+\(z_j \sim \mathcal{N}(0, 1)\) و \(d'_j = \mu_d + \sigma_d z_j\): به جای
+نمونه‌گیری مستقیم \(d'_j\)، یک نمره‌ی استانداردشده‌ی «این فرد چقدر غیرعادی
+است» یعنی \(z_j\) (بر حسب انحراف معیار گروه) را نمونه بگیر و \(d'_j\) را
+از روی آن بساز. هر دو نسخه دقیقاً یک مدل را توصیف می‌کنند. تفاوت فقط در
+چیزی است که نمونه‌گیر باید کاوش کند: در شکل \lr{centered}، وقتی
+\(\sigma_d\) کوچک است، محدوده‌ی مجاز هر \(d'_j\) تقریباً به هیچ می‌رسد (یک
+قیف)؛ در شکل \lr{non-centered}، \(z_j\)ها همیشه روی یک مقیاس‌اند، پس
+اندازه‌ی گام نمونه‌گیر همه‌جا مناسب است.
+
+\subsubsection{5. گردش کار بیزی}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  مدل و پیشین‌ها را (با توجیه) \textbf{تعریف کنید}.
+\item
+  \textbf{بررسی پیش‌بینی پیشین} (هفته‌ی 9): آیا پیشین داده‌های معقولی نتیجه
+  می‌دهد؟
+\item
+  با چند زنجیره \textbf{برازش کنید}.
+\item
+  \textbf{تشخیص دهید:} \(\hat R\)، \lr{ESS}، \lr{divergence}ها،
+  \lr{trace plot}ها (هفته‌ی 12).
+\item
+  \textbf{بررسی پیش‌بینی پسین} (هفته‌ی 10): آیا مدل برازش‌شده می‌تواند
+  داده‌ها را بازتولید کند؟
+\item
+  در صورت نیاز مدل‌ها را \textbf{مقایسه کنید} \lr{(LOO} با \lr{ArviZ}،
+  \lr{Bayes factor}؛ هفته‌های 6، 10).
+\item
+  \textbf{تفسیر و گزارش کنید.}
+\end{enumerate}
+
+\paragraph{برای یک مهندس}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{مدل سلسله‌مراتبی = تخمین با یک \lr{prior} جمعیتی.} مثل این است
+  که بهره‌ی کانال هر کاربر را از چند \lr{pilot} تخمین بزنید و هم‌زمان
+  توزیع بهره‌ها در سلول را یاد بگیرید و از آن به‌عنوان \lr{prior} استفاده
+  کنید: یک تخمین‌گر \textbf{\lr{empirical Bayes} / \lr{MMSE}}.
+  \lr{shrinkage} به سمت میانگین گروه همان پدیده‌ی تخمین‌گر
+  \textbf{\lr{James\lr{--}Stein}} است که وقتی سه واحد یا بیشتر داریم، در
+  مجموع خطای مربعی از تخمین‌های \lr{ML} جداگانه بهتر است.
+\item
+  \textbf{\lr{HMC/NUTS}} دینامیک همیلتونی (یک ذره‌ی بدون اصطکاک روی سطح
+  منفی لگاریتم \lr{posterior)} را با یک انتگرال‌گیر عددی \lr{(leapfrog)}
+  شبیه‌سازی می‌کند، مثل شبیه‌سازی‌های فیزیکی. یک \textbf{\lr{divergence}}
+  یعنی انتگرال‌گیر ناپایدار شده چون اندازه‌ی گام برای انحنای محلی خیلی
+  بزرگ است؛ مثل یک معادله‌ی دیفرانسیل سخت \lr{(stiff)} که با گام خیلی
+  بزرگ انتگرال‌گیری شود.
+\item
+  \textbf{پارامتری‌سازی \lr{non-centered}} یک تغییر متغیر است که متغیرها
+  را به مقیاس واحد نرمال می‌کند، یعنی حالت \lr{(conditioning)} مسئله را
+  بهتر می‌کند؛ شبیه سفید کردن یا نرمال کردن ورودی‌ها پیش از یک الگوریتم
+  تطبیقی.
+\item
+  \textbf{\lr{PyMC}} گرادیان‌ها را خودکار حساب می‌کند \lr{(automatic
+  differentiation)}، همان فناوری‌ای که شبکه‌های عصبی را آموزش می‌دهد.
+\end{itemize}
+
+\paragraph{برای مدرس}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{shrinkage} را با یک مثال ورزشی یا امتحانی معرفی کنید.}
+  دانشجویی که 3 از 3 سؤال را درست جواب داده احتمالاً «دانشجوی 100\%»
+  نیست؛ دانشجویی با 95 از 100 احتمالاً نزدیک 95\% است. از کلاس بپرسید
+  اطلاعات فردی و کلاسی را چطور ترکیب می‌کنند: خودشان \lr{partial pooling}
+  را اختراع می‌کنند.
+\item
+  \textbf{نمودار \lr{shrinkage} بخش \lr{D lab} را نشان دهید:} برآوردهای
+  خام، برآوردهای سلسله‌مراتبی و میانگین گروه روی یک شکل، با پیکان. ایده
+  را ماندگار می‌کند.
+\item
+  \textbf{ریاضی \lr{HMC} را عمیق درس ندهید.} یک تصویر (یک توپ که روی
+  منفی لگاریتم \lr{posterior} با یک ضربه‌ی تصادفی می‌غلتد) کافی است؛ مهارت
+  عملی مهم، خواندن شاخص‌های تشخیصی است \lr{(divergence}، \(\hat R\)،
+  \lr{ESS).}
+\item
+  \textbf{اجرای \lr{PyMC} در کلاس:} روی \lr{Windows} در اسکریپت‌ها از
+  \lr{\nolinkurl{cores=1}} استفاده کنید و نمونه‌گیری را زود شروع کنید
+  (بخش \lr{C)}، چون ممکن است چند دقیقه طول بکشد.
+\item
+  \textbf{سؤال‌های رایج.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{«آیا \lr{shrinkage} نتایج را سوگیر نمی‌کند؟»} کمی، ولی خطای کل
+    را کم می‌کند، پس برآوردها به‌طور میانگین به حقیقت نزدیک‌ترند.
+  \item
+    \emph{«آیا مدل سلسله‌مراتبی همیشه بهتر است؟»} وقتی افراد داده‌ی کافی
+    دارند، نتایج شبیه برازش‌های جداگانه است؛ بیشترین سود وقتی است که برای
+    هر نفر داده کم است.
+  \item
+    \emph{\lr{«divergence} برای نتایجم یعنی چه؟»} یعنی بخشی از
+    \lr{posterior} به‌طور قابل اعتماد کاوش نشده. \lr{reparameterize} کنید
+    و دوباره اجرا کنید تا هیچ \lr{divergence}ای نماند.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مثال حل‌شده}
+
+\textbf{\lr{shrinkage} با دست.} پسین گروه \(\mu_d \approx 1.3\) و
+\(\sigma_d \approx 0.5\) دارد (دقت گروه \(1/0.5^2 = 4\)). دو شرکت‌کننده
+هر دو برآورد خام \(\hat d_j = 2.4\) دارند.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+شرکت‌کننده
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathrm{SE}_j\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+دقت فردی \(1/\mathrm{SE}_j^2\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+برآورد سلسله‌مراتبی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+انحراف معیار پسین
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\lr{P1 (trial} کم) & 0.40 & 6.25 &
+\((6.25 \times 2.4 + 4 \times 1.3)/(6.25 + 4) = 20.2/10.25 = \mathbf{1.97}\)
+& \(1/\sqrt{10.25} = 0.31\) \\
+\lr{P2 (trial} زیاد) & 0.20 & 25 &
+\((25 \times 2.4 + 4 \times 1.3)/(25 + 4) = 65.2/29 = \mathbf{2.25}\) &
+\(1/\sqrt{29} = 0.19\) \\
+\end{longtable}
+}
+
+\textbf{تفسیر.} هر دو شرکت‌کننده \emph{به نظر} به یک اندازه حساس‌اند، ولی
+برآورد \lr{P1} بر داده‌ی کمتری تکیه دارد، پس مدل کمتر به آن اعتماد می‌کند
+و آن را 0.43 به سمت میانگین گروه جابه‌جا می‌کند. \lr{P2} فقط 0.15 جابه‌جا
+می‌شود. هر دو انحراف معیار پسین از \lr{SE}های خام کوچک‌ترند، چون توزیع
+گروه اطلاعات اضافه می‌کند. (در مدل کامل، \(\mu_d\) و \(\sigma_d\) خودشان
+نامطمئن‌اند و هم‌زمان برآورد می‌شوند؛ این محاسبه برای توضیح آن‌ها را ثابت
+می‌گیرد.)
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
+
+\subsubsection{اهداف}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  شبیه‌سازی یک آزمایش با 12 شرکت‌کننده و محاسبه‌ی برآوردهای فردی \lr{(no
+  pooling).}
+\item
+  نوشتن مدل \lr{SDT} سلسله‌مراتبی در \lr{PyMC} با پارامترسازی
+  \lr{non-centered}؛ اجرای یک بررسی پیش‌بینی پیشین.
+\item
+  نمونه‌گیری با \lr{NUTS}؛ بررسی \(\hat R\)، \lr{ESS} و
+  \lr{divergence}ها.
+\item
+  نمایش \lr{shrinkage} و مقایسه‌ی برآوردها با مقادیر واقعی.
+\item
+  اجرای یک بررسی پیش‌بینی پسین و تفسیر پارامترهای سطح گروه.
+\end{enumerate}
+
+\textbf{زمان‌بندی:} بخش \lr{A} 10 دقیقه · بخش \lr{B} 20 دقیقه · بخش
+\lr{C} 25 دقیقه · بخش \lr{D} 30 دقیقه · بخش \lr{E} 20 دقیقه · بخش \lr{F}
+15 دقیقه.
+
+\begin{quote}
+\textbf{زمان اجرا:} نمونه‌گیری از کمتر از یک دقیقه (نصب \lr{conda-forge}
+با \lr{compiler)} تا حدود 2 تا 3 دقیقه (بدون \lr{compiler)} طول می‌کشد.
+بخش \lr{C} را زود شروع کنید.
+\end{quote}
+
+\subsubsection{\texorpdfstring{بخش \lr{A:} داده و برآوردهای \lr{no
+pooling} (10 دقیقه)}{بخش A: داده و برآوردهای no pooling (10 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week13.py}}, \lr{cell} 1 ·
+سلول 1
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{18\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+    hits  fas  d_true  d_indiv  c_true  c_indiv
+0     46    2    2.21     3.01    0.13     0.15
+1     16   25   -0.24    -0.46    0.42     0.23
+2     28    6    1.78     1.29    0.41     0.50
+3     40   11    1.33     1.57    0.05    -0.03
+4     43    9    1.96     1.94    0.09    -0.08
+5     43   17    1.49     1.45   -0.34    -0.32
+6     31    0    2.21     2.63    0.70     1.02
+7     35   11    1.32     1.27    0.13     0.12
+8     24    8    1.04     0.92    0.60     0.51
+9     39    8    1.59     1.72    0.33     0.11
+10    27    3    1.52     1.58    0.78     0.69
+11    21    9    1.12     0.69    0.66     0.54
+\end{Verbatim}
+\end{latin}
+
+\subsubsection{\texorpdfstring{بخش \lr{B:} مدل در \lr{PyMC}، و یک بررسی
+پیش‌بینی پیشین (20
+دقیقه)}{بخش B: مدل در PyMC، و یک بررسی پیش‌بینی پیشین (20 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week13.py}}, \lr{cell} 2 ·
+سلول 2
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{6\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+Share of prior-predictive rates exactly 0 or 1: 0.30
+\end{Verbatim}
+\end{latin}
+
+پیشین دامنه‌ی وسیعی از نرخ‌های \lr{hit} و \lr{false alarm} را نتیجه می‌دهد
+که بیشترشان بالای قطرند. حدود 30\% شرکت‌کننده‌های شبیه‌سازی‌شده شمارش
+\lr{hit} یا \lr{false alarm} دقیقاً 0 یا 50 دارند. این‌ها بیشتر
+شرکت‌کننده‌هایی‌اند که با حساسیت خیلی بالا و سوگیری قوی شبیه‌سازی شده‌اند و
+\lr{false alarm} صفر تولید می‌کنند. این خیلی بهتر از 96\% پیشین «مبهم»
+هفته‌ی 9 است، ولی هنوز کمی دست‌ودل‌باز است: تنگ‌تر کردن پیشین‌های
+\lr{\nolinkurl{sigma_d}} و \lr{\nolinkurl{sigma_c}} (مثلاً
+\lr{\nolinkurl{HalfNormal(0.5)}}) بیشترشان را حذف می‌کند. امتحانش کنید و
+ببینید آیا پسین تغییر می‌کند.
+
+\subsubsection{\texorpdfstring{بخش \lr{C:} نمونه‌گیری و تشخیص همگرایی (25
+دقیقه)}{بخش C: نمونه‌گیری و تشخیص همگرایی (25 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week13.py}}, \lr{cell} 3 ·
+سلول 3
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{12\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+        ess_bulk ess_tail r_hat mcse_mean mcse_sd
+mu_d        1303     1651  1.00    0.0075  0.0054
+sigma_d     1639     2088  1.00    0.0055  0.0045
+mu_c        1312     1474  1.00    0.0036   0.003
+sigma_c     1203     1748  1.00    0.0034  0.0047
+Number of divergent transitions: 0
+Max R-hat over all individual d and c: 1.0023234826538692
+\end{Verbatim}
+\end{latin}
+
+\subsubsection{\texorpdfstring{بخش \lr{D: shrinkage} و استنباط سطح گروه
+(30 دقیقه)}{بخش D: shrinkage و استنباط سطح گروه (30 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week13.py}}, \lr{cell} 4 ·
+سلول 4
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{11\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+RMSE vs. true d':  no pooling = 0.339,  hierarchical = 0.279
+mu_d     posterior mean = 1.45, 95% interval = [0.90, 1.95]
+sigma_d  posterior mean = 0.90, 95% interval = [0.56, 1.42]
+mu_c     posterior mean = 0.29, 95% interval = [0.04, 0.55]
+sigma_c  posterior mean = 0.38, 95% interval = [0.22, 0.65]
+P(mu_c > 0 | data) = 0.987
+\end{Verbatim}
+\end{latin}
+
+\textbf{تفسیر (در \lr{notebook} بنویسید):} 1. کدام شرکت‌کننده‌ها بیشتر
+\lr{shrink} می‌شوند و چرا؟ یکی را که برآورد خامش حدی است پیدا کنید و
+توصیف کنید مدل سلسله‌مراتبی با آن چه می‌کند. 2. آیا برآورد سلسله‌مراتبی
+به‌طور میانگین به حقیقت نزدیک‌تر است؟ آیا برای \emph{هر} شرکت‌کننده نزدیک‌تر
+است؟ چرا این لازم نیست؟ 3. \(\mu_d\) و \(\sigma_d\) درباره‌ی این جمعیت چه
+می‌گویند؟ \(\sigma_d\) را با انحراف معیاری که برای شبیه‌سازی داده استفاده
+شد (0.5) مقایسه کنید و تفاوت را توضیح دهید (راهنمایی: 12 شرکت‌کننده).
+
+\subsubsection{\texorpdfstring{بخش \lr{E:} بررسی پیش‌بینی پسین (20
+دقیقه)}{بخش E: بررسی پیش‌بینی پسین (20 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week13.py}}, \lr{cell} 5 ·
+سلول 5
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{6\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+Share of observed counts inside their 95% predictive interval: 1.00
+\end{Verbatim}
+\end{latin}
+
+\subsubsection{\texorpdfstring{بخش \lr{F:} گزارش (15
+دقیقه)}{بخش F: گزارش (15 دقیقه)}}
+
+یک پاراگراف روش‌ها و نتایج طبق چک‌لیست هفته‌ی 12 بنویسید: مدل و پیشین‌ها (با
+کلمات و نمادها)، نمونه‌گیر و تنظیمات، تشخیص‌ها (بیشترین \(\hat R\)، کمترین
+\lr{ESS}، \lr{divergence}ها)، نتیجه‌ی \lr{PPC}، و نتیجه‌گیری‌های سطح گروه
+(\(\mu_d\)، \(\sigma_d\)، \(\mu_c\) با بازه‌های 95\%؛
+\(P(\mu_c > 0\mid\text{\lr{data}})\)).
+
+\subsubsection{تمرین‌ها (به ترتیب سختی)}
+
+\textbf{تمرین 1 \ensuremath{\star}.} مدل \textbf{\lr{complete pooling}} (یک \(d'\) و یک
+\(c\) برای همه) را در \lr{PyMC} برازش کنید. برآورد \(d'\) آن را با
+\(\mu_d\) مدل سلسله‌مراتبی، و بررسی پیش‌بینی پسینش را با بخش \lr{E} مقایسه
+کنید. کدام شرکت‌کننده‌ها را نمی‌تواند پیش‌بینی کند؟
+
+\textbf{تمرین 2 \ensuremath{\star}.} بخش \lr{C} را با پارامترسازی \textbf{متمرکز}
+(\lr{\nolinkurl{d = pm.Normal("d", mu_d, sigma_d, dims="participant")}})
+دوباره اجرا کنید. \lr{divergence}ها، \lr{ESS} و زمان اجرا را مقایسه
+کنید. بعد داده را به 10 + 10 \lr{trial} برای هر شرکت‌کننده کم کنید و
+دوباره مقایسه کنید.
+
+\textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (تعداد \lr{trial} نابرابر).} به نیمی از شرکت‌کننده‌ها
+20 + 20 \lr{trial} و به نیمی دیگر 200 + 200 \lr{trial} بدهید (داده‌ی جدید
+شبیه‌سازی کنید). نشان دهید \lr{shrinkage}، مثل مثال حل‌شده، به تعداد
+\lr{trial}ها بستگی دارد.
+
+\textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} (مقایسه‌ی مدل با \lr{LOO).}} لگاریتم درست‌نمایی را با
+\lr{\nolinkurl{pm.compute_log_likelihood(idata)}} حساب کنید.
+\lr{\nolinkurl{loo}} در \lr{ArviZ} برای هر مشاهده به یک لگاریتم
+درست‌نمایی نقطه‌ای نیاز دارد: آرایه‌های لگاریتم درست‌نمایی
+\lr{\nolinkurl{hits}} و \lr{\nolinkurl{fas}} را در یک آرایه‌ی واحد برای
+هر شرکت‌کننده جمع کنید (مثلاً
+\lr{\nolinkurl{idata.log_likelihood["obs"] = idata.log_likelihood["hits"] + idata.log_likelihood["fas"]}})
+و \lr{\nolinkurl{az.loo(idata, var_name="obs")}} را صدا بزنید. مدل‌های
+سلسله‌مراتبی و \lr{complete pooling} را با \lr{\nolinkurl{az.compare}}
+مقایسه کنید. تشخیص‌های \lr{Pareto-}\(k\) را بررسی کنید و بگویید برای
+پیش‌بینی \lr{leave-one-participant-out} چه معنایی دارند.
+
+\textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: اثر گروه).} دو گروه 12 نفره شبیه‌سازی کنید
+که حساسیت میانگینشان 0.4 فرق دارد. مدل را با یک اثر گروه \(\beta\) روی
+\(\mu_d\) گسترش دهید
+(\(d'_j = \mu_d + \beta\cdot\text{\lr{group}}_j + \sigma_d z_j\))، \(\beta\)
+را برآورد کنید و \(P(\beta > 0\mid\text{\lr{data}})\) را گزارش کنید. با یک
+آزمون \lr{t} روی برآوردهای فردی \(d'\) مقایسه کنید.
+
+\subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
+
+نشان دهید: (1) خروجی تشخیص‌ها (بدون \lr{divergence}، \(\hat R\)،
+\lr{ESS)}، (2) نمودار \lr{shrinkage} با مقایسه‌ی \lr{RMSE}، و (3) نمودار
+\lr{PPC} همراه با پاراگراف بخش \lr{F.}
+
+\textbf{گزارش پیشرفت پروژه (این هفته):} یک گزارش وضعیت یک‌صفحه‌ای تحویل
+دهید (چه کارهایی انجام شده، یک نمودار برازش یا شبیه‌سازی اولیه، مسائل
+باز). نمره ندارد؛ بازخورد کتبی ظرف یک هفته داده می‌شود.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{ارتباط با هوش مصنوعی و
+\lr{LLM}ها}{ارتباط با هوش مصنوعی و LLMها}}
+
+\textbf{\lr{partial pooling} برای \lr{benchmark}های هوش مصنوعی.}
+\lr{benchmark}ها به دسته‌های تکلیف تقسیم می‌شوند، و بعضی دسته‌ها فقط چند
+آیتم دارند. گزارش دقت خام برای هر دسته عددهای پرنویز و گاهی حدی می‌دهد،
+درست مثل برازش‌های فردی \lr{SDT} با \lr{trial}های کم. یک مدل سلسله‌مراتبی
+دقت دسته‌ها را نمونه‌هایی از یک توزیع مشترک در نظر می‌گیرد و دسته‌های کوچک
+را به سمت میانگین کلی \lr{shrink} می‌کند. کد پایین از یک نسخه‌ی سریع
+\lr{empirical-Bayes} استفاده می‌کند: یک مدل \lr{beta-binomial} که
+پارامترهای گروهش با بیشینه کردن \lr{marginal likelihood} روی یک
+\lr{grid} برآورد می‌شوند. در تمرین‌ها نسخه‌ی بیزی کامل را در \lr{PyMC}
+برازش می‌کنید.
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week13.py}}, \lr{cell} 6 ·
+سلول 6
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{15\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+items   true    raw  shrunk
+    5  0.72  0.80   0.71
+    8  0.63  0.88   0.74
+   10  0.64  0.50   0.63
+   15  0.63  0.67   0.68
+   25  0.76  0.88   0.80
+   40  0.69  0.55   0.60
+   60  0.80  0.78   0.76
+   80  0.51  0.57   0.60
+group mean = 0.69, concentration = 19.9;  RMSE raw = 0.125, shrunk = 0.066
+\end{Verbatim}
+\end{latin}
+
+دسته‌ی 8آیتمی (خام 0.88، واقعی 0.63) به‌شدت پایین کشیده می‌شود، و برآوردهای
+\lr{shrink}شده در مجموع حدود دو برابر دقیق‌ترند \lr{(RMSE} برابر 0.066 در
+برابر 0.125).
+
+\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} کدام دسته‌ها بیشتر از
+همه جابه‌جا می‌شوند، و چرا؟ جوابتان را به فرمول \lr{shrinkage} در جزوه‌ی
+درس این هفته ربط دهید. - \ensuremath{\star}\ensuremath{\star} همین مدل را در \lr{PyMC} برازش کنید:
+\lr{\nolinkurl{mu ~ Beta(2, 2)}}، \lr{\nolinkurl{kappa ~ Gamma(2, 0.1)}}
+\lr{(shape} و \lr{rate)}،
+\lr{\nolinkurl{theta_j ~ Beta(mu * kappa, (1 - mu) * kappa)}}،
+\lr{\nolinkurl{y_j ~ Binomial(n_j, theta_j)}}. میانگین‌های پسین را با
+برآوردهای \lr{empirical-Bayes} مقایسه کنید و تشخیص‌ها را بررسی کنید. - \ensuremath{\star}\ensuremath{\star}
+بحث: یک جدول رتبه‌بندی «دسته‌ای که مدل \lr{X} در آن ضعیف‌ترین است» را
+برجسته می‌کند، که یک دسته‌ی 5آیتمی است. به نویسندگان چه می‌گویید؟
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{اشتباهات رایج و برداشت‌های نادرست}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{\lr{«shrinkage} نتایج را سوگیر می‌کند.»} کمی سوگیری را با کاهش
+  زیاد واریانس معاوضه می‌کند و به‌طور میانگین برآوردهای دقیق‌تری می‌دهد.
+  اصولی است، نه یک تصحیح موقت.
+\item
+  \textbf{نادیده گرفتن \lr{divergence}ها.} حتی چندتایشان نشانه‌ی کاوش
+  غیرقابل اعتماد است. \lr{reparameterize} کنید \lr{(non-centered)}،
+  پیشین‌های پارامترهای مقیاس را تنگ‌تر کنید، یا
+  \lr{\nolinkurl{target_accept}} را بالا ببرید.
+\item
+  \textbf{پارامترسازی \lr{centered} با داده‌ی کم.} قیف و \lr{divergence}
+  می‌سازد. برای مدل‌های سلسله‌مراتبی با \lr{trial}های کم برای هر شرکت‌کننده،
+  به‌طور پیش‌فرض از \lr{non-centered} استفاده کنید.
+\item
+  \textbf{پیشین‌های مبهم برای انحراف معیارهای گروه.} پیشین‌های خیلی پهن
+  روی \(\sigma\) می‌توانند پیش‌بینی‌های پیشین نامعقول و مشکلات نمونه‌گیری
+  بسازند. پیشین‌های نیم‌نرمال با مقیاس معقول معمولاً بهترند.
+\item
+  \textbf{جادو دانستن جعبه‌ی سیاه.} \lr{PyMC} از هر مدلی که بنویسید، از
+  جمله مدل‌های غلط، نمونه می‌گیرد. گردش کار (بررسی پیش‌بینی پیشین، تشخیص‌ها،
+  \lr{PPC)} همچنان کامل لازم است.
+\item
+  \textbf{اجرای نمونه‌گیری چندپردازشی از یک اسکریپت در \lr{Windows} بدون
+  \lr{main guard}،} که خطاهای مبهم \lr{multiprocessing} می‌دهد. از
+  \lr{\nolinkurl{cores=1}} یا
+  \lr{\nolinkurl{if __name__ == "__main__":}} استفاده کنید.
+\item
+  \textbf{گزارش فقط برآوردهای فردی.} پارامترهای سطح گروه اغلب به سؤال
+  پژوهشی واقعی جواب می‌دهند.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{خودآزمایی}
+
+\textbf{1.} سه راه ترکیب داده بین شرکت‌کننده‌ها کدام‌اند و هرکدام درباره‌ی
+تفاوت‌های فردی چه فرضی دارند؟ \textbf{پاسخ} \lr{complete pooling} (همه
+یکسان‌اند، \(\sigma = 0\))، \lr{no pooling} (شرکت‌کننده‌ها بی‌ارتباط‌اند، پس
+هیچ اطلاعاتی به اشتراک گذاشته نمی‌شود)، و \lr{partial
+pooling/}سلسله‌مراتبی (شرکت‌کننده‌ها از یک توزیع مشترک می‌آیند که پراکندگی‌اش
+از داده برآورد می‌شود).
+
+\textbf{2.} دو شرکت‌کننده برآورد خام \(d'\) یکسانی دارند. چرا ممکن است
+مدل سلسله‌مراتبی یکی را خیلی بیشتر \lr{shrink} کند؟ \textbf{پاسخ}
+\lr{shrinkage} به دقت هر برآورد فردی بستگی دارد. شرکت‌کننده‌ای که
+\lr{trial} کمتری دارد \lr{(SE} بزرگ‌تر) اطلاعات کمتری دارد و قوی‌تر به سمت
+میانگین گروه کشیده می‌شود.
+
+\textbf{3.} چرا پارامترسازی \lr{non-centered} اغلب ترجیح دارد؟
+\textbf{پاسخ} شکل \lr{centered} پسینی قیفی‌شکل می‌سازد (پارامترهای فردی
+وقتی انحراف معیار گروه کوچک است باید به هم فشرده شوند) که \lr{NUTS} بد
+کاوشش می‌کند و \lr{divergence} می‌دهد. نمونه‌گیری \(z_j\) استانداردشده و
+محاسبه‌ی \(d'_j = \mu + \sigma z_j\) هندسه‌ای می‌دهد که کاوشش خیلی آسان‌تر
+است.
+
+\textbf{4.} \lr{divergence} چیست و باید با آن چه کرد؟ \textbf{پاسخ}
+مسیری در \lr{NUTS} که شبیه‌سازی عددی‌اش شکسته است، معمولاً در ناحیه‌ای با
+انحنای زیاد؛ نشان می‌دهد بخشی از پسین به‌طور قابل اعتماد کاوش نمی‌شود.
+\lr{reparameterize} کنید، برای پارامترهای مقیاس از پیشین‌های آگاهی‌بخش‌تر
+استفاده کنید، یا \lr{\nolinkurl{target_accept}} را بالا ببرید، و بعد
+بررسی کنید که \lr{divergence}ها ناپدید شده باشند.
+
+\textbf{5.} چرا \lr{HMC} معمولاً در ابعاد بالا خیلی بهتر از
+\lr{Metropolis} گام تصادفی مخلوط می‌شود؟ \textbf{پاسخ} از اطلاعات گرادیان
+برای حرکت‌های بلند و جهت‌دار که شکل پسین را دنبال می‌کنند استفاده می‌کند، پس
+پیشنهادهای دور هم هنوز احتمال پذیرش بالایی دارند. پیشنهادهای گام تصادفی،
+مگر اینکه خیلی ریز باشند، تقریباً همیشه رد می‌شوند.
+
+\textbf{6.} در یک مدل \lr{SDT} سلسله‌مراتبی، کدام پارامتر به «آدم‌ها چقدر
+در حساسیت با هم فرق دارند؟» و کدام به «حساسیت معمول چقدر است؟» جواب
+می‌دهد؟ \textbf{پاسخ} به ترتیب \(\sigma_d\) (انحراف معیار سطح گروه) و
+\(\mu_d\) (میانگین سطح گروه).
+
+\textbf{7.} مراحل گردش کار بیزی را فهرست کنید. \textbf{پاسخ} تعریف مدل و
+پیشین‌ها \ensuremath{\leftarrow} بررسی پیش‌بینی پیشین \ensuremath{\leftarrow} برازش با چند زنجیره \ensuremath{\leftarrow} تشخیص (\(\hat R\)،
+\lr{ESS}، \lr{divergence}ها، \lr{trace}ها) \ensuremath{\leftarrow} بررسی پیش‌بینی پسین \ensuremath{\leftarrow} در
+صورت نیاز مقایسه‌ی مدل‌ها \ensuremath{\leftarrow} تفسیر و گزارش.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{تکلیف}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{A5 (MCMC} از صفر)} در ابتدای درس هفته‌ی 14 تحویل داده
+  می‌شود.
+\item
+  \textbf{گزارش پیشرفت پروژه} این هفته (بالا را ببینید).
+\item
+  تکلیف نمره‌دار جدیدی نداریم: هفته‌های باقی‌مانده برای پروژه‌ی پایانی است.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مطالعه‌ی بیشتر}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{Lee} \lr{\&} \lr{Wagenmakers} (2014)، فصل 11.} نظریه‌ی تشخیص
+  علامت، از جمله همان مدل \lr{SDT} سلسله‌مراتبی‌ای که امروز پیاده‌سازی
+  کردید. \emph{(منبع اصلی.)}
+\item
+  \textbf{\lr{Kruschke} (2014)، فصل 9.} مدل‌های سلسله‌مراتبی: \lr{partial
+  pooling} و \lr{shrinkage}، قدم‌به‌قدم.
+\item
+  \textbf{\lr{Farrell} \lr{\&} \lr{Lewandowsky} (2018)، فصل 9.} مدل‌سازی
+  چندسطحی یا سلسله‌مراتبی داده‌های شناختی.
+\item
+  \textbf{\lr{Martin, Kumar} \lr{\&} \lr{Lao} (2021)، فصل‌های 2 و 10.} تشخیص
+  با \lr{ArviZ}، و زبان‌های برنامه‌نویسی احتمالاتی \lr{(PyMC} در پشت صحنه
+  چطور کار می‌کند).
+\end{itemize}
+
+\emph{پیش‌نمایش هفته‌ی 14:} با جعبه‌ابزار کامل، گشتی در مدل‌هایی از حوزه‌های
+مختلف علوم شناختی می‌زنیم؛ با دسته‌بندی (مدل \lr{exemplar} یعنی \lr{GCM)}
+و سازوکار سرعت\lr{--}دقت مدل \lr{drift-diffusion} شروع می‌کنیم.

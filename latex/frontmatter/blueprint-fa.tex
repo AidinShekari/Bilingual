@@ -1,0 +1,268 @@
+\begin{landscape}
+\textbf{واحد:} 2 واحد (1 نظری + 1 عملی)، در مجموع 48 ساعت · \textbf{شکل
+برگزاری:} هر هفته 1 ساعت درس + 2 ساعت \lr{lab} \textbf{مخاطبان:}
+دانشجویان کارشناسی ارشد و سال آخر کارشناسی · \textbf{پیش‌نیازها:} روش‌های
+آماری در علوم شناختی؛ روش‌های آزمایشی در روان‌شناسی شناختی \textbf{زبان /
+ابزار:} \lr{Python} 3 \lr{(numpy}، \lr{scipy}، \lr{pandas}،
+\lr{matplotlib}؛ و از هفته‌ی 13 به بعد \lr{PyMC} + \lr{ArviZ)}، روی لپ‌تاپ
+خود دانشجویان
+
+\subsection{اصول طراحی}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{یک مسیر مدل‌سازی ثابت برای کل ترم.} همه‌ی \lr{lab}ها همین مراحل
+  را دنبال می‌کنند: \emph{شبیه‌سازی \lr{(simulate)} \ensuremath{\leftarrow} برازش \lr{(fit)} \ensuremath{\leftarrow}
+  ارزیابی \lr{(evaluate)} \ensuremath{\leftarrow} بازیابی \lr{(recover)} \ensuremath{\leftarrow} تفسیر
+  \lr{(interpret)}}.
+\item
+  \textbf{چند مجموعه‌داده‌ی ثابت که مدام تکرار می‌شوند.} منحنی‌های فراموشی و
+  نظریه‌ی تشخیص علامت \lr{(SDT)} از هفته‌ی 2 تا 13 ادامه دارند، تا روش‌های
+  جدید روی داده‌های آشنا مقایسه شوند. فصل 6 دسته‌بندی \lr{(GCM)}، زمان
+  واکنش \lr{(drift-diffusion)} و یادگیری تقویتی \lr{(reinforcement
+  learning)} را اضافه می‌کند.
+\item
+  \textbf{«اول خودت بنویس، بعد از کتابخانه استفاده کن.»} دانشجویان
+  کمترین مربعات، بیشینه درست‌نمایی، پسین شبکه‌ای،
+  \lr{Metropolis\lr{--}Hastings}، \lr{Gibbs} و \lr{R-hat} را دستی می‌نویسند و
+  بعد سراغ \lr{\nolinkurl{scipy.optimize}}، \lr{PyMC} یا \lr{ArviZ}
+  می‌روند.
+\item
+  \textbf{وزن فصل‌ها.} فصل 1: 2 هفته · فصل 2: 3 · فصل 3: 2 · فصل 4: 2 ·
+  فصل 5: 3 · فصل 6: 2. سه هفته‌ی دیگر هم به معارفه، میان‌ترم و ارائه‌ی
+  پروژه‌ها اختصاص دارد.
+\item
+  \textbf{\lr{«Metropolis\lr{--}Gibbs»} یعنی دو الگوریتم جدا:}
+  \lr{Metropolis\lr{--}Hastings} (هفته‌ی 11) و نمونه‌گیری \lr{Gibbs} (هفته‌ی
+  12). روش \lr{MH-within-Gibbs} در یک کادر «پیشرفته» آمده است.
+\end{itemize}
+
+\subsection{برنامه‌ی هفتگی}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+هفته
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فصل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+درس (1 ساعت)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{lab} (2 ساعت)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+اهداف یادگیری
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+منابع
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تکلیف / نقطه‌ی عطف
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 1 & \textbf{معارفه: مدل شناختی چیست؟} چرا مدل می‌سازیم؛ نظریه‌ی کلامی
+در برابر فرمال؛ سه سطح \lr{Marr}؛ خانواده‌های مدل (نمادین، پیوندگرا یا
+\lr{connectionist}، تصادفی/پویا، بیزی)؛ نقشه‌ی درس؛ \textbf{جدول
+نمادگذاری} & \textbf{نصب روی لپ‌تاپ} (محیط \lr{Miniforge/conda} با همه‌ی
+ابزارهای درس \emph{از جمله \lr{PyMC}}، اجرای اسکریپت بررسی نصب؛
+\lr{Colab} به‌عنوان جایگزین)؛ شبیه‌سازی \lr{random walk} تا رسیدن به مرز و
+رسم «داده»ی شبیه‌سازی‌شده & تمایز مدل‌های توصیفی، فرایندی و هنجاری؛ توضیح
+اینکه چرا نظریه‌های کلامی ناقص‌اند؛ اجرا و رسم شبیه‌سازی یک مدل & \lr{F\lr{\&}L}
+فصل 1\lr{--}2؛ \lr{Verguts}، فصل مقدمه {[}بررسی شود{]}؛ \lr{Anderson}، فصل
+مقدمه {[}بررسی شود{]} & \textbf{\lr{A0}} (بدون نمره): بررسی نصب +
+یادداشتی یک‌صفحه‌ای: «یک نظریه‌ی کلامی انتخاب کنید و بنویسید چه چیزهایی را
+مشخص نکرده است» \\
+2 & 1 & \textbf{کالبدشکافی یک مدل:} داده، پارامتر آزاد در برابر ثابت،
+معادلات مدل، مدل نویز \lr{(noise/data model)}؛ شبیه‌سازی به‌عنوان ابزار
+فکر کردن؛ اولین مدل‌ها: \lr{SDT} (\(d'\)، \(c\)) و فراموشی نمایی در برابر
+توانی & پیاده‌سازی \lr{SDT} (\(d'\)، \(c\)، منحنی \lr{ROC)}؛ شبیه‌سازی
+فراموشی نمایی و توانی؛ بررسی اثر هر پارامتر روی پیش‌بینی‌ها & شناسایی
+اجزای یک مدل فرمال؛ محاسبه‌ی \(d'\) و \(c\)؛ پیش‌بینی اثر پارامترها روی
+خروجی مدل & \lr{F\lr{\&}L} فصل 2؛ \lr{L\lr{\&}W} فصل 11 (پیش‌نمایش \lr{SDT)} &
+\textbf{انتشار \lr{A1:}} «از کلامی به فرمال» (موعد: هفته‌ی 4) \\
+3 & 2 & \textbf{کمترین مربعات و بهینه‌سازی:} \lr{SSE}، \lr{MSE}،
+\lr{RMSD}؛ سطح خطا؛ جستجوی شبکه‌ای، \lr{Nelder\lr{--}Mead}، روش‌های گرادیانی؛
+کمینه‌ی محلی، مقدار شروع، کران‌ها و \lr{reparameterization} & برازش منحنی
+فراموشی با جستجوی شبکه‌ای و سپس با
+\lr{\nolinkurl{scipy.optimize.minimize}}؛ رسم سطح خطا؛ برازش چندشروعی
+\lr{(multi-start)} & پیاده‌سازی برازش \lr{LS} از صفر؛ مقایسه‌ی بهینه‌سازها؛
+تشخیص برازش‌های ناموفق & \lr{F\lr{\&}L} فصل 3؛ قدوسیان (روش‌های جستجوی مستقیم)
+& \lr{---} \\
+4 & 2 & \textbf{بیشینه درست‌نمایی:} احتمال در برابر درست‌نمایی؛
+\lr{log-likelihood}؛ درست‌نمایی برنولی، دوجمله‌ای و گاوسی؛ \lr{LS} به‌عنوان
+\lr{MLE} تحت نویز گاوسی & \lr{MLE} برای داده‌ی فراموشی (تعداد یادآوری
+دوجمله‌ای) و برای \lr{SDT}؛ مقایسه‌ی برآوردهای \lr{MLE} و \lr{LS} &
+استخراج درست‌نمایی؛ پیاده‌سازی کمینه‌سازی \lr{NLL}؛ توضیح اینکه \lr{LS} و
+\lr{MLE} کی یکسان‌اند & \lr{F\lr{\&}L} فصل 4؛ عظیمی‌فر و احمدی (برآورد \lr{ML)}
+& \textbf{موعد \lr{A1} · انتشار \lr{A2:}} \lr{LS} در برابر \lr{MLE}
+(موعد: هفته‌ی 6) \\
+5 & 2 & \textbf{عدم قطعیت و چند شرکت‌کننده:} خطای استاندارد از
+\lr{Hessian}، \lr{profile likelihood}، \lr{bootstrap} پارامتری؛ برازش
+فردی در برابر تجمیعی؛ خطاهای ناشی از میانگین‌گیری & بازه‌ی اطمینان
+\lr{bootstrap}؛ میانگین‌گیری از یادگیرنده‌های نمایی یک «قانون توانی تمرین»
+کاذب می‌سازد؛ برازش‌های فردی & سنجش عدم قطعیت برآورد؛ توضیح خطای
+میانگین‌گیری؛ انتخاب سطح برازش & \lr{F\lr{\&}L} فصل 5 & \lr{---} \\
+6 & 3 & \textbf{ارزیابی 1، برازش در برابر تعمیم‌پذیری:} \(R^2\)،
+\lr{RMSD} و \lr{deviance} و محدودیت‌هایشان؛ انعطاف‌پذیری و
+\lr{overfitting}؛ اعتبارسنجی \lr{hold-out}، \lr{k-fold} و \lr{LOO} &
+نمایش \lr{overfitting} با چندجمله‌ای؛ مقایسه‌ی سه مدل فراموشی با
+\lr{cross-validation} & توضیح اینکه چرا برازش خوب \ensuremath{\neq} مدل خوب؛ پیاده‌سازی
+\lr{k-fold CV}؛ تفسیر نتایج \lr{CV} & \lr{F\lr{\&}L} فصل 10؛ عظیمی‌فر و احمدی
+(تعمیم‌پذیری) & \textbf{موعد \lr{A2} · انتشار \lr{A3:}} مقایسه + بازیابی
+(موعد: هفته‌ی 9) \\
+7 & 3 & \textbf{ارزیابی 2، انتخاب و بازیابی:} آزمون نسبت درست‌نمایی؛
+\lr{AIC}، \lr{AICc}، \lr{BIC} و وزن‌های \lr{Akaike}؛ بازیابی پارامتر و
+مدل؛ \lr{identifiability} و \lr{trade-off} پارامترها & مطالعه‌ی بازیابی:
+نمودار پارامتر واقعی در برابر بازیابی‌شده؛ \lr{confusion matrix} بازیابی
+مدل \lr{(AIC/BIC)} & تفسیر معیارهای اطلاعاتی؛ طراحی مطالعه‌ی بازیابی؛
+تشخیص \lr{non-identifiability} & \lr{F\lr{\&}L} فصل 10 & \textbf{تشکیل
+گروه‌های پروژه (1 تا 2 نفر)؛ انتشار راهنمای پیشنهاد پروژه} \\
+8 & 1\lr{--}3 & \textbf{مرور میان‌ترم:} یک مطالعه‌ی موردی یکپارچه از کل مسیر &
+\textbf{آزمون میان‌ترم} (در زمان \lr{lab}، 90 دقیقه): سؤال مفهومی +
+خواندن و تفسیر کد، فصل‌های 1 تا 3 & \lr{---} & مرور هفته‌های 1 تا 7 &
+\textbf{میان‌ترم} \\
+9 & 4 & \textbf{مدل‌سازی بیزی 1:} پیشین، درست‌نمایی، پسین، شواهد
+\lr{(evidence)}؛ \lr{conjugacy beta-binomial}؛ تقریب شبکه‌ای؛ خلاصه‌های
+پسین و \lr{HDI}؛ \lr{credible interval} در برابر بازه‌ی اطمینان & پسین
+شبکه‌ای برای احتمال یادآوری؛ شبکه‌ی دوبعدی برای \lr{SDT}؛ تغییر پیشین و
+حجم نمونه؛ شبیه‌سازی پیش‌بینی پیشین & محاسبه‌ی پسین شبکه‌ای؛ توضیح نقش
+پیشین؛ تفسیر \lr{credible interval} & \lr{K} فصل 5\lr{--}6؛ \lr{L\lr{\&}W} فصل 1 و
+3؛ \lr{MKL} فصل 1؛ \lr{F\lr{\&}L} فصل 6؛ عظیمی‌فر و احمدی (برآورد بیزی) &
+\textbf{موعد \lr{A3} · موعد پیشنهاد پروژه} \\
+10 & 4 (+3) & \textbf{مدل‌سازی بیزی 2:} بررسی پیش‌بینی پسین \lr{(PPC)}؛
+\lr{marginal likelihood} و \textbf{\lr{Bayes factor}}؛
+\lr{Savage\lr{--}Dickey}؛ حساسیت به پیشین؛ \lr{BIC} به‌عنوان تقریب & \lr{PPC}
+برای مدل فراموشی؛ \lr{Bayes factor Savage\lr{--}Dickey} برای \(d' > 0\)؛
+\lr{Bayes factor} بین مدل‌های فراموشی با انتگرال‌گیری شبکه‌ای & انجام
+\lr{PPC}؛ محاسبه و تفسیر \lr{Bayes factor}؛ ارزیابی حساسیت به پیشین &
+\lr{L\lr{\&}W} فصل 7؛ \lr{F\lr{\&}L} فصل 11؛ \lr{K} فصل 10 & \textbf{انتشار
+\lr{A4:}} تحلیل بیزی با شبکه (موعد: هفته‌ی 12) \\
+11 & 5 & \textbf{\lr{Monte Carlo} و \lr{Metropolis\lr{--}Hastings:}}
+انتگرال‌گیری \lr{Monte Carlo}؛ زنجیره‌ی مارکوف؛ \lr{MH}؛ تنظیم
+\lr{proposal}، نرخ پذیرش، \lr{burn-in} & \textbf{\lr{MH} از صفر} برای
+مدل فراموشی؛ \lr{trace plot}؛ مقایسه با پسین شبکه‌ای & توضیح اینکه چرا
+\lr{MCMC} کار می‌کند؛ پیاده‌سازی \lr{MH}؛ تنظیم \lr{proposal} & \lr{K} فصل
+7؛ \lr{F\lr{\&}L} فصل 7 & \lr{---} \\
+12 & 5 & \textbf{نمونه‌گیری \lr{Gibbs} و تشخیص همگرایی:} \lr{full
+conditional}ها؛ \lr{Gibbs} برای مدل نرمال؛ \lr{MH-within-Gibbs}
+(پیشرفته)؛ چند زنجیره، \textbf{\lr{R-hat}}، \lr{ESS}، خودهمبستگی &
+\textbf{\lr{Gibbs} از صفر}؛ پیاده‌سازی \lr{R-hat} و \lr{ESS} و مقایسه با
+\lr{ArviZ}؛ خراب کردن عمدی همگرایی و تشخیص آن & پیاده‌سازی \lr{Gibbs}؛
+تفسیر \lr{R-hat}، \lr{ESS} و \lr{trace plot}؛ قضاوت درباره‌ی قابل‌اعتماد
+بودن زنجیره & \lr{K} فصل 7؛ \lr{MKL} فصل 2؛ \lr{F\lr{\&}L} فصل 7 &
+\textbf{موعد \lr{A4} · انتشار \lr{A5:}} \lr{MCMC} + تشخیص همگرایی (موعد:
+هفته‌ی 14) \\
+13 & 5 & \textbf{برنامه‌نویسی احتمالاتی و مدل‌های سلسله‌مراتبی:} \lr{PyMC}؛
+\lr{HMC/NUTS} در سطح مفهومی (پیشرفته)؛ \lr{partial pooling} و
+\lr{shrinkage} (مرتبط با هفته‌ی 5) & \textbf{\lr{SDT} سلسله‌مراتبی در
+\lr{PyMC}}: تشخیص با \lr{ArviZ}، \lr{PPC}، مقایسه با برازش‌های \lr{MLE}
+فردی؛ (پیشرفته) \lr{LOO/WAIC} & تعریف مدل در \lr{PyMC}؛ توضیح
+\lr{partial pooling}؛ گزارش یک گردش کار \lr{(workflow)} بیزی کامل &
+\lr{L\lr{\&}W} فصل 11؛ \lr{K} فصل 9؛ \lr{F\lr{\&}L} فصل 9؛ \lr{MKL} فصل 2 و 10 &
+\textbf{گزارش پیشرفت پروژه} (فقط بازخورد) \\
+14 & 6 & \textbf{مدل‌سازی در علوم شناختی 1:} دسته‌بندی \lr{(prototype} در
+برابر \lr{exemplar}؛ \textbf{\lr{GCM}})؛ انتخاب/زمان واکنش
+(\textbf{\lr{drift-diffusion}}، \lr{EZ-diffusion)} & برازش \lr{GCM} با
+\lr{MLE} روی داده‌ی ساختار دسته‌بندی 5-4؛ \lr{EZ-diffusion} روی زمان‌های
+واکنش شبیه‌سازی‌شده؛ تفسیر پارامترها & برازش یک مدل \lr{exemplar}؛ نگاشت
+پارامترهای \lr{DDM} به سازه‌های شناختی & \lr{L\lr{\&}W} فصل 17؛ \lr{F\lr{\&}L} فصل
+14 {[}بررسی شود{]}؛ \lr{Verguts} (فصل‌های مرتبط {[}بررسی شود{]}) &
+\textbf{موعد \lr{A5}} \\
+15 & 6 & \textbf{مدل‌سازی در علوم شناختی 2:} \lr{Rescorla\lr{--}Wagner} و
+\lr{Q-learning} با \lr{softmax}؛ \emph{مدل‌های بیزی شناخت} در برابر
+\emph{تحلیل داده‌ی بیزی}؛ مدل‌های پیوندگرا و ارتباط با هوش مصنوعی & برازش
+\lr{Q-learning} (\(\alpha\)، \(\beta\)) روی داده‌ی \lr{bandit}
+شبیه‌سازی‌شده؛ بازیابی پارامتر؛ (پیشرفته) نسخه‌ی سلسله‌مراتبی در \lr{PyMC} &
+برازش یک مدل \lr{RL}؛ ارزیابی \lr{identifiability}؛ مقایسه‌ی شناخت بیزی
+با آمار بیزی & \lr{Verguts} (فصل‌های یادگیری/\lr{RL} {[}بررسی شود{]})؛
+\lr{F\lr{\&}L} فصل 13 {[}بررسی شود{]}؛ \lr{Anderson} (فصل‌های مرتبط {[}بررسی
+شود{]}) & کار روی پروژه‌ی پایانی \\
+16 & \lr{---} & \textbf{ارائه‌ی پروژه‌های پایانی}؛ جمع‌بندی اصول مدل‌سازی خوب &
+ادامه‌ی ارائه‌ها؛ بازخورد همتایان & ارائه و نقد یک مطالعه‌ی مدل‌سازی & \lr{---} &
+\textbf{ارائه‌ها} · گزارش + کد پیش از آزمون پایانی \\
+دوره‌ی امتحانات & 1\lr{--}6 & \textbf{آزمون پایان‌ترم} (کتبی، جامع، با تأکید بر
+فصل‌های 4 تا 6؛ برگه‌ی فرمول داده می‌شود؛ خواندن و تفسیر کد، بدون لپ‌تاپ) &
+\lr{---} & \lr{---} & \lr{---} & \textbf{آزمون پایان‌ترم} \\
+\end{longtable}
+}
+
+\textbf{اختصارها:} \lr{F\lr{\&}L} = \lr{Farrell} \lr{\&} \lr{Lewandowsky} (2018) ·
+\lr{L\lr{\&}W} = \lr{Lee} \lr{\&} \lr{Wagenmakers} (2014) · \lr{K} = \lr{Kruschke}
+(2014) · \lr{MKL} = \lr{Martin, Kumar} \lr{\&} \lr{Lao} (2021). شماره‌ی فصل‌ها
+از حافظه نوشته شده‌اند. آن‌هایی که {[}بررسی شود{]} دارند کمتر قطعی‌اند؛
+لطفاً همه را با خود کتاب‌ها مقایسه کنید.
+
+\subsection{نمره‌دهی (از 20)}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+بخش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نمره
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+تأیید تمرین‌های \lr{lab} (تمرین‌های هفتگی سر کلاس) & 2.0 \\
+تکالیف \lr{A1} تا \lr{A5} (هرکدام 1.0) & 5.0 \\
+کوییزهای کوتاه سر کلاس (حدود 10 کوییز، 2 نمره‌ی پایین حذف) & 1.0 \\
+آزمون میان‌ترم (هفته‌ی 8) & 3.0 \\
+پروژه‌ی پایانی: پیشنهاد 1.0 · ارائه 2.0 · گزارش + کد بازتولیدپذیر 3.0 &
+6.0 \\
+آزمون پایان‌ترم (جامع) & 3.0 \\
+\textbf{جمع} & \textbf{20.0} \\
+\end{longtable}
+}
+
+\subsection{\texorpdfstring{پروژه‌ی پایانی (نمای کلی؛ شرح کامل و روبریک
+در فایل
+\lr{\nolinkurl{assessments/project_brief.md}})}{پروژه‌ی پایانی (نمای کلی؛ شرح کامل و روبریک در فایل )}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{گروه‌های 1 یا 2 نفره.} حجم کار با تعداد اعضا بیشتر می‌شود. همه
+  حداقل دو مدل رقیب را برازش می‌کنند، یک مقایسه‌ی مدل و یک تحلیل بازیابی
+  پارامتر انجام می‌دهند. \textbf{گروه‌های دونفره علاوه بر این} یک تحلیل
+  بیزی/\lr{MCMC} (یا یک مدل سلسله‌مراتبی) انجام می‌دهند و بیانیه‌ی سهم فردی
+  تحویل می‌دهند.
+\item
+  \textbf{داده:} داده‌ی شبیه‌سازی‌شده، یک مجموعه‌داده‌ی باز، یا داده‌ی آزمایشی
+  خود دانشجو.
+\item
+  \textbf{نقاط عطف:} تشکیل گروه (هفته‌ی 7) \ensuremath{\leftarrow} پیشنهاد (هفته‌ی 9) \ensuremath{\leftarrow} گزارش
+  پیشرفت (هفته‌ی 13) \ensuremath{\leftarrow} ارائه (هفته‌ی 16) \ensuremath{\leftarrow} گزارش + کد (پیش از آزمون
+  پایانی).
+\end{itemize}
+
+\subsection{محاسبه روی لپ‌تاپ دانشجویان}
+
+\begin{itemize}
+\tightlist
+\item
+  کل محیط نرم‌افزاری، از جمله \lr{PyMC}، در \textbf{هفته‌ی 1} نصب می‌شود تا
+  مشکلات نصب روی \lr{Windows/macOS} خیلی پیش از هفته‌ی 13 حل شوند.
+\item
+  مسیر پیشنهادی: \textbf{\lr{Miniforge (conda-forge)}} با فایل
+  \lr{\nolinkurl{environment.yml}} درس، و فایل
+  \lr{\nolinkurl{requirements.txt}} برای \lr{pip} به‌عنوان جایگزین.
+\item
+  \textbf{جایگزین:} همه‌ی \lr{notebook}ها روی \lr{Google Colab} هم اجرا
+  می‌شوند.
+\end{itemize}
+
+\end{landscape}

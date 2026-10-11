@@ -1,0 +1,1351 @@
+\section{Week 2: Anatomy of a Model: Signal Detection and Forgetting
+Curves}
+
+\begin{quote}
+\textbf{Chapter 1: Fundamentals of cognitive modeling} · Lecture 1 h ·
+Lab 2 h \textbf{This week's running models:} equal-variance Gaussian
+signal detection theory (SDT); exponential and power forgetting curves.
+Both return in Weeks 3--13.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش یادآوری با گذشت
+زمان} \\
+signal detection theory (SDT) & \RL{\CMfa نظریه‌ی تشخیص علامت} & \RL{\CMfa مدلی که
+حساسیت را از سوگیری پاسخ جدا می‌کند} \\
+exponential / power function & \RL{\CMfa تابع نمایی} / \RL{\CMfa توانی} & \RL{\CMfa دو شکل
+رایج برای منحنی فراموشی و یادگیری} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+deterministic core & \RL{\CMfa هسته‌ی قطعی} & \RL{\CMfa بخش بدون تصادف مدل که پیش‌بینی
+میانگین را می‌دهد} \\
+noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شواهد یا در داده} \\
+linking assumption & \RL{\CMfa فرض پیوند} & \RL{\CMfa اینکه کمیت‌های مدل چطور به
+رفتار قابل مشاهده وصل می‌شوند} \\
+sensitivity (d′) & \RL{\CMfa حساسیت} & \RL{\CMfa فاصله‌ی توزیع علامت و نویز} \\
+hit & \RL{\CMfa اصابت} (hit) & \RL{\CMfa پاسخ «بله» وقتی علامت وجود دارد} \\
+response bias & \RL{\CMfa سوگیری پاسخ} & \RL{\CMfa تمایل به یک پاسخ، مستقل از
+محرک} \\
+binomial distribution & \RL{\CMfa توزیع دوجمله‌ای} & \RL{\CMfa توزیع تعداد موفقیت در}
+n \RL{\CMfa کوشش} \\
+noise model & \RL{\CMfa مدل نویز} & \RL{\CMfa توزیع داده حول پیش‌بینی مدل} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+ROC / zROC curve & \RL{\CMfa منحنی} ROC / zROC & \RL{\CMfa نرخ} hit \RL{\CMfa در برابر
+نرخ} false alarm \RL{\CMfa با تغییر ملاک} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+criterion (c) & \RL{\CMfa ملاک} & \RL{\CMfa آستانه‌ی تصمیم؛ نشان‌دهنده‌ی سوگیری
+پاسخ} \\
+formal model / formalize & \RL{\CMfa مدل فرمال} / \RL{\CMfa فرمال کردن} & \RL{\CMfa نوشتن
+نظریه به شکل معادله یا الگوریتم} \\
+trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
+false alarm & \RL{\CMfa هشدار کاذب} (false alarm) & \RL{\CMfa پاسخ «بله» وقتی علامت
+وجود ندارد} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+miss / correct rejection & \RL{\CMfa از دست دادن} / \RL{\CMfa رد درست} & \RL{\CMfa پاسخ
+«نه» با وجود علامت} / \RL{\CMfa پاسخ «نه» بدون علامت} \\
+liberal / conservative & \RL{\CMfa آسان‌گیر} / \RL{\CMfa محافظه‌کار} & \RL{\CMfa تمایل به
+گفتن «بله»} / \RL{\CMfa «نه»} \\
+free parameter & \RL{\CMfa پارامتر آزاد} & \RL{\CMfa پارامتری که از روی داده برآورد
+می‌شود} \\
+verbal theory & \RL{\CMfa نظریه‌ی کلامی} & \RL{\CMfa نظریه‌ای که فقط با کلمات بیان شده
+و پیش‌بینی دقیق نمی‌دهد} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Decompose} a cognitive model into its components: design, free
+  and fixed parameters, deterministic core, noise (data) model, and
+  linking assumptions.
+\item
+  \textbf{Compute} \(d'\) and \(c\) from a 2×2 table of counts,
+  including a correction for hit or false-alarm rates of 0 or 1, and
+  \textbf{explain} why \(d'\) separates sensitivity from bias.
+\item
+  \textbf{Implement} exponential and power forgetting models with a
+  binomial noise model, and \textbf{predict} qualitatively how each
+  parameter changes the curves.
+\item
+  \textbf{Use} simulation and diagnostic plots (ROC/zROC, semi-log and
+  log-log plots) to \textbf{evaluate} whether a model's qualitative
+  signature appears in data.
+\item
+  \textbf{Interpret} fitted parameters in psychological terms and
+  \textbf{identify} the limits of the ``fit a straight line to
+  transformed data'' approach.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+\textbf{Two radiologists.} Radiologist R1 flags 93\% of scans that
+really contain a tumor, but also flags 31\% of healthy scans.
+Radiologist R2 flags only 69\% of tumors, but just 7\% of healthy scans.
+Their percent correct is identical (81\%). Who is the better
+diagnostician?
+
+Percent correct cannot answer this, because it mixes two different
+things: \textbf{how well} a person can tell tumors from healthy tissue
+(\emph{sensitivity}), and \textbf{how willing} they are to say ``tumor''
+(\emph{bias}). Signal detection theory is a small model with two
+parameters that pulls these apart. As the worked example will show, R1
+and R2 have essentially the \textbf{same} sensitivity; they differ only
+in where they set their criterion. This is the first payoff of modeling:
+model parameters can \textbf{measure} latent constructs that raw scores
+conflate.
+
+\textbf{Ebbinghaus's curve.} Since Ebbinghaus's experiments on himself
+in the 1880s, we know that forgetting is fast at first and then slows
+down. ``Fast, then slow'' is a verbal description that both an
+\textbf{exponential} and a \textbf{power} function satisfy. Yet they
+imply different things: an exponential means a memory loses a
+\emph{constant proportion} of its strength per day, at any age; a power
+function means older memories become \emph{more resistant}. Choosing
+between them is a question about the nature of memory, and it requires a
+formal model.
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Medical diagnosis.} Radiologists, pathologists and screening
+  programs are evaluated with SDT and ROC curves, so that a doctor who
+  ``sees better'' can be told apart from a doctor who simply says
+  ``abnormal'' more often.
+\item
+  \textbf{Memory research.} In a recognition test, studied words are
+  ``signal'' and new words are ``noise''. \(d'\) measures memory
+  strength separately from the tendency to say ``old''.
+\item
+  \textbf{Eyewitness identification.} Police line-up procedures are
+  compared with ROC analysis: some procedures do not improve accuracy,
+  they only make witnesses more cautious.
+\item
+  \textbf{Perception and hearing tests.} Thresholds for seeing or
+  hearing faint stimuli are measured with SDT, so that a cautious
+  listener is not mistaken for a hard-of-hearing one.
+\item
+  \textbf{Machine learning.} Every binary classifier (spam filter, fraud
+  detector, AI-text detector) has a hit rate and a false-alarm rate, and
+  is evaluated with ROC curves and the area under the curve (AUC). This
+  is the same theory.
+\item
+  \textbf{Forgetting curves} are used to schedule learning:
+  spaced-repetition apps (e.g.~for vocabulary) decide when to show an
+  item again from a model of how fast it is forgotten.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+This week has one big idea: a model has \textbf{parts}, and each part is
+a separate assumption. We look at two small models. \textbf{Signal
+detection theory} explains yes/no decisions under uncertainty. Every
+trial gives the observer a noisy ``feeling of signal''. If the feeling
+is stronger than a personal threshold, the observer says ``yes''. Two
+numbers describe the observer: how far apart the ``signal'' and ``no
+signal'' feelings are on average (\textbf{sensitivity}, \(d'\)), and
+where the threshold is (\textbf{criterion}, \(c\)). Two people can have
+the same percent correct for completely different reasons, and SDT shows
+which. The \textbf{forgetting curve} describes how recall drops with
+time. Two formulas, exponential and power, both look like ``fast drop,
+then slow'', but they say different things about memory. Choosing
+between them is the kind of question the rest of the course teaches us
+to answer with data.
+
+\paragraph{Statistics words in plain language}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Distribution:} a description of which values a random quantity
+  takes and how often. A histogram of many measurements approximates it.
+\item
+  \textbf{Normal (Gaussian) distribution \(\mathcal{N}(\mu, \sigma)\):}
+  the bell curve, with mean \(\mu\) (center) and standard deviation
+  \(\sigma\) (width). About 68\% of values fall within
+  \(\mu \pm \sigma\) and 95\% within \(\mu \pm 1.96\sigma\).
+\item
+  \textbf{Standard normal:} the normal distribution with \(\mu = 0\),
+  \(\sigma = 1\). A value measured on this scale is called a
+  \textbf{z-score}: ``how many SDs above the mean''.
+\item
+  \textbf{\(\Phi(x)\) (CDF):} the probability that a standard normal
+  value is \emph{below} \(x\). \(\Phi(0) = 0.5\),
+  \(\Phi(1) \approx 0.84\), \(\Phi(1.96) \approx 0.975\). In Python:
+  \nolinkurl{norm.cdf(x)}.
+\item
+  \textbf{\(\Phi^{-1}(p)\) (inverse CDF, ``z-transform''):} the opposite
+  question: below which value lies a proportion \(p\)?
+  \(\Phi^{-1}(0.84) \approx 1\). In Python: \nolinkurl{norm.ppf(p)}.
+\item
+  \textbf{Binomial distribution \(\mathrm{Binomial}(n, p)\):} the number
+  of successes in \(n\) independent tries, each with success probability
+  \(p\) (e.g.~words recalled out of 50). Its mean is \(np\) and its
+  variance \(np(1-p)\).
+\item
+  \textbf{Proportion vs.~probability:} a proportion is what we
+  \emph{observe} (30 of 50 recalled = 0.60); a probability is the
+  model's \emph{underlying} value that the proportion estimates.
+\end{itemize}
+
+\textbf{Suggested timing (60 min):} anatomy of a model 15 · SDT 20 ·
+forgetting curves 15 · simulation as a thinking tool + preview 10.
+
+\subsubsection{1. The anatomy of a model}
+
+In Week 1 we wrote a model as a data-generating machine,
+\(\mathbf{y} \sim p(\mathbf{y}\mid\boldsymbol\theta, \mathcal{M})\). In
+practice, almost every model you will meet in this course can be taken
+apart into five pieces:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Component
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+SDT
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Forgetting (exponential)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{1. Design} \(x_i\) & What is manipulated and measured? & Trial
+type (signal/noise); response yes/no & Retention interval \(t_i\);
+number of items recalled out of \(n\) \\
+\textbf{2. Parameters} \(\boldsymbol\theta\) & What is free to vary?
+What is fixed? & Free: \(d'\), \(c\). Fixed: both SDs = 1, noise mean =
+0 & Free: \(A\), \(\lambda\). Fixed: \(n\) \\
+\textbf{3. Deterministic core} \(f(x;\boldsymbol\theta)\) & What does
+the model predict on average? & \(H = \Phi(d'/2 - c)\),
+\(F = \Phi(-d'/2 - c)\) & \(f(t) = A e^{-\lambda t}\) \\
+\textbf{4. Noise model} & How do observations scatter around the
+prediction? & Hits \(\sim \mathrm{Binomial}(n_s, H)\); false alarms
+\(\sim \mathrm{Binomial}(n_n, F)\) & Recalled
+\(\sim \mathrm{Binomial}(n, f(t))\) \\
+\textbf{5. Linking assumptions} & How do model quantities map onto
+behavior? & ``Yes'' if internal evidence exceeds the criterion & Recall
+probability equals memory strength \(f(t)\) \\
+\end{longtable}
+}
+
+Some points about each component:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Free vs.~fixed parameters.} Fixed parameters are not
+  ``unimportant''. They are \emph{assumptions}. In Week 1 we fixed
+  \(t_0 = 300\) ms. In SDT, fixing the noise mean at 0 and both standard
+  deviations at 1 is what makes \(d'\) and \(c\) estimable at all:
+  shifting or stretching the whole axis would not change any prediction.
+  Such fixes are called \textbf{scaling constraints}.
+\item
+  \textbf{Parameter ranges.} Every parameter has a meaningful range:
+  \(0 \le A \le 1\), \(\lambda > 0\), \(d' \ge 0\) for a non-perverse
+  observer. Respecting these ranges matters when fitting (Week 3).
+\item
+  \textbf{The noise model is part of the model.} Two researchers with
+  the same \(f(t)\) but different noise models (binomial vs.~Gaussian)
+  have \emph{different} models and will get different parameter
+  estimates (Week 4). The binomial is natural for counts: its variance
+  \(f(1-f)/n\) is largest at \(f = 0.5\) and shrinks near 0 and 1.
+\end{itemize}
+
+\subsubsection{2. Signal detection theory (SDT)}
+
+\textbf{The task.} On each trial a stimulus is either \emph{signal}
+(e.g., a tumor, a studied word, a faint tone) or \emph{noise}. The
+observer answers ``yes'' (signal) or ``no''. The outcomes form a 2×2
+table:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+& Respond ``yes'' & Respond ``no'' \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Signal trial} & Hit & Miss \\
+\textbf{Noise trial} & False alarm (FA) & Correct rejection (CR) \\
+\end{longtable}
+}
+
+with hit rate \(H = \frac{\text{hits}}{\text{hits} + \text{misses}}\)
+and false-alarm rate \(F = \frac{\text{FAs}}{\text{FAs} + \text{CRs}}\).
+
+\textbf{The model (intuition).} Each trial produces an internal
+\textbf{evidence} value. It is noisy: even pure noise trials sometimes
+feel signal-like. Signal trials produce, on average, more evidence. The
+observer says ``yes'' whenever the evidence exceeds a
+\textbf{criterion}.
+
+\textbf{The model (formal), equal-variance Gaussian SDT:}
+
+\[
+\text{noise trials: } X \sim \mathcal{N}(0, 1), \qquad
+\text{signal trials: } X \sim \mathcal{N}(d', 1), \qquad
+\text{respond "yes" iff } X > k.
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(d'\) is \textbf{sensitivity}: the distance between the two
+  distributions in SD units.
+\item
+  \(k\) is the absolute criterion location. It is more convenient to
+  measure the criterion relative to the midpoint between the
+  distributions: \(c = k - d'/2\). With \(c = 0\) the observer is
+  unbiased, \(c < 0\) is \textbf{liberal} (says ``yes'' readily), and
+  \(c > 0\) is \textbf{conservative}.
+\end{itemize}
+
+\textbf{Predictions.} Using the standard normal CDF \(\Phi\):
+
+\[
+H = P(X > k \mid \text{signal}) = \Phi\!\left(\tfrac{d'}{2} - c\right), \qquad
+F = P(X > k \mid \text{noise}) = \Phi\!\left(-\tfrac{d'}{2} - c\right).
+\]
+
+\textbf{Inverting the model.} Applying \(\Phi^{-1}\) (often written
+\(z\)) to both equations and solving gives the familiar formulas:
+
+\[
+d' = \Phi^{-1}(H) - \Phi^{-1}(F), \qquad
+c = -\tfrac{1}{2}\left[\Phi^{-1}(H) + \Phi^{-1}(F)\right].
+\]
+
+Notice what just happened: this is our first \textbf{parameter
+estimation}. There are two free parameters and two data points (\(H\),
+\(F\)), so the model can be solved exactly. With more data points than
+parameters, an exact solution usually does not exist and we need the
+fitting methods of Weeks 3--4.
+
+\textbf{The extreme-rate problem.} If \(H = 1\) or \(F = 0\), then
+\(\Phi^{-1}\) is \(\pm\infty\) and \(d'\) is infinite. This happens
+often with few trials. A standard fix is the \textbf{log-linear
+correction}: add 0.5 to every cell count before computing the rates
+(i.e., add 0.5 to hits and FAs and 1 to the number of trials of each
+type). We use it by default in the lab.
+
+\textbf{The ROC curve: SDT's signature.} Hold \(d'\) fixed and let \(c\)
+vary. The pair \((F, H)\) traces a curve, the \textbf{receiver operating
+characteristic (ROC)}. Every point on one ROC has the same sensitivity
+but a different bias. Plotting \(\Phi^{-1}(H)\) against \(\Phi^{-1}(F)\)
+gives the \textbf{zROC}, which under equal-variance SDT is a straight
+line:
+
+\[
+\Phi^{-1}(H) = d' + 1 \cdot \Phi^{-1}(F).
+\]
+
+So the model makes a \emph{testable} prediction: \textbf{the zROC is
+linear with slope 1}. ROCs can be measured with confidence ratings (each
+confidence level acts as a separate criterion). In recognition memory,
+zROC slopes are typically \emph{below} 1, which motivates the
+unequal-variance model below.
+
+\begin{quote}
+\textbf{Advanced: unequal-variance SDT.} If signal trials have
+\(X \sim \mathcal{N}(\mu_s, \sigma_s)\), the zROC is still linear but
+its slope is \(1/\sigma_s\). In that case, \(d'\) computed from a single
+\((H, F)\) pair \emph{changes with the criterion}, so it is no longer a
+pure sensitivity measure. A common alternative index is
+\(d_a = \mu_s \sqrt{2/(1+\sigma_s^2)}\). Estimating \(\sigma_s\)
+requires more than one criterion, i.e., rating data. You will see this
+effect directly in lab Part B.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\textbf{The two bell curves.} Draw two normal curves on one axis: the
+``noise'' curve centered at 0 and the ``signal'' curve centered at
+\(d'\). Both have width 1. Draw a vertical line at the criterion \(k\).
+Everything to the right of the line is a ``yes''.
+
+\begin{itemize}
+\tightlist
+\item
+  \(H\) = area of the \textbf{signal} curve to the right of the line.
+  \(F\) = area of the \textbf{noise} curve to the right of the line.
+\item
+  Why \(H = \Phi(d'/2 - c)\)? The criterion sits at \(k = d'/2 + c\)
+  (the midpoint plus \(c\)). The signal curve is centered at \(d'\), so
+  the line is \(k - d' = c - d'/2\) SDs from its center. The area to the
+  right of that point is \(1 - \Phi(c - d'/2) = \Phi(d'/2 - c)\),
+  because the normal curve is symmetric.
+\item
+  \textbf{Numerical example.} \(d' = 2\), \(c = 0\):
+  \(H = \Phi(1) = 0.84\) and \(F = \Phi(-1) = 0.16\). Now make the
+  observer liberal, \(c = -0.5\): \(H = \Phi(1.5) = 0.93\),
+  \(F = \Phi(-0.5) = 0.31\). Both rates went up, sensitivity is
+  unchanged. This is radiologist R1 of the worked example.
+\end{itemize}
+
+\textbf{Inverting.} \(d' = \Phi^{-1}(H) - \Phi^{-1}(F)\): convert each
+rate into a z-score and subtract. For R1: \(1.476 - (-0.496) = 1.97\).
+\(c\) is minus the average of the two z-scores: if both rates are high
+(both z-scores positive), \(c\) is negative, i.e.~liberal.
+
+\textbf{The zROC line.} \(\Phi^{-1}(H) = d' + \Phi^{-1}(F)\) is just the
+previous equation rearranged. In z-units, moving the criterion moves
+both z-scores by the same amount, so the points lie on a line with slope
+1 and intercept \(d'\).
+
+\paragraph{For an engineer}
+
+SDT \emph{is} the detection theory of radar and communications, imported
+into psychology in the 1950s.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Psychology
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Telecom / radar
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+noise trial / signal trial & hypothesis \(H_0\) (noise only) / \(H_1\)
+(signal + noise) \\
+internal evidence \(X\) & test statistic, e.g.~matched-filter output \\
+criterion \(k\) (or \(c\)) & detection threshold \\
+hit rate \(H\) & probability of detection \(P_D\) \\
+false-alarm rate \(F\) & probability of false alarm \(P_{FA}\) \\
+sensitivity \(d'\) & deflection \((\mu_1 - \mu_0)/\sigma\); \(d'^2\)
+plays the role of an SNR \\
+ROC curve & receiver operating characteristic (same name, same plot) \\
+liberal / conservative observer & low / high threshold (high / low
+\(P_{FA}\)) \\
+\end{longtable}
+}
+
+Differences in emphasis: an engineer usually \emph{chooses} the
+threshold (e.g.~Neyman--Pearson: fix \(P_{FA}\), maximize \(P_D\)). A
+psychologist \emph{observes} a person's \(P_D\) and \(P_{FA}\) and
+\emph{infers} both the SNR (\(d'\)) and the threshold (\(c\)) the person
+used. The criterion \(c\) is measured from the midpoint between the two
+means, so \(c = 0\) means ``no bias''. The \textbf{optimal} threshold
+depends on prior probabilities and costs exactly as in Bayesian
+detection, and people often move their criterion in the right direction
+when payoffs change (Week 4).
+
+\subsubsection{3. Forgetting curves}
+
+\textbf{Data.} At each retention interval \(t_i\) (e.g., in days), the
+participant is tested on \(n\) items and recalls \(y_i\) of them.
+
+\textbf{Two candidate deterministic cores:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Exponential
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Power
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Equation & \(f(t) = A\,e^{-\lambda t}\) & \(f(t) = A\,(1 + t)^{-d}\) \\
+Parameters & \(A\): initial level; \(\lambda\): decay rate & \(A\):
+initial level; \(d\): decay exponent \\
+Linearizing plot & \(\ln f\) vs.~\(t\) is a straight line with slope
+\(-\lambda\) & \(\ln f\) vs.~\(\ln(1+t)\) is a straight line with slope
+\(-d\) \\
+Relative loss rate \(-f'(t)/f(t)\) & \(\lambda\) (constant) &
+\(d/(1+t)\) (decreasing with age) \\
+Psychological reading & A memory loses the same \emph{proportion} of its
+strength per unit time, whatever its age & Older memories lose strength
+more slowly; they become more resistant \\
+\end{longtable}
+}
+
+The \textbf{relative loss rate} (in survival analysis, the
+\emph{hazard}) is the key interpretive difference. It is why the choice
+between the two functions is a theoretical question, not a curve-fitting
+detail.
+
+\textbf{Noise model.} Recall counts are binomial:
+
+\[
+y_i \sim \mathrm{Binomial}\big(n, f(t_i; \boldsymbol\theta)\big).
+\]
+
+With \(n = 50\) items and \(f = 0.5\), the SD of the observed proportion
+is \(\sqrt{0.5 \cdot 0.5 / 50} \approx 0.07\). That is large compared
+with the differences between models over short intervals, which is a
+first hint that \textbf{design} (which intervals, how many items)
+determines whether data can discriminate between models.
+
+\begin{quote}
+\textbf{Advanced: the ``+1'' in the power model is not innocent.}
+\(A\,t^{-d}\) is infinite at \(t = 0\), so a shift is added. But
+\((1 + t)\) depends on the \textbf{unit} of \(t\): measuring in hours
+instead of days changes the shape of the curve, not just the scale of
+the axis. Some authors therefore write \(A\,(1 + bt)^{-d}\) with a free
+scale parameter \(b\), which adds a third parameter and raises the model
+comparison questions of Weeks 6--7. Keep the unit fixed (days)
+throughout this course.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(f(t) = A e^{-\lambda t}\): \(A\) is the recall level right after
+  study (\(t = 0\)), and \(\lambda\) says how fast it falls. With
+  \(\lambda = 0.1\) per day, recall is multiplied by
+  \(e^{-0.1} \approx 0.905\) every day: about 9.5\% of what is left is
+  lost each day, on day 1 and on day 100 alike.
+\item
+  \(f(t) = A(1+t)^{-d}\): going from day 0 to day 1 multiplies recall by
+  \(2^{-d}\); going from day 9 to day 10 multiplies it only by
+  \((10/11)^{d}\), close to 1. Old memories hardly change any more.
+\item
+  \textbf{Relative loss rate} \(-f'(t)/f(t)\): ``what fraction of the
+  remaining memory is lost per day \emph{right now}''. Constant
+  (\(\lambda\)) for the exponential, shrinking (\(d/(1+t)\)) for the
+  power function. This single number is the psychological difference
+  between the models.
+\item
+  \(y_i \sim \mathrm{Binomial}(n, f(t_i))\): at delay \(t_i\) the
+  participant recalls \(y_i\) of \(n\) items, and each item is recalled
+  with probability \(f(t_i)\). The observed proportion \(y_i/n\)
+  scatters around \(f(t_i)\) with SD \(\sqrt{f(1-f)/n}\), about 0.07 for
+  \(n = 50\).
+\end{itemize}
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  The \textbf{exponential} curve is the step response of a first-order
+  system (an RC circuit discharging): one time constant
+  \(\tau = 1/\lambda\). A constant relative loss rate is the
+  ``memoryless'' property you know from exponential lifetimes in
+  reliability theory.
+\item
+  The \textbf{power} curve has no single time constant. A useful
+  picture: a sum of many exponentials with \emph{different} time
+  constants (fast and slow components) looks like a power law. Week 5
+  shows this exactly, and it is one candidate explanation of power-law
+  forgetting.
+\item
+  On a \textbf{log--log} plot a power law is a straight line; on a
+  \textbf{semi-log} plot an exponential is a straight line. Engineers
+  use the same trick to identify system orders and \(1/f\) noise.
+\item
+  The binomial noise model is the counting statistics of a detector:
+  like counting bit errors out of \(n\) bits, the uncertainty of a
+  proportion shrinks with \(1/\sqrt{n}\).
+\end{itemize}
+
+\subsubsection{4. Simulation as a thinking tool}
+
+Before fitting anything, simulate. Simulation answers questions such as:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{What can the model produce, and what can it \emph{not}
+  produce?} Equal-variance SDT with \(d' > 0\) can never produce
+  \(H < F\), and it can never produce a zROC slope different from 1.
+  Both exponential and power curves are always decreasing, so they
+  cannot capture \emph{reminiscence} (recall improving over time). The
+  set of things a model \textbf{cannot} do is what makes it testable.
+\item
+  \textbf{Which parameters matter where?} \(A\) moves the whole
+  forgetting curve; \(\lambda\) or \(d\) controls the shape.
+\item
+  \textbf{Can the design discriminate between models?} If two models
+  make nearly identical predictions at the intervals we plan to test, no
+  fitting method can tell them apart (lab Exercise 4; Assignment A1).
+\end{itemize}
+
+\subsubsection{5. Preview: estimation by linearization, and why it is
+not enough}
+
+A traditional way to fit forgetting curves is to log-transform the
+observed proportions and fit a straight line by ordinary regression. It
+is fast and intuitive, and we try it in the lab. It has three problems
+that motivate Weeks 3--4:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(\ln(0)\) is undefined, so an interval with zero recalls breaks the
+  method.
+\item
+  The log transform distorts the noise: the scatter of \(\ln \hat p\) is
+  much larger for small proportions, but regression treats all points as
+  equally reliable.
+\item
+  The line is fit on the log scale, but we care about errors on the
+  original (proportion) scale.
+\end{enumerate}
+
+The principled alternative is to fit the model directly to the
+untransformed data, by minimizing squared error (Week 3) or maximizing
+the binomial likelihood (Week 4).
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Open with the radiologist puzzle} (Motivation) and let
+  students vote on who is better before showing any math. Most will pick
+  by percent correct, then realize it is identical.
+\item
+  \textbf{Draw, don't derive.} The two overlapping bell curves with a
+  movable vertical line explain \(H\), \(F\), \(d'\) and \(c\) better
+  than any formula. Move the line left and right on the board and ask
+  what happens to \(H\) and \(F\); then pull the curves apart and ask
+  again.
+\item
+  \textbf{Use \(\Phi\) tables or Python live.} Compute R1's \(d'\) with
+  \nolinkurl{norm.ppf} in front of the class. Students who are new to
+  statistics need to see that \(\Phi^{-1}\) is ``just a lookup''.
+\item
+  \textbf{Connect to something they know:} a COVID or pregnancy test has
+  a hit rate (sensitivity) and a false-alarm rate (1 − specificity).
+  Medical ``sensitivity'' is the hit rate, \emph{not} \(d'\): point out
+  this naming clash.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``Why assume normal distributions?''} It is a convenient and
+    often adequate assumption; the zROC test (slope 1) checks it, and
+    the unequal-variance model relaxes it.
+  \item
+    \emph{``Is a liberal criterion bad?''} No: the best criterion
+    depends on costs and base rates.
+  \item
+    \emph{``Exponential or power, which is right?''} For many datasets
+    the power function fits better, but averaging over people can create
+    a power shape (Week 5). Keep the question open.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\subsubsection{Part 1: Two radiologists (and a third)}
+
+Each radiologist reads 100 tumor scans and 100 healthy scans.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{landscape}\small
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Observer
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(H\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(F\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\Phi^{-1}(H)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\Phi^{-1}(F)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(d'\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(c\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Percent correct
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+R0 (neutral) & 0.84 & 0.16 & 0.994 & −0.994 & 1.99 & 0.00 & 84\% \\
+R1 (liberal) & 0.93 & 0.31 & 1.476 & −0.496 & 1.97 & −0.49 & 81\% \\
+R2 (conservative) & 0.69 & 0.07 & 0.496 & −1.476 & 1.97 & +0.49 &
+81\% \\
+\end{longtable}
+\end{landscape}
+}
+
+\textbf{Step by step for R1:} 1. \(\Phi^{-1}(0.93) = 1.476\) and
+\(\Phi^{-1}(0.31) = -0.496\) (\nolinkurl{scipy.stats.norm.ppf}). 2.
+\(d' = 1.476 - (-0.496) = 1.972\). 3.
+\(c = -\tfrac{1}{2}(1.476 + (-0.496)) = -0.490\), which is negative, so
+R1 is liberal. 4. Check by plugging back in:
+\(H = \Phi(1.972/2 + 0.490) = \Phi(1.476) = 0.93\). \ensuremath{\checkmark}
+
+\textbf{Interpretation.} All three radiologists have essentially the
+same sensitivity (\(d' \approx 2\)). R1 and R2 have the \emph{same}
+percent correct but \emph{opposite} biases. Which bias is better is not
+a question of perception but of costs: missing a tumor is usually far
+worse than a false alarm, so a liberal criterion may be the
+\emph{desirable} one. SDT lets us ask ``can they see it?'' and ``how
+willing are they to say so?'' separately.
+
+\textbf{The extreme-rate fix.} A participant scores 50/50 hits and 3/50
+false alarms. Then \(H = 1\) and \(d' = \infty\). With the log-linear
+correction: \(H = 50.5/51 = 0.990\), \(F = 3.5/51 = 0.069\), so
+\(d' = 2.33 - (-1.49) = 3.82\).
+
+\subsubsection{Part 2: Exponential vs.~power forgetting}
+
+Take \(A = 0.95\) for both models, \(\lambda = 0.25\)/day for the
+exponential and \(d = 0.6\) for the power model.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{landscape}\small
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(t\) (days)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+7
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+14
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+30
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Exponential \(0.95\,e^{-0.25t}\) & 0.950 & 0.740 & 0.576 & 0.165 & 0.029
+& 0.001 \\
+Power \(0.95\,(1+t)^{-0.6}\) & 0.950 & 0.627 & 0.491 & 0.273 & 0.187 &
+0.121 \\
+\end{longtable}
+\end{landscape}
+}
+
+\textbf{Half-life (time until recall halves from its initial level):} -
+Exponential:
+\(e^{-\lambda t} = 1/2 \Rightarrow t_{1/2} = \ln 2 / \lambda = 0.693/0.25 = 2.77\)
+days. - Power:
+\((1+t)^{-d} = 1/2 \Rightarrow t_{1/2} = 2^{1/d} - 1 = 2^{1.667} - 1 = 2.17\)
+days.
+
+\textbf{Interpretation.} Over the first two days the curves are fairly
+similar: they differ by about 0.1, which is only about 1.5 binomial SDs
+with \(n = 50\) items. After a month they disagree completely: the
+exponential model says practically everything is forgotten (0.1\%),
+while the power model says 12\% is still retained. \textbf{Long
+retention intervals are where these models can be told apart}, a design
+lesson you will use in Assignment A1.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Implement SDT as a generative model, simulate yes/no experiments, and
+  estimate \(d'\) and \(c\).
+\item
+  Use ROC and zROC plots to \textbf{evaluate} the equal-variance
+  assumption.
+\item
+  Implement exponential and power forgetting with binomial noise, and
+  explore their parameters.
+\item
+  \textbf{Fit} both forgetting models by linearization,
+  \textbf{evaluate} them with residuals, and \textbf{interpret} the
+  result.
+\end{enumerate}
+
+\textbf{Timing:} Part A 30 min · Part B 25 min · Part C 30 min · Part D
+25 min · remaining time: exercises.
+
+\subsubsection{Setup}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{Part A: SDT as a generative model (30 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+Simulate one participant and recover the parameters:
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+Counts: {'hits': 68, 'misses': 32, 'fas': 11, 'crs': 89}
+Predicted H = 0.674, F = 0.147
+Estimated d' = 1.67 (true 1.5),  c = 0.37 (true 0.3)
+\end{Verbatim}
+
+One simulated participant tells us little about how good the
+\emph{estimator} is. Let's repeat the experiment many times: this is a
+preview of the \textbf{parameter recovery} logic of Week 7.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{9\baselineskip}
+\begin{Verbatim}
+            d_hat         c_hat
+             mean    std   mean    std
+n_per_type
+20          1.500  0.449  0.296  0.224
+50          1.489  0.290  0.295  0.143
+200         1.502  0.142  0.299  0.071
+\end{Verbatim}
+
+\textbf{What to notice:} the estimates scatter around the true values,
+and the scatter shrinks as the number of trials grows. With 20 trials
+per type, the SD of \(\hat d'\) is about 0.45, so individual estimates
+are often off by \ensuremath{\pm}0.5 or more, and roughly 4× more trials are needed to
+halve the scatter. On average the estimates are on target here. With
+higher \(d'\) and few trials, however, extreme rates become common, and
+the correction then pulls estimates toward 0 (try \nolinkurl{true_d = 3}
+with 20 trials). Keep this in mind whenever you compare \(d'\) across
+groups tested with different numbers of trials.
+
+\subsubsection{Part B: ROC curves and the equal-variance assumption (25
+min)}
+
+First, the model's predicted ROCs:
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+Now simulate a \textbf{confidence-rating} experiment. Responses are
+given on a 6-point scale (1 = ``sure noise'' \ldots{} 6 = ``sure
+signal''), which amounts to five criteria at once. We generate data from
+an equal-variance observer and from an \textbf{unequal-variance}
+observer whose signal distribution has SD 1.5.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+sigma_signal = 1.0: zROC slope = 0.96 (predicted 1.00); d' at each criterion = [1.52 1.48 1.48 1.43 1.43]
+sigma_signal = 1.5: zROC slope = 0.67 (predicted 0.67); d' at each criterion = [1.46 1.34 1.16 0.96 0.84]
+\end{Verbatim}
+
+\textbf{Evaluate and interpret.} For the equal-variance observer, the
+zROC slope is close to 1 and \(d'\) is about the same at every
+criterion: the model's assumption holds. For the unequal-variance
+observer, the slope is close to \(1/1.5 = 0.67\) and \(d'\)
+\textbf{changes systematically with the criterion}. If we had collected
+only yes/no data from such an observer, a group difference in ``\(d'\)''
+could be produced purely by a difference in bias. Checking a model's
+signature prediction (here: zROC slope = 1) is a basic form of
+\textbf{model evaluation}.
+
+\subsubsection{Part C: Forgetting curves with binomial noise (30 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 7 · \RL{\CMfa سلول}
+7
+\end{quote}
+
+Explore the parameters: how do \(A\) and the decay parameter change each
+curve?
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 8 · \RL{\CMfa سلول}
+8
+\end{quote}
+
+Now generate a \textbf{simulated experiment}. The data come from the
+\emph{power} model, with 50 items tested at each of 8 retention
+intervals:
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 9 · \RL{\CMfa سلول}
+9
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{12\baselineskip}
+\begin{Verbatim}
+       t  recalled   n  p_obs
+0   0.25        42  50   0.84
+1   1.00        30  50   0.60
+2   2.00        26  50   0.52
+3   4.00        25  50   0.50
+4   7.00        13  50   0.26
+5  14.00        13  50   0.26
+6  21.00        13  50   0.26
+7  30.00        14  50   0.28
+\end{Verbatim}
+
+\subsubsection{Part D: Fit by linearization, evaluate, interpret (25
+min)}
+
+\textbf{Fit.} Fit each model by a straight-line regression on the log
+scale (Lecture §5).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 10 · \RL{\CMfa سلول}
+10
+\end{quote}
+
+\textbf{Evaluate.} Look at the fitted curves \emph{and} the residuals. A
+good model leaves residuals that scatter randomly around zero; a
+systematic pattern means the model's \emph{shape} is wrong.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 11 · \RL{\CMfa سلول}
+11
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+exp: A = 0.550, rate = 0.032, RMSD = 0.1308
+pow: A = 0.797, rate = 0.370, RMSD = 0.0628
+true (power): A = 0.9, d = 0.5
+\end{Verbatim}
+
+\textbf{Interpret (write 2--3 sentences for each in your notebook):}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Which model describes the data better, and what does the residual
+  pattern of the \emph{other} model look like? (Look for an inverted-U
+  or U shape: the exponential overshoots at intermediate delays and
+  undershoots at the long ones, or the reverse.)
+\item
+  Using the fitted parameters, what is each model's relative loss rate
+  after 1 day and after 20 days? What does this mean for memory?
+\item
+  The power model is the true model here, yet its estimates
+  (\(\hat A \approx 0.80\), \(\hat d \approx 0.37\)) are noticeably off
+  the true values (\(A^\ast = 0.9\), \(d^\ast = 0.5\)). Name two
+  reasons. (Hints: look at the last three data points; think about what
+  the log transform does to the weights of small proportions.) In Week 3
+  we refit these same data on the original scale and compare.
+\end{enumerate}
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star} (extreme rates).} A participant has 40/40 hits and
+0/40 false alarms. Compute \(d'\) without and with the log-linear
+correction. What does the corrected \(d'\) represent, and why should you
+report the correction you used?
+
+\textbf{Exercise 2 \ensuremath{\star} (half-lives).} Using your fitted parameters from
+Part D, compute each model's half-life. Then compute how long it takes
+recall to drop to 10\% of its initial level. Where do the models
+disagree most?
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (Ebbinghaus's data).} The classic savings data
+from Ebbinghaus's 1885 self-experiments are often reported as follows
+{[}verify against the original source before using them in class{]}:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{landscape}\small
+\begin{longtable}[]{@{}llllllll@{}}
+\toprule\noalign{}
+Interval & 20 min & 1 h & 8.8 h & 1 day & 2 days & 6 days & 31 days \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Savings (\%) & 58.2 & 44.2 & 35.8 & 33.7 & 27.8 & 25.4 & 21.1 \\
+\end{longtable}
+\end{landscape}
+}
+
+Convert the intervals to days, fit both models by linearization, and
+compare their residuals. Which shape fits better? Then redo the analysis
+with time measured in \textbf{hours}. Does the power fit change?
+Explain, using the Advanced box in Lecture §3.
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (which design can tell the models apart?).} Choose
+\((A, \lambda)\) and \((A, d)\) so that the two models predict the
+\emph{same} recall at \(t = 1\) and \(t = 7\) days. (Hint: two equations
+in two unknowns per model; take logs.) Then plot both curves from
+\(t = 0\) to \(60\) days and mark where their difference exceeds 2
+binomial SDs with \(n = 50\). Which retention intervals would you test?
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: zero counts).} Generate data from the
+exponential model with \(A = 0.9\), \(\lambda = 0.3\) at the intervals
+in Part C, with \(n = 20\) items. How often (out of 1000 simulated
+datasets) does at least one interval produce zero recalls, which breaks
+\nolinkurl{fit_linearized}? Propose and implement a quick fix (e.g.,
+adding 0.5 to counts) and check whether it biases the estimate of
+\(\lambda\). Explain why this is a sign that we need a method that works
+on the original scale (Weeks 3--4).
+
+\subsubsection{Lab check-off}
+
+Show the instructor or TA: (1) your SDT recovery table from Part A, (2)
+the two empirical zROCs with their slopes from Part B, and (3) the
+residual plot from Part D with a one-sentence interpretation.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{AI-text detectors are observers in an SDT task.} Universities
+increasingly use tools that score a text for ``how likely it was written
+by AI''. Each text is either AI-written (``signal'') or human-written
+(``noise''), and the tool says ``AI'' when its score exceeds a
+threshold. This is exactly the SDT setting of this week: the tool has a
+\textbf{sensitivity} \(d'\) (how well the score separates the two kinds
+of texts) and a \textbf{criterion} \(c\) (the threshold the user
+chooses). A false alarm means a student is wrongly accused, so the
+choice of criterion is an ethical decision, not only a technical one.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week02.py}, cell 12 · \RL{\CMfa سلول}
+12
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+threshold 0.0: H = 0.84, F = 0.49, d' = 1.03, c = -0.50
+threshold 0.6: H = 0.70, F = 0.28, d' = 1.11, c = 0.03
+threshold 1.2: H = 0.51, F = 0.09, d' = 1.35, c = 0.66
+\end{Verbatim}
+
+Moving the threshold changes \(c\) a lot (from −0.50 to 0.66), while
+\(d'\) stays near its true value of 1.2. The variation in \(d'\) is
+sampling noise from 200 texts per group.
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Suppose 10\% of submitted essays
+are AI-written. At threshold 1.2, what is
+\(P(\text{AI-written} \mid \text{flagged})\)? (Use Bayes' rule with
+\(H\) and \(F\).) Would you act on a flag? - \ensuremath{\star}\ensuremath{\star} Plot the ROC of the
+detector (all thresholds from −2 to 3) and its zROC. Is the slope close
+to 1? Repeat with human-text scores of SD 1.5 (an unequal-variance
+detector). - \ensuremath{\star}\ensuremath{\star} Discussion: detectors have been reported to flag texts
+by non-native English writers more often {[}verify: Liang et al., 2023,
+\emph{Patterns}{]}. In SDT terms, what would that mean, and what should
+a university do?
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{``Percent correct is good enough.''} It confounds sensitivity
+  and bias (see the radiologists). Use \(d'\) and \(c\) whenever
+  responses can be biased.
+\item
+  \textbf{Computing \(d'\) as \(\Phi^{-1}(H - F)\) or from percentages.}
+  The formula is \(\Phi^{-1}(H) - \Phi^{-1}(F)\), with rates as
+  proportions between 0 and 1.
+\item
+  \textbf{Forgetting the extreme-rate problem.} \(H = 1\) or \(F = 0\)
+  gives an infinite \(d'\); Python returns \nolinkurl{inf} without an
+  error. Always use (and report) a correction.
+\item
+  \textbf{Assuming \(d'\) is bias-free no matter what.} It is
+  criterion-independent only under the equal-variance model. If the zROC
+  slope differs from 1, \(d'\) from one \((H, F)\) pair depends on bias.
+\item
+  \textbf{``Exponential and power are just two curve shapes.''} They
+  make different claims about how forgetting works (constant
+  vs.~decreasing relative loss rate).
+\item
+  \textbf{Judging a model only by its fit statistic.} A small RMSD with
+  a systematic residual pattern means the model's shape is wrong. Always
+  plot the residuals.
+\item
+  \textbf{Ignoring the noise model.} A model is not just
+  \(f(x;\boldsymbol\theta)\). The binomial noise of recall proportions
+  is part of the model, and it tells you which differences are
+  meaningful.
+\item
+  \textbf{Changing the units of \(t\) in the shifted power model} and
+  expecting the same shape.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} Name the five components of a model and give the SDT version
+of each. \textbf{Answer} Design (signal vs.~noise trials; yes/no
+responses); parameters (free: \(d'\), \(c\); fixed: noise mean 0, both
+SDs 1); deterministic core (\(H = \Phi(d'/2 - c)\),
+\(F = \Phi(-d'/2 - c)\)); noise model (hit and FA counts are binomial);
+linking assumption (respond ``yes'' when the evidence exceeds the
+criterion).
+
+\textbf{2.} Why are the noise mean and the SDs in SDT fixed rather than
+free? \textbf{Answer} Because they are not identifiable: shifting both
+distributions and the criterion by the same amount, or stretching the
+whole axis, leaves every prediction unchanged. Fixing them (scaling
+constraints) defines the units in which \(d'\) and \(c\) are measured.
+
+\textbf{3.} An observer has \(H = 0.80\) and \(F = 0.20\). Compute
+\(d'\) and \(c\). (\(\Phi^{-1}(0.80) = 0.842\)) \textbf{Answer}
+\(d' = 0.842 - (-0.842) = 1.68\);
+\(c = -\tfrac{1}{2}(0.842 - 0.842) = 0\), so the observer is unbiased.
+
+\textbf{4.} What does equal-variance SDT predict about the zROC, and
+what does it mean if the empirical slope is 0.7? \textbf{Answer} A
+straight line with slope 1. A slope of 0.7 suggests the signal
+distribution is more variable than the noise distribution
+(\(\sigma_s \approx 1/0.7 \approx 1.4\)). Then single-point \(d'\)
+depends on the criterion, and an unequal-variance model (or \(d_a\))
+should be used.
+
+\textbf{5.} What is the relative loss rate of each forgetting model, and
+why does it matter psychologically? \textbf{Answer} Exponential:
+\(\lambda\), constant. Power: \(d/(1+t)\), decreasing over time. The
+exponential says memories lose the same proportion of strength per day
+at every age; the power function says older memories become more
+resistant to further forgetting.
+
+\textbf{6.} Which plot would you make to check quickly whether
+forgetting data look exponential? And for power? \textbf{Answer}
+Exponential: \(\ln(\text{recall})\) against \(t\) (semi-log), which
+should be a straight line. Power: \(\ln(\text{recall})\) against
+\(\ln(1+t)\) (log-log), which should be a straight line.
+
+\textbf{7.} Give two reasons why fitting a straight line to
+log-transformed proportions is a poor estimation method. \textbf{Answer}
+(i) It breaks when an observed proportion is 0. (ii) It distorts the
+noise: small proportions become very variable on the log scale but are
+weighted equally, and the errors being minimized are on the wrong (log)
+scale. Fitting on the original scale with least squares or maximum
+likelihood avoids these problems.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\subsubsection{A1: From verbal to formal (1.0 point of 20; released Week
+2, due at the start of the Week 4 lecture)}
+
+\textbf{Scenario.} Two research groups study forgetting of vocabulary
+learned in a foreign-language course. - \textbf{Group C} says:
+\emph{``Memories decay at a constant rate.''} - \textbf{Group R} says:
+\emph{``Memories become more resistant to forgetting as they age.''}
+
+Both groups claim that the published data (recall drops quickly and then
+levels off) support their view.
+
+\textbf{Tasks.} Submit a Jupyter notebook plus a PDF export.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Formalize (Group C and Group R).} Write each verbal claim as a
+  formal model with all five components from Lecture §1: design,
+  free/fixed parameters with ranges, deterministic core, binomial noise
+  model, and linking assumption. Justify in 2--3 sentences why each
+  equation captures its verbal claim (use the relative loss rate).
+\item
+  \textbf{Implement.} Write Python functions that (a) return predicted
+  recall probabilities and (b) simulate binomial recall counts for given
+  intervals and number of items \(n\).
+\item
+  \textbf{Calibrate.} Both groups agree that recall is \textbf{0.60
+  after 1 day} and \textbf{0.35 after 7 days}. Derive, by hand and in
+  closed form, the parameters of each model that reproduce these two
+  values exactly. Show the derivation (take logs) and verify it
+  numerically.
+\item
+  \textbf{Find where they diverge.} With the calibrated parameters, plot
+  both predicted curves from 0 to 90 days. For \(n = 40\) items, compute
+  at each interval a \emph{discriminability index}
+  \(D(t) = \big(f_C(t) - f_R(t)\big)^2 / \mathrm{Var}(t)\), where
+  \(\mathrm{Var}(t) = \bar f(1 - \bar f)/n\) and \(\bar f\) is the
+  average of the two predictions. Plot \(D(t)\).
+\item
+  \textbf{Design an experiment.} You can test each participant at only
+  \textbf{4} retention intervals, chosen from \{0.5, 1, 2, 4, 7, 14, 30,
+  60, 90\} days. Choose the set that maximizes the summed \(D(t)\),
+  explain why it makes sense, and simulate one dataset from \emph{each}
+  model at your design. Show the two datasets on one plot.
+\item
+  \textbf{Interpret (max. 300 words).} Which data would favor Group C
+  and which Group R? What does your analysis say about why both groups
+  can claim support from ``the published data''? Name one assumption of
+  your models that could be wrong, and how it would change your
+  conclusions.
+\end{enumerate}
+
+\textbf{Grading rubric (10 points, scaled to 1.0 of the final grade):}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Criterion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Points
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Full marks require
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Formalization (Task 1) & 2 & All five components for both models;
+correct parameter ranges; the link between equation and verbal claim is
+explained via the relative loss rate \\
+Code (Task 2) & 2 & Correct, commented, reproducible (fixed seeds);
+functions are vectorized or clearly looped \\
+Calibration (Task 3) & 2 & Correct closed-form derivation and numerical
+check for both models \\
+Divergence and design (Tasks 4--5) & 2.5 & Correct \(D(t)\); the chosen
+design is justified and actually maximizes the criterion; clear plots \\
+Interpretation (Task 6) & 1.5 & Clear, specific, refers to your own
+results; names a real limitation \\
+\end{longtable}
+}
+
+Late submissions lose 10\% per day (max. 3 days).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 2.} Building a model
+  from a verbal theory; the components of a model and the role of
+  parameters. \emph{(Main reading.)}
+\item
+  \textbf{Lee \& Wagenmakers (2014), chapter 11.} Signal detection
+  theory treated as a (Bayesian) cognitive model; we return to it in
+  Weeks 9 and 13. Read the introductory part now, skip the code.
+\item
+  \textbf{Verguts (2022)} and \textbf{Anderson (2014)}: the chapters on
+  model building and parameters {[}verify chapter numbers{]}.
+\item
+  \emph{Background on forgetting curves:} Lee \& Wagenmakers (2014),
+  chapter 10 (memory retention) uses a closely related exponential
+  retention model; we will fit it in a Bayesian way in Weeks 9--11.
+\end{itemize}
+
+\emph{Preview for Week 3:} we drop linearization and fit models directly
+by minimizing squared error, which means learning how optimization
+algorithms search a parameter space.

@@ -1,0 +1,34 @@
+% Vector rendering of the supplied week-01 Mermaid pipeline.
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=stealth, every node/.style={draw=CMForest,rounded corners=2pt,fill=CMPale,
+    text=CMInk,align=center,minimum width=3.2cm,minimum height=1.05cm,font=\small},
+    every path/.style={draw=CMEmerald,thick}]
+\ifCMpersian
+  \node (a) at (0,0) {نظریه‌ی کلامی};
+  \node (b) at (4.2,0) {مدل فرمال\\(هفته‌ی ۱\lr{--}۲)};
+  \node (c) at (8.4,0) {شبیه‌سازی\\(هفته‌ی ۱\lr{--}۲)};
+  \node (d) at (12.6,0) {برازش روی داده\\(هفته‌ی ۳\lr{--}۵، ۹\lr{--}۱۳)};
+  \node (e) at (12.6,-2.0) {ارزیابی و مقایسه\\(هفته‌ی ۶\lr{--}۷، ۱۰)};
+  \node (f) at (8.4,-2.0) {بازیابی پارامتر و مدل\\(هفته‌ی ۷)};
+  \node (g) at (4.2,-2.0) {تفسیر\\(هر هفته)};
+\else
+  \node (a) at (0,0) {Verbal theory};
+  \node (b) at (4.2,0) {Formal model\\(Weeks 1–2)};
+  \node (c) at (8.4,0) {Simulate\\(Weeks 1–2)};
+  \node (d) at (12.6,0) {Fit to data\\(Weeks 3–5, 9–13)};
+  \node (e) at (12.6,-2.0) {Evaluate and compare\\(Weeks 6–7, 10)};
+  \node (f) at (8.4,-2.0) {Recover parameters and models\\(Week 7)};
+  \node (g) at (4.2,-2.0) {Interpret\\(every week)};
+\fi
+\path[->] (a) -- (b);
+\path[->] (b) -- (c);
+\path[->] (c) -- (d);
+\path[->] (d) -- (e);
+\path[->] (e) -- (f);
+\path[->] (f) -- (g);
+\path[->,dashed] (g) -- (b);
+\end{tikzpicture}
+\ifCMpersian\caption{چرخه‌ی مدل‌سازی شناختی، بازطراحی شده از نمودار هفته‌ی اول}\else\caption{The cognitive modeling pipeline from Week 1}\fi
+\label{fig:modeling-pipeline}
+\end{figure}

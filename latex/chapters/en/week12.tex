@@ -1,0 +1,898 @@
+\section{Week 12: Gibbs Sampling and Convergence Diagnostics}
+
+\begin{quote}
+\textbf{Chapter 5: Parameter estimation with data-driven methods (MCMC)}
+· Lecture 1 h · Lab 2 h \textbf{Running data:} log response times of one
+participant (a normal model with unknown mean and precision), and the
+power forgetting model sampled with last week's Metropolis sampler.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Gibbs sampling & \RL{\CMfa نمونه‌گیری} Gibbs & \RL{\CMfa به‌روزرسانی هر پارامتر از
+توزیع شرطی کاملش} \\
+convergence & \RL{\CMfa همگرایی} & \RL{\CMfa رسیدن زنجیره‌ها به توزیع هدف} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+Markov chain Monte Carlo (MCMC) & \RL{\CMfa زنجیره‌ی مارکوف} Monte Carlo &
+\RL{\CMfa نمونه‌گیری از پسین با یک زنجیره‌ی تصادفی} \\
+response time (RT) & \RL{\CMfa زمان واکنش} & \RL{\CMfa فاصله‌ی ارائه‌ی محرک تا
+پاسخ} \\
+forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش یادآوری با گذشت
+زمان} \\
+Metropolis algorithm & \RL{\CMfa الگوریتم} Metropolis & \RL{\CMfa پیشنهاد یک حرکت و
+پذیرش یا رد آن} \\
+sampler & \RL{\CMfa نمونه‌گیر} (sampler) & \RL{\CMfa الگوریتمی که از توزیع نمونه
+می‌گیرد} \\
+full conditional & \RL{\CMfa توزیع شرطی کامل} (full conditional) & \RL{\CMfa توزیع
+یک پارامتر به شرط بقیه و داده} \\
+conjugate prior & \RL{\CMfa پیشین مزدوج} (conjugate) & \RL{\CMfa پیشینی که پسین
+هم‌خانواده می‌دهد} \\
+R-hat & R-hat & \RL{\CMfa مقایسه‌ی واریانس بین و درون زنجیره‌ها؛ باید} \ensuremath{\approx} 1
+\RL{\CMfa باشد} \\
+effective sample size (ESS) & \RL{\CMfa اندازه‌ی مؤثر نمونه} (ESS) & \RL{\CMfa تعداد
+نمونه‌ی مستقل هم‌ارز} \\
+chain & \RL{\CMfa زنجیره} & \RL{\CMfa دنباله‌ی نمونه‌های} MCMC \\
+trace plot & \RL{\CMfa نمودار} trace & \RL{\CMfa مقدار نمونه‌ها در برابر شماره‌ی
+تکرار} \\
+Monte Carlo & Monte Carlo \RL{\CMfa (مونت‌کارلو)} & \RL{\CMfa تقریب با میانگین
+نمونه‌های تصادفی} \\
+proposal & \RL{\CMfa پیشنهاد} (proposal) & \RL{\CMfa مقدار جدیدی که الگوریتم امتحان
+می‌کند} \\
+posterior & \RL{\CMfa توزیع پسین} (posterior) & \RL{\CMfa باور درباره‌ی پارامتر بعد
+از دیدن داده} \\
+MCSE & \RL{\CMfa خطای استاندارد} Monte Carlo & \RL{\CMfa خطای شبیه‌سازی در میانگین
+پسین} \\
+prior & \RL{\CMfa توزیع پیشین} (prior) & \RL{\CMfa باور درباره‌ی پارامتر پیش از دیدن
+داده} \\
+HMC / NUTS & Hamiltonian Monte Carlo / NUTS & MCMC \RL{\CMfa مبتنی بر
+گرادیان} \\
+burn-in / warm-up & \RL{\CMfa دوره‌ی گرم‌شدن} (burn-in) & \RL{\CMfa نمونه‌های اولیه که
+دور ریخته می‌شوند} \\
+autocorrelation & \RL{\CMfa خودهمبستگی} & \RL{\CMfa وابستگی نمونه‌های پشت سر هم} \\
+sensitivity (d′) & \RL{\CMfa حساسیت} & \RL{\CMfa فاصله‌ی توزیع علامت و نویز} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Derive} the full conditional distributions of a semi-conjugate
+  normal model and \textbf{implement} a Gibbs sampler from scratch.
+\item
+  \textbf{Explain} when Gibbs sampling is efficient and when it mixes
+  slowly (correlated parameters), and how Metropolis-within-Gibbs
+  handles non-conjugate conditionals.
+\item
+  \textbf{Implement} split-\(\hat R\) and the effective sample size
+  (ESS), and \textbf{verify} them against ArviZ.
+\item
+  \textbf{Diagnose} non-convergence from multiple chains using trace
+  plots, \(\hat R\), ESS and the Monte Carlo standard error.
+\item
+  \textbf{Apply} a reporting checklist for MCMC results.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+Last week's Metropolis sampler had one tuning knob, the proposal SD, and
+a nagging question: \emph{how do we know the chain has converged?} This
+week answers both concerns.
+
+\textbf{Gibbs sampling} removes the tuning problem for a large and
+important class of models. Instead of proposing a jump for all
+parameters and sometimes rejecting it, it updates \textbf{one parameter
+at a time}, drawing it \emph{exactly} from its distribution given the
+current values of all the others. Every draw is accepted. Many classic
+Bayesian programs (BUGS, JAGS, used throughout Lee \& Wagenmakers and
+Kruschke) are built on this idea.
+
+\textbf{Convergence diagnostics} are the honest part of MCMC. A chain is
+only useful if it has (a) forgotten its starting point and (b) explored
+the whole posterior, and nothing in a single chain proves either. The
+standard remedy is to run \textbf{several chains from different starting
+points} and check that they agree. \(\hat R\) quantifies ``do the chains
+agree?'', and the ESS quantifies ``how much independent information do
+the correlated draws contain?''. No MCMC result should be reported
+without them.
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Every published MCMC analysis} must report convergence
+  diagnostics; reviewers in psychology and neuroscience now routinely
+  ask for \(\hat R\) and ESS.
+\item
+  \textbf{Gibbs sampling} powers the classic Bayesian programs BUGS and
+  JAGS, which are used in many cognitive modeling textbooks (Lee \&
+  Wagenmakers, Kruschke) and in ecology, epidemiology and education
+  research.
+\item
+  \textbf{Image processing and communications}: Gibbs samplers have been
+  used for image restoration and for detection in multi-antenna (MIMO)
+  receivers.
+\item
+  \textbf{Topic models} (finding themes in large text collections) were
+  classically fitted with Gibbs sampling.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+Metropolis needs a well-chosen step size. \textbf{Gibbs sampling} avoids
+that for many models by updating \textbf{one parameter at a time}: fix
+all the other parameters at their current values, and draw the chosen
+parameter directly from its exact distribution under those conditions
+(its \textbf{full conditional}). Then move to the next parameter, and so
+on. Nothing is ever rejected. The second half of the week answers the
+uncomfortable question ``has my sampler actually worked?''. We run
+\textbf{several chains} from very different starting points. If they all
+end up describing the same distribution, that is good evidence of
+convergence; \(\hat R\) (``R-hat'') is a single number that measures
+whether the chains agree (it should be below 1.01). Because neighboring
+draws are correlated, 4,000 draws may contain only the information of,
+say, 1,000 independent ones: that number is the \textbf{effective sample
+size (ESS)}, and it tells us how precise our averages are.
+
+\textbf{Suggested timing (60 min):} Gibbs sampling 20 · when Gibbs
+struggles 5 · convergence and multiple chains 8 · \(\hat R\) 10 · ESS
+and MCSE 10 · reporting checklist 7.
+
+\subsubsection{1. Gibbs sampling}
+
+For parameters \(\boldsymbol\theta = (\theta_1, \dots, \theta_k)\), the
+\textbf{full conditional} of \(\theta_m\) is its posterior given the
+data and \emph{all other} parameters,
+\(p(\theta_m \mid \boldsymbol\theta_{-m}, \mathbf{y})\). Gibbs sampling
+cycles through them:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Start at \(\boldsymbol\theta^{(0)}\).
+\item
+  For \(s = 1, \dots, S\):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    draw
+    \(\theta_1^{(s)} \sim p(\theta_1 \mid \theta_2^{(s-1)}, \dots, \theta_k^{(s-1)}, \mathbf{y})\)
+  \item
+    draw
+    \(\theta_2^{(s)} \sim p(\theta_2 \mid \theta_1^{(s)}, \theta_3^{(s-1)}, \dots, \mathbf{y})\)
+  \item
+    \ldots{} (always using the newest values)
+  \item
+    draw
+    \(\theta_k^{(s)} \sim p(\theta_k \mid \theta_1^{(s)}, \dots, \theta_{k-1}^{(s)}, \mathbf{y})\)
+  \end{itemize}
+\end{enumerate}
+
+It is a special case of Metropolis--Hastings in which the proposal is
+the full conditional itself, so the acceptance probability is always 1.
+
+\textbf{Finding full conditionals.} Write the joint density
+\(p(\mathbf{y}\mid\boldsymbol\theta)\,p(\boldsymbol\theta)\), keep only
+the factors that contain \(\theta_m\), and recognize a known
+distribution. This works when priors are (conditionally)
+\textbf{conjugate}.
+
+\textbf{Example: a normal model for log RTs.} Let \(y_i\) be log
+response times, \(y_i \sim \mathcal{N}(\mu, 1/\sqrt{\tau})\), where
+\(\tau = 1/\sigma^2\) is the \textbf{precision}. Priors:
+\(\mu \sim \mathcal{N}(m_0, s_0)\) and
+\(\tau \sim \mathrm{Gamma}(a_0, \text{rate } b_0)\), independent. Then:
+
+\[
+\mu \mid \tau, \mathbf{y} \sim \mathcal{N}\!\left(\frac{m_0/s_0^2 + \tau \sum_i y_i}{1/s_0^2 + N\tau},\ \ \frac{1}{\sqrt{1/s_0^2 + N\tau}}\right),
+\]
+
+\[
+\tau \mid \mu, \mathbf{y} \sim \mathrm{Gamma}\!\left(a_0 + \frac{N}{2},\ \ \text{rate} = b_0 + \frac12\sum_i (y_i - \mu)^2\right).
+\]
+
+\textbf{Reading the formulas.} The conditional mean of \(\mu\) is a
+precision-weighted average of the prior mean and the data mean (as in
+the beta-binomial of Week 9). The conditional distribution of \(\tau\)
+adds half an observation to the shape and half a squared residual to the
+rate for each data point.
+
+\begin{quote}
+\textbf{Note on parameterizations.} NumPy's
+\nolinkurl{rng.gamma(shape, scale)} uses \textbf{scale} = 1/rate. Mixing
+up rate and scale is the most common bug in Gibbs samplers.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\boldsymbol\theta_{-m}\): ``all parameters except \(\theta_m\)''.
+\item
+  \textbf{Precision} \(\tau = 1/\sigma^2\): the inverse of the variance.
+  Large precision = small noise. Working with precisions makes combining
+  information a simple addition.
+\item
+  \textbf{The \(\mu\) update:} the conditional mean
+  \(\dfrac{m_0/s_0^2 + \tau\sum y_i}{1/s_0^2 + N\tau}\) is a weighted
+  average of the prior mean \(m_0\) (weight \(1/s_0^2\), the prior's
+  precision) and the data mean (total weight \(N\tau\), the data's
+  precision). The conditional precision is the \emph{sum} of the two
+  precisions. Worked example: \(1 + 4\times10 = 41\), so the data
+  dominate.
+\item
+  \textbf{The \(\tau\) update:} a Gamma distribution whose shape grows
+  by \(1/2\) per observation and whose rate grows by half of each
+  squared residual. Its mean, shape/rate, is roughly ``1 / (average
+  squared residual)'', i.e.~the precision suggested by the data.
+\end{itemize}
+
+\subsubsection{2. When Gibbs struggles, and Metropolis-within-Gibbs}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Strong posterior correlations.} Gibbs moves parallel to the
+  coordinate axes. If the posterior is a narrow diagonal ridge (like the
+  \(A\)--\(d\) trade-off of the power model), each step can move only a
+  tiny distance, and the chain zig-zags slowly along the ridge.
+  Remedies: reparameterize, update correlated parameters jointly
+  (``blocking''), or use gradient-based samplers (Week 13).
+\item
+  \textbf{Non-conjugate conditionals.} Most cognitive models (forgetting
+  curves, SDT, the GCM) have no closed-form conditionals.
+  \textbf{Metropolis-within-Gibbs} updates each parameter with a
+  one-dimensional Metropolis step targeting its full conditional, and
+  uses exact Gibbs draws where available.
+\end{itemize}
+
+\begin{quote}
+\textbf{Advanced:} JAGS and BUGS automatically pick a sampler for each
+parameter (conjugate Gibbs, slice sampling, adaptive Metropolis), which
+is why they run on almost any model. Modern Hamiltonian Monte Carlo
+(Stan, PyMC's NUTS) instead uses the gradient of the log posterior to
+move all parameters jointly along the posterior's geometry, and handles
+correlated posteriors far better (Week 13).
+\end{quote}
+
+\subsubsection{3. Convergence: the logic of multiple chains}
+
+An MCMC chain has converged when its draws are representative of the
+posterior. Two failure modes: 1. \textbf{Not yet stationary:} the chain
+still reflects the starting value. 2. \textbf{Stuck or slow:} the chain
+explores only part of the posterior (e.g., one of two modes, or one end
+of a long ridge).
+
+Neither can be detected reliably from one chain, because a chain stuck
+in one region can look perfectly stable. Run \(C \ge 4\) chains from
+\textbf{over-dispersed} starting points: if they all end up describing
+the same distribution, that is good (though never conclusive) evidence
+of convergence.
+
+\textbf{Trace plots} of all chains overlaid should look like one
+well-mixed ``hairy caterpillar'', with no chain visibly separated or
+trending.
+
+\subsubsection{\texorpdfstring{4. The potential scale reduction factor
+\(\hat R\)}{4. The potential scale reduction factor \textbackslash hat R}}
+
+Compare the variance \textbf{between} chains with the variance
+\textbf{within} chains. With \(C\) chains of length \(S\) (after
+burn-in), chain means \(\bar\theta_c\) and within-chain variances
+\(s_c^2\):
+
+\[
+W = \frac{1}{C}\sum_c s_c^2, \qquad
+B = \frac{S}{C-1}\sum_c (\bar\theta_c - \bar\theta)^2, \qquad
+\widehat{\mathrm{var}}^{+} = \frac{S-1}{S}\,W + \frac{1}{S}\,B, \qquad
+\hat R = \sqrt{\frac{\widehat{\mathrm{var}}^{+}}{W}}.
+\]
+
+If the chains have not mixed, \(B\) is large relative to \(W\) and
+\(\hat R > 1\). As chains converge, \(\hat R \to 1\).
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Split-\(\hat R\):} split each chain into a first and a second
+  half and treat them as \(2C\) chains. This also detects a single chain
+  that is still drifting.
+\item
+  \textbf{Threshold:} the classic rule was \(\hat R < 1.1\); current
+  recommendations (Vehtari et al., 2021) use \(\hat R < 1.01\), computed
+  after rank-normalization (as ArviZ does).
+\end{itemize}
+
+\subsubsection{5. Effective sample size and Monte Carlo standard error}
+
+Autocorrelated draws carry less information than independent ones. The
+\textbf{effective sample size} is
+
+\[
+\mathrm{ESS} = \frac{C\cdot S}{1 + 2\sum_{h=1}^{\infty}\rho_h},
+\]
+
+where \(\rho_h\) is the lag-\(h\) autocorrelation, estimated from all
+chains and truncated when the estimates become noise. ESS is the number
+of \emph{independent} draws that would give the same precision.
+
+\begin{itemize}
+\tightlist
+\item
+  The \textbf{Monte Carlo standard error} of a posterior mean is
+  \(\mathrm{MCSE} = \text{posterior SD}/\sqrt{\mathrm{ESS}}\). It must
+  be small relative to the precision you report (e.g., don't report 3
+  decimals if the MCSE is 0.01).
+\item
+  \textbf{Rule of thumb:} bulk-ESS \ensuremath{\geq} 400 (with 4 chains) for reliable
+  posterior means and intervals; tail-ESS \ensuremath{\geq} 400 for reliable extreme
+  quantiles.
+\end{itemize}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(\hat R\):} \(W\) is the average variance \emph{inside} each
+  chain; \(B\) measures how far the chain \emph{means} are from each
+  other. \(\widehat{\mathrm{var}}^{+}\) is an estimate of the total
+  posterior variance that includes the disagreement between chains. If
+  the chains agree, \(B\) adds almost nothing and
+  \(\hat R = \sqrt{\widehat{\mathrm{var}}^{+}/W} \approx 1\). In the
+  ``not converged'' worked example, the two chains sit around 1.0 and
+  2.0, \(B\) is huge and \(\hat R = 4.4\).
+\item
+  \textbf{ESS:} \(C \cdot S\) is the total number of draws; the
+  denominator \(1 + 2\sum\rho_h\) inflates for correlated draws. With
+  \(\rho_h = 0.5^h\), the sum is \(0.5 + 0.25 + \dots = 1\), so the
+  draws count only one third: 4,000 draws are worth 1,333 independent
+  ones.
+\item
+  \textbf{MCSE} \(= \text{posterior SD}/\sqrt{\mathrm{ESS}}\) is the
+  simulation error of the reported mean; decide the number of decimals
+  from it.
+\end{itemize}
+
+\subsubsection{6. MCMC reporting checklist}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Sampler, number of chains, iterations, burn-in (warm-up), and any
+  thinning.
+\item
+  Starting values (dispersed?).
+\item
+  \(\hat R\) (which version) and ESS for \textbf{all} reported
+  parameters, plus the maximum \(\hat R\) and minimum ESS.
+\item
+  Trace plots (in a supplement) and a statement that they were
+  inspected.
+\item
+  Priors, and the posterior summaries with MCSE-appropriate precision.
+\item
+  A posterior predictive check (Week 10).
+\end{enumerate}
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Precision-weighted averaging} in the \(\mu\) update is the
+  same rule as \textbf{maximal-ratio combining} or the Kalman
+  measurement update: combine estimates in proportion to their inverse
+  noise variances.
+\item
+  \textbf{Gibbs sampling} updates one variable given all the others,
+  like coordinate-wise iterative algorithms (alternating optimization)
+  and the iterative exchange of conditional information in turbo-style
+  receivers; Gibbs samplers have been proposed for MIMO detection.
+\item
+  \textbf{\(\hat R\)} is a one-way ANOVA (between-group vs.~within-group
+  variance) across independent simulation runs: the same check you would
+  do by running a Monte Carlo simulation with several seeds and
+  verifying that the runs agree.
+\item
+  \textbf{ESS} \(= N/(1 + 2\sum\rho_h)\) is the standard formula for the
+  effective number of independent samples of a correlated random
+  process: averaging \(N\) correlated samples reduces the variance only
+  as much as averaging ESS independent ones (related to the correlation
+  time).
+\end{itemize}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Draw Gibbs on a contour plot.} Two parameters, an elliptical
+  posterior. Gibbs moves in horizontal and vertical steps only (a
+  staircase). Then draw a narrow diagonal ellipse: the staircase steps
+  become tiny. That one picture explains both how Gibbs works and when
+  it struggles.
+\item
+  \textbf{Make \(\hat R\) visual first:} overlay four trace plots, once
+  with chains that agree and once with one chain stuck elsewhere. Ask
+  ``do these chains describe the same distribution?'' before showing any
+  formula.
+\item
+  \textbf{Teach the reporting checklist as a habit.} Ask students to
+  apply it to their project and to every MCMC result in the lab.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``\(\hat R\) is 1.00, so my model is correct?''}
+    No.~\(\hat R\) only checks that the chains agree; the model can
+    still be wrong (check with a PPC) or the code can still be buggy.
+  \item
+    \emph{``Should I thin my chains?''} Not for correctness; it only
+    saves memory.
+  \item
+    \emph{``Rate or scale?''} NumPy's Gamma uses scale = 1/rate; the
+    most common bug in student Gibbs samplers.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\subsubsection{Part 1: one Gibbs iteration by hand}
+
+Data: \(N = 4\) log RTs, \(\mathbf{y} = (6.0, 6.3, 6.1, 6.4)\), so
+\(\sum y_i = 24.8\). Priors: \(m_0 = 6\), \(s_0 = 1\), \(a_0 = 2\),
+\(b_0 = 0.1\). Current values: \(\mu = 6.0\), \(\tau = 10\).
+
+\textbf{Update \(\mu\).} Precision \(= 1/1^2 + 4 \times 10 = 41\); mean
+\(= (6/1 + 10 \times 24.8)/41 = (6 + 248)/41 = 6.195\); SD
+\(= 1/\sqrt{41} = 0.156\). Draw, say, \(\mu = 6.22\).
+
+\textbf{Update \(\tau\)} given \(\mu = 6.22\). Squared residuals:
+\(0.0484 + 0.0064 + 0.0144 + 0.0324 = 0.1016\). Shape \(= 2 + 4/2 = 4\);
+rate \(= 0.1 + 0.1016/2 = 0.1508\). The conditional mean of \(\tau\) is
+\(4/0.1508 = 26.5\) (i.e., \(\sigma \approx 0.19\)). Draw, say,
+\(\tau = 24.1\).
+
+New state: \((\mu, \tau) = (6.22, 24.1)\). No accept/reject step was
+needed.
+
+\subsubsection{\texorpdfstring{Part 2: \(\hat R\) by
+hand}{Part 2: \textbackslash hat R by hand}}
+
+Two chains of \(S = 4\) draws each.
+
+\textbf{Not converged.} Chain 1: (1.0, 1.2, 0.8, 1.0); chain 2: (2.0,
+2.2, 1.8, 2.0). - Chain means: 1.0 and 2.0. Within-chain variances (ddof
+= 1): both \(0.08/3 = 0.0267\), so \(W = 0.0267\). -
+\(B = S \times \mathrm{var}(\text{means}) = 4 \times 0.5 = 2.0\). -
+\(\widehat{\mathrm{var}}^{+} = \tfrac34 \times 0.0267 + \tfrac14 \times 2.0 = 0.520\).
+- \(\hat R = \sqrt{0.520/0.0267} = 4.4\). The chains clearly disagree.
+
+\textbf{Converged (realistic numbers).} \(S = 1000\) draws per chain,
+\(W = 0.05\), chain means 1.00 and 1.02:
+\(B = 1000 \times \mathrm{var}(1.00, 1.02) = 1000 \times 0.0002 = 0.2\);
+\(\widehat{\mathrm{var}}^{+} = 0.999 \times 0.05 + 0.2/1000 = 0.05015\);
+\(\hat R = \sqrt{0.05015/0.05} = 1.0015\). Below 1.01: fine.
+
+\subsubsection{Part 3: ESS by hand}
+
+\(C \cdot S = 4000\) draws with autocorrelations \(\rho_h = 0.5^h\).
+Then \(\sum_{h\ge1}\rho_h = 1\), so
+\(\mathrm{ESS} = 4000/(1 + 2) = 1333\). With a posterior SD of 0.2, MCSE
+\(= 0.2/\sqrt{1333} = 0.0055\): report the posterior mean to two
+decimals.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Implement a Gibbs sampler for the normal model of log RTs and validate
+  it against a grid posterior.
+\item
+  Run four dispersed chains and inspect them.
+\item
+  Implement split-\(\hat R\) and ESS; compare with ArviZ.
+\item
+  Break convergence on purpose (the power model with a bad Metropolis
+  sampler) and watch the diagnostics catch it.
+\end{enumerate}
+
+\textbf{Timing:} Part A 30 min · Part B 15 min · Part C 30 min · Part D
+30 min · Part E 15 min.
+
+\subsubsection{Setup}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week12.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{Part A: a Gibbs sampler (30 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week12.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+N = 40, sample mean = 6.200, sample SD = 0.225
+Gibbs: mu = 6.1994 (SD 0.0358), sigma = 0.2283 (SD 0.0255)
+Grid:  mu = 6.1996, sigma = 0.2287
+\end{Verbatim}
+
+\subsubsection{Part B: four dispersed chains (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week12.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{4\baselineskip}
+\begin{Verbatim}
+Chain means of mu: [6.2006 6.1988 6.1996 6.1992]
+\end{Verbatim}
+
+Gibbs forgets even absurd starting values within a few iterations here,
+because \(\mu\) and \(\tau\) are nearly uncorrelated in this posterior.
+
+\subsubsection{\texorpdfstring{Part C: \(\hat R\) and ESS from scratch,
+checked against ArviZ (30
+min)}{Part C: \textbackslash hat R and ESS from scratch, checked against ArviZ (30 min)}}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week12.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{10\baselineskip}
+\begin{Verbatim}
+       R-hat (ours)  R-hat (ArviZ)  ESS (ours)  bulk-ESS (ArviZ)  MCSE of mean
+param
+mu           1.0002         1.0004   9980.4260        10032.6243        0.0004
+sigma        0.9997         0.9998   8772.9605         8861.7940        0.0003
+      ess_bulk ess_tail r_hat mcse_mean  mcse_sd
+mu       10032     9427  1.00   0.00036  0.00027
+sigma     8861     9714  1.00   0.00027  0.00021
+\end{Verbatim}
+
+(The exact column layout of \nolinkurl{az.summary} differs slightly
+between ArviZ versions; the output above is from ArviZ 1.x.) Our simple
+estimators agree closely with ArviZ. With 4 × 2500 = 10 000 draws, ESS \ensuremath{\approx}
+9000--10 000 means the Gibbs draws are almost independent. ArviZ
+additionally \textbf{rank-normalizes} the draws (Vehtari et al., 2021),
+which makes its \(\hat R\) and bulk-ESS robust to heavy tails, so small
+differences are expected. In practice use ArviZ; today's point is to
+know what it computes.
+
+\subsubsection{Part D: catching non-convergence (30 min)}
+
+We reuse last week's Metropolis sampler on the power forgetting model,
+once badly tuned and short, once well tuned.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week12.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+bad (tiny steps, short)   split-R-hat(d) = 3.583, ArviZ R-hat(d) = 3.424, ESS(d) = 4, chain means of d = [0.248 0.785 0.451 0.328]
+good (tuned, longer)      split-R-hat(d) = 1.002, ArviZ R-hat(d) = 1.002, ESS(d) = 1025, chain means of d = [0.414 0.414 0.415 0.413]
+\end{Verbatim}
+
+\textbf{What to notice:} with tiny steps and short chains, each chain is
+still close to where it started. The traces are separate, \(\hat R\) is
+far above 1.01 and the ESS is tiny. \emph{Each chain on its own looks
+smooth and stable}, which is exactly why one chain is never enough. The
+tuned sampler gives overlapping traces, \(\hat R = 1.002\) and an ESS of
+about 1000 from 20 000 draws. The Gibbs sampler of Part C, with almost
+uncorrelated draws, reached an ESS of about 9000--10 000 from 10 000
+draws.
+
+\subsubsection{Part E: interpret and report (15 min)}
+
+Write an MCMC methods-and-results paragraph for the log-RT model,
+following the checklist in Lecture §6: sampler, chains, iterations,
+burn-in, starting values, \(\hat R\), ESS, posterior means and 95\%
+intervals of \(\mu\) and \(\sigma\) (back-transform \(\mu\) to
+milliseconds with \(e^\mu\) and say what it represents).
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star}.} Show by algebra that the full conditional of
+\(\tau\) is a Gamma distribution: write
+\(p(\tau\mid\mu,\mathbf{y}) \propto \tau^{N/2}\exp(-\tfrac{\tau}{2}\sum(y_i-\mu)^2)\cdot\tau^{a_0-1}e^{-b_0\tau}\)
+and read off the shape and rate.
+
+\textbf{Exercise 2 \ensuremath{\star}.} Introduce the rate/scale bug
+(\nolinkurl{scale=B0 + ...} instead of \nolinkurl{1 / (...)}) into
+\nolinkurl{gibbs_normal}. Do the diagnostics catch it? Does the
+validation against the grid? What does this tell you about the
+difference between \emph{convergence} and \emph{correctness}?
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (correlated Gibbs).} Write a Gibbs sampler for a
+bivariate normal ``posterior'' with correlation \(\rho\) (full
+conditionals:
+\(\theta_1\mid\theta_2 \sim \mathcal{N}(\rho\theta_2, \sqrt{1-\rho^2})\)
+and vice versa). Compare the ESS for \(\rho = 0, 0.9, 0.99\) with 5000
+iterations, and plot the zig-zag path for \(\rho = 0.99\).
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (Metropolis-within-Gibbs).} Sample the power
+forgetting model by updating \(A\) and \(d\) \textbf{one at a time},
+each with a 1-D Metropolis step. Compare the ESS per second with the
+joint Metropolis sampler. Why might it be worse here? (Hint: the
+\(A\)--\(d\) correlation.)
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: two conditions).} Extend the Gibbs
+sampler to log RTs from two conditions with separate means
+\(\mu_1, \mu_2\) and a shared precision \(\tau\). Simulate data with a
+true difference of 0.1, sample, and report the posterior of
+\(\mu_2 - \mu_1\) and \(P(\mu_2 > \mu_1\mid\mathbf{y})\) with
+diagnostics.
+
+\subsubsection{Lab check-off}
+
+Show: (1) the Gibbs-vs-grid validation (Part A), (2) your \(\hat R\)/ESS
+table next to ArviZ's (Part C), and (3) the bad-vs-good trace plots with
+their diagnostics (Part D).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Gibbs sampling from a masked language model.} Models like BERT
+are trained to fill in a masked word given all other words: they learn
+\textbf{full conditionals}, \(P(w_i \mid \text{all other words})\). That
+is exactly what a Gibbs sampler needs. Repeatedly masking one position
+and resampling it generates whole sentences (Wang \& Cho, 2019). The toy
+model below knows only the two full conditionals of a two-word
+``language'', and Gibbs sampling recovers the joint distribution of
+sentences. Because the language is ``sticky'' (dog goes with barks, cat
+with meows), the chain mixes slowly, and \(\hat R\) catches this in
+short runs.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week12.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+  50 iterations: P(subject = dog) = 0.285 (exact 0.35), R-hat = 1.151
+3000 iterations: P(subject = dog) = 0.354 (exact 0.35), R-hat = 1.000
+\end{Verbatim}
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Make the language even stickier
+(e.g., 0.33 on the diagonal and 0.001 elsewhere, renormalized). How many
+iterations do you now need for \(\hat R < 1.01\)? Compute the ESS (Week
+12, Part C) of the \nolinkurl{is_dog} chains. - \ensuremath{\star}\ensuremath{\star} Real masked models
+are trained separately for each position, so their conditionals need not
+come from any single joint distribution. Perturb \nolinkurl{p_v_given_s}
+slightly (without changing \nolinkurl{p_s_given_v}) and check whether
+the Gibbs sampler still recovers \nolinkurl{joint}. What does this tell
+you about trusting a sampler whose conditionals are learned?
+
+\emph{Optional reading:} Wang, A., \& Cho, K. (2019). BERT has a mouth,
+and it must speak: BERT as a Markov random field language model.
+\emph{arXiv:1902.04094}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Rate vs.~scale in the Gamma distribution.} NumPy and SciPy use
+  scale = 1/rate. Write down which one your formula uses.
+\item
+  \textbf{Using old values within a Gibbs sweep.} Each conditional must
+  use the \emph{newest} values of the other parameters.
+\item
+  \textbf{``\(\hat R \approx 1\), so the results are correct.''}
+  Diagnostics test agreement between chains, not correctness of the
+  model or the code (Exercise 2). Validate new samplers on known cases.
+\item
+  \textbf{One long chain instead of several.} A stuck chain can look
+  perfectly stable. Use \(\ge 4\) dispersed chains.
+\item
+  \textbf{Reporting results with low ESS.} With ESS = 50, a posterior
+  mean has an MCSE of about 14\% of the posterior SD, and tail quantiles
+  are unreliable.
+\item
+  \textbf{Thinning to ``fix'' autocorrelation.} Thinning lowers storage
+  but does not increase the information. ESS already accounts for
+  autocorrelation.
+\item
+  \textbf{Using the 1.1 threshold uncritically.} Modern guidance is
+  \(\hat R < 1.01\) with rank-normalized split-\(\hat R\).
+\item
+  \textbf{Diagnosing only some parameters.} Check \emph{all} reported
+  parameters, including derived ones.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} Why does Gibbs sampling never reject a draw? \textbf{Answer}
+Each draw comes exactly from the full conditional distribution. Viewed
+as Metropolis--Hastings with the full conditional as proposal, the
+acceptance ratio is always 1.
+
+\textbf{2.} What do you need to be able to run a pure Gibbs sampler?
+\textbf{Answer} Full conditional distributions for every parameter (or
+block) that you can sample from directly, typically because the priors
+are conditionally conjugate.
+
+\textbf{3.} A Gibbs sampler for two strongly correlated parameters has a
+very low ESS. Why, and what could you do? \textbf{Answer} Gibbs updates
+one coordinate at a time, so on a narrow diagonal ridge every step is
+tiny and the chain zig-zags slowly. Remedies: reparameterize to reduce
+the correlation, update the correlated parameters jointly (blocking), or
+use HMC/NUTS.
+
+\textbf{4.} Explain \(\hat R\) in one sentence. Which value indicates
+convergence? \textbf{Answer} It compares the variance between chains
+with the variance within chains (it estimates how much the posterior
+spread could shrink if the chains ran forever); values near 1
+(\textless{} 1.01 by current guidance) indicate that the chains agree.
+
+\textbf{5.} You have 4000 draws and an ESS of 200 for a parameter with
+posterior SD 0.5. What is the MCSE of its posterior mean? How many
+decimals should you report? \textbf{Answer} MCSE
+\(= 0.5/\sqrt{200} = 0.035\). Report the mean to one decimal (or two at
+most), because the third decimal is Monte Carlo noise.
+
+\textbf{6.} Why can't one chain demonstrate convergence? \textbf{Answer}
+A chain stuck in one region (one mode, or one part of a ridge) can look
+stationary and well mixed, and nothing in the chain itself reveals the
+unexplored regions. Only chains started elsewhere, which end up
+somewhere different, expose the problem.
+
+\textbf{7.} Name four things a methods section should report about an
+MCMC analysis. \textbf{Answer} Any four of: sampler/software; number of
+chains; iterations and warm-up; starting values; \(\hat R\) and ESS for
+all parameters; that trace plots were inspected; priors; a posterior
+predictive check.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\subsubsection{A5: MCMC from scratch, with diagnostics (1.0 point of 20;
+released Week 12, due at the start of the Week 14 lecture)}
+
+\textbf{Data:} the payoff SDT experiment from Week 4, Part D (regenerate
+it with the same seed: \nolinkurl{np.random.default_rng(11)}), and the
+log-RT data from today's lab (\nolinkurl{np.random.default_rng(12)}).
+
+\textbf{Tasks.}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Metropolis for SDT (3 pts).} Implement a random-walk
+  Metropolis sampler for the shared-\(d'\) payoff model (\(d'\),
+  \(c_1, c_2, c_3\)) with priors \(d' \sim \mathcal{N}(1, 1.5)\) and
+  \(c_m \sim \mathcal{N}(0, 1)\). Tune the proposal (report the
+  acceptance rate), and run 4 dispersed chains.
+\item
+  \textbf{Diagnostics (2 pts).} Report split-\(\hat R\) and ESS for all
+  parameters with your own functions \emph{and} with ArviZ; show trace
+  plots. State whether you would trust the results and why.
+\item
+  \textbf{Inference (1.5 pts).} Report posterior means and 95\%
+  intervals; compute the posterior of
+  \(c_{\text{conservative}} - c_{\text{liberal}}\) and the probability
+  that it is positive. Compare \(d'\) with the Week 4 MLE.
+\item
+  \textbf{Gibbs (2 pts).} Implement the two-condition Gibbs sampler of
+  Exercise 5 and report the posterior of the mean difference with
+  diagnostics.
+\item
+  \textbf{Interpretation (1.5 pts, max. 300 words).} What do the payoffs
+  do to sensitivity and bias, according to the posterior? Compare with
+  the likelihood-ratio conclusion of Week 4.
+\end{enumerate}
+
+\textbf{Rubric:} points as above; within each task: correctness 60\%,
+figures/tables 20\%, interpretation 20\%. Late submissions lose 10\% per
+day (max. 3 days).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Kruschke (2014), chapter 7} (sections on Gibbs sampling and on
+  MCMC representativeness, accuracy and efficiency): diagnostics, ESS
+  and MCSE explained visually. \emph{(Main reading.)}
+\item
+  \textbf{Martin, Kumar \& Lao (2021), chapter 2.} Exploratory analysis
+  of Bayesian models: trace plots, \(\hat R\), ESS and MCSE with ArviZ.
+\item
+  \textbf{Lee \& Wagenmakers (2014), chapter 4.} Inferences with
+  Gaussians: the normal model whose Gibbs sampler you built today, in
+  its Bayesian-modeling context.
+\item
+  \emph{Optional, outside the course list:} Vehtari, A., Gelman, A.,
+  Simpson, D., Carpenter, B., \& Bürkner, P.-C. (2021).
+  Rank-normalization, folding, and localization: An improved \(\hat R\)
+  for assessing convergence of MCMC. \emph{Bayesian Analysis, 16}(2),
+  667--718.
+\end{itemize}
+
+\emph{Preview for Week 13:} writing samplers by hand teaches how they
+work, but it is slow and error-prone. Next week we describe models in
+PyMC, let its NUTS sampler do the work, and use the time we save for the
+most useful model class in cognitive science: hierarchical models of
+many participants.

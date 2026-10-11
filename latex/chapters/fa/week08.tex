@@ -1,0 +1,732 @@
+\section{هفته‌ی 8: مرور میان‌ترم: کل مسیر مدل‌سازی در یک مطالعه‌ی موردی}
+
+\begin{quote}
+\textbf{مرور فصل‌های 1 تا 3} · درس 1 ساعت (مطالعه‌ی موردی یکپارچه) · زمان
+\lr{lab:} \textbf{آزمون میان‌ترم} (90 دقیقه) + مشاوره‌ی پروژه (30 دقیقه)
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{واژه‌های کلیدی}
+
+واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
+باشند).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\lr{formal model} / \lr{formalize} & مدل فرمال / فرمال کردن & نوشتن
+نظریه به شکل معادله یا الگوریتم \\
+\lr{simulation} & شبیه‌سازی & تولید داده‌ی مصنوعی با اجرای مدل \\
+\lr{fit} / \lr{fitting} & برازش & تنظیم پارامترها تا مدل با داده جور
+شود \\
+\lr{parameter recovery} & بازیابی پارامتر & آیا برازش، پارامترهای معلوم
+شبیه‌سازی را برمی‌گرداند \\
+\lr{likelihood} & درست‌نمایی & احتمال داده به‌عنوان تابعی از پارامترها \\
+\lr{criterion (c)} & ملاک & آستانه‌ی تصمیم؛ نشان‌دهنده‌ی سوگیری پاسخ \\
+\lr{least squares} & کمترین مربعات & روش برازش با کمینه کردن مجموع مربع
+خطاها \\
+\lr{cross-validation (CV)} & اعتبارسنجی متقابل \lr{(cross-validation)} &
+برازش روی بخشی از داده و آزمون روی بخش کنارگذاشته \\
+\lr{sensitivity (d′)} & حساسیت & فاصله‌ی توزیع علامت و نویز \\
+\lr{parameter} & پارامتر & کمیت قابل تنظیم مدل که بین افراد یا شرایط فرق
+می‌کند \\
+\lr{SSE} / \lr{RMSD} & مجموع مربعات خطا / ریشه‌ی میانگین مربع انحراف &
+معیارهای فاصله‌ی داده و پیش‌بینی \\
+\lr{log-likelihood} / \lr{NLL} & لگاریتم درست‌نمایی / منفی آن & مقداری که
+بهینه‌سازها کمینه یا بیشینه می‌کنند \\
+\lr{estimate} / \lr{estimator} & برآورد / برآوردگر & مقدار به‌دست‌آمده
+برای پارامتر / روش به دست آوردن آن \\
+\lr{noise} & نویز & تغییرات تصادفی در شواهد یا در داده \\
+\lr{deviance (G²)} & انحراف \lr{(deviance)} & معیار عدم برازش نسبت به
+مدل اشباع‌شده \\
+\lr{AIC} / \lr{BIC} & معیار اطلاعاتی آکائیکه / بیزی & برازش به‌علاوه‌ی
+جریمه برای تعداد پارامتر \\
+\lr{research design} & طرح آزمایش & شرایط، تعداد کوشش‌ها و نمونه‌ها \\
+\lr{confusion matrix} & ماتریس درهم‌ریختگی \lr{(confusion matrix)} &
+\lr{P(}مدل انتخاب‌شده \\
+\lr{hit} & اصابت \lr{(hit)} & پاسخ «بله» وقتی علامت وجود دارد \\
+\lr{response time (RT)} & زمان واکنش & فاصله‌ی ارائه‌ی محرک تا پاسخ \\
+\lr{signal detection theory (SDT)} & نظریه‌ی تشخیص علامت & مدلی که حساسیت
+را از سوگیری پاسخ جدا می‌کند \\
+\lr{evidence} & شواهد & اطلاعاتی که برای تصمیم جمع می‌شود \\
+\lr{exponential} / \lr{power function} & تابع نمایی / توانی & دو شکل
+رایج برای منحنی فراموشی و یادگیری \\
+\lr{training} / \lr{test data} & داده‌ی آموزش / آزمون & داده‌ی برازش /
+داده‌ی کنارگذاشته برای سنجش \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{اهداف یادگیری}
+
+در پایان این هفته، دانشجویان می‌توانند:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  کل مسیر مدل‌سازی (فرمال‌سازی \ensuremath{\leftarrow} شبیه‌سازی \ensuremath{\leftarrow} برازش \ensuremath{\leftarrow} ارزیابی \ensuremath{\leftarrow} بازیابی \ensuremath{\leftarrow}
+  تفسیر) را روی یک مسئله‌ی جدید بدون راهنمایی قدم‌به‌قدم \textbf{اجرا
+  کنند}.
+\item
+  درست‌نمایی، روش برازش و روش ارزیابی مناسب برای یک مجموعه‌داده را
+  \textbf{انتخاب کنند} و هر انتخاب را \textbf{توجیه کنند}.
+\item
+  مجموعه‌ای از برازش‌های مدل‌های رقیب، معیارهای اطلاعاتی و نتایج بازیابی را
+  \textbf{تفسیر کنند} و یک نتیجه‌گیری قابل دفاع که محدودیت‌هایش را می‌گوید
+  \textbf{بنویسند}.
+\item
+  فرمول‌های کلیدی هفته‌های 1 تا 7 (برگه‌ی فرمول میان‌ترم) را \textbf{به خاطر
+  بیاورند} و \textbf{به کار ببرند}.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مقدمه}
+
+در هفت هفته یک جعبه‌ابزار را تکه‌تکه ساختیم: مدل‌های فرمال (هفته‌های 1\lr{--}2)،
+کمترین مربعات و بهینه‌سازی (هفته‌ی 3)، بیشینه درست‌نمایی (هفته‌ی 4)، عدم
+قطعیت و چند شرکت‌کننده (هفته‌ی 5)، \lr{cross-validation} (هفته‌ی 6)،
+معیارهای اطلاعاتی و بازیابی (هفته‌ی 7). هر \lr{lab} یکی دو تکه را تمرین
+کرد. پژوهش واقعی همه‌ی آن‌ها را هم‌زمان، به ترتیب درست و با قضاوت درباره‌ی
+اینکه چه چیزی مهم است، لازم دارد.
+
+درس امروز کل مسیر را روی یک مسئله‌ی \textbf{جدید} اجرا می‌کند: آیا مطالعه‌ی
+بیشتر یک کلمه آن را \emph{به‌یادماندنی‌تر} می‌کند (حساسیت بیشتر)، و اگر
+بله، حساسیت با تکرارها چطور رشد می‌کند؟ این مطالعه‌ی موردی بهترین آمادگی
+برای میان‌ترم هم هست که از شما می‌خواهد همین نوع تصمیم‌ها را بگیرید و توجیه
+کنید.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{جزوه‌ی درس}
+
+\paragraph{به زبان ساده}
+
+این هفته همه‌ی تکه‌های نیمه‌ی اول درس را روی یک سؤال جدید کنار هم می‌گذارد:
+\emph{آیا مطالعه‌ی بیشتر یک کلمه، بازشناسی بعدی آن را آسان‌تر می‌کند؟}
+نظریه را به شکل یک مدل \lr{SDT} می‌نویسیم که در آن حساسیت \(d'\) به تعداد
+تکرارها بستگی دارد. سه نسخه برای این وابستگی پیشنهاد می‌کنیم (بدون اثر،
+افزایش هموار، هر الگویی)، هر سه را با بیشینه‌ی درست‌نمایی برازش می‌کنیم،
+بررسی می‌کنیم که آیا هرکدام عدم برازش دارد (\(G^2\))، آن‌ها را مقایسه
+می‌کنیم \lr{(LRT}، \lr{AIC}، \lr{BIC)}، بررسی می‌کنیم که روش در این طرح
+آزمایش کار می‌کند (بازیابی)، و در پایان مدل برنده را به زبان ساده‌ی
+روان‌شناختی تفسیر می‌کنیم، از جمله اینکه داده چه چیزهایی را
+\emph{نمی‌تواند} به ما بگوید. اگر بتوانید این یک مثال را از اول تا آخر
+دنبال کنید، نیمه‌ی اول درس را فهمیده‌اید.
+
+\textbf{زمان‌بندی پیشنهادی (60 دقیقه):} نقشه‌ی مفهومی 10 · مطالعه‌ی موردی
+40 · توضیح آزمون 10.
+
+\subsubsection{1. نقشه‌ی مفهومی هفته‌های 1 تا 7}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+مرحله
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+سؤال
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ابزارها
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+هفته
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+فرمال‌سازی & نظریه دقیقاً چه ادعایی دارد؟ & پنج جزء یک مدل؛ پارامترها
+به‌عنوان سازه‌های روان‌شناختی & 1\lr{--}2 \\
+شبیه‌سازی & مدل چه کاری می‌تواند (و نمی‌تواند) بکند؟ & شبیه‌سازی مستقیم،
+بررسی‌های تحلیلی، نمودار پیش‌بینی‌ها & 1\lr{--}2 \\
+برازش & کدام مقادیر پارامتر داده‌ها را بهتر توضیح می‌دهند؟ & \lr{SSE} /
+کمترین مربعات؛ \lr{NLL} / \lr{MLE}؛ شبکه، \lr{Nelder\lr{--}Mead}،
+\lr{L-BFGS-B}؛ \lr{multi-start}؛ کران‌ها و \lr{reparameterization} &
+3\lr{--}4 \\
+سنجش عدم قطعیت & برآوردها چقدر دقیق‌اند؟ & \lr{SE} از \lr{Hessian
+(Wald)}، \lr{profile likelihood}، \lr{bootstrap} & 5 \\
+ارزیابی (مطلق) & آیا عدم برازش مدل از نویز بیشتر است؟ & باقی‌مانده‌ها،
+\(G^2\) & 2\lr{--}4 \\
+ارزیابی (نسبی) & کدام مدل بهتر تعمیم پیدا می‌کند؟ & \lr{CV}، \lr{LRT}،
+\lr{AIC/AICc/BIC}، وزن‌ها & 6\lr{--}7 \\
+بازیابی & آیا روش با این طرح آزمایش می‌تواند کار کند؟ & بازیابی پارامتر،
+بازیابی مدل (ماتریس‌های درهم‌ریختگی و معکوس) & 7 \\
+تفسیر & از نظر روان‌شناختی چه معنایی دارد و چه چیزی را نمی‌توانیم نتیجه
+بگیریم؟ & معنای پارامترها، محدودیت‌های طرح آزمایش، خطاهای میانگین‌گیری &
+همه \\
+\end{longtable}
+}
+
+\textbf{راهنمای انتخاب درست‌نمایی:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+داده
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+مدل نویز طبیعی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+هفته
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+شمارش از \(n\) (یادآوری، \lr{hit}، \lr{false alarm)} & دوجمله‌ای & 2،
+4 \\
+انتخاب‌های دودویی تکی & برنولی & 4 \\
+پیوسته، تقریباً متقارن، با واریانس برابر (مثلاً میانگین زمان واکنش بلوک‌ها)
+& گاوسی (= کمترین مربعات) & 4\lr{--}5 \\
+\end{longtable}
+}
+
+\subsubsection{2. مطالعه‌ی موردی: آیا تکرار حساسیت حافظه را بالا می‌برد؟}
+
+\textbf{طرح آزمایش.} در یک آزمایش حافظه‌ی بازشناسی، کلمه‌ها 1، 2 یا 4 بار
+مطالعه می‌شوند. در آزمون، برای هر شرط تکرار 100 کلمه‌ی قدیمی و 100 کلمه‌ی
+جدید (فریبنده یا \lr{lure)} ارائه می‌شود و شرکت‌کننده می‌گوید «قدیمی» یا
+«جدید». چون کلمه‌های فریبنده هرگز مطالعه نشده‌اند، \textbf{یک} نرخ
+\lr{false alarm} مشترک برای همه‌ی شرایط و \textbf{سه} نرخ \lr{hit} داریم.
+
+\textbf{فرمال‌سازی \lr{(SDT} با ملاک مطلق).} کلمه‌های جدید شواهد
+\(X \sim \mathcal{N}(0, 1)\) و کلمه‌های قدیمی‌ای که \(r\) بار مطالعه
+شده‌اند \(X \sim \mathcal{N}(d'_r, 1)\) تولید می‌کنند؛ شرکت‌کننده اگر
+\(X > \kappa\) باشد می‌گوید «قدیمی»، با یک ملاک \(\kappa\) برای همه‌ی
+آیتم‌های آزمون (آیتم‌ها در هم آمیخته‌اند، پس شرکت‌کننده نمی‌داند هر آیتم از
+کدام شرط است). پس
+
+\[
+H_r = \Phi(d'_r - \kappa), \qquad F = \Phi(-\kappa).
+\]
+
+\textbf{سه مدل رقیب برای وابستگی \(d'\) به تکرارها:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+مدل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(d'_r\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ادعا
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathcal{M}_0\) (بی‌اثر) & \(\delta_0\) & 2 & تکرار حساسیت را تغییر
+نمی‌دهد \\
+\(\mathcal{M}_1\) (خطی\lr{--}لگاریتمی) & \(\delta_0 + \delta_1 \log_2 r\) & 3
+& هر \emph{دو برابر شدن} مطالعه همان مقدار حساسیت اضافه می‌کند \\
+\(\mathcal{M}_2\) (آزاد) & \(d'_1, d'_2, d'_4\) & 4 & هر الگویی
+(اشباع‌شده: 4 پارامتر برای 4 نرخ) \\
+\end{longtable}
+}
+
+\(\mathcal{M}_0 \subset \mathcal{M}_1 \subset \mathcal{M}_2\)، پس همه‌ی
+جفت‌ها \lr{nested} هستند.
+
+\textbf{درست‌نمایی.} دوجمله‌ای برای هر یک از چهار شمارش (سه شمارش
+\lr{hit}، یک شمارش \lr{false alarm).}
+
+کد \lr{lab} در ادامه همه‌ی مراحل را اجرا می‌کند. دانشجویان آن را برای
+آمادگی آزمون در خانه اجرا می‌کنند؛ در درس خروجی‌ها مرور می‌شوند.
+
+\paragraph{خواندن ریاضی}
+
+\begin{itemize}
+\tightlist
+\item
+  \(H_r = \Phi(d'_r - \kappa)\) و \(F = \Phi(-\kappa)\): همان \lr{SDT}
+  هفته‌ی 2، ولی ملاک به‌صورت یک موقعیت \textbf{مطلق} \(\kappa\) روی محور
+  شواهد نوشته شده (از مرکز منحنی «کلمه‌ی جدید» سنجیده می‌شود) به جای اینکه
+  نسبت به نقطه‌ی وسط سنجیده شود. کلمه‌های جدید: منحنی در 0، پس \(F\) مساحت
+  سمت راست \(\kappa\) است، یعنی \(\Phi(-\kappa)\). کلمه‌های قدیمی که
+  \(r\) بار مطالعه شده‌اند: منحنی در \(d'_r\)، پس
+  \(H_r = \Phi(d'_r - \kappa)\).
+\item
+  یک \(\kappa\) برای همه‌ی شرایط: همه‌ی کلمه‌های آزمون با هم مخلوط‌اند، پس
+  شرکت‌کننده نمی‌تواند برای کلمه‌هایی که یک بار و کلمه‌هایی که چهار بار
+  مطالعه شده‌اند آستانه‌ی متفاوتی به کار ببرد.
+\item
+  \(\log_2 r\): لگاریتم در پایه‌ی 2، پس \(\log_2 1 = 0\)،
+  \(\log_2 2 = 1\) و \(\log_2 4 = 2\). در مدل \(\mathcal{M}_1\)،
+  \(d'_r = \delta_0 + \delta_1\log_2 r\) یعنی: \(\delta_0\) حساسیت بعد
+  از یک بار مطالعه است، و هر \emph{دو برابر} شدن مطالعه \(\delta_1\)
+  اضافه می‌کند.
+\item
+  \textbf{عددهای مثال حل‌شده:} \(\hat\kappa = 1.04\) می‌دهد
+  \(F = \Phi(-1.04) = 0.15\) \ensuremath{\checkmark}. با \(\hat d'_1 = 0.82\):
+  \(H_1 = \Phi(0.82 - 1.04) = \Phi(-0.22) = 0.41\)، نزدیک مقدار
+  مشاهده‌شده‌ی 0.40 \ensuremath{\checkmark}.
+\end{itemize}
+
+\paragraph{برای یک مهندس}
+
+مسیر نقشه‌ی مفهومی همان روند \textbf{شناسایی سیستم \lr{(system
+identification)}} است که می‌شناسید: ساختارهای مدل نامزد را انتخاب کن،
+پارامترها را تخمین بزن \lr{(ML)}، اعتبارسنجی کن (آزمون باقی‌مانده‌ها \ensuremath{\approx}
+\(G^2\))، مرتبه‌ی مدل را انتخاب کن \lr{(LRT/AIC/BIC} \ensuremath{\approx}
+\lr{GLRT/AIC/MDL)}، و روش را روی داده‌ی شبیه‌سازی‌شده با حقیقت معلوم وارسی
+کن (بازیابی). دو تفاوت ارزش تأکید در کلاس را دارند: «سیستم» یک آدم است
+که خود پارامترهایش نتیجه‌ی علمی‌اند، و مقدار داده با معیارهای مهندسی خیلی
+کم است (400 پاسخ دودویی)، پس عدم قطعیت و بازیابی خیلی مهم‌ترند.
+
+\paragraph{برای مدرس}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{جدول نقشه‌ی مفهومی را ستون اصلی جلسه کنید.} برای هر سطر، خروجی
+  متناظر در مطالعه‌ی موردی را نشان دهید (مثلاً «ارزیابی مطلق» \ensuremath{\leftarrow} ستون
+  \(G^2\)). دانشجوها می‌بینند هر ابزار جایی دارد.
+\item
+  \textbf{پیش از خودتان از کلاس بخواهید تفسیر کند.} جدول نتایج را بدون
+  پاراگراف تفسیر نشان دهید و بگذارید گروه‌های کوچک دو جمله بنویسند: «چه
+  نتیجه‌ای می‌گیریم و چه نتیجه‌ای نمی‌توانیم بگیریم؟» بعد با متن مقایسه
+  کنید. این دقیقاً مهارتی است که میان‌ترم می‌سنجد.
+\item
+  \textbf{توضیح امتحان:} به دانشجوها بگویید امتحان به \emph{تصمیم‌های
+  مستدل} (کدام درست‌نمایی، کدام معیار، چرا بازیابی مهم است) بیشتر از
+  محاسبه نمره می‌دهد. یک سؤال به سبک امتحان از بخش خودآزمایی نشان دهید.
+\item
+  \textbf{مشاوره‌ی پروژه (وقت \lr{lab):}} از هر تیم سه سؤال بپرسید: سؤال
+  شناختی شما چیست؟ کدام پارامتر یا مقایسه‌ی مدل به آن جواب می‌دهد؟ آیا طرح
+  آزمایش شما می‌تواند آن را بازیابی کند؟ بیشتر پیشنهادهای ضعیف در سؤال
+  سوم شکست می‌خورند.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مثال حل‌شده}
+
+نتایج مطالعه‌ی موردی برای یک شرکت‌کننده‌ی شبیه‌سازی‌شده (مدل واقعی
+\(\mathcal{M}_1\) با \(\delta_0 = 0.8\)، \(\delta_1 = 0.6\)،
+\(\kappa = 1.0\))، از کد بخش \lr{lab.} اعداد گرد شده‌اند.
+
+\textbf{قدم 1: داده.}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+شرط & کلمه‌های قدیمی & پاسخ «قدیمی» & نرخ \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(r = 1\) & 100 & 40 & 0.40 \\
+\(r = 2\) & 100 & 66 & 0.66 \\
+\(r = 4\) & 100 & 80 & 0.80 \\
+جدید (فریبنده) & 100 & 15 & 0.15 \\
+\end{longtable}
+}
+
+\textbf{قدم 2: برازش و ارزیابی} \lr{(MLE}، \(N = 400\) پاسخ):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{landscape}\small
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+مدل
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{NLL}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(G^2\) \lr{(df}، \(p\))
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{AIC}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{BIC}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(w_{\text{\lr{AIC}}}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(w_{\text{\lr{BIC}}}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\hat d'_{1,2,4}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\hat\kappa\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathcal{M}_0\) بی‌اثر & 2 & 27.27 & 35.55 (2، \lr{\textless} .001) &
+58.54 & 66.52 & 0.00 & 0.00 & 1.34، 1.34، 1.34 & 1.04 \\
+\(\mathcal{M}_1\) خطی\lr{--}لگاریتمی & 3 & 9.77 & 0.54 (1، .46) &
+\textbf{25.53} & \textbf{37.51} & \textbf{0.67} & \textbf{0.94} & 0.82،
+1.37، 1.93 & 1.04 \\
+\(\mathcal{M}_2\) آزاد & 4 & 9.50 & 0 (اشباع‌شده) & 26.99 & 42.96 & 0.33
+& 0.06 & 0.78، 1.45، 1.88 & 1.04 \\
+\end{longtable}
+\end{landscape}
+}
+
+آزمون‌های نسبت درست‌نمایی: \(\mathcal{M}_0\) در برابر \(\mathcal{M}_1\):
+\(\Lambda = 35.01\)، \lr{df} = 1، \(p < .001\)؛ \(\mathcal{M}_1\) در
+برابر \(\mathcal{M}_2\): \(\Lambda = 0.54\)، \lr{df} = 1، \(p = .46\).
+
+\textbf{بازیابی با این طرح آزمایش} (کد \lr{lab}، بلوک دوم): پارامترهای
+\(\mathcal{M}_1\) خوب بازیابی می‌شوند (\(r = 0.89\) تا \(0.93\)) و
+\lr{BIC} مدل تولیدکننده را در 87 تا 98 درصد شبیه‌سازی‌ها شناسایی می‌کند.
+
+\textbf{قدم 3: تفسیر.} تکرار به‌وضوح حساسیت را بالا می‌برد: مدل بی‌اثر
+به‌شدت بد برازش می‌شود (\(G^2 = 35.5\)، \(p < .001\)) و همه‌ی معیارها آن را
+رد می‌کنند. مدل خطی\lr{--}لگاریتمی با یک پارامتر کمتر به خوبی مدل اشباع‌شده
+برازش می‌شود \lr{(LRT} با \(p = .46\)) و هم \lr{AIC} و هم \lr{BIC} آن را
+ترجیح می‌دهند. برآورد \(\hat\delta_1 \approx 0.55\) یعنی هر دو برابر شدن
+مطالعه تقریباً نیم واحد \(d'\) اضافه می‌کند. نتایج بازیابی نشان می‌دهد که
+با این طرح آزمایش، هم به پارامترها و هم به انتخاب مدل می‌شود اعتماد کرد.
+هشدارها: این یک شرکت‌کننده‌ی شبیه‌سازی‌شده است؛ با فقط سه سطح تکرار، یک روند
+خطی\lr{--}لگاریتمی را نمی‌شود از خیلی منحنی‌های صعودی دیگر (مثلاً یک تابع توانی
+از \(r\)) جدا کرد؛ و یک ملاک واحد \(\kappa\) فرض می‌کند شرکت‌کننده پیش از
+پاسخ نمی‌داند یک آیتم چند بار مطالعه شده است.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{\lr{lab} (2 ساعت): آزمون میان‌ترم + مشاوره‌ی
+پروژه}{lab (2 ساعت): آزمون میان‌ترم + مشاوره‌ی پروژه}}
+
+\subsubsection{\texorpdfstring{آزمون میان‌ترم (90 دقیقه، در زمان
+\lr{lab)}}{آزمون میان‌ترم (90 دقیقه، در زمان lab)}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{شکل:} کتبی، کتاب‌بسته. یک \textbf{برگه‌ی فرمول} (در ادامه) داده
+  می‌شود. بدون لپ‌تاپ: سؤال‌ها شامل خواندن تکه‌کدهای کوتاه و تفسیر
+  خروجی‌هاست، نه نوشتن کد از صفر.
+\item
+  \textbf{محدوده:} هفته‌های 1 تا 7 (فصل‌های 1 تا 3)، با تأکید بر \emph{فهم
+  و تفسیر} (هدف ویژه‌ی 2 درس).
+\item
+  \textbf{انواع سؤال:} (1) سؤال‌های مفهومی کوتاه؛ (2) یک محاسبه‌ی دستی
+  (مثلاً \(d'\) و \(c\)، یک درست‌نمایی یا \lr{NLL}، \lr{AIC/BIC} و وزن‌ها)؛
+  (3) خواندن کد و پیش‌بینی یا توضیح خروجی آن؛ (4) تفسیر یک جدول برازش،
+  نمودار باقی‌مانده‌ها یا ماتریس بازیابی/درهم‌ریختگی؛ (5) یک سؤال کوتاه
+  طراحی («چه چیزی را تغییر می‌دادید و چرا؟»).
+\item
+  \textbf{وزن:} 3 نمره از 20.
+\item
+  خود آزمون میان‌ترم با پاسخ‌های نمونه در مواد ارزشیابی درس آمده است.
+\end{itemize}
+
+\textbf{برگه‌ی فرمولی که در آزمون داده می‌شود:}
+
+\[
+\begin{aligned}
+&d' = \Phi^{-1}(H) - \Phi^{-1}(F), \quad c = -\tfrac12[\Phi^{-1}(H) + \Phi^{-1}(F)], \quad H = \Phi(d'/2 - c), \quad F = \Phi(-d'/2 - c)\\
+&f_{\exp}(t) = A e^{-\lambda t}, \quad f_{\text{\lr{pow}}}(t) = A(1+t)^{-d}, \quad P_c^{\text{\lr{RW}}} = \frac{1-r^z}{1-r^a},\ r = \frac{1-v}{1+v}, \quad \mathbb{E}[T] = \frac{aP_c - z}{v}\\
+&\mathrm{SSE} = \textstyle\sum_i (y_i - \hat y_i)^2, \quad \mathrm{RMSD} = \sqrt{\mathrm{SSE}/N}\\
+&\ell(\boldsymbol\theta) = \textstyle\sum_i \big[\ln\binom{n_i}{y_i} + y_i\ln f_i + (n_i - y_i)\ln(1-f_i)\big], \quad \mathrm{NLL} = -\ell\\
+&G^2 = 2(\ell_{\text{\lr{sat}}} - \hat\ell), \quad \Lambda = 2(\hat\ell_1 - \hat\ell_0) \sim \chi^2_{\Delta k}\\
+&\mathrm{SE} \approx \sqrt{\mathrm{diag}(\mathbf{H}^{-1})}, \quad \text{\lr{Wald CI: }} \hat\theta \pm 1.96\,\mathrm{SE}, \quad \text{\lr{profile CI: }} 2(\mathrm{NLL}_{\text{\lr{prof}}} - \mathrm{NLL}_{\min}) \le 3.84\\
+&\mathrm{AIC} = 2\,\mathrm{NLL} + 2k, \quad \mathrm{AICc} = \mathrm{AIC} + \tfrac{2k(k+1)}{N-k-1}, \quad \mathrm{BIC} = 2\,\mathrm{NLL} + k\ln N, \quad w_i = \tfrac{e^{-\Delta_i/2}}{\sum_j e^{-\Delta_j/2}}
+\end{aligned}
+\]
+
+مقادیر بحرانی: \(\chi^2_{1,.95} = 3.84\)، \(\chi^2_{2,.95} = 5.99\)،
+\(\chi^2_{3,.95} = 7.81\). \lr{quantile}ها:
+\(\Phi^{-1}(0.84) \approx 1.0\)، \(\Phi^{-1}(0.975) = 1.96\). لگاریتم‌ها:
+\(\ln 2 = 0.693\)، \(\ln 10 = 2.303\)، \(\ln 100 = 4.605\)،
+\(\ln 400 = 5.991\).
+
+\subsubsection{مشاوره‌ی پروژه (30 دقیقه، بعد از آزمون)}
+
+هر گروه 5 تا 10 دقیقه با مدرس یا دستیار آموزشی درباره‌ی ایده‌ی پروژه‌اش پیش
+از موعد پیشنهاد (ابتدای هفته‌ی 9) صحبت می‌کند. یک پاراگراف توصیف از سؤال،
+مدل و داده‌تان بیاورید.
+
+\subsubsection{مطالعه‌ی شخصی: مطالعه‌ی موردی در کد (پیش از آزمون اجرا
+کنید)}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week08.py}}, \lr{cell} 1 ·
+سلول 1
+\end{quote}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week08.py}}, \lr{cell} 2 ·
+سلول 2
+\end{quote}
+
+\textbf{خروجی مورد انتظار (بلوک اول):}
+
+\Needspace{13\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+hits per condition: [40 66 80]  false alarms: 15
+           k     NLL      G2  df  p(G2)     AIC     BIC            d'_1,2,4  kappa  w_AIC  w_BIC
+model
+M0_none    2  27.269  35.549   2  0.000  58.538  66.521  [1.34, 1.34, 1.34]   1.04  0.000  0.000
+M1_loglin  3   9.766   0.543   1  0.461  25.533  37.507  [0.82, 1.37, 1.93]   1.04  0.674  0.938
+M2_free    4   9.495   0.000   0    NaN  26.990  42.956  [0.78, 1.45, 1.88]   1.04  0.326  0.062
+
+LRT M0 vs M1: 35.01 (df 1, p = 0.0000);  M1 vs M2: 0.54 (df 1, p = 0.461)
+\end{Verbatim}
+\end{latin}
+
+\textbf{خروجی مورد انتظار (بلوک دوم، حدود 1 دقیقه):}
+
+\Needspace{14\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+M1 recovery delta0 : r = 0.895, RMSE = 0.181
+M1 recovery delta1 : r = 0.930, RMSE = 0.113
+M1 recovery kappa  : r = 0.887, RMSE = 0.142
+
+BIC model recovery, P(selected | generated):
+           M0_none  M1_loglin  M2_free
+M0_none       0.98       0.02     0.00
+M1_loglin     0.05       0.93     0.02
+M2_free       0.10       0.03     0.87
+\end{Verbatim}
+\end{latin}
+
+یادداشت درباره‌ی مولد \(\mathcal{M}_2\) در بازیابی مدل: سه مقدار \(d'\)
+آن طوری کشیده می‌شوند که \(d'_4\) \emph{بین} \(d'_1\) و \(d'_2\) قرار
+بگیرد؛ یک الگوی غیریکنوا که \(\mathcal{M}_1\) نمی‌تواند تولید کند. در غیر
+این صورت داده‌های \(\mathcal{M}_2\) اغلب کاملاً با \(\mathcal{M}_1\)
+سازگار می‌بودند و «اشتباه گرفتن‌ها» بی‌معنی می‌شد.
+
+\textbf{سؤال‌های خودسنجی درباره‌ی مطالعه‌ی موردی} (در درس بحث می‌شوند): 1.
+چرا فقط یک نرخ \lr{false alarm} داریم، و این مدل \lr{SDT} را در مقایسه
+با هفته‌ی 2 چطور تغییر می‌دهد؟ 2. هر معیار کدام مدل را ترجیح می‌دهد، و آیا
+\lr{LRT}ها با آن موافق‌اند؟ 3. آیا \(\delta_1\) با این طرح آزمایش قابل
+بازیابی است؟ آیا \(\mathcal{M}_1\) از \(\mathcal{M}_0\) و
+\(\mathcal{M}_2\) قابل تشخیص است؟ 4. نتیجه‌ی روان‌شناختی را در یک جمله،
+همراه با مهم‌ترین هشدارش، بنویسید.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{ارتباط با هوش مصنوعی و
+\lr{LLM}ها}{ارتباط با هوش مصنوعی و LLMها}}
+
+\textbf{\lr{chatbot} به‌عنوان هم‌درس: اعتماد کن، ولی بررسی کن.} بسیاری از
+دانشجوها از \lr{LLM}ها برای توضیح مفاهیم و بررسی جواب‌های امتحانی استفاده
+می‌کنند. این می‌تواند کمک کند، ولی \lr{LLM}ها می‌توانند محاسبه‌هایی روان،
+مطمئن و غلط تولید کنند. با جواب یک \lr{chatbot} مثل پیش‌بینی یک مدل رفتار
+کنید: آن را با چیزی که خودتان می‌توانید حساب کنید بسنجید. کد پایین یک
+جواب ازپیش‌آماده‌ی \lr{chatbot} به سؤال \lr{B3} میان‌ترم \lr{(AIC} برای سه
+مدل) را بررسی می‌کند. \lr{chatbot} به جای \(2\,\mathrm{NLL} + 2k\) از
+\(2\,\mathrm{NLL} + k\) استفاده کرده.
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week08.py}}, \lr{cell} 3 ·
+سلول 3
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{9\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+M1: chatbot 222.0, correct 224.0  WRONG
+M2: chatbot 218.0, correct 221.0  WRONG
+M3: chatbot 218.8, correct 223.8  WRONG
+Akaike weights, chatbot: [0.07 0.55 0.37]  correct: [0.15 0.68 0.17]
+\end{Verbatim}
+\end{latin}
+
+\lr{chatbot} اتفاقاً برنده‌ی درست (\(\mathcal{M}_2\)) را انتخاب می‌کند، ولی
+همه‌ی عددها غلط‌اند و پشتیبانی از پیچیده‌ترین مدل را دو برابر می‌کند. مصحح
+نمره‌ی کمی می‌داد، و در یک تحلیل واقعی این خطا به نفع \lr{overfitting}
+تمام می‌شد.
+
+\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star} کدام خطا در فرمول
+دقیقاً عددهای \lr{chatbot} را تولید می‌کند؟ \lr{BIC} با همین خطا چه شکلی
+می‌شد؟ - \ensuremath{\star}\ensuremath{\star} سه «مورد آزمون» (ورودی با جواب معلوم) کوچک برای فرمول‌های
+\lr{SDT} هفته‌ی 2 بنویسید که بتوانید با آن هر جوابی را، چه از
+\lr{chatbot} چه از هم‌کلاسی، بررسی کنید. - یادآوری: در خود امتحان هیچ
+ابزار هوش مصنوعی مجاز نیست، و قانون درس درباره‌ی استفاده از هوش مصنوعی در
+تکلیف‌ها در \lr{\nolinkurl{assessments/README.md}} آمده است.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{اشتباهات رایج و برداشت‌های نادرست (10 مورد اول از هفته‌های 1
+تا 7)}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  برازش خوب را شاهد درستی مدل دانستن (هفته‌های 3، 6).
+\item
+  فراموش کردن علامت منفی: بهینه‌سازها \textbf{منفی} لگاریتم درست‌نمایی را
+  کمینه می‌کنند (هفته‌ی 4).
+\item
+  محدود نکردن احتمال‌ها، که باعث می‌شود \(\ln 0\) برازش را از کار بیندازد
+  (هفته‌ی 4).
+\item
+  اعتماد به \lr{\nolinkurl{success=True}}، یک شروع تنها، یا
+  \lr{Nelder\lr{--}Mead} کران‌داری که روی یک کران فرو ریخته است (هفته‌های
+  3\lr{--}4).
+\item
+  کمترین مربعات برای شمارش‌ها یا انتخاب‌ها بدون فکر کردن به مدل نویز
+  (هفته‌های 3\lr{--}4).
+\item
+  گزارش برآوردها بدون عدم قطعیت، یا استفاده از بازه‌های \lr{Wald} نزدیک
+  کران‌ها (هفته‌ی 5).
+\item
+  نتیجه‌گیری درباره‌ی افراد از منحنی‌های میانگین‌گیری‌شده (هفته‌ی 5).
+\item
+  نشت داده‌ی آزمون به آموزش در \lr{cross-validation} (هفته‌ی 6).
+\item
+  مقایسه‌ی مدل‌های \lr{non-nested} با \lr{LRT}، یا خواندن مقادیر \lr{AIC}
+  به‌تنهایی به‌جای تفاوت‌هایشان (هفته‌ی 7).
+\item
+  تفسیر پارامترها یا مقایسه‌ی مدل‌ها بدون مطالعه‌ی بازیابی با طرح آزمایش
+  واقعی (هفته‌ی 7).
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{خودآزمایی (سؤال‌های تمرینی به سبک آزمون)}
+
+\textbf{1. (مفهومی)} در سه جمله توضیح دهید چرا مدل نمایی با مجانب
+داده‌های هفته‌ی 2 را بهتر از مدل توانی برازش کرد، با اینکه مدل توانی داده
+را تولید کرده بود. \textbf{پاسخ} مدل مجانبی یک پارامتر اضافه دارد، پس
+می‌تواند خودش را با نویز خاص نمونه، اینجا نقاط صاف‌نمای فاصله‌های طولانی،
+تطبیق دهد. برازش آموزش بهتر برای مدل‌های منعطف‌تر تضمین‌شده است و شاهد
+درستی نیست. برای قضاوت به معیارهای تعمیم \lr{(CV}، \lr{AIC/BIC)} و
+مطالعات بازیابی نیاز داریم.
+
+\textbf{2. (محاسبه)} یک مشاهده‌گر \(H = 0.84\) و \(F = 0.16\) دارد.
+\(d'\) و \(c\) را حساب کنید (از \(\Phi^{-1}(0.84) \approx 1.0\) استفاده
+کنید). \textbf{پاسخ} \(d' = 1.0 - (-1.0) = 2.0\)؛
+\(c = -\tfrac12(1.0 + (-1.0)) = 0\)، پس مشاهده‌گر بی‌سوگیری است.
+
+\textbf{3. (محاسبه)} دو مدل روی \(N = 100\) پاسخ دودویی برازش شده‌اند.
+مدل \lr{A:} \(k = 2\)، \lr{NLL} = 60.0. مدل \lr{B:} \(k = 4\)، \lr{NLL}
+= 57.5. \lr{AIC} و \lr{BIC} هر دو را حساب کنید. هر معیار کدام را ترجیح
+می‌دهد؟ (\(\ln 100 = 4.605\)) \textbf{پاسخ} \lr{AIC: A} = 124.0، \lr{B} =
+123.0، پس \lr{AIC} (کمی) \lr{B} را ترجیح می‌دهد. \lr{BIC: A} = 120 + 9.21
+= 129.21؛ \lr{B} = 115 + 18.42 = 133.42، پس \lr{BIC A} را ترجیح می‌دهد.
+معیارها با هم مخالف‌اند چون \lr{BIC} هر پارامتر را 4.6 به‌جای 2 جریمه
+می‌کند.
+
+\textbf{4. (خواندن کد)} این تابع \lr{NLL} چه اشکالی دارد و بهینه‌ساز چه
+خواهد کرد؟
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week08.py}}, \lr{cell} 4 ·
+سلول 4
+\end{quote}
+
+\textbf{پاسخ} (1) لگاریتم درست‌نمایی را برمی‌گرداند نه منفی آن را، پس
+\lr{\nolinkurl{minimize}} پارامترها را به سمت \emph{بدترین} برازش
+(لگاریتم درست‌نمایی به سمت \ensuremath{-}\ensuremath{\infty}) می‌برد. (2) \lr{\nolinkurl{p}} محدود نشده،
+پس مقادیر پیش‌بینی‌شده‌ی 0 یا بیشتر از 1 مقدار \lr{\ensuremath{-}inf} یا \lr{nan}
+می‌دهند. اصلاح:
+\lr{\nolinkurl{return -np.sum(binom.logpmf(y, n, np.clip(p, EPS, 1 - EPS)))}}.
+
+\textbf{5. (تفسیر)} یک مطالعه‌ی بازیابی برای پارامتر \(A\) مقدار
+\(r(\text{\lr{true}}, \text{\lr{recovered}}) = 0.95\) و برای پارامتر \(B\) مقدار
+\(0.35\) می‌دهد. درباره‌ی مقاله‌ای که با این طرح آزمایش تفاوت گروه‌ها در
+\(B\) را گزارش می‌کند چه نتیجه‌ای می‌گیرید؟ \textbf{پاسخ} \(B\) با این طرح
+آزمایش ضعیف بازیابی می‌شود: برآوردها تحت تأثیر نویز یا \lr{trade-off}
+هستند، پس تفاوت گروه‌ها در \(B\) برآوردشده قابل تفسیر نیست. مقاله باید
+طرح آزمایش را بهتر کند یا \(B\) را تفسیر نکند.
+
+\textbf{6. (تفسیر)} یک \lr{confusion matrix BIC} دارای \lr{P(selected} =
+\lr{power} \lr{\textbar} \lr{generated} = \lr{asymptote)} = 0.58 است.
+برنده‌ی \lr{BIC} در داده‌ی واقعی شما مدل توانی است. چه باید بنویسید؟
+\textbf{پاسخ} اینکه \lr{BIC} مدل توانی را ترجیح می‌دهد، ولی با این طرح
+آزمایش \lr{BIC} اغلب برای داده‌هایی که مدل مجانبی تولید کرده هم مدل توانی
+را انتخاب می‌کند، پس شواهد بین این دو به‌خوبی تمایز نمی‌گذارد. احتمال‌های
+معکوس و نتایج \lr{AIC/CV} را گزارش کنید و طرحی با فاصله‌های طولانی‌تر
+پیشنهاد دهید.
+
+\textbf{7. (طراحی)} می‌خواهید بدانید آیا یک دارو در مدل \lr{random walk}
+احتیاط (مرز \(a\)) را تغییر می‌دهد یا کیفیت شواهد \lr{(drift} \(v\)) را.
+چه داده‌ای باید جمع کنید و چرا دقت به‌تنهایی کافی نیست؟ \textbf{پاسخ}
+انتخاب‌ها \textbf{و} زمان‌های واکنش (ترجیحاً کل توزیع زمان واکنش) تحت دارو
+و دارونما. هم \(a\) بزرگ‌تر و هم \(v\) بزرگ‌تر دقت را بالا می‌برند، ولی
+\(a\) پاسخ‌ها را کند و \(v\) سریع می‌کند، پس فقط الگوی مشترک آن‌ها را از هم
+جدا می‌کند (هفته‌ی 1).
+
+\textbf{8. (مفهومی)} اگر بخواهیم پیش‌بینی \lr{trial}های جدید را آزمون
+کنیم، چرا باید بخش‌های \lr{cross-validation} برای داده‌های فراموشی داخل
+فاصله‌ها ساخته شوند؟ \textbf{پاسخ} تا هر مجموعه‌ی آموزش همه‌ی فاصله‌های
+نگهداری (شرایط) را داشته باشد و آزمون درباره‌ی آیتم‌های جدید در شرایط
+معلوم باشد. کنار گذاشتن کل فاصله‌ها برون‌یابی به شرایط جدید را آزمون می‌کند
+که ادعای تعمیم دیگری است.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{تکلیف}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{A3} (مقایسه و بازیابی مدل)} در ابتدای درس هفته‌ی 9 تحویل
+  داده می‌شود.
+\item
+  \textbf{پیشنهاد پروژه} در ابتدای درس هفته‌ی 9 تحویل داده می‌شود (حداکثر
+  2 صفحه؛ هفته‌ی 7 را ببینید).
+\item
+  این هفته تکلیف جدیدی نداریم. برای میان‌ترم با اجرای مطالعه‌ی موردی بالا
+  و جواب دادن به سؤال‌های تمرینی بدون نگاه کردن به پاسخ‌ها آماده شوید.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مطالعه‌ی بیشتر}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{Farrell} \lr{\&} \lr{Lewandowsky} (2018)، فصل‌های 2 تا 5 و 10.}
+  خلاصه‌ی فصل‌ها را به‌عنوان مرور کل نیمه‌ی اول درس دوباره بخوانید.
+\item
+  \textbf{\lr{Lee} \lr{\&} \lr{Wagenmakers} (2014)، فصل 11} \lr{(SDT).} توصیف
+  مدل را برای آمادگی هفته‌ی 9 بخوانید، که در آن شروع می‌کنیم پارامترها را
+  متغیرهای تصادفی با پیشین در نظر بگیریم.
+\end{itemize}
+
+\emph{پیش‌نمایش هفته‌ی 9:} نیمه‌ی دوم درس بیزی می‌شود. به‌جای یک بهترین
+برآورد به‌علاوه‌ی یک بازه‌ی اطمینان، کل توزیع احتمال پارامترها به شرط داده
+را حساب می‌کنیم.

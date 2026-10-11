@@ -1,109 +1,68 @@
-# Advanced Communication Networks — Bilingual Lecture Notes / جزوه‌های دوزبانهٔ شبکه‌های ارتباطی پیشرفته
+# Cognitive Modeling · مدل‌سازی شناختی
 
-[فارسی](README.fa.md)
+A 16-week bilingual Cognitive Modeling course, organized into six academic chapters. The complete English and Persian books and every weekly lecture are typeset in XeLaTeX with a green academic theme.
 
-A 26-lecture course on mobile communication networks from 2G to 6G. Each lecture and the syllabus have matching English and Persian LaTeX sources and ready-to-read PDFs. The lectures follow the syllabus of [AdvancedCommNetworks2026](https://github.com/AidinShekari/AdvancedCommNetworks2026); the text, figures and exercises here are original.
+## Complete books
 
-## Complete books / جزوهٔ کامل
+| English | فارسی |
+|---|---|
+| [Course-EN.pdf](00-full-notes/en/Course-EN.pdf) | [Course-FA.pdf](00-full-notes/fa/Course-FA.pdf) |
 
-- [English — all 26 lectures (PDF)](00-full-notes/en/AdvancedCommunicationNetworks-en.pdf)
-- [فارسی — هر ۲۶ درس (PDF)](00-full-notes/fa/AdvancedCommunicationNetworks-fa.pdf)
-- Syllabus / سرفصل: [English](00-syllabus/en/syllabus-en.pdf) · [فارسی](00-syllabus/fa/syllabus-fa.pdf)
+## Chapters and weekly lectures
 
-The complete PDFs contain the syllabus followed by lectures 01–26 and chapter bookmarks. They are assembled from the individual lecture PDFs.
+### 1. Fundamentals of Cognitive Modeling · مبانی مدل‌سازی شناختی
 
-## Lectures (English)
+| Week | English | فارسی |
+|---|---|---|
+| 01 | [Week 1: What Is a Cognitive Model?](01-foundations/week01/en/week01-en.pdf) | [هفته‌ی 1: مدل شناختی چیست؟](01-foundations/week01/fa/week01-fa.pdf) |
+| 02 | [Week 2: Anatomy of a Model: Signal Detection and Forgetting Curves](01-foundations/week02/en/week02-en.pdf) | [هفته‌ی 2: کالبدشکافی یک مدل: تشخیص علامت و منحنی‌های فراموشی](01-foundations/week02/fa/week02-fa.pdf) |
 
-| # | Lecture | PDF | Source |
-|---|---|---|---|
-| 01 | GSM, GPRS and EDGE | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/01-gsm-gprs-edge/en/lecture-01-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/01-gsm-gprs-edge/en/lecture-01-en.tex) |
-| 02 | 2G Circuit Switching | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/02-2g-circuit-switching/en/lecture-02-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/02-2g-circuit-switching/en/lecture-02-en.tex) |
-| 03 | 2G/3G Core Networks | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/03-2g-3g-core-networks/en/lecture-03-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/03-2g-3g-core-networks/en/lecture-03-en.tex) |
-| 04 | Mobility and Handover | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/04-mobility-handover/en/lecture-04-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/04-mobility-handover/en/lecture-04-en.tex) |
-| 05 | 4G LTE Architecture | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/05-lte-architecture/en/lecture-05-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/05-lte-architecture/en/lecture-05-en.tex) |
-| 06 | E-UTRAN: the LTE Radio Access Network | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/06-e-utran/en/lecture-06-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/06-e-utran/en/lecture-06-en.tex) |
-| 07 | LTE Scheduling | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/07-lte-scheduling/en/lecture-07-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/07-lte-scheduling/en/lecture-07-en.tex) |
-| 08 | Random Access Channel (RACH) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/08-random-access/en/lecture-08-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/08-random-access/en/lecture-08-en.tex) |
-| 09 | Evolved Packet Core (EPC) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/09-epc/en/lecture-09-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/09-epc/en/lecture-09-en.tex) |
-| 10 | Diameter Protocol | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/10-diameter/en/lecture-10-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/10-diameter/en/lecture-10-en.tex) |
-| 11 | Home Subscriber Server (HSS) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/11-hss/en/lecture-11-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/11-hss/en/lecture-11-en.tex) |
-| 12 | Mobility Management Entity (MME) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/12-mme/en/lecture-12-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/12-mme/en/lecture-12-en.tex) |
-| 13 | Serving and PDN Gateways (S-GW and P-GW) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/13-serving-pdn-gateways/en/lecture-13-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/13-serving-pdn-gateways/en/lecture-13-en.tex) |
-| 14 | 5G Networks: Introduction | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/14-5g-introduction/en/lecture-14-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/14-5g-introduction/en/lecture-14-en.tex) |
-| 15 | Software-Defined Networking (SDN) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/15-sdn/en/lecture-15-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/15-sdn/en/lecture-15-en.tex) |
-| 16 | Network Functions Virtualisation (NFV) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/16-nfv/en/lecture-16-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/16-nfv/en/lecture-16-en.tex) |
-| 17 | 3GPP Standardisation | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/17-3gpp-standardisation/en/lecture-17-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/17-3gpp-standardisation/en/lecture-17-en.tex) |
-| 18 | 5G Service-Based Architecture (SBA) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/18-service-based-architecture/en/lecture-18-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/18-service-based-architecture/en/lecture-18-en.tex) |
-| 19 | 5G Core Network Architecture | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/19-5g-core/en/lecture-19-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/19-5g-core/en/lecture-19-en.tex) |
-| 20 | 5G System Procedures | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/20-5g-procedures/en/lecture-20-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/20-5g-procedures/en/lecture-20-en.tex) |
-| 21 | Network Slicing | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/21-network-slicing/en/lecture-21-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/21-network-slicing/en/lecture-21-en.tex) |
-| 22 | Quality of Service (QoS) in 5G | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/22-5g-qos/en/lecture-22-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/22-5g-qos/en/lecture-22-en.tex) |
-| 23 | The 5G User Plane | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/23-5g-user-plane/en/lecture-23-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/23-5g-user-plane/en/lecture-23-en.tex) |
-| 24 | The 5G Control Plane | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/24-5g-control-plane/en/lecture-24-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/24-5g-control-plane/en/lecture-24-en.tex) |
-| 25 | Network Evolution: a Grand Synthesis | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/25-network-evolution/en/lecture-25-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/25-network-evolution/en/lecture-25-en.tex) |
-| 26 | Future 6G Technologies | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/26-6g-technologies/en/lecture-26-en.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/26-6g-technologies/en/lecture-26-en.tex) |
+### 2. Parameter Estimation Methods · روش‌های برآورد پارامتر
 
-## درس‌ها (فارسی)
+| Week | English | فارسی |
+|---|---|---|
+| 03 | [Week 3: Fitting Models by Least Squares: Error Surfaces and Optimization](02-parameter-estimation/week03/en/week03-en.pdf) | [هفته‌ی 3: برازش مدل با کمترین مربعات: سطح خطا و بهینه‌سازی](02-parameter-estimation/week03/fa/week03-fa.pdf) |
+| 04 | [Week 4: Maximum Likelihood Estimation](02-parameter-estimation/week04/en/week04-en.pdf) | [هفته‌ی 4: برآورد بیشینه درست‌نمایی (Maximum Likelihood)](02-parameter-estimation/week04/fa/week04-fa.pdf) |
+| 05 | [Week 5: Uncertainty in Estimates and Fitting Multiple Participants](02-parameter-estimation/week05/en/week05-en.pdf) | [هفته‌ی 5: عدم قطعیت برآوردها و برازش برای چند شرکت‌کننده](02-parameter-estimation/week05/fa/week05-fa.pdf) |
 
-| # | درس | PDF | منبع |
-|---|---|---|---|
-| 01 | جی‌اس‌ام، جی‌پی‌آر‌اس و اج | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/01-gsm-gprs-edge/fa/lecture-01-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/01-gsm-gprs-edge/fa/lecture-01-fa.tex) |
-| 02 | سوئیچ مداری در نسل دوم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/02-2g-circuit-switching/fa/lecture-02-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/02-2g-circuit-switching/fa/lecture-02-fa.tex) |
-| 03 | شبکه‌های هستهٔ نسل دوم و سوم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/03-2g-3g-core-networks/fa/lecture-03-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/03-2g-3g-core-networks/fa/lecture-03-fa.tex) |
-| 04 | تحرک و تحویل | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/04-mobility-handover/fa/lecture-04-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/04-mobility-handover/fa/lecture-04-fa.tex) |
-| 05 | معماری LTE نسل چهارم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/05-lte-architecture/fa/lecture-05-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/05-lte-architecture/fa/lecture-05-fa.tex) |
-| 06 | E-UTRAN: شبکهٔ دسترسی رادیویی LTE | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/06-e-utran/fa/lecture-06-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/06-e-utran/fa/lecture-06-fa.tex) |
-| 07 | زمان‌بندی در LTE | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/07-lte-scheduling/fa/lecture-07-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/07-lte-scheduling/fa/lecture-07-fa.tex) |
-| 08 | کانال دسترسی تصادفی (RACH) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/08-random-access/fa/lecture-08-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/08-random-access/fa/lecture-08-fa.tex) |
-| 09 | هستهٔ بستهٔ تکامل‌یافته (EPC) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/09-epc/fa/lecture-09-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/09-epc/fa/lecture-09-fa.tex) |
-| 10 | پروتکل Diameter | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/10-diameter/fa/lecture-10-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/10-diameter/fa/lecture-10-fa.tex) |
-| 11 | کارساز مشترکین خانگی (HSS) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/11-hss/fa/lecture-11-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/11-hss/fa/lecture-11-fa.tex) |
-| 12 | موجودیت مدیریت تحرک (MME) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/12-mme/fa/lecture-12-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/12-mme/fa/lecture-12-fa.tex) |
-| 13 | دروازه‌های خدمت‌دهنده و PDN (S-GW و P-GW) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/13-serving-pdn-gateways/fa/lecture-13-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/13-serving-pdn-gateways/fa/lecture-13-fa.tex) |
-| 14 | مقدمه‌ای بر شبکه‌های نسل پنجم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/14-5g-introduction/fa/lecture-14-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/14-5g-introduction/fa/lecture-14-fa.tex) |
-| 15 | شبکه‌سازی نرم‌افزارمحور (SDN) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/15-sdn/fa/lecture-15-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/15-sdn/fa/lecture-15-fa.tex) |
-| 16 | مجازی‌سازی کارکردهای شبکه (NFV) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/16-nfv/fa/lecture-16-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/16-nfv/fa/lecture-16-fa.tex) |
-| 17 | استانداردسازی 3GPP | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/17-3gpp-standardisation/fa/lecture-17-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/17-3gpp-standardisation/fa/lecture-17-fa.tex) |
-| 18 | معماری سرویس‌محور نسل پنجم (SBA) | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/18-service-based-architecture/fa/lecture-18-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/18-service-based-architecture/fa/lecture-18-fa.tex) |
-| 19 | معماری شبکهٔ هستهٔ نسل پنجم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/19-5g-core/fa/lecture-19-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/19-5g-core/fa/lecture-19-fa.tex) |
-| 20 | رویه‌های سامانهٔ نسل پنجم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/20-5g-procedures/fa/lecture-20-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/20-5g-procedures/fa/lecture-20-fa.tex) |
-| 21 | برش‌بندی شبکه | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/21-network-slicing/fa/lecture-21-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/21-network-slicing/fa/lecture-21-fa.tex) |
-| 22 | کیفیت خدمات (QoS) در نسل پنجم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/22-5g-qos/fa/lecture-22-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/22-5g-qos/fa/lecture-22-fa.tex) |
-| 23 | صفحهٔ کاربر نسل پنجم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/23-5g-user-plane/fa/lecture-23-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/23-5g-user-plane/fa/lecture-23-fa.tex) |
-| 24 | صفحهٔ کنترل نسل پنجم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/24-5g-control-plane/fa/lecture-24-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/24-5g-control-plane/fa/lecture-24-fa.tex) |
-| 25 | تکامل شبکه: یک جمع‌بندی بزرگ | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/25-network-evolution/fa/lecture-25-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/25-network-evolution/fa/lecture-25-fa.tex) |
-| 26 | فناوری‌های آیندهٔ نسل ششم | [PDF](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/26-6g-technologies/fa/lecture-26-fa.pdf) | [TeX](/Users/aidin/Documents/Codex/2026-10-11/https-github-com-aidinshekari-eng-math/work/Bilingual/26-6g-technologies/fa/lecture-26-fa.tex) |
+### 3. Evaluation of Cognitive Models · ارزیابی مدل‌های شناختی
 
-## Repository layout / ساختار مخزن
+| Week | English | فارسی |
+|---|---|---|
+| 06 | [Week 6: Evaluating Models I: Goodness of Fit, Overfitting and Cross-Validation](03-model-evaluation/week06/en/week06-en.pdf) | [هفته‌ی 6: ارزیابی مدل‌ها 1: نیکویی برازش، overfitting و cross-validation](03-model-evaluation/week06/fa/week06-fa.pdf) |
+| 07 | [Week 7: Evaluating Models II: Information Criteria, Parameter Recovery and Model Recovery](03-model-evaluation/week07/en/week07-en.pdf) | [هفته‌ی 7: ارزیابی مدل‌ها 2: معیارهای اطلاعاتی، بازیابی پارامتر و بازیابی مدل](03-model-evaluation/week07/fa/week07-fa.pdf) |
+| 08 | [Week 8: Midterm Review: The Whole Pipeline in One Case Study](03-model-evaluation/week08/en/week08-en.pdf) | [هفته‌ی 8: مرور میان‌ترم: کل مسیر مدل‌سازی در یک مطالعه‌ی موردی](03-model-evaluation/week08/fa/week08-fa.pdf) |
 
-```text
-00-full-notes/{en,fa}/           Complete course PDFs
-00-syllabus/{en,fa}/             Syllabus source and PDF
-NN-topic/{en,fa}/                Lecture source and PDF, NN = 01..26
-figures/lecture-NN/              Shared TikZ/PGFPlots figures
-fonts/                            Vazirmatn and its OFL license
-templates/                        LaTeX styles, cover, language strings
-references/acn.bib               Bibliography
-tools/build.py, Makefile          Build and validation tools
-```
+### 4. Bayesian Modeling · مدل‌سازی بیزی
 
-The chapter folders match the numbered, language-separated structure of [Eng-Math](https://github.com/AidinShekari/Eng-Math). TeX auxiliaries are ignored; source, build tools and published PDFs are tracked.
+| Week | English | فارسی |
+|---|---|---|
+| 09 | [Week 9: Bayesian Modeling I: Priors, Posteriors and Grid Approximation](04-bayesian-modeling/week09/en/week09-en.pdf) | [هفته‌ی 9: مدل‌سازی بیزی 1: پیشین، پسین و تقریب شبکه‌ای](04-bayesian-modeling/week09/fa/week09-fa.pdf) |
+| 10 | [Week 10: Bayesian Modeling II: Posterior Predictive Checks and Bayes Factors](04-bayesian-modeling/week10/en/week10-en.pdf) | [هفته‌ی 10: مدل‌سازی بیزی 2: بررسی پیش‌بینی پسین و Bayes factor](04-bayesian-modeling/week10/fa/week10-fa.pdf) |
 
-## Build / ساخت
+### 5. Parameter Estimation with MCMC · برآورد پارامتر با MCMC
 
-For the complete PDFs, install Python 3, [Poppler](https://poppler.freedesktop.org/) (`pdfunite`) and the Python dependency:
+| Week | English | فارسی |
+|---|---|---|
+| 11 | [Week 11: Monte Carlo Methods and the Metropolis–Hastings Algorithm](05-monte-carlo/week11/en/week11-en.pdf) | [هفته‌ی 11: روش‌های Monte Carlo و الگوریتم Metropolis–Hastings](05-monte-carlo/week11/fa/week11-fa.pdf) |
+| 12 | [Week 12: Gibbs Sampling and Convergence Diagnostics](05-monte-carlo/week12/en/week12-en.pdf) | [هفته‌ی 12: نمونه‌گیری Gibbs و تشخیص همگرایی](05-monte-carlo/week12/fa/week12-fa.pdf) |
+| 13 | [Week 13: Probabilistic Programming and Hierarchical Models](05-monte-carlo/week13/en/week13-en.pdf) | [هفته‌ی 13: برنامه‌نویسی احتمالاتی و مدل‌های سلسله‌مراتبی](05-monte-carlo/week13/fa/week13-fa.pdf) |
 
-```sh
-python3 -m pip install -r requirements.txt
-python3 tools/build.py           # assemble both complete PDFs
-python3 tools/build.py --only fa # assemble one language
-python3 tools/build.py --check   # validate all lecture/source pairs
-```
+### 6. Applications in Cognitive Science · کاربردها در علوم شناختی
 
-`make`, `make english`, `make persian` and `make check` are shortcuts. To recompile the individual TeX PDFs before assembling the books, install TeX Live 2022+ with XeLaTeX, `xepersian`, `bidi`, `biblatex`, `biber` and TikZ/PGFPlots, then run `python3 tools/build.py --compile` (or `--compile --chapter 05 --only en`). Temporary files stay in ignored `build/`.
+| Week | English | فارسی |
+|---|---|---|
+| 14 | [Week 14: Modeling in Cognitive Science I: Categorization (GCM) and Decision Making (Drift-Diffusion)](06-applications/week14/en/week14-en.pdf) | [هفته‌ی 14: مدل‌سازی در علوم شناختی 1: دسته‌بندی (GCM) و تصمیم‌گیری (Drift-Diffusion)](06-applications/week14/fa/week14-fa.pdf) |
+| 15 | [Week 15: Modeling in Cognitive Science II: Reinforcement Learning, Bayesian Cognition and AI](06-applications/week15/en/week15-en.pdf) | [هفته‌ی 15: مدل‌سازی در علوم شناختی 2: یادگیری تقویتی، شناخت بیزی و هوش مصنوعی](06-applications/week15/fa/week15-fa.pdf) |
+| 16 | [Week 16: Final Project Presentations and Good Modeling Practice](06-applications/week16/en/week16-en.pdf) | [هفته‌ی 16: ارائه‌های پروژه‌ی پایانی و شیوه‌ی خوب مدل‌سازی](06-applications/week16/fa/week16-fa.pdf) |
 
-## Conventions and license
+## Course materials
 
-Both editions share equations, figures, labels and section order. Technical abbreviations stay in Latin script in Persian prose; mathematical notation matches the English edition. Text, figures and PDFs: CC BY-SA 4.0. Templates: MIT. Vazirmatn: SIL Open Font License 1.1. See [LICENSE](LICENSE).
+- [Syllabus](syllabus.md) · [Course blueprint](00_course_blueprint.md) · [Glossary](glossary.md) · [Reading list](reading_list.md)
+- [Original paired English/Persian Markdown](source/) — all 20 supplied files are preserved unchanged.
+- [LaTeX project](latex/) — shared preamble, green styles, 16 chapters per language, standalone weekly wrappers, and full-book masters.
+- [Build instructions](BUILD_INSTRUCTIONS.md) · [Initial audit](AUDIT_REPORT.md) · [Quality report](QUALITY_REPORT.md) · [PDF layout QA](PDF_QA_REPORT.md)
 
-Quantitative examples use stated teaching assumptions, not measurements of a particular network. Check current 3GPP specifications before relying on release-specific details. Lecture 26 describes research directions for 6G as of 2026.
+Build with `make all`; validate with `make check`. `make lecture WEEK=08` compiles one week in both languages. The XeTeX engine is supplied by Tectonic. See the style, font, RTL/LTR and notation guides for implementation details.
+
+The original material references companion `code/` and `assessments/` files that were not supplied. Those references are retained as text, not linked to nonexistent files. No unrelated Advanced Communication Networks content is part of this course.

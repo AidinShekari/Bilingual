@@ -1,0 +1,49 @@
+% Shared architecture adapted from ProbAndStats; course content stays Cognitive Modeling.
+\usepackage{amsmath,amssymb,mathtools}
+\input{styles/math-notation}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{styles/colors}
+\usepackage{styles/layout}
+\usepackage{styles/typography}
+\usepackage{styles/environments}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+\ifCMpersian
+  \usepackage{xepersian}
+  \IfFileExists{fonts/BNazanin.ttf}{%
+    \settextfont[Path=fonts/,Extension=.ttf,AutoFakeBold=1.6,Scale=1.08]{BNazanin}%
+  }{\settextfont[Path=fonts/,Extension=.ttf,BoldFont=Vazirmatn-Bold.ttf]{Vazirmatn-Regular}}
+  \IfFontExistsTF{STIX Two Text}{\setlatintextfont{STIX Two Text}}{\setlatintextfont[Path=fonts/,Extension=.ttf,BoldFont=Vazirmatn-Bold.ttf]{Vazirmatn-Regular}}
+  \setlatinmonofont[Path=fonts/,Extension=.ttf,BoldFont=DejaVuSansMono-Bold.ttf]{DejaVuSansMono}
+  \renewcommand{\labelitemi}{\ensuremath{\bullet}}
+  \renewcommand{\labelitemii}{\ensuremath{\circ}}
+  \def\CMcourse{مدل‌سازی شناختی}
+  \def\CMnotes{جزوه‌ی کامل درس}
+\else
+  \usepackage{fontspec}
+  \IfFontExistsTF{STIX Two Text}{\setmainfont{STIX Two Text}}{\setmainfont[Path=fonts/,Extension=.ttf,BoldFont=Vazirmatn-Bold.ttf]{Vazirmatn-Regular}}
+  \setmonofont[Path=fonts/,Extension=.ttf,BoldFont=DejaVuSansMono-Bold.ttf]{DejaVuSansMono}
+  \IfFileExists{fonts/BNazanin.ttf}{%
+    \newfontfamily\CMfa[Path=fonts/,Extension=.ttf,Script=Arabic,AutoFakeBold=1.6]{BNazanin}%
+  }{\newfontfamily\CMfa[Path=fonts/,Extension=.ttf,BoldFont=Vazirmatn-Bold.ttf,Script=Arabic]{Vazirmatn-Regular}}
+  \usepackage{bidi}
+  \def\CMcourse{Cognitive Modeling}
+  \def\CMnotes{Complete Lecture Notes}
+\fi
+\ifCMpersian
+  \DeclareRobustCommand{\EN}[1]{\lr{#1}}
+  \DeclareRobustCommand{\FA}[1]{#1}
+\else
+  \DeclareRobustCommand{\EN}[1]{#1}
+  \DeclareRobustCommand{\FA}[1]{\RL{\CMfa #1}}
+\fi
+\DeclareRobustCommand{\Term}[2]{\ifCMpersian #2\space(\EN{#1})\else #1\space(\FA{#2})\fi}
+\DeclareRobustCommand{\Acronym}[1]{\EN{#1}}
+\DeclareRobustCommand{\Code}[1]{\EN{\texttt{#1}}}
+\hypersetup{pdftitle={Cognitive Modeling},pdfauthor={Aidin Shekari},colorlinks=true,linkcolor=CMForest,urlcolor=CMEmerald,citecolor=CMForest}

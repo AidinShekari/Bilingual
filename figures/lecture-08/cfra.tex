@@ -1,9 +1,0 @@
-% contention-free random access (e.g. handover)
-\begin{tikzpicture}
-  \SeqActors[6.0]{UE,\bil{target eNB}{eNB مقصد}}
-  \SeqMsg{1}{0}{Msg0: \bil{dedicated preamble (in HO command)}{پیش‌نوای اختصاصی (در فرمان تحویل)}}
-  \SeqMsg{0}{1}{Msg1: \bil{dedicated preamble}{پیش‌نوای اختصاصی}}
-  \SeqMsg{1}{0}{Msg2: RAR (TA, UL grant)}
-  \SeqNote{0}{1}{\bil{no contention: procedure complete}{بدون رقابت: رویه کامل}}
-  \SeqEnd
-\end{tikzpicture}

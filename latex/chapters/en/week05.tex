@@ -1,0 +1,986 @@
+\section{Week 5: Uncertainty in Estimates and Fitting Multiple
+Participants}
+
+\begin{quote}
+\textbf{Chapter 2: Parameter estimation methods} · Lecture 1 h · Lab 2 h
+\textbf{Running data:} the Week 2--4 forgetting data (how certain are
+our estimates?) and a new simulated \textbf{practice} experiment with 20
+participants (the power law of practice).
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+power law of practice & \RL{\CMfa قانون توانی تمرین} & \RL{\CMfa کاهش توانی زمان
+واکنش با تمرین} \\
+exponential / power function & \RL{\CMfa تابع نمایی} / \RL{\CMfa توانی} & \RL{\CMfa دو شکل
+رایج برای منحنی فراموشی و یادگیری} \\
+sampling distribution & \RL{\CMfa توزیع نمونه‌گیری} & \RL{\CMfa توزیع برآورد در
+تکرارهای فرضی آزمایش} \\
+standard error (SE) & \RL{\CMfa خطای استاندارد} & \RL{\CMfa پراکندگی برآورد در
+تکرارهای فرضی آزمایش} \\
+confidence interval (CI) & \RL{\CMfa بازه‌ی اطمینان} & \RL{\CMfa بازه‌ای که با روش
+مشخص پارامتر واقعی را در بر می‌گیرد} \\
+Hessian & \RL{\CMfa ماتریس} Hessian & \RL{\CMfa ماتریس مشتق‌های دوم؛ انحنای
+درست‌نمایی} \\
+log-likelihood / NLL & \RL{\CMfa لگاریتم درست‌نمایی} / \RL{\CMfa منفی آن} &
+\RL{\CMfa مقداری که بهینه‌سازها کمینه یا بیشینه می‌کنند} \\
+Wald interval & \RL{\CMfa بازه‌ی} Wald & \RL{\CMfa برآورد} \ensuremath{\pm} 1.96 SE \\
+profile likelihood & \RL{\CMfa درست‌نمایی نیم‌رخ} (profile) & \RL{\CMfa درست‌نمایی یک
+پارامتر با بهینه کردن بقیه} \\
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+bootstrap & bootstrap \RL{\CMfa (بازنمونه‌گیری)} & \RL{\CMfa تخمین عدم قطعیت با
+شبیه‌سازی یا بازنمونه‌گیری} \\
+parameter trade-off & \RL{\CMfa بده‌بستان پارامترها} & \RL{\CMfa تغییر یک پارامتر که
+با پارامتر دیگر جبران می‌شود} \\
+aggregation artifact & \RL{\CMfa خطای ناشی از میانگین‌گیری} & \RL{\CMfa الگویی در
+میانگین که در هیچ فردی نیست} \\
+trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
+bounds / constraints & \RL{\CMfa کران‌ها} / \RL{\CMfa قیدها} & \RL{\CMfa محدودیت‌های مجاز
+برای مقدار پارامترها} \\
+accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
+complete / no / partial pooling & \RL{\CMfa ادغام کامل} / \RL{\CMfa بدون ادغام} /
+\RL{\CMfa ادغام جزئی} (pooling) & \RL{\CMfa یک پارامتر برای همه} / \RL{\CMfa جدا برای هر
+فرد} / \RL{\CMfa سلسله‌مراتبی} \\
+individual differences & \RL{\CMfa تفاوت‌های فردی} & \RL{\CMfa فرق پارامترها بین
+افراد} \\
+noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شواهد یا در داده} \\
+benchmark & benchmark \RL{\CMfa (مجموعه‌آزمون استاندارد)} & \RL{\CMfa مجموعه سؤال
+برای مقایسه‌ی مدل‌های هوش مصنوعی} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Explain} the sampling distribution of an estimator and
+  \textbf{distinguish} a standard error from a standard deviation of the
+  data.
+\item
+  \textbf{Compute} standard errors and confidence intervals for model
+  parameters in three ways: from the Hessian of the NLL (Wald), from the
+  profile likelihood, and by parametric bootstrap. \textbf{Compare}
+  these three methods.
+\item
+  \textbf{Diagnose} parameter trade-offs from the estimated correlation
+  between parameters.
+\item
+  \textbf{Demonstrate} by simulation that averaging individual curves
+  can produce a functional form (a ``power law'') that no individual
+  follows.
+\item
+  \textbf{Choose} between aggregate, individual and (preview)
+  hierarchical fitting, and \textbf{justify} the choice.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+\textbf{``\(\hat d = 0.42\)'' is half a result.} Last week the power
+model's MLE for the Week 2 data was \(\hat d = 0.42\) (true value 0.5).
+Is 0.42 compatible with 0.5? With 0.3? With 0.6? Without a measure of
+uncertainty we cannot say whether two participants, two groups or two
+conditions really differ. Every parameter estimate we report from now on
+comes with a confidence interval.
+
+\textbf{The law that nobody obeys.} The \emph{power law of practice} is
+one of the most cited regularities in cognitive psychology: response
+times fall with practice approximately as a power function of the number
+of trials. Some researchers have argued that the power shape can arise
+from \textbf{averaging} over people (or items) who each improve
+\emph{exponentially} but at different rates (see Further reading). If
+so, the ``law'' describes the average but no single learner, and a
+theory built to explain a power function in each individual mind would
+be explaining an artifact. This week we demonstrate the effect with
+simulated data and learn when to fit individuals rather than group
+averages.
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Any claim of a difference} (``patients forget faster than
+  controls'', ``training improved sensitivity'') needs uncertainty
+  estimates. Without them a difference of 0.05 in a parameter may be
+  pure noise.
+\item
+  \textbf{Clinical assessment of individuals}: to say that one patient's
+  memory decay is abnormal, you need the standard error of \emph{that
+  patient's} estimate, not only the group average.
+\item
+  \textbf{Learning and skill research}: the ``power law of practice''
+  was long treated as a universal law. This week's aggregation artifact
+  shows why researchers now fit individual learners (and why the same
+  caution applies to group-averaged curves in education, sports science
+  and human factors).
+\item
+  \textbf{Replication and meta-analysis} combine estimates from many
+  studies by weighting each one by its precision (1/SE²).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+If you ran the same experiment again on the same person, you would get
+slightly different data and therefore a slightly different parameter
+estimate. The \textbf{standard error (SE)} says how much the estimate
+would jump around between such repetitions; a \textbf{confidence
+interval} is a range built from it (roughly estimate \ensuremath{\pm} 2 SE). We cannot
+repeat the experiment many times, so we estimate this jumping in three
+ways: (1) from how sharply peaked the likelihood is (a sharp peak means
+the data pin the parameter down; this is the \textbf{Wald} method using
+the \textbf{Hessian}), (2) by tracing how fast the fit gets worse as we
+move one parameter (\textbf{profile likelihood}), and (3) by simulating
+many fake experiments from the fitted model and refitting each
+(\textbf{bootstrap}). The second half of the week warns about a trap:
+averaging data across people can create a curve shape that \textbf{no
+single person} has. If every learner improves exponentially but at a
+different speed, the group average looks like a power law.
+
+\textbf{Suggested timing (60 min):} sampling distributions 10 · Hessian
+standard errors 15 · profile likelihood 8 · bootstrap 10 · multiple
+participants and aggregation 17.
+
+\subsubsection{1. Estimates have sampling distributions}
+
+If we reran the same experiment on the same participant (same true
+\(\boldsymbol\theta^\ast\)), we would get different data and therefore a
+different \(\hat{\boldsymbol\theta}\). The distribution of
+\(\hat{\boldsymbol\theta}\) over hypothetical replications is its
+\textbf{sampling distribution}.
+
+\begin{itemize}
+\tightlist
+\item
+  The \textbf{standard error} (SE) of a parameter is the SD of its
+  sampling distribution: how much the \emph{estimate} would vary across
+  replications.
+\item
+  A \textbf{95\% confidence interval} is constructed by a procedure
+  that, across replications, contains \(\theta^\ast\) in 95\% of cases.
+  (It is \emph{not} ``a 95\% probability that \(\theta^\ast\) is in this
+  particular interval''; that is a Bayesian credible interval, Week 9.)
+\end{itemize}
+
+We cannot rerun the experiment many times, so we approximate the
+sampling distribution in three ways.
+
+\subsubsection{2. Standard errors from the curvature of the likelihood
+(Wald)}
+
+\textbf{Intuition.} If the NLL has a sharp, narrow minimum, small
+changes in \(\boldsymbol\theta\) make the data much less likely, so the
+data pin \(\boldsymbol\theta\) down precisely. A flat, wide minimum
+means many values fit almost equally well, so the uncertainty is large.
+Curvature is measured by second derivatives.
+
+\textbf{Formalism.} The \textbf{Hessian} of the NLL at the MLE is the
+matrix of second derivatives,
+
+\[
+\mathbf{H}_{mn} = \frac{\partial^2\, \mathrm{NLL}(\boldsymbol\theta)}{\partial\theta_m\,\partial\theta_n}\bigg|_{\boldsymbol\theta = \hat{\boldsymbol\theta}},
+\]
+
+also called the \textbf{observed Fisher information}. For large samples,
+
+\[
+\widehat{\mathrm{Cov}}(\hat{\boldsymbol\theta}) \approx \mathbf{H}^{-1}, \qquad
+\mathrm{SE}(\hat\theta_m) = \sqrt{[\mathbf{H}^{-1}]_{mm}}, \qquad
+\text{95\% Wald CI: } \hat\theta_m \pm 1.96\,\mathrm{SE}(\hat\theta_m).
+\]
+
+The off-diagonal elements of \(\mathbf{H}^{-1}\), rescaled to
+correlations, show \textbf{parameter trade-offs}: a correlation of −0.9
+between two estimates means their errors largely compensate each other
+(the tilted valley of Week 3).
+
+\textbf{Sanity check (binomial).} For one proportion,
+\(\mathrm{NLL}''(\theta) = y/\theta^2 + (n-y)/(1-\theta)^2\). At
+\(\hat\theta = y/n\) this equals \(n / [\hat\theta(1-\hat\theta)]\), so
+\(\mathrm{SE} = \sqrt{\hat\theta(1-\hat\theta)/n}\), the familiar
+textbook formula.
+
+\textbf{In practice:} compute \(\mathbf{H}\) numerically by finite
+differences (lab Part A). The \nolinkurl{hess_inv} returned by BFGS is
+only a rough approximation, so do not use it for SEs.
+
+\textbf{When Wald fails:} small samples, estimates near a bound (e.g., a
+recall level \(\hat A\) close to 1), strongly non-quadratic likelihoods,
+or parameters with skewed sampling distributions (rates, variances).
+Then the symmetric \(\pm 1.96\) SE interval can extend into impossible
+values.
+
+\begin{quote}
+\textbf{Advanced: why this works.} Near its minimum, any smooth NLL is
+approximately quadratic (second-order Taylor expansion). A quadratic NLL
+is exactly the NLL of a multivariate normal distribution whose inverse
+covariance is the Hessian. Combined with the asymptotic normality of the
+MLE (Week 4), this gives the result. The same quadratic approximation,
+called the \emph{Laplace approximation}, reappears in Bayesian model
+comparison (Week 10).
+\end{quote}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathbf{H}_{mn} = \partial^2 \mathrm{NLL}/\partial\theta_m\partial\theta_n\)
+  at \(\hat{\boldsymbol\theta}\): the matrix of second derivatives,
+  i.e.~the \textbf{curvature} of the NLL bowl at its bottom. Diagonal
+  entries: how steep the bowl is along each parameter. Off-diagonal
+  entries: whether the bowl is tilted (parameters trade off).
+\item
+  \(\widehat{\mathrm{Cov}}(\hat{\boldsymbol\theta}) \approx \mathbf{H}^{-1}\):
+  a sharply curved bowl (large \(\mathbf{H}\)) gives a small covariance,
+  i.e.~precise estimates. Taking the inverse is what turns ``steepness''
+  into ``uncertainty''.
+\item
+  \(\mathrm{SE}(\hat\theta_m) = \sqrt{[\mathbf{H}^{-1}]_{mm}}\): take
+  the \(m\)-th diagonal entry of the inverse and its square root.
+\item
+  \textbf{One-parameter check:} for a proportion,
+  \(\mathrm{NLL}'' = n/[\hat\theta(1-\hat\theta)]\), so
+  \(\mathrm{SE} = \sqrt{\hat\theta(1-\hat\theta)/n}\). With 30 of 50
+  recalled: \(\sqrt{0.6 \times 0.4/50} = 0.069\), and the 95\% interval
+  is \(0.60 \pm 1.96 \times 0.069 = [0.46, 0.74]\).
+\item
+  \textbf{Correlation from the covariance:}
+  \(\mathrm{corr} = \mathrm{Cov}_{12}/(\mathrm{SE}_1\mathrm{SE}_2)\). A
+  value like −0.9 means the two estimates are strongly traded off.
+\end{itemize}
+
+\subsubsection{3. Profile likelihood intervals}
+
+For a parameter of interest \(\psi\) (say \(d\)), the \textbf{profile
+NLL} is obtained by fixing \(\psi\) on a grid and minimizing the NLL
+over all \emph{other} parameters at each grid value:
+
+\[
+\mathrm{NLL}_{\text{prof}}(\psi) = \min_{\text{other params}} \mathrm{NLL}(\psi, \text{others}).
+\]
+
+The 95\% \textbf{likelihood-ratio (profile) interval} is the set of
+\(\psi\) values that are not much worse than the best:
+
+\[
+\big\{\psi : 2\,[\mathrm{NLL}_{\text{prof}}(\psi) - \mathrm{NLL}_{\min}] \le 3.84\big\}, \qquad 3.84 = \chi^2_{1,\,0.95}.
+\]
+
+Profile intervals follow the actual shape of the likelihood, so they can
+be \textbf{asymmetric} and respect natural bounds. They are usually more
+accurate than Wald intervals in small samples.
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathrm{NLL}_{\text{prof}}(\psi)\): fix the parameter of interest
+  \(\psi\) at one value, let the optimizer choose the best values of all
+  \emph{other} parameters, and record the resulting NLL. Repeat for many
+  values of \(\psi\). The result is a 1-D curve.
+\item
+  The interval keeps every \(\psi\) whose profile NLL is within
+  \(3.84/2 = 1.92\) units of the minimum. The number 3.84 is the 95\%
+  point of a \(\chi^2\) distribution with 1 df; it comes from the
+  likelihood-ratio test (Week 7).
+\item
+  Unlike Wald, the curve is not forced to be a symmetric parabola, so
+  the interval can be lopsided and never extends to impossible values.
+\end{itemize}
+
+\subsubsection{4. The parametric bootstrap}
+
+A simulation answer to ``what if we reran the experiment?'':
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Fit the model to the data: \(\hat{\boldsymbol\theta}\).
+\item
+  Simulate \(B\) new datasets from the model at
+  \(\hat{\boldsymbol\theta}\), with the same design as the real
+  experiment.
+\item
+  Refit each dataset:
+  \(\hat{\boldsymbol\theta}^{*(1)}, \dots, \hat{\boldsymbol\theta}^{*(B)}\).
+\item
+  The SD of the bootstrap estimates approximates the SE. The 2.5th and
+  97.5th percentiles give a \textbf{percentile CI}.
+\end{enumerate}
+
+The bootstrap needs no derivatives, works for any statistic (e.g., a
+half-life, a difference between conditions), and shows the full shape
+and correlations of the sampling distribution. Its cost is \(B\) refits
+(\(B \approx 500\)--\(2000\)). The \textbf{non-parametric} bootstrap
+resamples the observed trials with replacement instead of simulating
+from the model.
+
+\textbf{Comparison:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Cost
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Symmetric?
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Handles bounds?
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Needs
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Wald (Hessian) & One Hessian & Always & No & Smooth NLL, large \(N\) \\
+Profile likelihood & One fit per grid value & Can be asymmetric & Yes &
+A likelihood \\
+Parametric bootstrap & \(B\) fits & Can be asymmetric & Yes & A model
+you can simulate \\
+\end{longtable}
+}
+
+\subsubsection{5. Fitting multiple participants}
+
+Real experiments have \(J\) participants (index \(j\)). There are three
+broad strategies:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Strategy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+What is fitted
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pros
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Cons
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Aggregate} (complete pooling) & One model to the averaged data &
+Stable; works with few trials per person & Assumes everyone is the same;
+\textbf{can distort the functional form} \\
+\textbf{Individual} (no pooling) & One model per participant; then
+analyze the \(J\) sets of estimates & Respects individual differences;
+standard practice & Noisy estimates with few trials; second-stage
+analysis ignores estimation uncertainty \\
+\textbf{Hierarchical} (partial pooling) & Individual parameters drawn
+from a group distribution, estimated jointly & Best of both; principled
+shrinkage & More complex; usually Bayesian (Week 13) \\
+\end{longtable}
+}
+
+\textbf{Aggregation artifacts.} The average of nonlinear curves is
+generally \textbf{not} a curve of the same family. For example,
+averaging exponential curves with different rates does not give an
+exponential: fast learners finish early, so the average's relative rate
+of change \emph{slows down} over time, which is the defining property of
+a power function (Week 2, relative loss rate).
+
+\begin{quote}
+\textbf{Advanced: an exact result.} Suppose each participant follows
+\(e^{-\lambda_j t}\) and the rates are Gamma-distributed across people,
+\(\lambda_j \sim \mathrm{Gamma}(\text{shape } s, \text{rate } b)\). Then
+the group average curve is
+\[\mathbb{E}\big[e^{-\lambda t}\big] = \Big(1 + \frac{t}{b}\Big)^{-s},\]
+which is \emph{exactly} a shifted power function (this is the
+moment-generating function of the Gamma distribution, evaluated at
+\(-t\)). Everyone forgets exponentially, yet the average forgets by a
+power law with exponent equal to the Gamma shape \(s\). You verify this
+numerically in Exercise 4.
+\end{quote}
+
+\textbf{Practical guideline.} Fit individuals whenever each participant
+has enough data to constrain the model; use the aggregate only as a
+summary, never as evidence about the \emph{form} of an individual-level
+process. When individual data are sparse, use hierarchical models (Week
+13).
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Wald SE from the Hessian} = the inverse Fisher information,
+  i.e.~the \textbf{CRLB} evaluated at the estimate. MLE reaches the
+  bound asymptotically, so for large \(N\) the Wald interval is the
+  CRLB-based interval.
+\item
+  \textbf{The parametric bootstrap} is the Monte Carlo performance
+  evaluation you do for an estimator or a receiver (e.g.~simulating many
+  noise realizations to get an estimator's variance or a BER curve),
+  done at the fitted parameter values.
+\item
+  \textbf{Profile likelihood} is what you do when you have
+  \emph{nuisance parameters}: optimize them out and look at the
+  likelihood of the parameter you care about.
+\item
+  \textbf{Aggregation artifact} = the difference between an
+  \textbf{ensemble average} and a \textbf{single realization}. Averaging
+  exponential decays with different time constants gives a slower,
+  heavy-tailed decay, just as the average of many channel realizations
+  does not look like any one realization. The process is not ``ergodic
+  across people'': the group mean does not describe the individual.
+\item
+  \textbf{Partial pooling} (preview of Week 13) is like estimating each
+  user's SNR by combining their own few measurements with the
+  distribution of SNRs in the whole cell: an empirical-Bayes estimate.
+\end{itemize}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Start with the question ``is 0.42 different from 0.5?''}
+  (Motivation). Students will want a yes/no; show that the answer
+  depends entirely on the SE.
+\item
+  \textbf{Show the three methods side by side} on the same data (lab
+  Part C table). The message is not ``which is correct'' but ``they
+  agree when the likelihood is well-behaved, and differ near bounds or
+  with little data''.
+\item
+  \textbf{The aggregation demo is the highlight.} Plot 5 individual
+  exponential curves and their average on a log--log plot: the average
+  is almost a straight line (power law), while each individual is
+  curved. Ask the class what a researcher who only saw the average would
+  conclude.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``What is the difference between SD and SE?''} SD describes
+    the spread of the \emph{data}; SE describes the spread of an
+    \emph{estimate} across repeated experiments. SE shrinks with more
+    data; SD does not.
+  \item
+    \emph{``Does a 95\% CI contain the true value with probability
+    0.95?''} Not this particular interval; 95\% of intervals built this
+    way would. (The Bayesian credible interval of Week 9 does have the
+    direct reading.)
+  \item
+    \emph{``Should I always fit individuals?''} Yes, if each person has
+    enough data; otherwise use hierarchical models (Week 13).
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\subsubsection{Part 1: three intervals for a recall probability}
+
+A participant recalls \(y = 30\) of \(n = 50\) items;
+\(\hat\theta = 0.60\).
+
+\textbf{Wald.} \(\mathrm{SE} = \sqrt{0.6 \times 0.4 / 50} = 0.0693\), so
+the 95\% CI is \(0.60 \pm 1.96 \times 0.0693 = [0.464, 0.736]\).
+
+\textbf{Profile (likelihood ratio).} Solve
+\(2[\ell(0.6) - \ell(\theta)] = 3.84\) numerically on both sides of 0.6.
+The 95\% CI is \([0.462, 0.728]\), slightly \textbf{asymmetric}: it
+extends 0.138 below the estimate and 0.128 above, because the likelihood
+is skewed toward 0.5, where binomial variance is largest.
+
+\textbf{Interpretation.} With 50 items, a recall probability is only
+known to about \ensuremath{\pm}0.13. A difference of 0.10 between two conditions of
+this size would not be convincing on its own.
+
+\subsubsection{Part 2: averaging two exponential learners}
+
+Participant 1 forgets at \(\lambda = 0.1\), participant 2 at
+\(\lambda = 1.0\). The average curve
+\(\bar f(t) = (e^{-0.1t} + e^{-t})/2\):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(t\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+10
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\bar f(t)\) & 1.000 & 0.636 & 0.477 & 0.307 & 0.184 \\
+Relative loss rate \(-\bar f'(t)/\bar f(t)\) & 0.55 & 0.36 & 0.23 & 0.11
+& 0.10 \\
+\end{longtable}
+}
+
+Each participant has a \emph{constant} relative loss rate (0.1 and 1.0),
+but the average's rate \textbf{falls} from 0.55 to 0.10, the signature
+of a power-like curve. The reason: at later times the average is
+dominated by the slow forgetter, whose rate is low.
+\textbf{Interpretation:} a researcher fitting only the average would
+conclude that ``memories become more resistant with age'', a claim true
+of neither participant.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Compute Wald, profile and bootstrap intervals for the power model
+  fitted to the Week 2 data, and compare them.
+\item
+  Visualize parameter trade-offs through the estimated correlation and
+  the bootstrap cloud.
+\item
+  Simulate 20 exponential learners, fit exponential and power models to
+  the \textbf{average} and to \textbf{each individual}, and interpret
+  the contradiction.
+\end{enumerate}
+
+\textbf{Timing:} Part A 20 min · Part B 15 min · Part C 25 min · Part D
+40 min · Part E 20 min.
+
+\subsubsection{Setup}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{Part A: Wald standard errors from a numerical Hessian (20
+min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{7\baselineskip}
+\begin{Verbatim}
+   estimate      SE   lower   upper
+A    0.8773  0.0626  0.7546  1.0000
+d    0.4214  0.0532  0.3171  0.5257
+Estimated correlation between A-hat and d-hat: 0.751
+\end{Verbatim}
+
+\textbf{Interpret:} both 95\% intervals contain the true values
+(\(A^\ast = 0.9\), \(d^\ast = 0.5\)), so the ``miss'' we worried about
+in Weeks 3--4 is well within sampling error. Note that the Wald interval
+for \(A\) happens to end at 1.000, right at the boundary of possible
+values. With slightly noisier data, the symmetric Wald interval would
+include impossible values (probabilities above 1), whereas the bootstrap
+interval cannot. The positive correlation is the trade-off valley from
+Week 3: when the estimate of \(A\) is too high, the estimate of \(d\)
+tends to be too high as well.
+
+\subsubsection{\texorpdfstring{Part B: profile likelihood interval for
+\(d\) (15 min)}{Part B: profile likelihood interval for d (15 min)}}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{4\baselineskip}
+\begin{Verbatim}
+Profile 95% CI for d: [0.320, 0.525]  (grid step 0.005)
+\end{Verbatim}
+
+\subsubsection{Part C: parametric bootstrap (25 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output} (takes about 30--60 s):
+
+\Needspace{7\baselineskip}
+\begin{Verbatim}
+   boot SE    2.5%  97.5%
+A   0.0563  0.7724  1.000
+d   0.0501  0.3304  0.528
+Bootstrap correlation: 0.703
+\end{Verbatim}
+
+\textbf{Compare:} put the Wald, profile and bootstrap intervals for
+\(d\) side by side. Are they similar? Which is asymmetric? With these
+data (8 cells × 50 items) all three methods should agree reasonably
+well. They diverge more with fewer items or with estimates near a bound
+(Exercise 5).
+
+\subsubsection{Part D: the power law of practice as an aggregation
+artifact (40 min)}
+
+\textbf{Design.} \(J = 20\) participants each complete 60 practice
+blocks of a visual-search task. Each participant improves
+\textbf{exponentially}:
+
+\[
+\mathrm{RT}_j(m) = E + B\,e^{-r_j (m-1)} + \varepsilon, \qquad \varepsilon \sim \mathcal{N}(0, 40 \text{ ms}),
+\]
+
+with asymptote \(E = 400\) ms, initial gain \(B = 600\) ms, and
+individual learning rates
+\(r_j \sim \mathrm{Gamma}(\text{shape} = 0.7, \text{scale} = 0.5)\)
+(mean 0.35 per block; a skewed distribution, with a few very fast
+learners and several very slow ones). Here \(m\) is the practice block,
+and \(\varepsilon\) is the noise of a block-mean RT.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+True learning rates: [1.000e-03 7.000e-03 7.000e-03 2.000e-02 3.000e-02 4.500e-02 1.220e-01
+ 1.490e-01 1.720e-01 2.360e-01 2.820e-01 3.260e-01 3.870e-01 3.950e-01
+ 5.340e-01 7.100e-01 7.900e-01 1.002e+00 1.869e+00 2.534e+00]
+Average curve, exp: E = 507.5, B = 423.8, r = 0.205, RMSD = 19.26 ms
+Average curve, pow: E = 419.2, B = 579.4, r = 0.529, RMSD = 10.16 ms
+\end{Verbatim}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output (summary line):}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+Which model fits each participant better? {'exp': 20}
+(with SciPy 1.18: {'exp': 19, 'pow': 1}; one participant with a near-zero learning rate is fitted differently)
+\end{Verbatim}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 7 · \RL{\CMfa سلول}
+7
+\end{quote}
+
+\subsubsection{Part E: interpret (20 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 8 · \RL{\CMfa سلول}
+8
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+Mean of true individual rates:      0.481
+Mean of estimated individual rates: 0.449 (SD 0.626)
+Exponential rate fitted to the average curve: 0.205
+Correlation of true and estimated individual rates: 0.971
+(with SciPy 1.18: estimated mean 0.457 (SD 0.621), correlation 0.968, because of the same participant)
+\end{Verbatim}
+
+\textbf{Write 2--3 sentences for each:} 1. The average curve is better
+described by a power function (RMSD about 10 vs.~19 ms), yet all (or,
+depending on the SciPy version, 19) of the 20 individuals are better
+described by an exponential. Which statement about \emph{learning} is
+justified, and which is not? 2. Why is the exponential rate fitted to
+the average curve smaller than the mean of the individual rates? (Hint:
+which participants dominate the average late in practice?) 3. Individual
+fits recover the true rates well here, with 60 blocks per person. What
+would change with only 10 blocks per person, and what would you do then?
+(Preview of Week 13.)
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star}.} Compute Wald 95\% CIs for the \emph{exponential}
+model's MLE on the Week 2 data. Do they contain sensible values? Then
+compute them at the bogus ``estimate''
+\nolinkurl{(A, lam) = (1.0, 0.107)} from last week's
+bounded-Nelder--Mead warning. What happens to the Hessian at a point
+that is not a minimum?
+
+\textbf{Exercise 2 \ensuremath{\star}.} Rerun the bootstrap with \(B = 50, 200, 1000\)
+and different seeds. How stable are the percentile limits? How large
+should \(B\) be for a 95\% CI?
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (a derived quantity).} Use the bootstrap samples
+from Part C to compute a 95\% CI for the \textbf{half-life} of the power
+model, \(t_{1/2} = 2^{1/d} - 1\). Why is this easy with the bootstrap
+and awkward with the Hessian?
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (the Gamma--power result).} Draw 100 000 rates
+\(\lambda \sim \mathrm{Gamma}(\text{shape } s = 0.8, \text{rate } b = 2)\),
+average \(e^{-\lambda t}\) over them for \(t \in [0, 30]\), and overlay
+the analytic curve \((1 + t/b)^{-s}\) (Lecture §5, Advanced box). Then
+fit exponential and power functions to the averaged curve.
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: coverage).} How often do 95\%
+intervals actually contain the true value? Simulate 300 datasets from
+the power model (\(A = 0.9\), \(d = 0.5\)) with \(n = 10\) items per
+interval, and compute the Wald and profile CIs for \(d\) for each.
+Report the coverage (proportion containing 0.5) of each method. Which is
+closer to 95\%? Repeat with \(n = 50\).
+
+\subsubsection{Lab check-off}
+
+Show: (1) a table comparing the Wald, profile and bootstrap 95\% CIs for
+\(d\); (2) the bootstrap scatter plot with one sentence on the
+trade-off; (3) the individual-vs-average comparison and your answer to
+interpretation question 1.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Benchmark scores have standard errors.} AI models are compared
+on benchmarks, and leaderboards often rank models that differ by one or
+two percentage points. A benchmark is a \emph{sample} of items, so its
+accuracy has sampling error just like a parameter estimate. Two lessons
+from this week apply directly: 1. \textbf{Report uncertainty.} A
+bootstrap over items gives a confidence interval for the accuracy and
+for the difference between two models. 2. \textbf{Respect the design.}
+Both models answered the \emph{same} items, so the comparison is paired,
+like a within-participant design. Resampling the two models
+independently ignores the shared item difficulty and gives intervals
+that are too wide.
+
+Item difficulty also varies a lot, which is the item-level version of
+the participant heterogeneity in Part D: a single average accuracy hides
+it.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week05.py}, cell 9 · \RL{\CMfa سلول}
+9
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+Accuracy A = 0.74, B = 0.67, difference = 0.07
+95% CI, paired bootstrap:   [-0.03, 0.17]
+95% CI, unpaired bootstrap: [-0.06, 0.20]
+\end{Verbatim}
+
+A 7-point lead on 100 items is not clearly different from zero. A
+leaderboard that ranks A above B without an interval is overconfident.
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} How many items would the benchmark
+need for the paired interval to exclude 0, if the true difference stays
+the same? Find out by simulation. - \ensuremath{\star}\ensuremath{\star} Compute the Wald SE of each
+accuracy, \(\sqrt{p(1-p)/n}\), and compare it with the bootstrap SE. -
+\ensuremath{\star}\ensuremath{\star} Discussion: a paper reports ``Model A: 74\%, Model B: 67\%'' with no
+interval and concludes that A ``reasons better''. List what you would
+ask the authors.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Confusing SE with SD.} The SD describes the spread of the
+  \emph{data}; the SE describes the uncertainty of an \emph{estimate}
+  and shrinks as the data grow.
+\item
+  \textbf{``There is a 95\% probability that the true value is in my
+  CI.''} For a frequentist CI, 95\% refers to the long-run behavior of
+  the procedure. The probability statement belongs to Bayesian credible
+  intervals (Week 9).
+\item
+  \textbf{Using BFGS's \nolinkurl{hess_inv} for standard errors.} It is
+  a crude by-product of the optimizer. Compute the Hessian properly.
+\item
+  \textbf{Trusting Wald intervals near bounds.} If \(\hat\theta\) is on
+  or near a bound, or the interval crosses impossible values, use
+  profile or bootstrap intervals.
+\item
+  \textbf{Reporting parameters without uncertainty.} Comparing two point
+  estimates (``participant 1 has \(d = 0.42\), participant 2 has
+  \(d = 0.51\)'') is meaningless without intervals.
+\item
+  \textbf{Inferring individual-level processes from averaged data.}
+  Averages of nonlinear curves change functional form (Part D). This
+  applies to items, trials and participants alike.
+\item
+  \textbf{Treating individual estimates as if they were data.}
+  Second-stage t-tests on fitted parameters ignore that some estimates
+  are much noisier than others. Hierarchical models fix this (Week 13).
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} What is the sampling distribution of an estimator, and why
+can't we observe it directly? \textbf{Answer} The distribution of the
+estimates we would get across many hypothetical replications of the
+experiment with the same true parameters. We have only one dataset, so
+we approximate it with the Hessian (asymptotic theory), the profile
+likelihood, or simulation (bootstrap).
+
+\textbf{2.} The NLL has a very flat minimum along one direction of the
+parameter space. What does that imply for the standard errors and the
+correlation of the estimates? \textbf{Answer} Low curvature means a
+small Hessian entry in that direction, so a large variance in
+\(\mathbf{H}^{-1}\): large SEs. If the flat direction is diagonal, the
+estimates are strongly correlated (a trade-off).
+
+\textbf{3.} Derive the Wald SE for a binomial proportion from the second
+derivative of the NLL. \textbf{Answer}
+\(\mathrm{NLL}''(\theta) = y/\theta^2 + (n-y)/(1-\theta)^2\). At
+\(\hat\theta = y/n\) this is
+\(n/\hat\theta + n/(1-\hat\theta) = n/[\hat\theta(1-\hat\theta)]\).
+Inverting and taking the square root gives
+\(\mathrm{SE} = \sqrt{\hat\theta(1-\hat\theta)/n}\).
+
+\textbf{4.} List the steps of a parametric bootstrap for a CI on a model
+parameter. \textbf{Answer} Fit the model to get
+\(\hat{\boldsymbol\theta}\). Simulate \(B\) datasets from the model at
+\(\hat{\boldsymbol\theta}\) using the original design. Refit each one.
+Use the SD of the refitted estimates as the SE, and their 2.5th and
+97.5th percentiles as the 95\% CI.
+
+\textbf{5.} Why can a profile-likelihood interval be asymmetric while a
+Wald interval cannot? \textbf{Answer} The Wald interval assumes a
+quadratic NLL (a normal sampling distribution), which is symmetric by
+construction. The profile interval uses the actual likelihood, which can
+be skewed, e.g., near a bound or for rate parameters.
+
+\textbf{6.} Twenty participants each learn exponentially, with different
+rates. The averaged curve is fitted better by a power function. Should
+we conclude that learning follows a power law? \textbf{Answer} No.~The
+power shape is an aggregation artifact: averaging exponentials with
+heterogeneous rates produces a curve whose relative rate of change
+decreases over time. Conclusions about the form of individual learning
+must come from individual (or hierarchical) fits.
+
+\textbf{7.} Give one advantage and one disadvantage of fitting each
+participant separately. \textbf{Answer} Advantage: respects individual
+differences and avoids aggregation artifacts. Disadvantage: with few
+trials per person, estimates are noisy (and sometimes extreme or on
+bounds), and analyzing them in a second stage ignores their different
+uncertainties.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+No new graded assignment this week. \textbf{A2 (LS vs.~MLE) is due at
+the start of the Week 6 lecture.} Part A of today's lab shows how to add
+standard errors to your A2 estimates. Doing so is not required, but it
+will strengthen your interpretation.
+
+\textbf{Optional practice (ungraded):} Exercise 5 (coverage) is the best
+preparation for Week 7's recovery studies.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 5.} Combining
+  information from multiple participants: aggregate vs.~individual
+  fitting and the dangers of averaging. \emph{(Main reading.)}
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 4} (the sections on
+  parameter uncertainty and the Hessian), revisited from last week.
+\item
+  \emph{Optional, outside the course list:} Heathcote, A., Brown, S., \&
+  Mewhort, D. J. K. (2000). The power law repealed: The case for an
+  exponential law of practice. \emph{Psychonomic Bulletin \& Review, 7},
+  185--207. The classic analysis of averaging artifacts in practice
+  data.
+\end{itemize}
+
+\emph{Preview for Week 6:} Exercise 4 of Week 3 showed a three-parameter
+model beating the true model on SSE. Next week we confront this
+directly: why good fit is not enough, and how cross-validation measures
+what we really want, which is prediction of new data.

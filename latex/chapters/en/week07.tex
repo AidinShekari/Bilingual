@@ -1,0 +1,930 @@
+\section{Week 7: Evaluating Models II: Information Criteria, Parameter
+Recovery and Model Recovery}
+
+\begin{quote}
+\textbf{Chapter 3: Evaluation of cognitive models} · Lecture 1 h · Lab 2
+h \textbf{Running data:} the Week 2--6 forgetting data and models, plus
+large simulation studies at the same design.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+criterion (c) & \RL{\CMfa ملاک} & \RL{\CMfa آستانه‌ی تصمیم؛ نشان‌دهنده‌ی سوگیری
+پاسخ} \\
+parameter recovery & \RL{\CMfa بازیابی پارامتر} & \RL{\CMfa آیا برازش، پارامترهای
+معلوم شبیه‌سازی را برمی‌گرداند} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+model recovery & \RL{\CMfa بازیابی مدل} & \RL{\CMfa آیا مقایسه‌ی مدل، مدل مولد را
+درست انتخاب می‌کند} \\
+forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش یادآوری با گذشت
+زمان} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+research design & \RL{\CMfa طرح آزمایش} & \RL{\CMfa شرایط، تعداد کوشش‌ها و
+نمونه‌ها} \\
+likelihood-ratio test (LRT) & \RL{\CMfa آزمون نسبت درست‌نمایی} & \RL{\CMfa مقایسه‌ی دو
+مدل تودرتو} \\
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+nested models & \RL{\CMfa مدل‌های تودرتو} (nested) & \RL{\CMfa یک مدل حالت خاص مدل
+دیگر است} \\
+AIC / BIC & \RL{\CMfa معیار اطلاعاتی آکائیکه} / \RL{\CMfa بیزی} & \RL{\CMfa برازش به‌علاوه‌ی
+جریمه برای تعداد پارامتر} \\
+response bias & \RL{\CMfa سوگیری پاسخ} & \RL{\CMfa تمایل به یک پاسخ، مستقل از
+محرک} \\
+confusion matrix & \RL{\CMfa ماتریس درهم‌ریختگی} (confusion matrix) & P(\RL{\CMfa مدل
+انتخاب‌شده} \\
+inversion matrix & \RL{\CMfa ماتریس معکوس} (inversion matrix) & P(\RL{\CMfa مدل
+مولد} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+exponential / power function & \RL{\CMfa تابع نمایی} / \RL{\CMfa توانی} & \RL{\CMfa دو شکل
+رایج برای منحنی فراموشی و یادگیری} \\
+identifiability & \RL{\CMfa شناسایی‌پذیری} & \RL{\CMfa آیا داده پارامترها را به‌طور
+یکتا تعیین می‌کند} \\
+parameter trade-off & \RL{\CMfa بده‌بستان پارامترها} & \RL{\CMfa تغییر یک پارامتر که
+با پارامتر دیگر جبران می‌شود} \\
+log-likelihood / NLL & \RL{\CMfa لگاریتم درست‌نمایی} / \RL{\CMfa منفی آن} &
+\RL{\CMfa مقداری که بهینه‌سازها کمینه یا بیشینه می‌کنند} \\
+Akaike weights & \RL{\CMfa وزن‌های آکائیکه} & \RL{\CMfa پشتیبانی نسبی از هر مدل} \\
+cross-validation (CV) & \RL{\CMfa اعتبارسنجی متقابل} (cross-validation) &
+\RL{\CMfa برازش روی بخشی از داده و آزمون روی بخش کنارگذاشته} \\
+trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
+model mimicry & \RL{\CMfa تقلید مدل} & \RL{\CMfa تولید داده‌ای که شبیه داده‌ی مدل دیگر
+است} \\
+in-context learning & \RL{\CMfa یادگیری درون‌متنی} & \RL{\CMfa یادگیری از مثال‌های
+داخل} prompt \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Conduct} a likelihood-ratio test for nested models and
+  \textbf{explain} why it cannot compare non-nested models.
+\item
+  \textbf{Compute} and \textbf{interpret} AIC, AICc, BIC and Akaike/BIC
+  weights, and \textbf{explain} the different goals of AIC and BIC.
+\item
+  \textbf{Design} and \textbf{run} a parameter-recovery study, and
+  \textbf{diagnose} biased, noisy or traded-off parameters.
+\item
+  \textbf{Design} and \textbf{run} a model-recovery study, and
+  \textbf{interpret} the confusion and inversion matrices.
+\item
+  \textbf{Evaluate} whether a given experimental design and comparison
+  method can support the conclusions a researcher wants to draw.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+Cross-validation (Week 6) is general but expensive: every fold means
+refitting, and refitting complex models with multi-start can take hours.
+\textbf{Information criteria} estimate out-of-sample performance from a
+\emph{single} fit, by adding a complexity penalty to the training fit.
+
+But there is a more fundamental question that no criterion answers on
+its own: \textbf{can our method even work at this design?} Suppose we
+conclude ``participants forget by a power law, with decay exponent
+0.42''. Two things must be true for this to mean anything:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  If the data had come from a power model with \(d = 0.42\), our fitting
+  procedure would have returned something close to 0.42
+  (\textbf{parameter recovery}).
+\item
+  If the data had come from an exponential model, our comparison method
+  would have said ``exponential'', not ``power'' (\textbf{model
+  recovery}).
+\end{enumerate}
+
+Both can be checked by simulation, because we know the truth for
+simulated data. Modern guidelines for computational modeling treat these
+checks as essential; skipping them is like running an experiment without
+checking that the equipment works. This week completes the ``simulate \ensuremath{\rightarrow}
+fit \ensuremath{\rightarrow} evaluate \ensuremath{\rightarrow} \textbf{recover}'' part of our pipeline.
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Model comparison tables with AIC/BIC} appear in almost every
+  modeling paper in psychology, neuroscience, ecology and economics.
+\item
+  \textbf{Computational psychiatry}: before claiming that patients have
+  a lower learning rate, researchers must show by parameter recovery
+  that the learning rate can be estimated at their design. Reviewers
+  increasingly require this.
+\item
+  \textbf{Designing experiments}: recovery simulations are run
+  \emph{before} collecting data, to choose the number of trials and
+  conditions (a modeling version of power analysis).
+\item
+  \textbf{Any study that says ``model X explains the data best''} should
+  report model recovery; otherwise the winner may only reflect a bias of
+  the criterion.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+Cross-validation is honest but slow. \textbf{Information criteria} (AIC,
+BIC) are quick formulas that take the fit of each model and subtract a
+penalty for every parameter, so that a model only wins if its extra
+parameters improve the fit by more than they ``cost''. AIC aims at the
+best predictor, BIC at the true model, and BIC's penalty is larger. The
+second, more important half of the week asks whether our methods work at
+all. We test them on fake data where we \emph{know} the truth.
+\textbf{Parameter recovery}: simulate data with known parameter values,
+fit, and check that the fitted values come back close to the true ones.
+\textbf{Model recovery}: simulate data from each candidate model and
+check that the comparison method picks the model that actually generated
+them. If a method cannot find the truth in simulated data, its answer on
+real data means nothing.
+
+\textbf{Suggested timing (60 min):} likelihood-ratio test 8 · AIC and
+BIC 20 · parameter recovery 14 · model recovery 14 · identifiability 4.
+
+\subsubsection{1. The likelihood-ratio test (nested models)}
+
+Model \(\mathcal{M}_0\) is \textbf{nested} in \(\mathcal{M}_1\) if
+\(\mathcal{M}_0\) is a special case of \(\mathcal{M}_1\) obtained by
+fixing some parameters. Example: the exponential model is the
+exponential-with-asymptote model with \(s = 0\) (asymptote at 0). Under
+the null hypothesis that \(\mathcal{M}_0\) is true,
+
+\[
+\Lambda = 2\big[\ell_1(\hat{\boldsymbol\theta}_1) - \ell_0(\hat{\boldsymbol\theta}_0)\big] \;\dot\sim\; \chi^2_{\Delta k},
+\]
+
+where \(\Delta k\) is the difference in the number of free parameters. A
+large \(\Lambda\) means the extra parameters improve the fit more than
+chance would.
+
+\textbf{Limitations:} it only works for \textbf{nested} models (power
+vs.~exponential cannot be tested this way); it is a null-hypothesis test
+(it can reject the simpler model but never support it); and it is
+approximate when the fixed parameter value lies on the boundary of the
+parameter space (as \(s = 0\) does).
+
+\begin{quote}
+\textbf{Advanced: boundary nulls.} When the null value is on the
+boundary (a variance of 0, an asymptote of 0, a mixture weight of 0),
+the null distribution of \(\Lambda\) is a 50:50 mixture of \(\chi^2_0\)
+(a point mass at 0) and \(\chi^2_1\). Using \(\chi^2_1\) is then
+conservative: the correct \(p\)-value is half of the naive one.
+\end{quote}
+
+\subsubsection{2. Information criteria}
+
+Information criteria trade off fit against complexity. With maximized
+log-likelihood \(\hat\ell\), \(k\) free parameters and \(N\)
+observations:
+
+\[
+\mathrm{AIC} = -2\hat\ell + 2k, \qquad
+\mathrm{AICc} = \mathrm{AIC} + \frac{2k(k+1)}{N - k - 1}, \qquad
+\mathrm{BIC} = -2\hat\ell + k \ln N.
+\]
+
+\textbf{Lower is better.} Only \textbf{differences} between models
+fitted to the same data are meaningful.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+AIC (and AICc)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+BIC
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Goal & Best \textbf{prediction} of new data (minimize expected
+Kullback--Leibler divergence to the truth) & Pick the \textbf{true}
+model if it is among the candidates (consistency); approximates the
+Bayes factor \\
+Penalty per parameter & 2 & \(\ln N\) (bigger than 2 once
+\(N \ge 8\)) \\
+As \(N \to \infty\) & May keep choosing over-complex models & Chooses
+the true model with probability \ensuremath{\rightarrow} 1 \\
+Small-sample correction & AICc (use when \(N/k < 40\)) & --- \\
+\end{longtable}
+}
+
+\textbf{What is \(N\)?} The number of \emph{independent observations}
+that enter the likelihood. For binomial recall data that is the number
+of item responses (here \(8 \times 50 = 400\)), not the number of cells
+(8). This choice affects BIC (through \(\ln N\)) and AICc. Report it.
+
+\textbf{Weights.} With
+\(\Delta_i = \mathrm{IC}_i - \min_j \mathrm{IC}_j\),
+
+\[
+w_i = \frac{\exp(-\Delta_i/2)}{\sum_j \exp(-\Delta_j/2)}.
+\]
+
+\textbf{Akaike weights} estimate the probability that model \(i\) is the
+best predictor among the candidates. \textbf{BIC weights} approximate
+posterior model probabilities under equal prior odds (Week 10).
+
+\textbf{Rules of thumb for \(\Delta\):} 0--2, essentially equivalent
+support; 4--7, considerably less support; more than 10, essentially
+none. These are conventions, not laws.
+
+\textbf{Limitation shared by AIC and BIC:} both count parameters, \(k\),
+so they are blind to differences in \textbf{functional-form flexibility}
+between models with the same \(k\) (Week 6). Cross-validation and Bayes
+factors (Week 10) are not.
+
+\begin{quote}
+\textbf{Advanced: where the AIC penalty comes from.} The maximized
+log-likelihood is an optimistically biased estimate of the expected
+log-likelihood of new data, because the same data were used to choose
+\(\hat{\boldsymbol\theta}\). Akaike showed that, for regular models and
+large \(N\), the bias is approximately \(k\). Correcting for it gives
+\(-2(\hat\ell - k) = \mathrm{AIC}\). That is also why AIC and LOO-CV
+agree asymptotically.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(-2\hat\ell\) is the \textbf{misfit} part (twice the minimized NLL);
+  \(2k\) or \(k\ln N\) is the \textbf{penalty} part. Lower AIC/BIC is
+  better.
+\item
+  Each extra parameter must lower \(-2\hat\ell\) by more than 2 (AIC) or
+  more than \(\ln N\) (BIC) to be worth it. With \(N = 400\),
+  \(\ln N \approx 6\): a parameter must improve the NLL by about 3 units
+  to pass BIC, but only by 1 unit to pass AIC.
+\item
+  \textbf{Weights}: \(\exp(-\Delta_i/2)\) converts a difference in AIC
+  into a relative likelihood. \(\Delta = 2\) gives \(e^{-1} = 0.37\), so
+  a model 2 AIC units worse is about a third as well supported. Dividing
+  by the sum makes the weights add up to 1.
+\item
+  \textbf{Worked numbers:} power model AIC
+  \(= 2(19.830) + 2(2) = 43.66\); exponential-with-asymptote
+  \(= 2(18.919) + 2(3) = 43.84\). The asymptote model fits better (lower
+  NLL) but pays for one more parameter, so the two end up almost tied.
+\end{itemize}
+
+\subsubsection{3. Parameter recovery}
+
+\textbf{Question:} at this design, does the fitting procedure return the
+parameters that generated the data?
+
+\textbf{Procedure:} 1. Choose a set of true parameter values
+\(\boldsymbol\theta^\ast\) covering the plausible range (a grid, or
+random draws from plausible ranges, e.g., around the estimates from real
+data). 2. For each \(\boldsymbol\theta^\ast\), simulate a dataset with
+\textbf{exactly the real design} (same conditions, numbers of trials).
+3. Fit the model with \textbf{exactly the real fitting procedure} (same
+optimizer, starts, bounds). 4. Compare \(\hat{\boldsymbol\theta}\) with
+\(\boldsymbol\theta^\ast\): scatter plots of true vs.~recovered;
+correlation; bias (mean of \(\hat\theta - \theta^\ast\)); RMSE. 5. Also
+plot the recovered parameters \textbf{against each other}. A strong
+correlation between, say, \(\hat\lambda\) and \(\hat s\) that is absent
+in the true values reveals a \textbf{trade-off}.
+
+\textbf{Reading the results:} points on the identity line mean good
+recovery; a cloud parallel to the x-axis means the parameter is not
+recoverable at this design; a curve bending away at the extremes means
+bias near the bounds. If recovery fails, do not interpret that
+parameter. Change the design (more trials, other conditions) or simplify
+the model.
+
+\subsubsection{4. Model recovery}
+
+\textbf{Question:} if model \(\mathcal{M}_a\) generated the data, does
+our comparison method select \(\mathcal{M}_a\)?
+
+\textbf{Procedure:} 1. For each candidate model \(\mathcal{M}_a\):
+simulate many datasets at the real design, with parameters drawn from
+plausible ranges. 2. Fit \textbf{every} candidate model to every
+dataset. 3. Select a winner by the chosen criterion (AIC, BIC, CV,
+\ldots). 4. Tabulate the \textbf{confusion matrix}
+\(P(\text{selected} = b \mid \text{generated} = a)\).
+
+A good method gives a matrix with large diagonal entries. Off-diagonal
+mass shows \textbf{model mimicry}: one model can produce data that look
+like another's.
+
+What we actually need when interpreting real data is the reverse: given
+that model \(b\) won, how likely is it that \(b\) generated the data?
+This is the \textbf{inversion matrix}
+\(P(\text{generated} = a \mid \text{selected} = b)\), obtained by
+normalizing each \emph{column} of the confusion counts (assuming equal
+prior frequency of the generating models).
+
+\begin{quote}
+\textbf{Note:} model recovery also reveals \textbf{biases of criteria}:
+BIC tends to favor simpler models at small \(N\), AIC more complex ones.
+The ``best'' criterion is the one that recovers your candidate models
+best \emph{at your design}, which is exactly what this study measures.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Confusion matrix}
+  \(P(\text{selected} = b \mid \text{generated} = a)\): rows are the
+  true (generating) models, columns the selected ones. Each row adds up
+  to 1. Read a row as: ``when the truth is \(a\), how often do we pick
+  each model?''
+\item
+  \textbf{Inversion matrix}
+  \(P(\text{generated} = a \mid \text{selected} = b)\): the same counts,
+  but each \emph{column} is normalized to 1. Read a column as: ``when we
+  picked \(b\), how often was \(b\) really the truth?'' This is the
+  question that matters for a real dataset, where we only see the
+  winner.
+\item
+  \textbf{Small example.} 100 datasets from each of two models. From A:
+  90 select A, 10 select B. From B: 40 select A, 60 select B. Confusion
+  row A = (0.90, 0.10). But among the 130 datasets that selected A, only
+  90 came from A:
+  \(P(\text{A true} \mid \text{A selected}) = 90/130 = 0.69\).
+\end{itemize}
+
+\subsubsection{5. Identifiability}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Structurally non-identifiable:} different parameter values
+  give \emph{exactly} the same predictions, for any data. Examples:
+  label switching in the two-trace model (Week 3), or the SDT location
+  and scale (Week 2). The fix is a constraint or a reparameterization.
+\item
+  \textbf{Practically non-identifiable:} parameters are identifiable in
+  principle but not with the available data. Recovery is poor and
+  estimates trade off. The fix is a better design or a simpler model.
+\end{itemize}
+
+Parameter recovery is the practical test of identifiability.
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{AIC and BIC} are the model-order selection criteria you may
+  know from AR/ARMA modeling; \textbf{BIC} is essentially Rissanen's
+  \textbf{MDL} criterion. The LRT for nested models is again the GLRT.
+\item
+  \textbf{Parameter recovery} is testing an estimator on synthetic
+  signals with known ground truth, at the real SNR and record length,
+  before trusting it on measured data. Engineers do this routinely; in
+  psychology it is often skipped, which is why the course insists on it.
+\item
+  The \textbf{confusion matrix} is the channel transition matrix of a
+  discrete channel: input = generating model, output = selected model.
+  The \textbf{inversion matrix} is the matrix of \emph{a posteriori}
+  probabilities \(P(\text{input} \mid \text{output})\), i.e.~what an MAP
+  decoder needs, assuming equal input priors.
+\item
+  \textbf{Structural non-identifiability} is like an unobservable state
+  or a rank-deficient system matrix: no amount of data helps.
+  \textbf{Practical non-identifiability} is an ill-conditioned problem:
+  identifiable in principle, but the noise is too large for the
+  available record.
+\end{itemize}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Frame recovery as ``checking the equipment''.} No one would
+  trust a thermometer that was never tested in water of known
+  temperature. Recovery is that test for a model.
+\item
+  \textbf{Show one scatter plot of true vs.~recovered values} (lab Part
+  C) before any theory: good recovery (points on the diagonal) next to
+  bad recovery (a flat cloud). The picture explains itself.
+\item
+  \textbf{Teach confusion vs.~inversion with the small 2×2 example
+  above}; students confuse them in the exam more than anything else this
+  week. The medical-test analogy helps: the sensitivity of a test is not
+  the probability that a positive patient is ill.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``AIC or BIC?''} Depends on the goal (prediction vs.~finding
+    the true model) and, practically, on which one recovers your models
+    better at your design.
+  \item
+    \emph{``How many simulated datasets?''} 50--100 per condition is
+    enough to see the pattern; more for publication.
+  \item
+    \emph{``Recovery failed, what now?''} Do not interpret that
+    parameter. Change the design or simplify the model.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+The four forgetting models fitted by MLE to the Week 2 data (training
+NLLs from Week 6), with \(N = 400\) item responses:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+NLL
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+AIC \(= 2\,\mathrm{NLL} + 2k\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+BIC \(= 2\,\mathrm{NLL} + k\ln 400\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exp & 2 & 29.812 & 63.62 & 71.61 \\
+pow & 2 & 19.830 & \textbf{43.66} & \textbf{51.64} \\
+expasym & 3 & 18.919 & 43.84 & 55.81 \\
+two & 4 & 18.919 & 45.84 & 61.80 \\
+\end{longtable}
+}
+
+\textbf{Step 1: AIC for the power model.}
+\(2 \times 19.830 + 2 \times 2 = 43.66\).
+
+\textbf{Step 2: BIC for the power model.} \(\ln 400 = 5.991\), so
+\(2 \times 19.830 + 2 \times 5.991 = 51.64\).
+
+\textbf{Step 3: Akaike weights.} Differences from the best AIC:
+\(\Delta = (19.96, 0, 0.18, 2.18)\). Then
+\(e^{-\Delta/2} = (0.00005, 1, 0.914, 0.336)\), which sum to 2.250, so
+
+\[
+w^{\text{AIC}} = (0.000,\ 0.444,\ 0.406,\ 0.149).
+\]
+
+BIC weights computed the same way: \((0.000,\ 0.884,\ 0.110,\ 0.005)\).
+
+\textbf{Step 4: likelihood-ratio test}, exp nested in expasym:
+\(\Lambda = 2(29.812 - 18.919) = 21.79\) on 1 df,
+\(p \approx 3 \times 10^{-6}\). Adding an asymptote improves the
+exponential model significantly.
+
+\textbf{Interpretation.} Both criteria reject the pure exponential
+decisively. AIC cannot separate the power and asymptote models (weights
+0.44 vs.~0.41): for \emph{prediction} they are about equally good,
+consistent with the Week 6 CV results. BIC's larger penalty favors the
+two-parameter power model (0.88). The two-trace model's extra parameter
+buys nothing: identical NLL to expasym, so it pays the penalty for
+nothing. Whether we should \emph{trust} these preferences at this design
+is a question for model recovery (lab Part D).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Run a likelihood-ratio test and compute AIC, AICc, BIC and weights for
+  the forgetting models.
+\item
+  Run a parameter-recovery study for the power and
+  exponential-with-asymptote models, and check for trade-offs.
+\item
+  Run a model-recovery study for three models with AIC and BIC; build
+  confusion and inversion matrices.
+\item
+  \textbf{Interpret}: what can and cannot be concluded from the Week 2
+  data at this design?
+\end{enumerate}
+
+\textbf{Timing:} Part A 15 min · Part B 15 min · Part C 35 min · Part D
+40 min · Part E 15 min.
+
+\subsubsection{Setup}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{Part A: likelihood-ratio test (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+NLL exp = 29.812, NLL expasym = 18.919
+LR statistic = 21.79, df = 1, naive p = 3.05e-06, boundary-corrected p = 1.52e-06
+\end{Verbatim}
+
+\textbf{Question:} why can't you use the same test to compare the power
+and exponential models?
+
+\subsubsection{Part B: information criteria and weights (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{9\baselineskip}
+\begin{Verbatim}
+         k     NLL     AIC    AICc     BIC  w_AIC  w_AICc  w_BIC
+model
+exp      2  29.812  63.625  63.655  71.608  0.000   0.000  0.000
+pow      2  19.830  43.661  43.691  51.644  0.444   0.449  0.884
+expasym  3  18.919  43.837  43.898  55.812  0.406   0.405  0.110
+two      4  18.919  45.837  45.939  61.803  0.150   0.146  0.006
+\end{Verbatim}
+
+\textbf{Sensitivity check:} recompute BIC with \(N = 8\) (the number of
+cells) instead of 400. Does the ranking change? Which choice of \(N\) is
+defensible here, and why?
+
+\subsubsection{Part C: parameter recovery (35 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output} (about 1 minute):
+
+\Needspace{15\baselineskip}
+\begin{Verbatim}
+pow:
+   r(true, rec)   bias   RMSE
+A         0.888  0.005  0.055
+d         0.965  0.003  0.070
+
+expasym:
+     r(true, rec)   bias   RMSE
+A           0.802  0.008  0.077
+lam         0.799  0.034  0.230
+s           0.918 -0.008  0.060
+
+expasym: corr(true lam, true s) = -0.08;  corr(recovered lam, recovered s) = 0.03
+\end{Verbatim}
+
+\textbf{Interpret:} 1. Which parameters are well recovered at this
+design? Which would you hesitate to interpret? 2. The expasym decay rate
+\(\lambda\) has by far the largest RMSE (0.23 on a range of 0.05--1).
+Look at its panel: for which true values does recovery break down, and
+why? (Hint: if decay is very fast, most of the decline happens before
+the second test interval, so what do the data look like?) Here the
+recovered \(\lambda\) and \(s\) are \emph{not} correlated (r = 0.03), so
+this is imprecision rather than a trade-off. Contrast this with the
+clear \(A\)--\(d\) trade-off of the power model found in Week 5. 3. What
+design change would improve recovery of \(\lambda\) and \(s\)? Test one
+idea in Exercise 3.
+
+\subsubsection{Part D: model recovery (40 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\textbf{Expected output} (about 1--2 minutes):
+
+\Needspace{24\baselineskip}
+\begin{Verbatim}
+AIC confusion matrix (rows = generating model, columns = selected model):
+          exp   pow  expasym
+exp      0.91  0.00     0.09
+pow      0.03  0.82     0.15
+expasym  0.06  0.25     0.69
+AIC inversion matrix (rows = generating model, columns = selected model):
+          exp   pow  expasym
+exp      0.91  0.00     0.10
+pow      0.03  0.77     0.16
+expasym  0.06  0.23     0.74
+
+BIC confusion matrix (rows = generating model, columns = selected model):
+          exp   pow  expasym
+exp      0.99  0.01     0.00
+pow      0.05  0.94     0.01
+expasym  0.09  0.58     0.33
+BIC inversion matrix (rows = generating model, columns = selected model):
+          exp   pow  expasym
+exp      0.88  0.01     0.00
+pow      0.04  0.61     0.03
+expasym  0.08  0.38     0.97
+\end{Verbatim}
+
+\textbf{Interpret:} 1. Which model is most often confused with which?
+(With AIC, 25\% of expasym datasets are labeled power; with BIC, 58\%.)
+Explain the mimicry in terms of the curves' shapes. 2. Compare AIC and
+BIC. Which recovers the simpler models better, and which the more
+complex one? 3. In Part B, BIC selected the power model for the real
+data. Using the BIC \textbf{inversion} matrix, how confident should we
+be that the data were generated by a power model? (Only 61\% of BIC's
+``power'' verdicts came from power-generated data; 38\% came from
+expasym.)
+
+\subsubsection{Part E: conclusions about the Week 2 data (15 min)}
+
+Write a paragraph (6--10 sentences) that a reviewer would accept,
+summarizing what the Week 2 data say about the form of forgetting. Use
+Parts A--D and your Week 6 CV results, and state what \emph{cannot} be
+concluded at this design.
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star}.} Compute AIC and BIC weights for the worked
+example by hand (calculator) and check them against Part B.
+
+\textbf{Exercise 2 \ensuremath{\star}.} Repeat Part B with AICc. For which \(N\) would
+AICc and AIC differ noticeably for the two-trace model?
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (design for recovery).} Rerun the expasym recovery
+of Part C with intervals extended to
+\(\{0.25, 1, 2, 4, 7, 14, 30, 60, 90\}\) days, and separately with
+\(n = 200\) items. Which change helps \(\lambda\) and \(s\) recovery
+more?
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (CV in model recovery).} Replace AIC/BIC in Part D
+by 5-fold CV (from Week 6) for 30 simulations per model. Is CV better or
+worse than AIC at recovering the models? Is it worth the computation
+time?
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: SDT recovery).} For the payoff
+experiment of Week 4 (three conditions, 80 + 80 trials per condition),
+run a model recovery for ``shared \(d'\)'' vs.~``separate \(d'\)'' using
+the likelihood-ratio test at \(\alpha = .05\) and BIC. How often does
+each method wrongly claim that payoffs change sensitivity? How many
+trials per condition would you need to detect a true sensitivity
+difference of 0.3 in 80\% of simulations?
+
+\subsubsection{Lab check-off}
+
+Show: (1) your IC table with weights (Part B), (2) the recovery scatter
+plots with one sentence on which parameter is least well recovered and
+why, (3) the AIC and BIC confusion matrices, and (4) your Part E
+paragraph.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Comparing learning curves of an AI model.} LLMs can learn a new
+task from a few examples in the prompt (``in-context learning''). How
+the error falls with the number of examples \(k\) is a learning curve,
+and the question ``exponential or power?'' is the same question as in
+this week's lab (and Week 2's forgetting curves). Information criteria,
+model recovery and identifiability apply unchanged. The design matters
+as much as before: with few values of \(k\) and few test items, the two
+curves may be impossible to tell apart.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week07.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{4\baselineskip}
+\begin{Verbatim}
+{'exponential': 41.6, 'power': 40.4} Akaike weights: [0.362 0.638]
+\end{Verbatim}
+
+The data were generated by a power law, but the evidence is weak
+(weights 0.64 vs.~0.36).
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Run a model recovery (Week 7, Part
+D) at this design: 50 datasets from each curve. Build the confusion
+matrix. - \ensuremath{\star}\ensuremath{\star} Change the design: more values of \(k\) (up to 128) or 200
+test items per \(k\). Which change improves model recovery more? - \ensuremath{\star}\ensuremath{\star}
+Discussion: a paper concludes from one fitted curve that ``in-context
+learning follows a power law, like human practice''. What would you need
+to see before accepting the comparison with humans?
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Interpreting an AIC value on its own.} Only differences
+  between models fitted to the same data mean anything.
+\item
+  \textbf{Using LRTs for non-nested models,} or reading a
+  non-significant LRT as evidence \emph{for} the simpler model.
+\item
+  \textbf{Thinking BIC is ``Bayesian AIC'' with the same goal.} BIC aims
+  at identifying the data-generating model; AIC aims at prediction. They
+  can disagree for good reasons.
+\item
+  \textbf{Unclear \(N\).} Always report what counted as an observation;
+  BIC and AICc depend on it.
+\item
+  \textbf{Skipping recovery.} A parameter that cannot be recovered at
+  your design must not be interpreted, no matter how good the fit.
+\item
+  \textbf{Running recovery at a different design or with a different
+  fitting procedure} than the real analysis. Recovery results are
+  design-specific.
+\item
+  \textbf{Reading the confusion matrix as if it were the inversion
+  matrix.} ``Data from model A are recovered as A 90\% of the time'' is
+  not the same as ``when A wins, it is the true model 90\% of the
+  time''.
+\item
+  \textbf{Choosing parameter ranges for recovery that are wider or
+  narrower than plausible values.} Too wide inflates correlations; too
+  narrow hides problems.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} Write the formulas for AIC and BIC. For which \(N\) does BIC
+penalize each parameter more than AIC? \textbf{Answer}
+\(\mathrm{AIC} = -2\hat\ell + 2k\);
+\(\mathrm{BIC} = -2\hat\ell + k\ln N\). BIC's penalty exceeds AIC's when
+\(\ln N > 2\), i.e., \(N > e^2 \approx 7.4\), so for \(N \ge 8\).
+
+\textbf{2.} Model A has AIC = 210.4, model B has AIC = 212.9. Compute
+the Akaike weights and interpret them. \textbf{Answer}
+\(\Delta = (0, 2.5)\), so \(e^{-\Delta/2} = (1, 0.287)\) and
+\(w = (0.777, 0.223)\). A is favored about 3.5:1 as the better
+predictor, but B retains non-negligible support.
+
+\textbf{3.} Why can the likelihood-ratio test compare exponential and
+exponential-with-asymptote but not exponential and power?
+\textbf{Answer} The exponential is a special case of the asymptote model
+(fix \(s = 0\)), so the models are nested and \(2\Delta\ell\) has a
+known \(\chi^2\) distribution under the null. Exponential and power are
+not nested: neither is a special case of the other.
+
+\textbf{4.} Describe the steps of a parameter-recovery study.
+\textbf{Answer} Choose plausible true parameter values; simulate data at
+the real design; fit with the real fitting procedure; compare recovered
+with true values (scatter plots, correlation, bias, RMSE); check
+correlations among the recovered parameters for trade-offs.
+
+\textbf{5.} In a recovery study, the recovered \(\lambda\) and \(s\)
+correlate at \(r = -0.8\), although the true values were drawn
+independently. What does that mean? \textbf{Answer} A trade-off: at this
+design, different combinations of decay rate and asymptote produce
+nearly the same predictions, so errors in one are compensated by the
+other. Individual values of \(\lambda\) and \(s\) should not be
+interpreted separately. A better design or a reparameterization is
+needed.
+
+\textbf{6.} Explain the difference between a confusion matrix and an
+inversion matrix in model recovery. \textbf{Answer} Confusion:
+\(P(\text{selected} \mid \text{generated})\), with rows summing to 1,
+which describes the method's behavior for each true model. Inversion:
+\(P(\text{generated} \mid \text{selected})\), with columns summing to 1
+(assuming equal priors for the generating models), which tells us how
+much to trust a given winner when analyzing real data.
+
+\textbf{7.} A model recovery shows that AIC selects the three-parameter
+model 40\% of the time when the two-parameter model generated the data.
+What would you do? \textbf{Answer} Treat AIC wins for the complex model
+with caution at this design: check BIC or CV recovery, which may be more
+conservative, improve the design (more trials, more informative
+conditions), and report the recovery results alongside the real-data
+comparison.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\subsubsection{A3 continues (due at the start of the Week 9 lecture)}
+
+Tasks 4 (information criteria) and 5 (parameter and model recovery) of
+A3 use this week's material. The full brief is in Week 6. Reuse today's
+\nolinkurl{parameter_recovery} code and the model-recovery loop: they
+are designed to be adapted directly.
+
+\subsubsection{Final project: teams and proposal brief released}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Teams:} 1--2 students. Register your team with the TA by the
+  end of this week.
+\item
+  \textbf{Task:} choose a cognitive model and apply the full pipeline to
+  a dataset (simulated, open, or your own): fit, evaluate (at least one
+  model comparison with an alternative model), recover (at least one
+  parameter-recovery analysis), interpret. \textbf{Pairs} also include a
+  Bayesian/MCMC or hierarchical analysis and an individual contribution
+  statement.
+\item
+  \textbf{Proposal (due at the start of the Week 9 lecture, max. 2
+  pages):} research question, model(s) with equations, data source and
+  design, planned comparison and recovery analyses, and a timeline. The
+  full project brief and rubric are distributed separately
+  (\nolinkurl{project_brief.md}).
+\item
+  \textbf{Not sure what to model?} The topics of Weeks 14--15 (exemplar
+  categorization, drift-diffusion, reinforcement learning) all make good
+  projects, as do extensions of the forgetting and SDT models from this
+  course.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 10.} Model comparison:
+  likelihood-ratio tests, AIC, BIC and their weights; their assumptions
+  and limitations. \emph{(Main reading.)}
+\item
+  \textbf{Lee \& Wagenmakers (2014), chapter 7} (introduction). How the
+  Bayesian approach to model comparison relates to the methods of this
+  week, as preparation for Week 10.
+\item
+  \emph{Optional, outside the course list:} Wilson, R. C., \& Collins,
+  A. G. E. (2019). Ten simple rules for the computational modeling of
+  behavioral data. \emph{eLife, 8}, e49547. A practical guide that
+  treats parameter and model recovery as standard practice.
+\end{itemize}
+
+\emph{Preview for Week 8:} the midterm. The lecture is an integrated
+review in which we run the whole pipeline (simulate, fit, evaluate,
+recover, interpret) on a new dataset; the lab slot is the midterm exam.

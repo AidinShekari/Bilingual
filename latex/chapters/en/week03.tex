@@ -1,0 +1,1201 @@
+\section{Week 3: Fitting Models by Least Squares: Error Surfaces and
+Optimization}
+
+\begin{quote}
+\textbf{Chapter 2: Parameter estimation methods} · Lecture 1 h · Lab 2 h
+\textbf{This week's running data:} the simulated forgetting experiment
+from Week 2 (power model, \(A^\ast = 0.9\), \(d^\ast = 0.5\), \(n = 50\)
+items at 8 intervals). We refit it properly and compare with last week's
+linearized fits.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+least squares & \RL{\CMfa کمترین مربعات} & \RL{\CMfa روش برازش با کمینه کردن مجموع
+مربع خطاها} \\
+error surface & \RL{\CMfa سطح خطا} & \RL{\CMfa خطا به‌عنوان تابعی از پارامترها} \\
+optimizer & \RL{\CMfa بهینه‌ساز} & \RL{\CMfa الگوریتمی که کمینه‌ی تابع را پیدا
+می‌کند} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش یادآوری با گذشت
+زمان} \\
+exponential / power function & \RL{\CMfa تابع نمایی} / \RL{\CMfa توانی} & \RL{\CMfa دو شکل
+رایج برای منحنی فراموشی و یادگیری} \\
+SSE / RMSD & \RL{\CMfa مجموع مربعات خطا} / \RL{\CMfa ریشه‌ی میانگین مربع انحراف} &
+\RL{\CMfa معیارهای فاصله‌ی داده و پیش‌بینی} \\
+noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شواهد یا در داده} \\
+parameter trade-off & \RL{\CMfa بده‌بستان پارامترها} & \RL{\CMfa تغییر یک پارامتر که
+با پارامتر دیگر جبران می‌شود} \\
+grid approximation & \RL{\CMfa تقریب شبکه‌ای} (grid) & \RL{\CMfa محاسبه‌ی پسین روی
+شبکه‌ای از مقادیر} \\
+Nelder--Mead & \RL{\CMfa روش} Nelder--Mead & \RL{\CMfa بهینه‌ساز بدون نیاز به
+مشتق} \\
+Bayes factor (BF) & \RL{\CMfa عامل بیز} (Bayes factor) & \RL{\CMfa نسبت درست‌نمایی‌های
+حاشیه‌ای دو مدل} \\
+local minimum & \RL{\CMfa کمینه‌ی محلی} & \RL{\CMfa نقطه‌ای پایین‌تر از اطراف ولی نه
+بهترین نقطه} \\
+bounds / constraints & \RL{\CMfa کران‌ها} / \RL{\CMfa قیدها} & \RL{\CMfa محدودیت‌های مجاز
+برای مقدار پارامترها} \\
+reparameterization & \RL{\CMfa بازپارامتری‌سازی} & \RL{\CMfa نوشتن پارامتر در مقیاس
+دیگر، مثلاً} \ensuremath{\lambda} = e\^{}\ensuremath{\eta} \\
+multi-start & \RL{\CMfa شروع چندگانه} (multi-start) & \RL{\CMfa اجرای بهینه‌ساز از
+چند نقطه‌ی شروع} \\
+maximum likelihood estimate (MLE) & \RL{\CMfa برآورد بیشینه‌ی درست‌نمایی} &
+\RL{\CMfa پارامترهایی که داده را محتمل‌ترین می‌کنند} \\
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+gradient & \RL{\CMfa گرادیان} & \RL{\CMfa جهت و شیب تغییر تابع} \\
+convergence & \RL{\CMfa همگرایی} & \RL{\CMfa رسیدن زنجیره‌ها به توزیع هدف} \\
+large language model (LLM) & \RL{\CMfa مدل بزرگ زبانی} & \RL{\CMfa شبکه‌ی عصبی‌ای که
+کلمه‌ی بعدی متن را پیش‌بینی می‌کند} \\
+scaling law & \RL{\CMfa قانون مقیاس} & \RL{\CMfa رابطه‌ی توانی بین اندازه‌ی مدل و
+خطا} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Define} SSE, MSE and RMSD as discrepancy functions and
+  \textbf{explain} what minimizing them assumes about the noise.
+\item
+  \textbf{Visualize} an error surface for a two-parameter model and
+  \textbf{interpret} its shape (minimum, valleys, plateaus) in terms of
+  parameter trade-offs.
+\item
+  \textbf{Implement} least-squares fitting by grid search and with
+  \nolinkurl{scipy.optimize.minimize} (Nelder--Mead and L-BFGS-B), and
+  \textbf{compare} the algorithms' strengths and failure modes.
+\item
+  \textbf{Diagnose} and \textbf{remedy} common fitting failures: bad
+  starting values, plateaus, local minima, and out-of-range parameters
+  (using bounds, reparameterization and multi-start).
+\item
+  \textbf{Evaluate} a least-squares fit with RMSD and residuals, and
+  \textbf{interpret} the fitted parameters.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+Last week we fitted forgetting curves by drawing a straight line through
+log-transformed proportions. The power model was the true model, yet its
+estimates were noticeably off (\(\hat A = 0.80\), \(\hat d = 0.37\)
+instead of \(0.9\) and \(0.5\)). The method also breaks whenever a count
+is zero, and it minimizes errors on the wrong (log) scale.
+
+The fix is conceptually simple: \textbf{choose the parameters that make
+the model's predictions as close as possible to the data, on the data's
+own scale.} ``As close as possible'' needs a number, a \emph{discrepancy
+function}. ``Choose the parameters'' needs a search procedure, an
+\emph{optimization algorithm}. This week covers both.
+
+There is a deeper reason this matters for cognitive science. Model
+parameters are our \emph{measurements} of latent constructs (decay rate,
+caution, sensitivity). A poor fitting procedure gives poor measurements,
+and every conclusion drawn from them (group differences, correlations
+with brain activity, model comparisons) inherits that error. Worse, as
+we will see, an optimizer can report ``success'' while returning
+nonsense.
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Every model-based study in psychology} has a fitting step.
+  Learning curves, forgetting curves, psychometric functions (how
+  detection improves with stimulus strength) and dose--response curves
+  in psychopharmacology are all fitted by minimizing a discrepancy.
+\item
+  \textbf{Clinical and developmental research} compares fitted
+  parameters between groups (e.g.~the forgetting rate of patients
+  vs.~controls). If the fit is poor or stuck at a bound, the group
+  comparison is wrong.
+\item
+  \textbf{Neuroscience} fits tuning curves of neurons and hemodynamic
+  response functions in fMRI with exactly these optimizers.
+\item
+  \textbf{Machine learning} trains models by minimizing a loss with
+  gradient methods; the vocabulary (loss surface, learning rate, local
+  minima) is the same as this week's.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+A model has knobs (parameters). Fitting means turning the knobs until
+the model's curve passes as close as possible to the data points. To do
+this with a computer we need two things. First, a single number that
+says how bad the current fit is: the \textbf{sum of squared errors
+(SSE)}, the squared vertical distances between data points and the
+curve, added up. Second, a strategy to turn the knobs so that this
+number goes down: an \textbf{optimizer}. Think of the SSE as a landscape
+over all possible knob settings, with hills (bad fits) and valleys (good
+fits); the optimizer is a hiker looking for the lowest point. Problems
+arise when the landscape has a long flat valley (two knobs can
+compensate each other), a flat plateau (the hiker cannot tell which way
+is down), or several separate valleys (the hiker may stop in the wrong
+one). Most of this week is about recognizing those situations and
+protecting yourself against them.
+
+\textbf{Suggested timing (60 min):} discrepancy functions 10 · error
+surfaces 10 · optimization algorithms 20 · practical problems and a
+fitting checklist 15 · preview 5.
+
+\subsubsection{1. Discrepancy functions}
+
+For observations \(y_i\) and model predictions
+\(\hat y_i = f(x_i; \boldsymbol\theta)\), \(i = 1, \dots, N\):
+
+\[
+\mathrm{SSE}(\boldsymbol\theta) = \sum_{i=1}^{N} \big(y_i - f(x_i;\boldsymbol\theta)\big)^2, \qquad
+\mathrm{MSE} = \frac{\mathrm{SSE}}{N}, \qquad
+\mathrm{RMSD} = \sqrt{\mathrm{MSE}}.
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  All three have the \textbf{same minimizer}: they are monotone
+  transformations of each other. We \emph{minimize} SSE and
+  \emph{report} RMSD, because RMSD is in the units of the data (here:
+  proportion recalled), so ``RMSD = 0.057'' means predictions are off by
+  about 0.06 on average.
+\item
+  The \textbf{least-squares estimate} is \[
+  \hat{\boldsymbol\theta}_{\text{LS}} = \arg\min_{\boldsymbol\theta} \mathrm{SSE}(\boldsymbol\theta).
+  \]
+\end{itemize}
+
+\textbf{Why squares?} Squaring makes all errors positive, penalizes
+large errors heavily, and gives a smooth (differentiable) function that
+optimizers handle well. More deeply, minimizing SSE is exactly maximum
+likelihood estimation \textbf{if} the noise is Gaussian with the same
+variance for every observation (Week 4). That ``if'' is the hidden
+assumption of least squares.
+
+\textbf{When the assumption fails.} Recall proportions are binomial:
+their variance \(f(1-f)/n\) depends on \(f\). Points near 0.5 are
+noisier than points near 0 or 1, but plain SSE treats them as equally
+reliable. \textbf{Weighted least squares} fixes this by weighting each
+squared error by the inverse of its variance:
+
+\[
+\mathrm{WSSE}(\boldsymbol\theta) = \sum_{i} \frac{\big(y_i - \hat y_i\big)^2}{\mathrm{Var}(y_i)}.
+\]
+
+You will try this in Exercise 3. Next week, maximum likelihood handles
+this issue more naturally.
+
+\begin{quote}
+\textbf{Note:} some textbooks call RMSD ``RMSE''. They are the same
+quantity.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\sum_{i=1}^{N}\) means ``add up over all \(N\) data points''.
+  \(y_i - f(x_i;\boldsymbol\theta)\) is the \textbf{residual} of point
+  \(i\): observed minus predicted. Squaring and adding gives one number
+  per parameter setting \(\boldsymbol\theta\).
+\item
+  \(\arg\min_{\boldsymbol\theta} \mathrm{SSE}(\boldsymbol\theta)\) reads
+  ``the value of \(\boldsymbol\theta\) at which SSE is smallest''. Note
+  the difference: \(\min\) is the smallest \emph{SSE value},
+  \(\arg\min\) is the \emph{parameter value} that achieves it. We want
+  the \(\arg\min\).
+\item
+  \textbf{Small example.} Data \(y = (0.62, 0.41)\), predictions
+  \((0.66, 0.44)\): residuals \((-0.04, -0.03)\), SSE
+  \(= 0.0016 + 0.0009 = 0.0025\), MSE \(= 0.00125\), RMSD \(= 0.035\):
+  the curve misses the points by about 3.5 percentage points on average.
+\item
+  In WSSE each squared residual is divided by the variance of that
+  point, so a noisy point counts less. With binomial data the variance
+  is \(f(1-f)/n\).
+\end{itemize}
+
+\subsubsection{2. The error surface}
+
+For a model with \(k\) parameters, \(\mathrm{SSE}(\boldsymbol\theta)\)
+is a surface over a \(k\)-dimensional parameter space. With \(k = 2\) we
+can draw it as a contour map: the fitting problem becomes ``find the
+lowest point of the landscape.''
+
+Features to recognize:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Feature
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+What it looks like
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+What it means
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Single, round bowl} & Concentric, nearly circular contours &
+Parameters well determined and roughly independent; any decent algorithm
+finds the minimum \\
+\textbf{Long, diagonal valley} & Elongated contours tilted at an angle &
+\textbf{Parameter trade-off}: increasing one parameter can be
+compensated by changing the other. Estimates will be correlated and
+uncertain along the valley (Week 5, Week 7) \\
+\textbf{Plateau} & Very widely spaced contours & The model's predictions
+barely change with the parameters (e.g., a decay rate so large that the
+predicted curve is 0 everywhere). Gradient-based methods stall \\
+\textbf{Several separate basins} & More than one closed set of contours
+& \textbf{Local minima}: the algorithm's answer depends on where it
+starts \\
+\end{longtable}
+}
+
+For exponential forgetting, \(A\) and \(\lambda\) trade off: a higher
+starting level with faster decay can predict nearly the same mid-range
+values as a lower level with slower decay. The valley is therefore
+tilted (you will see it in the lab).
+
+\subsubsection{3. Optimization algorithms}
+
+All algorithms below start from initial values
+\(\boldsymbol\theta^{(0)}\) and generate a sequence
+\(\boldsymbol\theta^{(1)}, \boldsymbol\theta^{(2)}, \dots\) that
+(hopefully) descends to the minimum.
+
+\paragraph{3.1 Grid search}
+
+Evaluate the SSE at every point of a regular grid and keep the best.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Pros:} trivially simple; cannot be fooled by local minima
+  \emph{on the grid}; gives a picture of the whole surface.
+\item
+  \textbf{Cons:} precision limited by grid spacing; cost grows
+  \textbf{exponentially} with the number of parameters. With 100 values
+  per parameter: \(k = 2\) needs \(10^4\) evaluations, \(k = 5\) needs
+  \(10^{10}\). This is the \textbf{curse of dimensionality}.
+\item
+  \textbf{Use it for:} visualizing 1--2-parameter surfaces, and for
+  generating good starting values.
+\end{itemize}
+
+\paragraph{3.2 Nelder--Mead simplex (derivative-free)}
+
+A \textbf{simplex} is a set of \(k+1\) points in a \(k\)-dimensional
+space (a triangle when \(k = 2\)). Each iteration tries to replace the
+\textbf{worst} vertex \(\boldsymbol\theta_w\) by moving it through the
+centroid \(\bar{\boldsymbol\theta}\) of the other vertices:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Move
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Formula (standard coefficients)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+When
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Reflect &
+\(\boldsymbol\theta_r = \bar{\boldsymbol\theta} + (\bar{\boldsymbol\theta} - \boldsymbol\theta_w)\)
+& Always tried first \\
+Expand &
+\(\boldsymbol\theta_e = \bar{\boldsymbol\theta} + 2(\bar{\boldsymbol\theta} - \boldsymbol\theta_w)\)
+& The reflected point is better than the current best; try going
+further \\
+Contract &
+\(\boldsymbol\theta_c = \bar{\boldsymbol\theta} + \tfrac{1}{2}(\boldsymbol\theta_w - \bar{\boldsymbol\theta})\)
+(inside), or the same step on the reflected side (outside) & The
+reflected point is not better than the second-worst vertex \\
+Shrink & Move all vertices halfway toward the best one & Contraction
+also failed \\
+\end{longtable}
+}
+
+The reflected point is \textbf{accepted} when it is better than the
+second-worst vertex but not better than the best. The simplex
+``tumbles'' downhill, stretches along valleys, and shrinks around the
+minimum.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Pros:} needs only SSE values (no derivatives); robust to noisy
+  or non-smooth objective functions; the default workhorse in cognitive
+  modeling.
+\item
+  \textbf{Cons:} can be slow in high dimensions; can stall in long
+  narrow valleys; no guarantee of finding the global minimum.
+\end{itemize}
+
+\begin{quote}
+Direct-search methods like Nelder--Mead are treated in depth in
+Ghodousian's book on direct methods in nonlinear optimization (see
+Further reading).
+\end{quote}
+
+\paragraph{3.3 Gradient-based methods}
+
+The \textbf{gradient} \(\nabla \mathrm{SSE}(\boldsymbol\theta)\) points
+uphill, so we step the other way:
+
+\[
+\boldsymbol\theta^{(m+1)} = \boldsymbol\theta^{(m)} - \eta\,\nabla \mathrm{SSE}\big(\boldsymbol\theta^{(m)}\big),
+\qquad
+\frac{\partial\,\mathrm{SSE}}{\partial \theta} = -2 \sum_{i} \big(y_i - \hat y_i\big)\,\frac{\partial \hat y_i}{\partial \theta},
+\]
+
+with step size (learning rate) \(\eta\). For the exponential model,
+\(\partial \hat y/\partial A = e^{-\lambda t}\) and
+\(\partial \hat y/\partial \lambda = -A\,t\,e^{-\lambda t}\).
+
+In practice we use \textbf{quasi-Newton} methods such as \textbf{BFGS}.
+They also estimate the \emph{curvature} of the surface and choose the
+step size automatically, so they converge much faster near a minimum.
+\textbf{L-BFGS-B} is the variant that accepts \textbf{bounds} on
+parameters. If you do not supply the gradient, scipy approximates it
+numerically by finite differences.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Pros:} fast and precise on smooth surfaces; scale well to many
+  parameters (this is how neural networks are trained).
+\item
+  \textbf{Cons:} need a smooth objective; get stuck where the gradient
+  is (nearly) zero, at plateaus as well as at minima; sensitive to
+  starting values.
+\end{itemize}
+
+\begin{quote}
+\textbf{Advanced: why plateaus trap gradient methods.} If \(\lambda\) is
+very large, \(e^{-\lambda t} \approx 0\) at every observed \(t\), so
+both partial derivatives above are \(\approx 0\). A gradient method sees
+a ``flat floor'' and stops, sometimes reporting successful convergence.
+Nelder--Mead compares function values at distant points and can step off
+the plateau. You will see both behaviors in lab Part D.
+\end{quote}
+
+\textbf{Summary:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Needs derivatives
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Bounds
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Typical use
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Grid search & No & Built in & Visualization, starting values,
+\(k \le 2\) \\
+Nelder--Mead & No & Yes (scipy \ensuremath{\geq} 1.7) & Default for small cognitive
+models; noisy objectives \\
+BFGS & Numerical or analytic & No & Smooth objectives, unconstrained
+parameters \\
+L-BFGS-B & Numerical or analytic & Yes & Smooth objectives with bounded
+parameters \\
+\end{longtable}
+}
+
+\paragraph{Reading the math}
+
+The gradient step
+\(\boldsymbol\theta^{(m+1)} = \boldsymbol\theta^{(m)} - \eta\,\nabla \mathrm{SSE}(\boldsymbol\theta^{(m)})\)
+reads: \emph{new guess = old guess − step size × slope}. The superscript
+\((m)\) is the iteration number, not a power. \(\nabla \mathrm{SSE}\) is
+the vector of partial derivatives (one slope per parameter). The minus
+sign makes the step go downhill.
+
+The derivative formula
+\(\partial\,\mathrm{SSE}/\partial\theta = -2\sum_i (y_i - \hat y_i)\,\partial \hat y_i/\partial\theta\)
+follows from the chain rule. It says: points where the residual is large
+\emph{and} where the prediction is sensitive to \(\theta\) pull hardest
+on \(\theta\). At the minimum these pulls cancel and the sum is zero.
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Least squares} is the same criterion as in channel estimation
+  and curve fitting; the difference here is that the models are
+  \textbf{nonlinear} in the parameters (\(e^{-\lambda t}\)), so there is
+  no closed-form normal-equation solution and we need iterative search.
+\item
+  \textbf{Weighted least squares} is noise whitening: dividing by the
+  variance is what you do before LS when the noise is not white
+  (heteroscedastic noise).
+\item
+  \textbf{Gradient descent with step size \(\eta\)} is the
+  steepest-descent idea behind the LMS adaptive filter. BFGS is a
+  quasi-Newton method (it builds an approximation of the Hessian), close
+  to Gauss--Newton / Levenberg--Marquardt used in nonlinear LS.
+\item
+  \textbf{A long diagonal valley} in the error surface is an
+  \textbf{ill-conditioned} problem: the Hessian has a large eigenvalue
+  ratio, as with strongly correlated regressors. Parameters are well
+  determined along one direction and poorly along the other.
+\item
+  \textbf{Reparameterization} (\(\lambda = e^{\eta}\)) is a change of
+  variables that turns a constrained problem into an unconstrained one;
+  it also often improves conditioning.
+\item
+  \textbf{What is different from engineering practice:} data sets are
+  small (8 points, 50 items each), the noise is large, and the
+  parameters must be \emph{interpreted} psychologically. So it is not
+  enough that the predicted curve looks good: the individual parameter
+  values must be trustworthy.
+\end{itemize}
+
+\subsubsection{4. Practical problems and how to handle them}
+
+\textbf{1. Starting values.} Use informed starts: read them off a plot,
+use a quick linearized fit (Week 2), or take the best point of a coarse
+grid.
+
+\textbf{2. Local minima \ensuremath{\rightarrow} multi-start.} Run the optimizer from many
+random starting points and keep the best solution. If many starts agree
+on the same minimum, you can be reasonably confident it is the global
+one. Multi-start is cheap insurance; use it routinely for models with
+more than two parameters.
+
+\textbf{3. Parameter bounds.} Many parameters have natural ranges
+(\(0 \le A \le 1\), \(\lambda > 0\)). Without constraints, optimizers
+happily return \(A = 29.6\). Three approaches:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Approach
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+How
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Comment
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Bounded optimizer & \nolinkurl{method="L-BFGS-B"} or
+\nolinkurl{"Nelder-Mead"} with \nolinkurl{bounds=} & Easiest;
+recommended default \\
+\textbf{Reparameterization} & Optimize over unconstrained \(\eta\) and
+transform: \(\lambda = e^{\eta}\) (positive),
+\(A = 1/(1 + e^{-\alpha_A})\) (between 0 and 1) & Works with any
+optimizer; also used in Bayesian modeling (Week 13) \\
+Penalty & Return a huge SSE when parameters are out of range & Creates
+discontinuities; avoid \\
+\end{longtable}
+}
+
+\textbf{4. Non-identifiability.} Sometimes \emph{several} parameter
+combinations fit equally well. An example is a two-component model whose
+two components can swap labels. This is a property of the model, not a
+failure of the optimizer, and multi-start reveals it (lab Part D).
+
+\textbf{5. Trust, but verify.} \nolinkurl{result.success == True} only
+means that the algorithm's stopping rule was met. Always (i) plot the
+fitted curve over the data, (ii) look at the residuals, and (iii) check
+that the estimates are within plausible ranges.
+
+\textbf{A fitting checklist (use it in every lab from now on):}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Plot the data.
+\item
+  Write the model and the discrepancy function; test them on a few
+  hand-picked parameter values.
+\item
+  Choose sensible bounds and starting values.
+\item
+  Optimize, preferably with multi-start.
+\item
+  Check the convergence message, the plot, the residuals and the
+  parameter ranges.
+\item
+  Run a recovery check: simulate data from the fitted parameters, refit,
+  and compare (Week 7 makes this systematic).
+\end{enumerate}
+
+\begin{quote}
+\textbf{Advanced: conditionally linear parameters.} In
+\(f(t) = A\,e^{-\lambda t}\), for any fixed \(\lambda\) the best \(A\)
+has a closed form, because the model is linear in \(A\):
+\(\hat A(\lambda) = \sum_i y_i g_i / \sum_i g_i^2\) with
+\(g_i = e^{-\lambda t_i}\). Substituting it back gives a one-dimensional
+problem in \(\lambda\) alone. This trick (``profiling out'' linear
+parameters, or \emph{variable projection}) makes fitting faster and more
+stable, and the resulting 1-D function is related to the \emph{profile
+likelihood} of Week 5.
+\end{quote}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Show the landscape first.} A contour plot of SSE over
+  \((A, \lambda)\) (lab Part B) makes every later idea concrete: the
+  minimum, the diagonal valley, the plateau. Put it on the projector
+  early and keep coming back to it.
+\item
+  \textbf{Act out Nelder--Mead.} Draw a triangle on the contour plot and
+  do one reflection by hand (worked example Step 2). Students remember
+  the ``tumbling triangle'' much better than the table of moves.
+\item
+  \textbf{Your strength:} you know gradient descent and least squares.
+  Spend less time on the algorithms and more on the \emph{failure modes}
+  (Part D of the lab): an optimizer reporting success at \(A = 29.6\) is
+  the most memorable lesson of the week.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``Which optimizer should I use?''} For small cognitive models:
+    Nelder--Mead or L-BFGS-B with bounds, always with multi-start.
+  \item
+    \emph{``Why not always use a grid?''} The cost grows exponentially
+    with the number of parameters.
+  \item
+    \emph{``Is SSE the right measure?''} Only if noise is Gaussian with
+    equal variance; next week replaces it with the likelihood.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\textbf{Data.} A participant recalls proportions
+\(y = (0.62, 0.41, 0.19)\) at \(t = (1, 3, 7)\) days. Model:
+\(f(t) = A\,e^{-\lambda t}\).
+
+\subsubsection{Step 1: a small grid search by hand}
+
+For \((A, \lambda) = (0.8, 0.2)\): predictions \(0.8e^{-0.2} = 0.655\),
+\(0.8e^{-0.6} = 0.439\), \(0.8e^{-1.4} = 0.197\), so
+
+\[
+\mathrm{SSE} = (0.62 - 0.655)^2 + (0.41 - 0.439)^2 + (0.19 - 0.197)^2 = 0.00123 + 0.00084 + 0.00005 \approx 0.00212.
+\]
+
+Repeating this for a 2 × 3 grid:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+& \(\lambda = 0.15\) & \(\lambda = 0.20\) & \(\lambda = 0.25\) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(A = 0.8\) & 0.02281 & \textbf{0.00212} & 0.00364 \\
+\(A = 0.9\) & 0.06638 & 0.02172 & 0.00791 \\
+\end{longtable}
+}
+
+The grid's best point is \((0.8, 0.20)\). Note the tilt: \((0.9, 0.25)\)
+beats \((0.9, 0.15)\) by far. A larger \(A\) ``wants'' a larger
+\(\lambda\), which is the trade-off valley.
+
+\subsubsection{Step 2: one Nelder--Mead iteration by hand}
+
+Start with the simplex (triangle) of three grid points:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Vertex & \((A, \lambda)\) & SSE & Rank \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\boldsymbol\theta_b\) & (0.8, 0.25) & 0.00364 & best \\
+\(\boldsymbol\theta_g\) & (0.8, 0.15) & 0.02281 & second-worst \\
+\(\boldsymbol\theta_w\) & (0.9, 0.15) & 0.06638 & worst \\
+\end{longtable}
+}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Centroid} of all vertices except the worst:
+  \(\bar{\boldsymbol\theta} = \big((0.8 + 0.8)/2,\ (0.25 + 0.15)/2\big) = (0.8, 0.20)\).
+\item
+  \textbf{Reflect} the worst vertex through the centroid:
+  \(\boldsymbol\theta_r = (0.8, 0.20) + \big((0.8, 0.20) - (0.9, 0.15)\big) = (0.7, 0.25)\).
+\item
+  \textbf{Evaluate:} predictions \((0.545, 0.331, 0.122)\), so
+  \(\mathrm{SSE}(\boldsymbol\theta_r) = 0.01657\).
+\item
+  \textbf{Decide:} \(0.00364 \le 0.01657 < 0.02281\). The reflected
+  point is better than the second-worst but not better than the best, so
+  we \textbf{accept the reflection} (no expansion).
+\item
+  \textbf{New simplex:} \(\{(0.8, 0.25),\ (0.7, 0.25),\ (0.8, 0.15)\}\),
+  and the worst SSE has dropped from 0.066 to 0.023.
+\end{enumerate}
+
+\subsubsection{Step 3: let the computer finish}
+
+Running \nolinkurl{scipy.optimize.minimize(..., method="Nelder-Mead")}
+from \((0.8, 0.2)\) converges to \(\hat A = 0.754\),
+\(\hat\lambda = 0.200\), with \(\mathrm{SSE} = 3.7 \times 10^{-5}\)
+(RMSD \(= 0.0035\)).
+
+\textbf{Interpretation.} The fitted model says this participant would
+recall about 75\% immediately after learning and loses about 18\% of the
+remaining material per day (\(1 - e^{-0.2} = 0.181\)), with a half-life
+of \(\ln 2 / 0.2 \approx 3.5\) days. With only three data points and two
+parameters, the near-perfect fit says very little about whether the
+exponential model is \emph{right}. Any reasonable two-parameter
+decreasing curve would fit three points well (Week 6).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Write an SSE function and explore the error surface of two forgetting
+  models.
+\item
+  Fit by grid search, then with Nelder--Mead and L-BFGS-B; compare with
+  last week's linearized fits.
+\item
+  Provoke and fix fitting failures: plateaus, local minima and
+  out-of-range estimates.
+\item
+  \textbf{Evaluate} the fits (RMSD, residuals, comparison with the true
+  values) and \textbf{interpret} the parameters.
+\end{enumerate}
+
+\textbf{Timing:} Part A 15 min · Part B 25 min · Part C 25 min · Part D
+35 min · Part E 20 min.
+
+\subsubsection{Setup and data}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{Part A: Get a feel for the discrepancy function (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{7\baselineskip}
+\begin{Verbatim}
+theta = (0.9, 0.5):  power SSE = 0.0349   exponential SSE = 0.4511
+theta = (0.8, 0.4):  power SSE = 0.0328   exponential SSE = 0.4145
+theta = (0.9, 0.1):  power SSE = 0.9047   exponential SSE = 0.2192
+theta = (0.6, 0.05):  power SSE = 0.3303   exponential SSE = 0.1145
+\end{Verbatim}
+
+Before running the next parts, \textbf{predict}: which parameter values
+will give the smallest SSE for each model? Write your guess down.
+
+\subsubsection{Part B: Grid search and the error surface (25 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+exp: grid minimum A = 0.655, rate = 0.0560, SSE = 0.10607  (42300 evaluations)
+pow: grid minimum A = 0.870, rate = 0.4239, SSE = 0.02592  (42300 evaluations)
+\end{Verbatim}
+
+\textbf{What to notice:} both surfaces have a single basin, but it is an
+\textbf{elongated, tilted valley}: higher \(A\) goes with higher decay.
+That is the parameter trade-off. For the power model the true value
+(white ×) lies inside the valley but not at its bottom: with finite
+data, the best fit is never exactly the truth.
+
+\subsubsection{Part C: Fitting with an optimizer (25 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{12\baselineskip}
+\begin{Verbatim}
+model            method      A   rate    SSE   RMSD  f_evals success
+  exp          L-BFGS-B 0.6568 0.0566 0.1061 0.1151     39.0    True
+  exp       Nelder-Mead 0.6568 0.0566 0.1061 0.1151     69.0    True
+  exp              grid 0.6550 0.0560 0.1061 0.1151  42300.0    True
+  exp linearized (Wk 2) 0.5500 0.0320 0.1373 0.1310      NaN     NaN
+  pow          L-BFGS-B 0.8712 0.4251 0.0259 0.0569     36.0    True
+  pow       Nelder-Mead 0.8711 0.4251 0.0259 0.0569     71.0    True
+  pow              grid 0.8700 0.4239 0.0259 0.0569  42300.0    True
+  pow linearized (Wk 2) 0.7970 0.3700 0.0315 0.0628      NaN     NaN
+\end{Verbatim}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\textbf{What to notice:} - Nelder--Mead and L-BFGS-B agree to three or
+four decimals; the grid is within its spacing (0.005 for \(A\)) of them.
+The optimizers needed only 36--71 function evaluations instead of 42
+300. - Least squares gives a \textbf{lower SSE} than the linearized fits
+of Week 2 (it is minimizing exactly that quantity), and the power
+estimates are much closer to the truth. - The path first heads quickly
+into the valley and then crawls along it, a typical pattern.
+
+\subsubsection{Part D: When fitting goes wrong (35 min)}
+
+\textbf{D1. A plateau and a false ``success''.} Start the exponential
+fit with an absurd decay rate, \(\lambda = 20\) per day:
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+BFGS         A =   29.571  lambda =  14.244  SSE = 1.1616  success = True  (Optimization terminated successfully.)
+L-BFGS-B     A =   29.905  lambda =  14.289  SSE = 1.1616  success = True  (CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_<=_PGTOL)
+Nelder-Mead  A =    0.657  lambda =   0.057  SSE = 0.1061  success = True  (Optimization terminated successfully.)
+\end{Verbatim}
+
+(The wording of the L-BFGS-B message varies slightly between SciPy
+versions.) The two gradient-based methods report \textbf{success} but
+return a nonsensical fit: \(A\) is around 30 (a recall probability of
+3000\%!) and the predicted curve is essentially zero at every interval.
+They started on a plateau where the gradient is almost zero (Lecture
+§3.3, Advanced box). Nelder--Mead escaped. Lessons: (1) always check
+estimates and plots, not just \nolinkurl{success}; (2) use bounds; (3)
+use sensible or multiple starting values.
+
+\textbf{D2. Reparameterization.} Make the parameters unconstrained so
+that \emph{any} optimizer respects the ranges \(0 < A < 1\) and
+\(\lambda > 0\):
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 7 · \RL{\CMfa سلول}
+7
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{4\baselineskip}
+\begin{Verbatim}
+BFGS on reparameterized power model: A = 0.8712, d = 0.4251, SSE = 0.02592
+\end{Verbatim}
+
+Same answer as in Part C, and the estimates are guaranteed to lie in
+range.
+
+\textbf{D3. Local minima and multi-start.} A popular idea in memory
+research is that forgetting reflects two memory traces: a \textbf{fast}
+component that decays quickly and a \textbf{slow} one that lasts:
+
+\[
+f(t) = A_1 e^{-\lambda_1 t} + A_2 e^{-\lambda_2 t}.
+\]
+
+This model has \(k = 4\) parameters, and its error surface has several
+basins. Fit it from 50 random starting points:
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 8 · \RL{\CMfa سلول}
+8
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{17\baselineskip}
+\begin{Verbatim}
+Distinct final SSE values (rounded) and how often each was reached:
+  SSE = 0.0201: 42 starts
+  SSE = 0.0203: 1 starts
+  SSE = 0.0337: 1 starts
+  SSE = 0.0340: 1 starts
+  SSE = 0.0359: 1 starts
+  SSE = 0.1064: 1 starts
+  SSE = 0.2010: 1 starts
+  SSE = 0.2456: 1 starts
+  SSE = 0.9092: 1 starts
+Best 3 solutions (A1, lam1, A2, lam2):
+   [0.58  0.36  0.264 0.   ] SSE = 0.02013
+   [0.264 0.    0.58  0.36 ] SSE = 0.02013
+   [0.264 0.    0.58  0.36 ] SSE = 0.02013
+\end{Verbatim}
+
+\textbf{What to notice:} - About 40 of 50 starts end in the same best
+basin, but the rest (about 1 in 6) get stuck in \textbf{worse local
+minima}, some with an SSE many times larger. (The exact counts differ
+slightly between SciPy versions; with SciPy 1.18 it is 41 of 50.) A
+single run from an unlucky start would have given a wrong answer, and no
+warning. - Among the best solutions, the fast and slow components may
+appear \textbf{with labels swapped}
+(\(A_1, \lambda_1 \leftrightarrow A_2, \lambda_2\)). Both describe the
+same curve. This is a non-identifiability built into the model, and a
+common fix is to impose an order constraint such as
+\(\lambda_1 > \lambda_2\). - In the best solution one component has a
+rate of exactly 0 (a flat, non-decaying component of 0.264). The fitted
+two-trace model has therefore collapsed into the
+exponential-with-asymptote model of Exercise 4, with the same SSE
+(0.0201). Is that a meaningful ``permanent memory'' or just the extra
+parameters absorbing noise? Remember that the data came from a
+\emph{power} model. Fit alone cannot tell (Weeks 6--7).
+
+\subsubsection{Part E: Evaluate and interpret (20 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 9 · \RL{\CMfa سلول}
+9
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+Power model: relative loss rate at t =  1 days: 0.213 per day
+Power model: relative loss rate at t = 20 days: 0.020 per day
+Exponential model: constant relative loss rate 0.057 per day
+\end{Verbatim}
+
+\textbf{Interpret (write 2--3 sentences for each in your notebook):}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Compare the residual patterns. Which model shows a systematic pattern,
+  and what does that pattern say about the shape of forgetting in these
+  data?
+\item
+  The power model's relative loss rate falls from about 0.21 per day
+  after 1 day to about 0.02 per day after 20 days. Explain in plain
+  language what this claims about memory.
+\item
+  The least-squares estimates (\(\hat A \approx 0.87\),
+  \(\hat d \approx 0.43\)) are closer to the truth than last week's
+  linearized estimates but still not equal to it. Is this a failure of
+  the method? (Hint: what would happen if you reran the experiment with
+  a new random sample?)
+\end{enumerate}
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star} (same minimizer).} Fit the power model by
+minimizing SSE, MSE and RMSD in turn. Show that the estimates agree (up
+to optimizer tolerance). Why do we still prefer to \emph{report} RMSD?
+
+\textbf{Exercise 2 \ensuremath{\star} (Ebbinghaus by least squares).} Refit the
+Ebbinghaus savings data from Week 2, Exercise 3 (values marked
+{[}verify{]}) with least squares, for both models. Compare the
+parameters and RMSD with your linearized fits from Week 2.
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (weighted least squares).} Binomial proportions
+have variance \(f(1-f)/n\). Implement WSSE (Lecture §1) using the
+\textbf{predicted} \(f\) in the variance, refit the power model and
+compare the estimates with plain least squares. Which data points gain
+influence and which lose it? (Next week you will see that maximum
+likelihood does this weighting automatically.)
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (more parameters, better fit?).} Fit the
+three-parameter \textbf{exponential-with-asymptote} model
+\(f(t) = B + (A - B)e^{-\lambda t}\), where \(B\) is the long-term
+asymptote, using bounds \(0 \le B \le A \le 1\) (hint: reparameterize,
+or check the constraint after fitting). \emph{Expected:} SSE \ensuremath{\approx} 0.020,
+\textbf{lower} than the power model's \ensuremath{\approx} 0.026, even though the data were
+generated by the power model! What does this tell you about using SSE to
+choose between models with different numbers of parameters? (We answer
+this properly in Weeks 6--7.)
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: Nelder--Mead from scratch).} Implement
+Nelder--Mead for \(k = 2\) using the moves in Lecture §3.2 (reflect,
+expand, inside/outside contract, shrink) and a stopping rule based on
+the spread of SSE values in the simplex. Run it on the power model from
+\((0.8, 0.2)\), plot the simplex every few iterations on the error
+surface, and compare the result and number of function evaluations with
+\nolinkurl{scipy}.
+
+\subsubsection{Lab check-off}
+
+Show the instructor or TA: (1) the error-surface plots with grid minima
+(Part B), (2) the comparison table from Part C, (3) your multi-start
+histogram (Part D3) with one sentence on what it shows, and (4) your
+answer to interpretation question 1 (Part E).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Scaling laws are curve fitting.} One of the most influential
+results in modern AI is that the test loss of language models falls
+smoothly with model size \(N\), data size and compute, following a
+\textbf{power law} with an asymptote: \(L(N) = E + B\,N^{-\alpha}\)
+(Kaplan et al., 2020; Hoffmann et al., 2022). Companies use such fits to
+decide how big the next model should be. Mathematically, this is the
+same problem as fitting a forgetting curve: a nonlinear model with three
+parameters, fitted by least squares with a numerical optimizer and
+multiple starting points. It has the same pitfalls too: extrapolation
+far beyond the data, and trade-offs between parameters (here \(E\) and
+\(\alpha\)).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week03.py}, cell 10 · \RL{\CMfa سلول}
+10
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+E = 1.70, B = 3.22, alpha = 0.358, SSE = 0.00424
+Extrapolated loss at N = 1e11: 1.754
+\end{Verbatim}
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Fit a pure power law without the
+asymptote (\(E = 0\)). Compare the SSE and the extrapolation to
+\(N = 10^{11}\). Which conclusion about ``bigger is better'' changes? -
+\ensuremath{\star}\ensuremath{\star} Fit only the four smallest models and extrapolate to the four
+largest. How far off is the prediction? Repeat with different seeds to
+see how stable the extrapolation is. - \ensuremath{\star}\ensuremath{\star} Plot the SSE surface over
+\(E\) and \(\alpha\) (with \(B\) at its best value for each pair). Is
+there a ridge, as in the Week 3 lab?
+
+\emph{Optional reading:} Kaplan, J., et al.~(2020). Scaling laws for
+neural language models. \emph{arXiv:2001.08361}. Hoffmann, J., et
+al.~(2022). Training compute-optimal large language models.
+\emph{arXiv:2203.15556}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{``\nolinkurl{success=True} means the fit is good.''} It only
+  means a stopping rule was met (Part D1). Always inspect estimates,
+  plots and residuals.
+\item
+  \textbf{One start is enough.} For anything beyond simple two-parameter
+  models, run multi-start. The cost is small; the risk of reporting a
+  local minimum is not.
+\item
+  \textbf{Ignoring parameter ranges.} Unbounded optimizers can return
+  impossible values (negative rates, probabilities above 1). Use bounds
+  or reparameterization.
+\item
+  \textbf{Comparing SSE across models with different numbers of
+  parameters.} The more flexible model almost always wins on SSE
+  (Exercise 4). That is a question of model \emph{evaluation}, not
+  estimation (Weeks 6--7).
+\item
+  \textbf{Comparing SSE across datasets of different sizes.} SSE grows
+  with \(N\); use RMSD for comparisons.
+\item
+  \textbf{Treating the minimizer as the true value.}
+  \(\hat{\boldsymbol\theta}\) is an estimate with sampling error. A
+  different sample would give a different estimate (Week 5 quantifies
+  this).
+\item
+  \textbf{Forgetting what least squares assumes.} Plain SSE assumes
+  equal, Gaussian noise for all observations. Proportions, counts and
+  RTs usually violate this.
+\item
+  \textbf{Using grid search for many parameters.} The cost explodes
+  (\(100^k\) evaluations). Use grids only for visualization and starting
+  values.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} Why do SSE, MSE and RMSD have the same minimizer? Which one
+would you report, and why? \textbf{Answer} MSE = SSE/N and RMSD = \ensuremath{\surd}MSE
+are strictly increasing transformations of SSE (N is fixed), so the same
+parameters minimize all three. Report RMSD, because it is in the units
+of the data and comparable across datasets of different sizes.
+
+\textbf{2.} What is a parameter trade-off, and how does it appear on an
+error surface? \textbf{Answer} Changes in one parameter can be
+compensated by changes in another, leaving the predictions (and the SSE)
+almost unchanged. On the surface it appears as an elongated, tilted
+valley of low SSE. Estimates are then correlated and poorly determined
+along the valley direction.
+
+\textbf{3.} With 50 grid values per parameter, how many SSE evaluations
+does a grid search need for a model with 6 parameters? What does this
+imply? \textbf{Answer} \(50^6 \approx 1.56 \times 10^{10}\) evaluations.
+Grid search is infeasible beyond 2--3 parameters (the curse of
+dimensionality); we need iterative optimizers.
+
+\textbf{4.} In one Nelder--Mead iteration, the reflected point is better
+than the current best vertex. What does the algorithm do next?
+\textbf{Answer} It tries an expansion: a point twice as far from the
+centroid in the same direction. It keeps the expanded point if it is
+better than the reflected point, otherwise the reflected point.
+
+\textbf{5.} Why can a gradient-based optimizer stop on a plateau and
+report success? \textbf{Answer} Its stopping rule is based on the
+gradient (or step size) being nearly zero. On a plateau the gradient is
+close to zero even though the point is not a minimum, so the convergence
+criterion is met.
+
+\textbf{6.} Give two ways to keep a decay-rate parameter positive during
+fitting. \textbf{Answer} (i) Use a bounded optimizer (e.g., L-BFGS-B or
+Nelder--Mead with \nolinkurl{bounds=[(1e-6, None)]}). (ii)
+Reparameterize: optimize \(\eta\) on the whole real line and set
+\(\lambda = e^{\eta}\).
+
+\textbf{7.} Multi-start fits of the two-component model reach the same
+minimum SSE with
+\((A_1, \lambda_1, A_2, \lambda_2) = (0.58, 0.36, 0.26, 0.00)\) and
+\((0.26, 0.00, 0.58, 0.36)\). Is this a problem with the optimizer?
+\textbf{Answer} No.~It is label switching: swapping the two components
+gives the identical curve, so the model is not identifiable without an
+ordering constraint (e.g., \(\lambda_1 > \lambda_2\)). The optimizer
+correctly found two equivalent global minima.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+No new graded assignment is released this week. \textbf{A1 (From verbal
+to formal) is due at the start of the Week 4 lecture.} Today's lab gives
+you everything needed for A1's calibration step if you want to check
+your closed-form derivation numerically.
+
+\textbf{Optional practice (ungraded, recommended before Week 4):}
+complete lab Exercises 3 and 4. Exercise 3 (weighted least squares) is
+the bridge to maximum likelihood, and Exercise 4 previews the central
+problem of model evaluation. Solutions will be discussed briefly at the
+start of the Week 4 lab.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 3.} Basic parameter
+  estimation: discrepancy functions, error surfaces, the simplex
+  algorithm, and practical issues such as local minima and starting
+  values. \emph{(Main reading.)}
+\item
+  \textbf{Ghodousian (1401)}, \emph{Mabani-ye ravesh-haye mostaghim dar
+  behine-sazi gheyr-khatti} (in Persian): direct search methods for
+  nonlinear optimization, including simplex-type methods. Recommended
+  for students who want the theory behind Nelder--Mead {[}verify
+  chapter{]}.
+\item
+  \textbf{Verguts (2022)}: the chapter on optimization and gradient
+  descent, useful for the gradient-based view that returns in Week 15
+  (learning models) {[}verify chapter{]}.
+\end{itemize}
+
+\emph{Preview for Week 4:} instead of asking ``which parameters minimize
+squared error?'', we ask ``which parameters make the observed data most
+probable?'' This is maximum likelihood. It handles binomial data
+correctly, and it is the foundation for AIC/BIC (Week 7) and Bayesian
+inference (Weeks 9--13).

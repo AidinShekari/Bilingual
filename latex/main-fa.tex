@@ -1,0 +1,36 @@
+% !TEX program = xelatex
+\documentclass[11pt,a4paper,openany]{book}
+\newif\ifCMpersian\CMpersiantrue
+\input{preamble}
+\def\CMcoverdetail{۱۶ هفته · ۶ فصل}
+\begin{document}
+\frontmatter\input{frontmatter/cover}\tableofcontents
+\mainmatter
+\chapter*{طرح درس}\addcontentsline{toc}{chapter}{طرح درس}\input{frontmatter/syllabus-fa}
+\chapter*{نقشه‌ی دوره}\addcontentsline{toc}{chapter}{نقشه‌ی دوره}\input{frontmatter/blueprint-fa}
+\chapter{مبانی مدل‌سازی شناختی}
+\input{chapters/fa/week01}
+\input{chapters/fa/week02}
+\chapter{روش‌های برآورد پارامتر}
+\input{chapters/fa/week03}
+\input{chapters/fa/week04}
+\input{chapters/fa/week05}
+\chapter{ارزیابی مدل‌های شناختی}
+\input{chapters/fa/week06}
+\input{chapters/fa/week07}
+\input{chapters/fa/week08}
+\chapter{مدل‌سازی بیزی}
+\input{chapters/fa/week09}
+\input{chapters/fa/week10}
+\chapter{برآورد پارامتر با \lr{MCMC}}
+\input{chapters/fa/week11}
+\input{chapters/fa/week12}
+\input{chapters/fa/week13}
+\chapter{کاربردها در علوم شناختی}
+\input{chapters/fa/week14}
+\input{chapters/fa/week15}
+\input{chapters/fa/week16}
+\chapter*{واژه‌نامه}\addcontentsline{toc}{chapter}{واژه‌نامه}\input{frontmatter/glossary-fa}
+\chapter*{فهرست مطالعه}\addcontentsline{toc}{chapter}{فهرست مطالعه}\input{frontmatter/readings-fa}
+
+\end{document}

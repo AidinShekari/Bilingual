@@ -1,0 +1,964 @@
+\section{Week 9: Bayesian Modeling I: Priors, Posteriors and Grid
+Approximation}
+
+\begin{quote}
+\textbf{Chapter 4: Bayesian modeling} · Lecture 1 h · Lab 2 h
+\textbf{Running data:} a recall proportion (30 of 50) and the Week 2 SDT
+participant (68/100 hits, 11/100 false alarms).
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+prior & \RL{\CMfa توزیع پیشین} (prior) & \RL{\CMfa باور درباره‌ی پارامتر پیش از دیدن
+داده} \\
+posterior & \RL{\CMfa توزیع پسین} (posterior) & \RL{\CMfa باور درباره‌ی پارامتر بعد
+از دیدن داده} \\
+grid approximation & \RL{\CMfa تقریب شبکه‌ای} (grid) & \RL{\CMfa محاسبه‌ی پسین روی
+شبکه‌ای از مقادیر} \\
+signal detection theory (SDT) & \RL{\CMfa نظریه‌ی تشخیص علامت} & \RL{\CMfa مدلی که
+حساسیت را از سوگیری پاسخ جدا می‌کند} \\
+hit & \RL{\CMfa اصابت} (hit) & \RL{\CMfa پاسخ «بله» وقتی علامت وجود دارد} \\
+Bayes' rule & \RL{\CMfa قاعده‌ی بیز} & \RL{\CMfa پسین} \ensuremath{\propto} \RL{\CMfa درست‌نمایی} ×
+\RL{\CMfa پیشین} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+evidence & \RL{\CMfa شواهد} & \RL{\CMfa اطلاعاتی که برای تصمیم جمع می‌شود} \\
+beta-binomial model & \RL{\CMfa مدل} beta-binomial & \RL{\CMfa پیشین} Beta \RL{\CMfa با
+داده‌ی دوجمله‌ای} \\
+binomial distribution & \RL{\CMfa توزیع دوجمله‌ای} & \RL{\CMfa توزیع تعداد موفقیت در}
+n \RL{\CMfa کوشش} \\
+MAP estimate & \RL{\CMfa برآورد} MAP & \RL{\CMfa مُد توزیع پسین} \\
+credible interval / HDI & \RL{\CMfa بازه‌ی باورپذیر} (credible interval) &
+\RL{\CMfa بازه‌ای که با احتمال مشخص پارامتر را دارد} \\
+confidence interval (CI) & \RL{\CMfa بازه‌ی اطمینان} & \RL{\CMfa بازه‌ای که با روش
+مشخص پارامتر واقعی را در بر می‌گیرد} \\
+prior predictive check & \RL{\CMfa بررسی پیش‌بینی پیشین} & \RL{\CMfa شبیه‌سازی داده از
+پیشین برای سنجش معقول بودن آن} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+sensitivity (d′) & \RL{\CMfa حساسیت} & \RL{\CMfa فاصله‌ی توزیع علامت و نویز} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+maximum likelihood estimate (MLE) & \RL{\CMfa برآورد بیشینه‌ی درست‌نمایی} &
+\RL{\CMfa پارامترهایی که داده را محتمل‌ترین می‌کنند} \\
+cognitive model & \RL{\CMfa مدل شناختی} & \RL{\CMfa توصیف دقیق و ریاضی یا محاسباتی
+از یک فرایند ذهنی} \\
+trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
+conjugate prior & \RL{\CMfa پیشین مزدوج} (conjugate) & \RL{\CMfa پیشینی که پسین
+هم‌خانواده می‌دهد} \\
+forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش یادآوری با گذشت
+زمان} \\
+accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{State} Bayes' rule for parameters and \textbf{identify} the
+  roles of prior, likelihood, evidence and posterior.
+\item
+  \textbf{Compute} posteriors analytically for the beta-binomial model
+  and numerically by grid approximation, for one and two parameters.
+\item
+  \textbf{Summarize} a posterior (mean, median, MAP, SD, equal-tailed
+  and highest-density intervals) and \textbf{distinguish} a credible
+  interval from a confidence interval.
+\item
+  \textbf{Explain} how the prior and the amount of data jointly
+  determine the posterior, and \textbf{use} prior predictive simulation
+  to check whether a prior is sensible.
+\item
+  \textbf{Interpret} posterior probabilities of psychologically
+  meaningful hypotheses (e.g., ``\(P(d' > 1 \mid \text{data})\)'').
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+Since Week 3 we have asked: ``which single parameter value best accounts
+for the data?'' and then, in Week 5, ``how much would that estimate vary
+across imaginary replications?'' Researchers often want to say something
+more direct:
+
+\begin{quote}
+\emph{``Given these data, there is a 95\% probability that this
+participant's sensitivity lies between 1.2 and 2.1.''} \emph{``The
+probability that the payoff manipulation made participants more liberal
+is 0.98.''}
+\end{quote}
+
+Frequentist confidence intervals do \textbf{not} license such statements
+(Week 5). Bayesian inference does, at a price: we must state what we
+believed about the parameters \textbf{before} seeing the data, in the
+form of a \textbf{prior distribution}. Bayes' rule then combines the
+prior with the likelihood (which we already know how to write) into a
+\textbf{posterior distribution}: everything the model and the data
+together say about the parameters.
+
+Bayesian methods also make several of our earlier headaches easier:
+uncertainty comes for free (no Hessians or bootstraps), hierarchical
+models of many participants become natural (Week 13), and model
+comparison gets a principled answer (Week 10). The cost is computation,
+which is why Weeks 11--13 are about sampling.
+
+\begin{quote}
+\textbf{Reminder (Week 1):} this week is about Bayesian \textbf{data
+analysis}, a method we as scientists use to estimate the parameters of
+\emph{any} model. It makes no claim that the mind is Bayesian. Bayesian
+\emph{models of cognition} come in Week 15.
+\end{quote}
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Small samples and individual cases.} Clinical neuropsychology
+  often has one patient and a few dozen trials. A Bayesian analysis with
+  a sensible prior gives usable, honest uncertainty where MLE is
+  unstable.
+\item
+  \textbf{Direct probability statements} that clinicians and policy
+  makers understand: ``there is a 97\% probability that the new training
+  improved memory''.
+\item
+  \textbf{Adaptive testing}: computerized tests (e.g.~vision and hearing
+  tests, adaptive exams) update a posterior after every response and
+  choose the next item where it is most informative.
+\item
+  \textbf{Combining evidence}: today's posterior is tomorrow's prior, so
+  results of earlier studies can be built in formally.
+\item
+  \textbf{Modern cognitive modeling software} (PyMC, Stan, JAGS) is
+  Bayesian; most hierarchical models in recent papers are fitted this
+  way (Week 13).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+So far we found \emph{one} best parameter value and then asked how much
+it might vary. The Bayesian approach instead describes our knowledge
+about the parameter as a whole \textbf{probability distribution}. Before
+the data, the \textbf{prior} says which values we consider plausible
+(e.g.~``recall probability is probably moderate, not 0 or 1''). The data
+then re-weight every possible value by its likelihood (Week 4). The
+result, the \textbf{posterior}, says how plausible each value is
+\emph{after} seeing the data. In words: \emph{posterior \ensuremath{\propto} likelihood ×
+prior}. From the posterior we can read off a best guess (its mean), an
+uncertainty (its spread), and direct statements such as ``the
+probability that \(d' > 1\) is 0.93''. With little data the prior
+matters a lot; with much data the posterior is dominated by the
+likelihood and ends up close to the MLE. Computing the posterior is easy
+for one or two parameters (on a grid) and needs sampling methods beyond
+that (Weeks 11--13).
+
+\textbf{Suggested timing (60 min):} Bayes' rule 10 · priors 10 ·
+beta-binomial 12 · grid approximation 10 · summaries and credible
+intervals 12 · prior predictive checks 6.
+
+\subsubsection{1. Bayes' rule for parameters}
+
+\[
+\underbrace{p(\boldsymbol\theta \mid \mathbf{y})}_{\text{posterior}}
+= \frac{\overbrace{p(\mathbf{y} \mid \boldsymbol\theta)}^{\text{likelihood}}\;\overbrace{p(\boldsymbol\theta)}^{\text{prior}}}{\underbrace{p(\mathbf{y})}_{\text{evidence (marginal likelihood)}}},
+\qquad
+p(\mathbf{y}) = \int p(\mathbf{y}\mid\boldsymbol\theta)\,p(\boldsymbol\theta)\,d\boldsymbol\theta.
+\]
+
+(We suppress ``\(\mathcal{M}\)'' in the notation this week: everything
+is conditional on the model.)
+
+\begin{itemize}
+\tightlist
+\item
+  The \textbf{likelihood} is exactly the function from Week 4.
+\item
+  The \textbf{prior} expresses what is known or plausible before the
+  data.
+\item
+  The \textbf{evidence} \(p(\mathbf{y})\) does not depend on
+  \(\boldsymbol\theta\). For estimation it is just the normalizing
+  constant that makes the posterior integrate to 1:
+\end{itemize}
+
+\[
+p(\boldsymbol\theta \mid \mathbf{y}) \propto p(\mathbf{y}\mid\boldsymbol\theta)\, p(\boldsymbol\theta).
+\]
+
+\textbf{Posterior \ensuremath{\propto} likelihood × prior.} In Week 10 the evidence becomes
+the star of Bayesian model comparison.
+
+\textbf{Intuition.} The posterior is a compromise: it is high where the
+parameter values are both plausible \emph{a priori} and make the data
+probable. With little data the prior matters; with a lot of data the
+likelihood dominates and the posterior concentrates around the MLE.
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(p(\boldsymbol\theta \mid \mathbf{y})\): ``probability (density) of
+  the parameter value \(\boldsymbol\theta\) \emph{given} the data''.
+  This is what we want.
+\item
+  \(p(\mathbf{y} \mid \boldsymbol\theta)\): the likelihood, read as a
+  function of \(\boldsymbol\theta\) (Week 4).
+\item
+  \(p(\boldsymbol\theta)\): the prior, chosen before the data.
+\item
+  \(p(\mathbf{y}) = \int p(\mathbf{y}\mid\boldsymbol\theta)p(\boldsymbol\theta)\,d\boldsymbol\theta\):
+  the integral adds up ``likelihood × prior'' over \emph{all} possible
+  parameter values. It is one number, the same for every
+  \(\boldsymbol\theta\), so for estimation it only rescales the curve to
+  total area 1.
+\item
+  \(\propto\) means ``proportional to'': equal up to a constant factor.
+  In practice we compute likelihood × prior at many values and then
+  divide by their sum, exactly as in the 4-point table of the worked
+  example (0.0004479 / 0.0009574 = 0.468).
+\end{itemize}
+
+\subsubsection{2. Choosing priors}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Kind
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Example for a recall probability \(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+When
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Flat / uniform & \(\mathrm{Beta}(1, 1)\) & When every value in the range
+is genuinely equally plausible (rarely true) \\
+Weakly informative & \(\mathrm{Beta}(2, 2)\): mild preference for
+moderate values & \textbf{Default for most cognitive models}: rules out
+absurd values, otherwise lets the data speak \\
+Informative & \(\mathrm{Beta}(20, 5)\): ``recall after one day is around
+0.8'' & When previous studies or theory provide real knowledge \\
+\end{longtable}
+}
+
+Principles: - Priors must be fixed \textbf{before} seeing the data. -
+They should respect the parameter's range (e.g., no prior mass on
+negative decay rates). - They should be checked by \textbf{prior
+predictive simulation} (§6): which \emph{data} does the prior imply? - A
+``vague'' prior on one scale can be very informative on another scale
+(lab Part D). - Report your priors and check the sensitivity of
+conclusions to reasonable alternatives (Week 10).
+
+\subsubsection{3. A closed-form case: the beta-binomial model}
+
+For \(y\) successes in \(n\) binomial trials with a
+\(\mathrm{Beta}(a_0, b_0)\) prior on \(\theta\):
+
+\[
+p(\theta \mid y) \propto \underbrace{\theta^{y}(1-\theta)^{n-y}}_{\text{likelihood}} \cdot \underbrace{\theta^{a_0 - 1}(1-\theta)^{b_0 - 1}}_{\text{prior}}
+= \theta^{a_0 + y - 1}(1-\theta)^{b_0 + n - y - 1},
+\]
+
+so the posterior is again a Beta distribution:
+
+\[
+\theta \mid y \sim \mathrm{Beta}(a_0 + y,\; b_0 + n - y).
+\]
+
+When prior and posterior come from the same family, the prior is called
+\textbf{conjugate}.
+
+\begin{itemize}
+\tightlist
+\item
+  \(a_0\) and \(b_0\) act like \textbf{pseudo-counts} of prior successes
+  and failures.
+\item
+  Posterior mean: \(\dfrac{a_0 + y}{a_0 + b_0 + n}\), a weighted average
+  of the prior mean \(\frac{a_0}{a_0 + b_0}\) and the observed
+  proportion \(y/n\), with weights \(a_0 + b_0\) and \(n\).
+\item
+  \textbf{Connection to Weeks 2 and 4:} the log-linear correction
+  \((y + 0.5)/(n + 1)\) is exactly the posterior mean under a
+  \(\mathrm{Beta}(0.5, 0.5)\) prior, the so-called \emph{Jeffreys
+  prior}. The ``correction'' was a Bayesian estimate in disguise.
+\end{itemize}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  The \textbf{Beta distribution} \(\mathrm{Beta}(a, b)\) is a flexible
+  bell-like curve on the interval 0--1, ideal for describing beliefs
+  about a probability. Its mean is \(a/(a+b)\). \(\mathrm{Beta}(1,1)\)
+  is flat; \(\mathrm{Beta}(20, 5)\) is a narrow bump around 0.8.
+\item
+  The update rule
+  \(\mathrm{Beta}(a_0, b_0) \to \mathrm{Beta}(a_0 + y, b_0 + n - y)\) is
+  just \textbf{counting}: add the observed successes to \(a\) and the
+  failures to \(b\). The prior behaves as if we had already seen \(a_0\)
+  successes and \(b_0\) failures (pseudo-counts).
+\item
+  \textbf{Example:} prior \(\mathrm{Beta}(2, 2)\) (``as if'' 2 recalls
+  and 2 failures), data 7 of 10 \ensuremath{\rightarrow} \(\mathrm{Beta}(9, 5)\), mean
+  \(9/14 = 0.643\). The prior pulls the observed 0.70 slightly toward
+  0.5, because it adds 4 pseudo-observations to 10 real ones.
+\end{itemize}
+
+\subsubsection{4. Grid approximation}
+
+Most cognitive models have no conjugate prior. If there are only one or
+two parameters, we can approximate the posterior on a grid:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Define a grid of parameter values
+  \(\boldsymbol\theta_1, \dots, \boldsymbol\theta_G\) covering all
+  plausible values.
+\item
+  At each grid point compute the \textbf{log} prior plus the
+  \textbf{log} likelihood (logs avoid underflow, as in Week 4).
+\item
+  Subtract the maximum, exponentiate, and normalize so that the values
+  sum to 1 (or integrate to 1).
+\end{enumerate}
+
+The result is a discrete approximation of the posterior from which we
+can compute any summary. Grid approximation is exact up to the grid
+resolution and is ideal for building intuition. It fails beyond 2--3
+parameters (the curse of dimensionality, Week 3), which motivates MCMC
+(Weeks 11--13).
+
+\subsubsection{5. Summarizing a posterior}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Summary
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Definition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Remark
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Posterior mean & \(\mathbb{E}[\theta \mid \mathbf{y}]\) & Minimizes
+expected squared error \\
+Posterior median & 50th percentile & Robust to skew \\
+MAP & \(\arg\max_\theta p(\theta\mid\mathbf{y})\) & Equals the MLE under
+a flat prior \\
+Posterior SD & \(\sqrt{\mathrm{Var}[\theta\mid\mathbf{y}]}\) & The
+Bayesian counterpart of a SE \\
+95\% equal-tailed interval & 2.5th to 97.5th percentiles & Easy to
+compute \\
+95\% \textbf{HDI} (highest-density interval) & The narrowest interval
+containing 95\% of the posterior; every value inside is more probable
+than every value outside & Preferred for skewed posteriors \\
+\end{longtable}
+}
+
+\textbf{Credible vs.~confidence interval.} A 95\% credible interval
+\emph{does} mean ``given the model, the prior and the data, the
+parameter lies in this interval with probability 0.95''. A confidence
+interval is a statement about the long-run behavior of the procedure
+(Week 5). With weak priors and plenty of data, the two often coincide
+numerically, but their interpretations differ.
+
+\textbf{Posterior probabilities of hypotheses} come for free:
+\(P(d' > 1 \mid \mathbf{y})\) is just the posterior mass above 1.
+
+\subsubsection{6. Prior predictive checks}
+
+The \textbf{prior predictive distribution} describes the data the model
+expects \emph{before} seeing any data:
+
+\[
+p(\mathbf{y}^{\text{rep}}) = \int p(\mathbf{y}^{\text{rep}}\mid\boldsymbol\theta)\, p(\boldsymbol\theta)\, d\boldsymbol\theta.
+\]
+
+To simulate from it: draw \(\boldsymbol\theta\) from the prior, then
+simulate data from the model. If the simulated data look absurd (e.g.,
+nearly all hit rates at exactly 0 or 1, or recall that \emph{increases}
+over a month), the prior is unreasonable. Prior predictive checks are
+the Bayesian version of the ``simulate before you fit'' habit from Week
+2.
+
+\begin{quote}
+\textbf{Advanced: the posterior as updated prior.} Because
+\(p(\boldsymbol\theta\mid\mathbf{y}_1, \mathbf{y}_2) \propto p(\mathbf{y}_2\mid\boldsymbol\theta)\, p(\boldsymbol\theta\mid\mathbf{y}_1)\)
+for independent data, today's posterior is tomorrow's prior. Bayesian
+updating is therefore naturally sequential, which is also why Bayesian
+inference is a popular normative model of \emph{learning} (Week 15).
+\end{quote}
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  This is \textbf{Bayesian estimation} as in detection and estimation
+  theory: the posterior is what an MAP or MMSE estimator works with. The
+  posterior mean is the \textbf{MMSE estimate}; the posterior mode is
+  the \textbf{MAP estimate}; with a flat prior MAP = ML.
+\item
+  The \textbf{conjugate Beta--binomial update} is the same idea as
+  conjugate Gaussian updating, the scalar core of the \textbf{Kalman
+  filter} (prior mean and variance + measurement \ensuremath{\rightarrow} posterior mean and
+  variance), here for a probability instead of a Gaussian state.
+\item
+  \textbf{Sequential updating} (``today's posterior is tomorrow's
+  prior'') is exactly recursive Bayesian filtering.
+\item
+  What is different in psychology: the prior is usually \textbf{weak}
+  and must be \emph{justified to readers}, and the main output is not a
+  decision but a description of uncertainty about a psychological
+  parameter. Prior predictive checks are the habit that makes priors
+  defensible.
+\end{itemize}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Do the 4-point grid on the board} (worked example, Part 1)
+  with a column for prior, likelihood, product and posterior. It
+  contains the whole of Bayesian inference in one table. Then change the
+  prior to (0.1, 0.1, 0.4, 0.4) and recompute live: students see the
+  prior at work.
+\item
+  \textbf{Use the Beta pseudo-count story.} ``A Beta(2, 2) prior is like
+  having already seen 2 recalls and 2 failures.'' Students who find
+  priors arbitrary relax once they see them as imaginary data.
+\item
+  \textbf{Address the ``subjectivity'' worry directly.} Every analysis
+  has assumptions (the likelihood is one too); Bayesian analysis makes
+  one more of them explicit, and sensitivity analysis (Week 10) checks
+  how much it matters.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``Which prior is correct?''} None is uniquely correct. Use
+    weakly informative priors, check them with prior predictive
+    simulations, and report sensitivity.
+  \item
+    \emph{``Is a credible interval the same as a confidence interval?''}
+    Often similar numerically with weak priors and enough data, but only
+    the credible interval means ``95\% probability that the parameter is
+    in here''.
+  \item
+    \emph{``Is the brain Bayesian, then?''} That is a different question
+    (Week 15). This week Bayes is a tool for the scientist.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\subsubsection{Part 1: a four-point grid by hand}
+
+A participant recalls \(y = 7\) of \(n = 10\) items. To keep the
+arithmetic simple, suppose \(\theta\) can only take the values 0.2, 0.4,
+0.6 or 0.8, each with prior probability 1/4.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Prior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Likelihood \(\theta^7(1-\theta)^3\) (constant dropped)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Prior × likelihood
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Posterior
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0.2 & 0.25 & 0.0000066 & 0.0000016 & \textbf{0.002} \\
+0.4 & 0.25 & 0.0003539 & 0.0000885 & \textbf{0.092} \\
+0.6 & 0.25 & 0.0017916 & 0.0004479 & \textbf{0.468} \\
+0.8 & 0.25 & 0.0016777 & 0.0004194 & \textbf{0.438} \\
+Sum & 1 & & 0.0009574 & 1.000 \\
+\end{longtable}
+}
+
+Each posterior value = (prior × likelihood) / sum. The binomial
+coefficient was dropped because it cancels in the normalization.
+Interpretation: after the data, 0.6 and 0.8 are about equally plausible,
+and 0.2 is practically excluded.
+
+\subsubsection{Part 2: the same data with a continuous Beta prior}
+
+Prior \(\mathrm{Beta}(2, 2)\) (mean 0.5, mildly favoring moderate
+values). Posterior:
+\(\mathrm{Beta}(2 + 7, 2 + 3) = \mathrm{Beta}(9, 5)\).
+
+\begin{itemize}
+\tightlist
+\item
+  Posterior mean \(= 9/14 = 0.643\): between the prior mean (0.5) and
+  the observed proportion (0.7), closer to the data because
+  \(n = 10 > a_0 + b_0 = 4\).
+\item
+  MAP (mode) \(= (9 - 1)/(9 + 5 - 2) = 0.667\).
+\item
+  95\% equal-tailed credible interval \(= [0.386, 0.861]\).
+\end{itemize}
+
+\textbf{Interpretation.} Given a mild prior and 10 items, the recall
+probability is probably around 0.64, but anything from about 0.39 to
+0.86 remains credible. Ten items tell us little.
+
+\subsubsection{Part 3: the prior matters less with more data}
+
+With \(y = 30\) of \(n = 50\):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Prior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Posterior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+95\% credible interval
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathrm{Beta}(1,1)\) (flat) & \(\mathrm{Beta}(31, 21)\) & 0.596 &
+{[}0.461, 0.724{]} \\
+\(\mathrm{Beta}(0.5, 0.5)\) (Jeffreys) & \(\mathrm{Beta}(30.5, 20.5)\) &
+0.598 & {[}0.462, 0.727{]} \\
+\(\mathrm{Beta}(20, 5)\) (informative, ``\ensuremath{\approx} 0.8'') &
+\(\mathrm{Beta}(50, 25)\) & 0.667 & {[}0.557, 0.768{]} \\
+\end{longtable}
+}
+
+The flat and Jeffreys priors give practically the same answer, also
+equal to the Week 5 profile-likelihood interval {[}0.462, 0.728{]}. The
+informative prior, which is worth 25 pseudo-observations, still pulls
+the estimate noticeably toward 0.8: 50 observations are not enough to
+overwhelm a strong prior. Whether that is good depends on whether the
+prior knowledge was right.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Compute beta-binomial posteriors analytically and by grid
+  approximation, and see the prior--data compromise.
+\item
+  Watch the posterior sharpen with data (sequential updating).
+\item
+  Compute a 2-D grid posterior for SDT (\(d'\), \(c\)); summarize it
+  with means, HDIs and posterior probabilities.
+\item
+  Use prior predictive simulation to expose a bad ``vague'' prior.
+\end{enumerate}
+
+\textbf{Timing:} Part A 25 min · Part B 15 min · Part C 40 min · Part D
+25 min · Part E 15 min.
+
+\subsubsection{Setup}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\subsubsection{Part A: beta-binomial, analytically and on a grid (25
+min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+flat Beta(1,1)           grid mean = 0.5962, exact mean = 0.5962, 95% CI = [0.461 0.724]
+Jeffreys Beta(.5,.5)     grid mean = 0.5980, exact mean = 0.5980, 95% CI = [0.462 0.727]
+informative Beta(20,5)   grid mean = 0.6667, exact mean = 0.6667, 95% CI = [0.557 0.768]
+\end{Verbatim}
+
+The grid and exact posteriors coincide. Look at where each posterior
+sits relative to its prior and the likelihood.
+
+\subsubsection{Part B: sequential updating (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{What to notice:} the posterior starts as the prior, narrows as
+items accumulate, and concentrates around the true value. Its width
+shrinks roughly like \(1/\sqrt{n}\), as the SE did in Week 5.
+
+\subsubsection{Part C: a two-parameter grid posterior for SDT (40 min)}
+
+The Week 2 participant: 68 hits out of 100 signal trials and 11 false
+alarms out of 100 noise trials. Priors: \(d' \sim \mathcal{N}(1, 1.5)\)
+(sensitivity is usually positive, rarely above 4) and
+\(c \sim \mathcal{N}(0, 1)\) (bias is usually modest).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{9\baselineskip}
+\begin{Verbatim}
+    post. mean  post. SD    MAP  95% HDI low  95% HDI high
+d'       1.688     0.209  1.675        1.250         2.062
+c        0.376     0.106  0.375        0.163         0.575
+MLE (uncorrected formulas): d' = 1.694, c = 0.379
+P(d' > 1 | data) = 1.000;  P(c > 0 | data) = 1.000
+Posterior correlation of d' and c: 0.245
+\end{Verbatim}
+
+(``1.000'' means that none of the 20 000 posterior samples fell below
+the threshold, so the probability is \textgreater{} 0.9999. Report it as
+such, not as certainty.)
+
+\textbf{Interpret (write in your notebook):} 1. How do the posterior
+mean and MAP compare with the MLE? Why are they so close here? 2.
+Translate the HDI for \(d'\) and \(P(c > 0 \mid \text{data})\) into one
+plain-language sentence each about this participant. 3. Increase the
+prior SD on \(d'\) to 10, then decrease it to 0.3 (centered at 1). Which
+summaries change, and by how much?
+
+\subsubsection{Part D: prior predictive checks (25 min)}
+
+Before trusting a prior, look at the data it implies. Compare our prior
+with a ``vague'' one, \(d' \sim \mathcal{N}(0, 10)\) and
+\(c \sim \mathcal{N}(0, 10)\), which is sometimes used because it is
+``uninformative''.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+our prior: d'~N(1,1.5), c~N(0,1): 14% of simulated datasets have a rate of exactly 0 or 1; 24% have H < F
+'vague' prior: d'~N(0,10), c~N(0,10): 96% of simulated datasets have a rate of exactly 0 or 1; 23% have H < F
+\end{Verbatim}
+
+\textbf{What to notice:} the ``vague'' prior is not neutral at all. On
+the probability scale it puts 96\% of simulated datasets at hit or
+false-alarm rates of exactly 0 or 1, which practically never happens in
+real detection experiments. It expresses a strong and absurd belief
+about the data. Vagueness on the parameter scale is not vagueness on the
+data scale.
+
+Our own prior is not perfect either: about a quarter of its simulated
+datasets have \(H < F\), because \(\mathcal{N}(1, 1.5)\) puts about 25\%
+of its mass on negative \(d'\). For a task where participants are known
+to be above chance, a prior restricted to \(d' > 0\) (e.g., a
+half-normal or a Gamma) would be more defensible. Try it, and check
+whether it changes the posterior for this participant. (Hint: with 200
+informative trials, hardly at all.)
+
+\subsubsection{Part E: interpret (15 min)}
+
+Write a short ``results paragraph'' (4--6 sentences) for this
+participant as it would appear in a paper. Report the priors, the
+posterior means and 95\% HDIs for \(d'\) and \(c\),
+\(P(d' > 1 \mid \text{data})\), and one sentence on prior sensitivity
+(from Part C, question 3).
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star}.} Show algebraically that the posterior mean of the
+beta-binomial model is a weighted average of the prior mean and \(y/n\).
+What are the weights?
+
+\textbf{Exercise 2 \ensuremath{\star}.} Using the Part A grid, compute the 95\% HDI and
+the equal-tailed interval for \(\mathrm{Beta}(1 + 2, 1 + 18)\) (2
+successes out of 20). Why do they differ?
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (forgetting by grid).} Compute the grid posterior
+of \((A, d)\) for the power forgetting model with the Week 2 data, using
+priors \(A \sim \mathrm{Beta}(8, 2)\) and
+\(d \sim \mathrm{Gamma}(\text{shape } 2, \text{scale } 0.3)\). Compare
+the posterior means and 95\% HDIs with the MLE and the Week 5 profile
+and bootstrap intervals.
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (equivalence of MAP and MLE).} In Part C, replace
+both priors by flat priors over the grid. Show that the MAP equals the
+MLE. Why is the posterior \emph{mean} still slightly different?
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: sequential vs.~batch).} For the SDT
+model, update the grid posterior trial by trial (each trial's posterior
+becomes the next trial's prior) through 200 simulated trials, and show
+that the final posterior is identical (up to numerical error) to the
+batch posterior from all trials at once. Plot the posterior SD of \(d'\)
+against the number of trials.
+
+\subsubsection{Lab check-off}
+
+Show: (1) the three-panel prior/likelihood/posterior plot from Part A,
+(2) the SDT summary table and joint posterior from Part C, and (3) the
+two prior predictive plots from Part D with one sentence on what is
+wrong with the vague prior.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{How good is the model, really? A Bayesian answer for small
+evaluations.} Researchers often test an LLM on a small set of items, for
+example 25 hand-written problems. The beta-binomial model of this week
+gives what such studies usually lack: a full posterior for the accuracy,
+direct probability statements (``the probability that accuracy exceeds
+60\%''), and a direct comparison of two models.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week09.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+Model A: posterior mean = 0.704, 95% interval = [0.522, 0.857], P(accuracy > 0.6) = 0.878
+Model B: posterior mean = 0.593, 95% interval = [0.406, 0.766], P(accuracy > 0.6) = 0.479
+P(A more accurate than B | data) = 0.807
+\end{Verbatim}
+
+With 25 items, the posterior intervals are about 0.35 wide, and there is
+a 19\% posterior probability that B is actually the better model.
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Use an informative prior from an
+earlier, larger evaluation (e.g., Beta(14, 6) for model A). How much do
+the conclusions change? - \ensuremath{\star}\ensuremath{\star} The comparison above treats the two models
+as independent, although they answered the same items. Why is this a
+problem (see the Week 5 box)? Sketch a model that respects the pairing.
+- \ensuremath{\star}\ensuremath{\star} Discussion: what prior would you use for the accuracy of a
+brand-new model on a four-choice test, and why should it not put much
+mass below 0.25?
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{``The prior makes Bayesian inference subjective, so the
+  results are arbitrary.''} Priors are explicit assumptions, just like
+  the choice of likelihood. Report them, justify them, and check
+  sensitivity. With adequate data, reasonable priors lead to similar
+  conclusions.
+\item
+  \textbf{``Flat or very wide priors are uninformative.''} They can be
+  strongly informative on the data scale (Part D). Use weakly
+  informative priors and check them with prior predictive simulation.
+\item
+  \textbf{Choosing the prior after looking at the data.} That uses the
+  data twice.
+\item
+  \textbf{Multiplying probabilities on a grid without logs,} which
+  causes underflow (Week 4). Work with log-prior + log-likelihood, then
+  subtract the maximum before exponentiating.
+\item
+  \textbf{Too coarse or too narrow a grid.} If the posterior is cut off
+  at the grid edge, all summaries are wrong. Check that the posterior is
+  near zero at the edges.
+\item
+  \textbf{Reading a credible interval as a confidence interval, or vice
+  versa.} Only the credible interval supports ``95\% probability the
+  parameter is in here'' (given the model and prior).
+\item
+  \textbf{Reporting only the MAP.} The point of the posterior is the
+  whole distribution. Report a central value \emph{and} an interval, and
+  probabilities for the hypotheses you care about.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} Write Bayes' rule for a parameter \(\theta\) and name each
+term. \textbf{Answer}
+\(p(\theta\mid y) = p(y\mid\theta)p(\theta)/p(y)\): posterior =
+likelihood × prior / evidence (marginal likelihood). For estimation,
+\(p(\theta\mid y) \propto p(y\mid\theta)p(\theta)\).
+
+\textbf{2.} Prior \(\mathrm{Beta}(3, 3)\), data: 12 recalled out of 20.
+What is the posterior, and its mean? \textbf{Answer}
+\(\mathrm{Beta}(3 + 12, 3 + 8) = \mathrm{Beta}(15, 11)\), with mean
+\(15/26 = 0.577\).
+
+\textbf{3.} Why does the posterior get closer to the MLE as \(n\)
+increases? \textbf{Answer} The log-likelihood is a sum over observations
+and grows with \(n\), while the log-prior stays fixed. With much data
+the likelihood dominates the product, and the posterior concentrates
+around the likelihood's maximum.
+
+\textbf{4.} What is the difference between a 95\% HDI and a 95\%
+equal-tailed interval? When do they coincide? \textbf{Answer} The HDI is
+the narrowest interval containing 95\% of the posterior mass, and every
+value inside has higher density than any value outside. The equal-tailed
+interval cuts 2.5\% from each tail. They coincide for symmetric unimodal
+posteriors and differ for skewed ones.
+
+\textbf{5.} Why does grid approximation become impractical for models
+with many parameters? \textbf{Answer} The number of grid points grows
+exponentially with the number of parameters (e.g., 100 points per
+parameter means \(100^k\) evaluations). That is the curse of
+dimensionality. MCMC sampling (Weeks 11--13) avoids it.
+
+\textbf{6.} A colleague uses \(d' \sim \mathcal{N}(0, 100)\) ``to be
+safe''. What would you do to convince them it is a bad idea?
+\textbf{Answer} A prior predictive simulation: show that this prior
+implies hit and false-alarm rates that are almost always exactly 0 or 1,
+an absurd belief about real detection data. Suggest a weakly informative
+prior instead.
+
+\textbf{7.} Explain the statement ``the log-linear correction for
+extreme rates is a Bayesian estimate''. \textbf{Answer} The corrected
+rate \((y + 0.5)/(n + 1)\) equals the posterior mean of \(\theta\) under
+a \(\mathrm{Beta}(0.5, 0.5)\) prior: \((0.5 + y)/(0.5 + 0.5 + n)\). The
+correction implicitly adds half a pseudo-observation of each type.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{A3 (model comparison and recovery)} and the \textbf{project
+  proposal} are due at the start of this week's lecture.
+\item
+  No new graded assignment this week. \textbf{A4 (Bayesian analysis by
+  grid)} is released in Week 10.
+\item
+  \textbf{Optional practice (ungraded):} lab Exercise 3 (forgetting by
+  grid) is the core of A4. Starting it now will save you time.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Kruschke (2014), chapters 5--6.} Bayes' rule, and inferring a
+  binomial probability via exact mathematical analysis (the
+  beta-binomial model). Very gentle and visual. \emph{(Main reading.)}
+\item
+  \textbf{Lee \& Wagenmakers (2014), chapters 1 and 3.} The basics of
+  Bayesian analysis, and inferences with binomials.
+\item
+  \textbf{Martin, Kumar \& Lao (2021), chapter 1.} Bayesian inference:
+  the components of a Bayesian model and prior/posterior predictive
+  distributions, with Python code.
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 6.} Bayesian parameter
+  estimation: basic concepts, linked to the likelihood framework of Week
+  4.
+\item
+  \textbf{Azimifar \& Ahmadi (1396)}, vol.~1 (in Persian): the section
+  on Bayesian parameter estimation and its relation to ML estimation
+  {[}verify chapter{]}.
+\end{itemize}
+
+\emph{Preview for Week 10:} the posterior tells us about parameters
+\emph{within} a model. Next week we ask how the data change our belief
+\emph{between} models, using the evidence
+\(p(\mathbf{y}\mid\mathcal{M})\) that we have been ignoring as a
+normalizing constant, and how to check whether a model's posterior
+predictions look like the real data.

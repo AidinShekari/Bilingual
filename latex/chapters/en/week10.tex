@@ -1,0 +1,952 @@
+\section{Week 10: Bayesian Modeling II: Posterior Predictive Checks and
+Bayes Factors}
+
+\begin{quote}
+\textbf{Chapter 4: Bayesian modeling} (with Chapter 3: evaluation) ·
+Lecture 1 h · Lab 2 h \textbf{Running data:} the Week 2 forgetting data
+(exponential vs.~power), and a weak-evidence SDT participant (is
+\(d' = 0\)?).
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+posterior & \RL{\CMfa توزیع پسین} (posterior) & \RL{\CMfa باور درباره‌ی پارامتر بعد
+از دیدن داده} \\
+forgetting curve & \RL{\CMfa منحنی فراموشی} & \RL{\CMfa کاهش یادآوری با گذشت
+زمان} \\
+exponential / power function & \RL{\CMfa تابع نمایی} / \RL{\CMfa توانی} & \RL{\CMfa دو شکل
+رایج برای منحنی فراموشی و یادگیری} \\
+evidence & \RL{\CMfa شواهد} & \RL{\CMfa اطلاعاتی که برای تصمیم جمع می‌شود} \\
+sensitivity (d′) & \RL{\CMfa حساسیت} & \RL{\CMfa فاصله‌ی توزیع علامت و نویز} \\
+posterior predictive check (PPC) & \RL{\CMfa بررسی پیش‌بینی پسین} & \RL{\CMfa مقایسه‌ی
+داده‌ی شبیه‌سازی‌شده از پسین با داده‌ی واقعی} \\
+marginal likelihood / evidence & \RL{\CMfa درست‌نمایی حاشیه‌ای} & \RL{\CMfa احتمال
+داده تحت مدل، میانگین روی پیشین} \\
+likelihood & \RL{\CMfa درست‌نمایی} & \RL{\CMfa احتمال داده به‌عنوان تابعی از
+پارامترها} \\
+Bayes factor (BF) & \RL{\CMfa عامل بیز} (Bayes factor) & \RL{\CMfa نسبت درست‌نمایی‌های
+حاشیه‌ای دو مدل} \\
+model flexibility / complexity & \RL{\CMfa انعطاف‌پذیری} / \RL{\CMfa پیچیدگی مدل} &
+\RL{\CMfa دامنه‌ی الگوهایی که مدل می‌تواند تولید کند} \\
+grid approximation & \RL{\CMfa تقریب شبکه‌ای} (grid) & \RL{\CMfa محاسبه‌ی پسین روی
+شبکه‌ای از مقادیر} \\
+Savage--Dickey ratio & \RL{\CMfa نسبت} Savage--Dickey & BF \RL{\CMfa از نسبت چگالی
+پسین به پیشین در مقدار صفر} \\
+AIC / BIC & \RL{\CMfa معیار اطلاعاتی آکائیکه} / \RL{\CMfa بیزی} & \RL{\CMfa برازش به‌علاوه‌ی
+جریمه برای تعداد پارامتر} \\
+prior & \RL{\CMfa توزیع پیشین} (prior) & \RL{\CMfa باور درباره‌ی پارامتر پیش از دیدن
+داده} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+posterior odds & \RL{\CMfa بخت پسین} (odds) & \RL{\CMfa نسبت احتمال پسین دو مدل} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شواهد یا در داده} \\
+adequacy check & \RL{\CMfa بررسی کفایت مدل} & \RL{\CMfa آیا مدل ویژگی‌های اصلی داده
+را بازتولید می‌کند} \\
+nested models & \RL{\CMfa مدل‌های تودرتو} (nested) & \RL{\CMfa یک مدل حالت خاص مدل
+دیگر است} \\
+trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
+accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Generate} posterior predictive distributions and
+  \textbf{conduct} graphical and numerical posterior predictive checks
+  (PPCs).
+\item
+  \textbf{Define} the marginal likelihood and the Bayes factor, and
+  \textbf{explain} why the marginal likelihood penalizes model
+  flexibility automatically.
+\item
+  \textbf{Compute} Bayes factors by grid integration and with the
+  Savage--Dickey density ratio, and \textbf{compare} them with the BIC
+  approximation.
+\item
+  \textbf{Evaluate} the sensitivity of Bayes factors to the prior, and
+  \textbf{contrast} it with the robustness of posterior estimates.
+\item
+  \textbf{Interpret} Bayes factors on a graded evidence scale and
+  \textbf{combine} them with prior odds into posterior model
+  probabilities.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+Last week gave us posteriors \emph{within} a model. Two questions
+remain.
+
+\textbf{1. Is the model any good at all?} A posterior can be narrow and
+confident even when the model is badly wrong: the exponential model will
+happily give a precise posterior for \(\lambda\) for the Week 2 data.
+The Bayesian answer is to ask the fitted model to \textbf{generate new
+data} and check whether they look like the real data. This is a
+\emph{posterior predictive check}, the Bayesian counterpart of residual
+plots and \(G^2\).
+
+\textbf{2. Which model do the data support more?} In Week 7 we compared
+models with AIC and BIC, which penalize parameter counts. Bayesian
+inference has a built-in answer: compute how well each model predicted
+the data \emph{before} it was fitted, averaging over all parameter
+values its prior allows. That is the \textbf{marginal likelihood}, and
+the ratio of two marginal likelihoods is the \textbf{Bayes factor}. A
+flexible model spreads its predictions over many possible datasets, so
+it assigns less probability to any one of them. The Bayes factor thus
+implements Occam's razor automatically, and it responds to
+functional-form flexibility, not just to \(k\).
+
+Bayes factors are also used to test null hypotheses (``is sensitivity
+zero?''). Unlike \(p\)-values, they can quantify evidence \textbf{for}
+the null.
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Evidence for ``no effect''.} Replication studies often ask
+  whether an effect is absent. A \(p\)-value cannot support the null; a
+  Bayes factor can (``the data are 8 times more likely under no
+  effect'').
+\item
+  \textbf{Psychology journals and software}: Bayes factors are reported
+  routinely with tools such as JASP and the R package BayesFactor, for
+  t-tests, ANOVAs and correlations as well as for cognitive models.
+\item
+  \textbf{Model checking in every Bayesian analysis}: posterior
+  predictive checks are a standard step before any result is trusted
+  (e.g.~in clinical trials analyzed with Bayesian methods and in
+  cognitive modeling papers).
+\item
+  \textbf{Comparing theories with different flexibility}: when two
+  models have the same number of parameters but one can produce many
+  more data patterns, the Bayes factor is one of the few tools that
+  notices.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+Two separate questions this week. \textbf{(1) Is my model good enough?}
+Let the fitted model \emph{imagine} new data: take plausible parameter
+values from the posterior, simulate a new experiment, repeat many times.
+If the real data look like a typical imagined dataset, the model is
+adequate; if the real data sit outside the cloud of imagined data, the
+model is missing something. This is a \textbf{posterior predictive
+check}. \textbf{(2) Which of two models do the data support more?} Ask
+each model, \emph{before fitting}, how probable it found the data we
+actually got, averaging over all the parameter values its prior allows.
+That number is the \textbf{marginal likelihood}, and the ratio for two
+models is the \textbf{Bayes factor}. A model that bets on everything
+(very flexible) must spread its bets thinly, so it wins less when the
+data fall where a simpler model bet. That is Occam's razor, built into
+probability theory. The catch: the Bayes factor depends on the prior, so
+you must report how it changes with reasonable priors.
+
+\textbf{Suggested timing (60 min):} posterior predictive checks 15 ·
+marginal likelihood and Bayes factors 20 · computing BFs (grid, BIC,
+Savage--Dickey) 15 · prior sensitivity and comparison of methods 10.
+
+\subsubsection{1. Posterior predictive checks}
+
+The \textbf{posterior predictive distribution} describes new data
+\(\mathbf{y}^{\text{rep}}\) that the fitted model expects:
+
+\[
+p(\mathbf{y}^{\text{rep}} \mid \mathbf{y}) = \int p(\mathbf{y}^{\text{rep}} \mid \boldsymbol\theta)\, p(\boldsymbol\theta \mid \mathbf{y})\, d\boldsymbol\theta.
+\]
+
+\textbf{Simulation recipe:} for \(s = 1, \dots, S\), draw
+\(\boldsymbol\theta^{(s)}\) from the posterior and simulate a dataset
+\(\mathbf{y}^{\text{rep}(s)}\) from the model with the real design. This
+propagates \emph{both} parameter uncertainty and sampling noise.
+
+\textbf{Checks:} - \textbf{Graphical:} plot the observed data on top of
+the predictive intervals (e.g., the central 95\% of \(y^{\text{rep}}\)
+per condition). Systematic departures (observed points repeatedly
+outside the bands, or on one side of them) show where the model fails. -
+\textbf{Numerical:} choose a test statistic \(T(\mathbf{y})\) that
+captures a feature you care about (e.g., recall at the longest delays,
+the steepness of the early drop). The \textbf{posterior predictive
+\(p\)-value} is
+\(p_B = P\big(T(\mathbf{y}^{\text{rep}}) \ge T(\mathbf{y}) \mid \mathbf{y}\big)\).
+Values near 0 or 1 indicate that the model cannot reproduce this
+feature.
+
+PPCs assess \textbf{absolute} adequacy, i.e., whether the model is good
+enough, not which of two models is better. They are a routine step of
+every Bayesian analysis (Week 13).
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathbf{y}^{\text{rep}}\): ``replicated'' data, an imagined
+  repetition of the experiment.
+\item
+  \(\int p(\mathbf{y}^{\text{rep}} \mid \boldsymbol\theta)\, p(\boldsymbol\theta \mid \mathbf{y})\, d\boldsymbol\theta\):
+  average the model's predictions over all parameter values, each
+  weighted by its posterior plausibility. In practice this integral is
+  replaced by the two-step simulation recipe: draw \(\boldsymbol\theta\)
+  from the posterior, then simulate data with it.
+\item
+  \(p_B = P(T(\mathbf{y}^{\text{rep}}) \ge T(\mathbf{y}) \mid \mathbf{y})\):
+  the fraction of imagined datasets whose summary \(T\) is at least as
+  large as the real one. If only 1\% of imagined datasets show recall as
+  high as observed at 30 days (\(p_B = 0.01\)), the model cannot produce
+  that feature.
+\end{itemize}
+
+\subsubsection{2. The marginal likelihood and the Bayes factor}
+
+The \textbf{marginal likelihood} (evidence) of model \(\mathcal{M}\) is
+the likelihood averaged over the prior:
+
+\[
+p(\mathbf{y} \mid \mathcal{M}) = \int p(\mathbf{y} \mid \boldsymbol\theta, \mathcal{M})\, p(\boldsymbol\theta \mid \mathcal{M})\, d\boldsymbol\theta.
+\]
+
+It is the probability the model assigned to the observed data
+\emph{before seeing them}. Bayes' rule at the level of models gives:
+
+\[
+\underbrace{\frac{p(\mathcal{M}_1 \mid \mathbf{y})}{p(\mathcal{M}_2 \mid \mathbf{y})}}_{\text{posterior odds}}
+= \underbrace{\frac{p(\mathbf{y} \mid \mathcal{M}_1)}{p(\mathbf{y} \mid \mathcal{M}_2)}}_{\mathrm{BF}_{12}}
+\times \underbrace{\frac{p(\mathcal{M}_1)}{p(\mathcal{M}_2)}}_{\text{prior odds}}.
+\]
+
+\(\mathrm{BF}_{12}\) is the factor by which the data change the odds in
+favor of \(\mathcal{M}_1\) over \(\mathcal{M}_2\), and
+\(\mathrm{BF}_{21} = 1/\mathrm{BF}_{12}\).
+
+\textbf{The automatic Occam's razor.} Both models must spread a total
+probability of 1 over all possible datasets. A simple model concentrates
+its predictions on a few datasets; a flexible model spreads them thin.
+If the data fall where the simple model predicted, the simple model gets
+the higher marginal likelihood, even though the flexible model can also
+fit them well after its parameters are tuned. Unlike AIC/BIC, this
+penalty depends on \emph{how} flexible a model is (the prior predictive
+spread), not merely on \(k\).
+
+\textbf{A common evidence scale} (an adaptation of Jeffreys' classic
+categories, as used by Lee \& Wagenmakers):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+\(\mathrm{BF}_{12}\) & Evidence for \(\mathcal{M}_1\) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1--3 & Anecdotal \\
+3--10 & Moderate \\
+10--30 & Strong \\
+30--100 & Very strong \\
+\textgreater{} 100 & Extreme \\
+\end{longtable}
+}
+
+(Values below 1 are read the same way for \(\mathcal{M}_2\).) These
+labels are aids, not thresholds. Report the number.
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \(p(\mathbf{y} \mid \mathcal{M}) = \int p(\mathbf{y} \mid \boldsymbol\theta)\,p(\boldsymbol\theta)\,d\boldsymbol\theta\):
+  the likelihood \textbf{averaged} over the prior, not maximized.
+  Compare: MLE takes the \emph{best} parameter value; the marginal
+  likelihood takes the \emph{prior-weighted average} over all of them. A
+  model with many bad parameter values in its prior gets a low average.
+\item
+  \textbf{Posterior odds = Bayes factor × prior odds.} Odds are
+  probability ratios: odds of 3 mean 3:1, i.e.~probability 0.75. If both
+  models were equally plausible before (prior odds = 1) and
+  \(\mathrm{BF}_{12} = 3\), then afterwards
+  \(P(\mathcal{M}_1 \mid \mathbf{y}) = 3/(1+3) = 0.75\).
+\item
+  \textbf{Worked example in one line:} with 7 of 10 correct, chance
+  predicted the data with probability 0.117 and the ``any accuracy''
+  model with 0.091, so \(\mathrm{BF}_{01} = 1.29\): the data hardly
+  change the odds.
+\end{itemize}
+
+\subsubsection{3. Computing Bayes factors}
+
+\textbf{(a) Grid integration} (1--2 parameters):
+\(p(\mathbf{y}\mid\mathcal{M}) \approx \sum_g p(\mathbf{y}\mid\boldsymbol\theta_g)\, p(\boldsymbol\theta_g)\, \Delta_g\),
+where \(\Delta_g\) is the cell area. Do it in log space (log-sum-exp),
+and check that the prior mass inside the grid is \ensuremath{\approx} 1.
+
+\textbf{(b) The BIC approximation.} For large \(N\),
+\(\ln p(\mathbf{y}\mid\mathcal{M}) \approx -\tfrac12\mathrm{BIC}\), so
+
+\[
+\mathrm{BF}_{12} \approx \exp\big(-\tfrac12(\mathrm{BIC}_1 - \mathrm{BIC}_2)\big).
+\]
+
+It is quick but crude: it ignores the actual prior (it implicitly
+assumes a ``unit-information'' prior) and functional-form flexibility.
+
+\textbf{(c) The Savage--Dickey density ratio} (nested models). If
+\(\mathcal{M}_0\) fixes \(\phi = \phi_0\) in \(\mathcal{M}_1\), and the
+priors on the remaining parameters match, then
+
+\[
+\mathrm{BF}_{01} = \frac{p(\phi = \phi_0 \mid \mathbf{y}, \mathcal{M}_1)}{p(\phi = \phi_0 \mid \mathcal{M}_1)}:
+\]
+
+the posterior density at the null value divided by the prior density at
+the null value, both under the larger model. If the data make \(\phi_0\)
+more plausible than it was a priori, the evidence favors the null. One
+posterior from \(\mathcal{M}_1\) is all we need.
+
+(Further methods, such as bridge sampling and thermodynamic integration,
+compute marginal likelihoods from MCMC output for complex models. They
+are beyond this course.)
+
+\paragraph{Reading the math}
+
+\textbf{Savage--Dickey}
+\(\mathrm{BF}_{01} = p(\phi_0 \mid \mathbf{y}) / p(\phi_0)\): look at
+the height of the posterior and of the prior at the null value
+\(\phi_0\) (e.g.~\(\theta = 0.5\)). If the posterior is \emph{higher}
+there than the prior was, the data made the null value more plausible,
+so the evidence favors the null. In the worked example the prior (flat)
+has height 1 at 0.5 and the posterior \(\mathrm{Beta}(8,4)\) has height
+1.29, so \(\mathrm{BF}_{01} = 1.29\). A picture of two curves and one
+vertical line at \(\phi_0\) is all you need to explain this.
+
+\subsubsection{4. Prior sensitivity: estimation vs.~testing}
+
+For \textbf{estimation}, a reasonable prior matters less and less as
+data accumulate. For \textbf{Bayes factors}, the prior on a tested
+parameter \emph{never} stops mattering. Making the prior under
+\(\mathcal{M}_1\) wider spreads its predictions more thinly, which
+lowers \(p(\mathbf{y}\mid\mathcal{M}_1)\), so an arbitrarily vague prior
+makes the BF favor the null no matter what the data are (the
+Jeffreys--Lindley paradox). Consequences: - Priors for model comparison
+must be chosen thoughtfully, ideally reflecting realistic effect sizes.
+- Always report a \textbf{sensitivity analysis}: the BF over a range of
+reasonable prior widths.
+
+\subsubsection{5. Comparison of model-evaluation methods}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Penalizes
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Prior needed?
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Week
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(G^2\), residuals, PPC & Is the model adequate? & --- & PPC: yes & 4,
+10 \\
+LRT & Does the extra parameter improve fit beyond chance? (nested only)
+& \(\Delta k\) via \(\chi^2\) & No & 7 \\
+AIC / CV & Which model predicts new data best? & Estimated over-fitting
+& No & 6--7 \\
+BIC & Approximately: which model has the higher evidence? & \(k \ln N\)
+& Implicit & 7 \\
+Bayes factor & How much do the data change the odds between models? &
+Prior predictive spread (true flexibility) & \textbf{Yes, and the result
+depends on it} & 10 \\
+\end{longtable}
+}
+
+\begin{quote}
+\textbf{Advanced: Bayes factors vs.~predictive criteria.} The marginal
+likelihood can be written as a product of sequential predictions,
+\(p(\mathbf{y}) = p(y_1)\,p(y_2\mid y_1)\cdots p(y_N\mid y_{1:N-1})\).
+It therefore scores how well the model predicts each data point from the
+earlier ones, \emph{starting from the prior}. LOO-CV scores predictions
+from (almost) all the other data. This is why BFs depend on the prior
+and LOO hardly does, and why they can disagree on the same data.
+\end{quote}
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Posterior odds = BF × prior odds} is the \textbf{MAP (Bayes)
+  detector} between two hypotheses, where the Bayes factor plays the
+  role of the likelihood ratio.
+\item
+  The difference from the \textbf{GLRT} (Week 4 and 7): with unknown
+  parameters, the GLRT \emph{maximizes} the likelihood over them; the
+  Bayes factor \emph{integrates} (averages) over them with a prior.
+  Maximizing favors flexible hypotheses; averaging penalizes them
+  automatically.
+\item
+  The \textbf{Jeffreys--Lindley paradox} has an engineering flavor: if
+  you let the alternative hypothesis allow absurdly large signal
+  amplitudes (a very wide prior), almost any observation is better
+  explained by ``noise only''.
+\item
+  \textbf{Posterior predictive checks} are like validating a channel
+  model by simulating received signals from the fitted model and
+  comparing their statistics (histograms, autocorrelations, eye
+  diagrams) with measured ones.
+\end{itemize}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Explain Occam's razor with a betting story.} Two forecasters
+  each have 100 chips to place on possible outcomes. One spreads them
+  over everything; the other puts most chips on a narrow range. If the
+  outcome lands in that narrow range, the focused forecaster wins more.
+  The marginal likelihood is the payout.
+\item
+  \textbf{Show prior sensitivity live.} In the lab code, change the
+  width of the prior under \(\mathcal{M}_1\) and watch the BF move. This
+  is more convincing than any warning.
+\item
+  \textbf{Keep the two questions apart.} Write ``Is the model good
+  enough? \ensuremath{\rightarrow} PPC'' and ``Which model is better? \ensuremath{\rightarrow} BF / CV / AIC'' on the
+  board. Students often use a BF to claim a model is \emph{good}; it
+  only says it is \emph{better than the other}.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``BF or \(p\)-value?''} They answer different questions. The
+    BF compares two specific hypotheses and can support the null; the
+    \(p\)-value only measures surprise under the null.
+  \item
+    \emph{``BF = 2.5, is that significant?''} There is no threshold; it
+    is anecdotal evidence. Report the number.
+  \item
+    \emph{``Why do BF and AIC disagree?''} They aim at different targets
+    (evidence vs.~prediction) and the BF depends on the prior.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\subsubsection{Part 1: is recall at chance? A Bayes factor by hand}
+
+A participant chooses between two alternatives on \(n = 10\) trials and
+is correct on \(y = 7\). Is performance at chance?
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathcal{M}_0\): \(\theta = 0.5\) (no free parameters).
+\item
+  \(\mathcal{M}_1\): \(\theta \sim \mathrm{Beta}(1, 1)\) (any accuracy
+  equally plausible a priori).
+\end{itemize}
+
+\textbf{Step 1.}
+\(p(y\mid\mathcal{M}_0) = \binom{10}{7} 0.5^{10} = 120/1024 = 0.1172\).
+
+\textbf{Step 2.} Under a uniform prior, every count \(0, \dots, n\) is
+equally likely a priori, so
+\(p(y\mid\mathcal{M}_1) = \int_0^1 \binom{10}{7}\theta^7(1-\theta)^3\, d\theta = \frac{1}{n+1} = \frac{1}{11} = 0.0909\).
+
+\textbf{Step 3.} \(\mathrm{BF}_{01} = 0.1172 / 0.0909 = 1.29\). The data
+slightly \emph{favor chance}, which is anecdotal evidence either way.
+
+\textbf{Step 4 (Savage--Dickey check).} The posterior under
+\(\mathcal{M}_1\) is \(\mathrm{Beta}(8, 4)\), whose density at 0.5 is
+1.289. The prior density at 0.5 is 1. The ratio is 1.29, identical to
+Step 3.
+
+\textbf{More data:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(p\) (two-sided binomial test)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathrm{BF}_{01}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reading
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+7/10 & 0.34 & 1.29 & Anecdotal, either way \\
+60/100 & \ensuremath{\approx} 0.06 & 1.10 & Still anecdotal: the data barely distinguish
+chance from ``some accuracy'' \\
+70/100 & \textless{} 0.001 & 0.0023 (\(\mathrm{BF}_{10} \approx 430\)) &
+Extreme evidence against chance \\
+\end{longtable}
+}
+
+\textbf{Interpretation.} With 60/100, a \(p\)-value near .05 tempts
+researchers to claim an effect, yet the Bayes factor says the data are
+about equally likely under both hypotheses. The reason: the alternative
+with a uniform prior ``predicted'' that accuracy could be anywhere from
+0 to 1. An observed accuracy of 0.6 is only modestly better predicted by
+it than by exactly 0.5. A narrower, more realistic prior under
+\(\mathcal{M}_1\) (e.g., accuracies between 0.5 and 0.8) would give a
+different BF, which is why prior sensitivity must be reported.
+
+\subsubsection{Part 2: posterior model probabilities}
+
+For 7/10 with prior odds of 1: posterior odds \(= 1.29\), so
+\(P(\mathcal{M}_0 \mid y) = 1.29 / 2.29 = 0.56\). If a reviewer believes
+a priori that chance performance is 4 times less likely than
+above-chance performance (prior odds 1:4), then posterior odds
+\(= 1.29 \times 0.25 = 0.32\), so \(P(\mathcal{M}_0 \mid y) = 0.24\).
+The BF is the same for everyone; the posterior model probabilities
+depend on the prior odds.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Run graphical and numerical posterior predictive checks for the
+  exponential and power forgetting models.
+\item
+  Compute marginal likelihoods and the Bayes factor for power
+  vs.~exponential by grid integration; compare with BIC.
+\item
+  Test \(d' = 0\) for a weak-evidence SDT participant with the
+  Savage--Dickey ratio, and verify it by direct computation.
+\item
+  Map the sensitivity of the Bayes factor to the prior, and contrast it
+  with the posterior estimate.
+\end{enumerate}
+
+\textbf{Timing:} Part A 35 min · Part B 25 min · Part C 30 min · Part D
+20 min · Part E 10 min.
+
+\subsubsection{Setup}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+exp: posterior mean A = 0.655, rate = 0.049
+pow: posterior mean A = 0.867, rate = 0.417
+\end{Verbatim}
+
+\subsubsection{Part A: posterior predictive checks (35 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+exp: T(observed) = 0.267, mean T(rep) = 0.240, posterior predictive p = 0.302
+pow: T(observed) = 0.267, mean T(rep) = 0.243, posterior predictive p = 0.320
+\end{Verbatim}
+
+\textbf{Interpret:} look at the plots first. For the exponential model,
+the observed recall at the shortest delay (42/50) lies \emph{above} the
+95\% band and recall at 7 days (13/50) lies \emph{below} it. The
+exponential cannot drop steeply early and then level off. The power
+model's band contains every observed point.
+
+Yet the numerical check with \nolinkurl{T} = mean recall at the three
+longest delays gives unremarkable \(p_B\) values for \textbf{both}
+models (about 0.3). The exponential's misfit is in the \emph{shape}
+(early vs.~middle delays), which this statistic does not look at.
+\textbf{A PPC can only detect the failures its test statistic is
+sensitive to.} Choose statistics that target the features that
+distinguish the theories; in Exercise 2 a ``first drop'' statistic
+exposes the exponential model (\(p_B \approx 0.02\)).
+
+\subsubsection{Part B: Bayes factor by grid integration (25 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+exp: log p(y|M) = -34.938   (prior mass inside grid = 0.9996)
+pow: log p(y|M) = -22.872   (prior mass inside grid = 0.9991)
+
+BF(pow vs exp) = exp(12.07) = 1.74e+05
+BIC approximation: BF(pow vs exp) = exp(9.98) = 2.16e+04
+\end{Verbatim}
+
+\textbf{Interpret:} \(\mathrm{BF} \approx 1.7 \times 10^5\) is extreme
+evidence for the power model over the exponential. BIC gives the same
+verdict but a different number (\(2 \times 10^4\)). Why do the grid BF
+and the BIC approximation differ? (Hint: which prior does each use, and
+are the two models equally flexible under our priors?)
+
+\subsubsection{Part C: Savage--Dickey: is this participant's sensitivity
+zero? (30 min)}
+
+A participant in a hard detection task: 12 hits out of 20 signal trials,
+8 false alarms out of 20 noise trials. \(\mathcal{M}_1\):
+\(d' \sim \mathcal{N}(0, 1)\), \(c \sim \mathcal{N}(0, 1)\).
+\(\mathcal{M}_0\): \(d' = 0\), \(c \sim \mathcal{N}(0, 1)\).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+BF01 Savage-Dickey = 1.328;  BF01 direct = 1.328;  posterior mean d' = 0.444
+MLE d' = 0.507
+\end{Verbatim}
+
+The two computations agree, which is a useful check that both are
+implemented correctly.
+
+\subsubsection{Part D: prior sensitivity (20 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{10\baselineskip}
+\begin{Verbatim}
+ prior SD of d'   BF01  BF10  posterior mean d'
+           0.25  0.938 1.066              0.144
+           0.50  0.972 1.028              0.313
+           1.00  1.328 0.753              0.444
+           2.00  2.314 0.432              0.496
+           5.00  5.541 0.180              0.513
+          10.00 11.011 0.091              0.515
+\end{Verbatim}
+
+\textbf{What to notice:} as the prior on \(d'\) widens, the posterior
+mean of \(d'\) quickly stabilizes, but \(\mathrm{BF}_{01}\) keeps
+growing in favor of the null. A very wide prior ``predicts'' huge
+sensitivities that did not occur, so the alternative is penalized.
+\textbf{For estimation the prior washes out; for testing it does not.}
+
+\subsubsection{Part E: interpret (10 min)}
+
+Write 4--5 sentences: does this participant detect the signal? Report
+the BF with your chosen prior and justify the prior, mention the
+sensitivity analysis, and state what additional data would make the
+answer clearer.
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star}.} Verify by numerical integration
+(\nolinkurl{scipy.integrate.quad}) that
+\(\int_0^1 \binom{10}{7}\theta^7(1-\theta)^3 d\theta = 1/11\).
+
+\textbf{Exercise 2 \ensuremath{\star}.} In Part A, use a different test statistic: the
+drop in recall from the first to the second interval. Which model, if
+any, fails this check? (Expected: the exponential, \(p_B \approx 0.02\);
+the power model passes.)
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (prior sensitivity of the forgetting BF).} Repeat
+Part B with the rate priors widened (scale × 3) and narrowed (scale ÷
+3). Does the conclusion ``power \ensuremath{\gg} exponential'' survive? Why is it so
+robust here, unlike in Part D?
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (an informed alternative).} In Part C, replace the
+prior on \(d'\) by a half-normal \(d' \sim \mathcal{N}^+(0, 1)\) (only
+positive values; remember to renormalize). Compute the Savage--Dickey
+BF. Why does a directional prior change the result?
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: BF for the repetition study).} For the
+Week 8 case study (\(\mathcal{M}_0\) vs.~\(\mathcal{M}_1\)), choose
+priors for \(\delta_0\), \(\delta_1\) and \(\kappa\), compute
+\(\mathrm{BF}_{10}\) with the Savage--Dickey ratio at \(\delta_1 = 0\)
+using a 3-D grid (keep it coarse), and compare it with the BIC
+approximation.
+
+\subsubsection{Lab check-off}
+
+Show: (1) the two PPC plots with \(p_B\) values, (2) the grid BF for
+power vs.~exponential and its BIC approximation, and (3) the
+prior-sensitivity table from Part D with one sentence of interpretation.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Do LLMs have a ``theory of mind''?} Some studies report that
+LLMs pass false-belief tasks, classic tests of whether one understands
+that others can hold false beliefs. Others show that small changes to
+the stories make performance collapse {[}verify: Kosinski, 2023/2024;
+Ullman, 2023{]}. Many such tests have two answer options, so chance is
+50\%, and the number of items is small. A Bayes factor answers the right
+first question: \emph{do the data support above-chance performance at
+all, compared with chance?}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week10.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{5\baselineskip}
+\begin{Verbatim}
+26/40 correct (65%): BF10 = 1.16
+130/200 correct (65%): BF10 = 785.26
+\end{Verbatim}
+
+The same 65\% is no evidence at all with 40 items, and overwhelming
+evidence with 200 items. Above-chance performance is also only the first
+step: the posterior predictive check of this week asks \emph{how} the
+model succeeds and fails. For example, does it fail on exactly the
+altered stories, where a human would not?
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Repeat with a prior concentrated on
+above-chance values, e.g.~Beta(5, 2) restricted to \(\theta > 0.5\)
+(renormalize the density). How does \(\mathrm{BF}_{10}\) for 26/40
+change? - \ensuremath{\star}\ensuremath{\star} Simulate a ``shortcut'' model that answers correctly on
+90\% of standard stories and 30\% of altered stories (half of each). Its
+overall accuracy is 60\%. Design a posterior predictive check that
+reveals the shortcut. - \ensuremath{\star}\ensuremath{\star} Discussion: is ``above chance on false-belief
+tasks'' a claim at Marr's computational or algorithmic level?
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{``A narrow posterior means the model is right.''} Precision is
+  not adequacy. Always run a PPC.
+\item
+  \textbf{Using the posterior predictive check to choose between
+  models.} PPCs check adequacy. Use BFs, CV or information criteria to
+  compare.
+\item
+  \textbf{``The Bayes factor is the posterior probability of the
+  model.''} It is the \emph{change} in odds. Posterior probabilities
+  also need prior odds.
+\item
+  \textbf{Using very vague priors in Bayes-factor tests.} They bias the
+  BF toward the null without limit (Part D). Use realistic priors and
+  report the sensitivity.
+\item
+  \textbf{Savage--Dickey with mismatched priors.} The nuisance-parameter
+  priors must be the same in both models, and the prior density must be
+  evaluated \emph{at the null value} in the larger model.
+\item
+  \textbf{Computing marginal likelihoods on a grid that cuts off prior
+  mass.} Check that the prior mass inside the grid is close to 1.
+\item
+  \textbf{Treating ``BF = 2.9'' vs.~``BF = 3.1'' as qualitatively
+  different.} The evidence scale is continuous; labels are aids, not
+  decision thresholds.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} How is a posterior predictive distribution simulated, and
+what does it combine? \textbf{Answer} Draw parameters from the
+posterior, then simulate data from the model with those parameters (and
+the real design). It combines uncertainty about the parameters with the
+sampling noise of new data.
+
+\textbf{2.} Define the marginal likelihood in words. \textbf{Answer} The
+probability (density) of the observed data under the model, averaged
+over all parameter values weighted by the prior: how well the model
+predicted these data before it was fitted.
+
+\textbf{3.} Why does the marginal likelihood penalize flexible models
+even without counting parameters? \textbf{Answer} Probability over
+possible datasets must sum to 1. A flexible model spreads its prior
+predictions over many datasets and so assigns each one, including the
+observed one, less probability, unless the data fall where only the
+flexible model predicts them.
+
+\textbf{4.} \(\mathrm{BF}_{10} = 6\) and the prior odds are 1:3 (against
+\(\mathcal{M}_1\)). What are the posterior odds and
+\(P(\mathcal{M}_1\mid\mathbf{y})\)? \textbf{Answer} Posterior odds
+\(= 6 \times 1/3 = 2\), so
+\(P(\mathcal{M}_1\mid\mathbf{y}) = 2/3 \approx 0.67\).
+
+\textbf{5.} State the Savage--Dickey ratio and the conditions for using
+it. \textbf{Answer}
+\(\mathrm{BF}_{01} = p(\phi_0\mid\mathbf{y},\mathcal{M}_1)/p(\phi_0\mid\mathcal{M}_1)\):
+the posterior over the prior density at the null value under the larger
+model. It requires nested models (the null fixes \(\phi = \phi_0\)) and
+identical priors on the other parameters.
+
+\textbf{6.} Why does widening the prior on the tested parameter increase
+\(\mathrm{BF}_{01}\), even with fixed data? \textbf{Answer} A wider
+prior assigns more probability to large effects and less to the small
+effect sizes compatible with the data, so the alternative's marginal
+likelihood decreases while the null's does not change.
+
+\textbf{7.} BIC gives \(\mathrm{BF}_{12} \approx 20\), while the grid
+computation with your priors gives 3. Which do you report and why?
+\textbf{Answer} The grid BF, because it uses the actual priors and
+accounts for functional-form flexibility; BIC is a large-sample
+approximation with an implicit prior. Mention the discrepancy and,
+ideally, a prior sensitivity analysis.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\subsubsection{A4: A Bayesian analysis by grid (1.0 point of 20;
+released Week 10, due at the start of the Week 12 lecture)}
+
+\textbf{Data:} the A2 dataset
+(\nolinkurl{rng = np.random.default_rng(2024)}, 9 intervals, \(n = 20\)
+items; see Week 4).
+
+\textbf{Tasks.}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Priors (1.5 pts).} Choose and justify priors for
+  \((A, \lambda)\) of the exponential model and \((A, d)\) of the power
+  model. Show prior predictive simulations of forgetting curves for both
+  models and revise the priors if needed.
+\item
+  \textbf{Posterior (2 pts).} Compute the grid posteriors for both
+  models. Report posterior means, SDs and 95\% HDIs, and the posterior
+  correlation of the two parameters. Plot the joint posteriors.
+\item
+  \textbf{Posterior predictive checks (2 pts).} Graphical PPC for both
+  models, plus a numerical PPC with a test statistic you choose and
+  justify.
+\item
+  \textbf{Bayes factor (2 pts).} Compute
+  \(\mathrm{BF}_{\text{pow,exp}}\) by grid integration (check the prior
+  mass), compare it with the BIC approximation, and repeat with two
+  alternative prior settings (sensitivity analysis).
+\item
+  \textbf{Comparison with A2 (1 pt).} Compare the posterior summaries
+  with your A2 MLEs and their uncertainty.
+\item
+  \textbf{Interpretation (1.5 pts, max. 300 words).} What do you
+  conclude about forgetting in these data, and how robust is the
+  conclusion to the prior?
+\end{enumerate}
+
+\textbf{Rubric:} points as above; within each task: correctness 60\%,
+figures and tables 20\%, interpretation 20\%. Late submissions lose 10\%
+per day (max. 3 days).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Lee \& Wagenmakers (2014), chapter 7.} Bayesian model
+  comparison: marginal likelihoods, Bayes factors and the Savage--Dickey
+  method, with worked examples. \emph{(Main reading.)}
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapter 11.} Bayesian model
+  comparison using Bayes factors, in the context of cognitive models.
+\item
+  \textbf{Kruschke (2014), chapter 10.} Model comparison and
+  hierarchical modeling, a gentle introduction to Bayes factors and
+  their prior sensitivity.
+\item
+  \textbf{Martin, Kumar \& Lao (2021), chapter 2.} Exploratory analysis
+  of Bayesian models, including posterior predictive checks.
+\end{itemize}
+
+\emph{Preview for Week 11:} our grids worked for two parameters. For
+five, ten or a hundred parameters we need a smarter way to explore the
+posterior: Markov chain Monte Carlo. You will build your first sampler
+from scratch.

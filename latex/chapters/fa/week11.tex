@@ -1,0 +1,895 @@
+\section{\texorpdfstring{هفته‌ی 11: روش‌های \lr{Monte Carlo} و الگوریتم
+\lr{Metropolis\lr{--}Hastings}}{هفته‌ی 11: روش‌های Monte Carlo و الگوریتم Metropolis\lr{--}Hastings}}
+
+\begin{quote}
+\textbf{فصل 5: برآورد پارامتر با روش‌های داده‌محور \lr{(MCMC)}} · درس 1
+ساعت · \lr{lab} 2 ساعت \textbf{داده‌ی اصلی:} داده‌های فراموشی هفته‌ی 2 با
+پیشین‌های هفته‌ی 10، تا بتوانیم نمونه‌گیر را با پسین شبکه‌ای‌ای که از قبل
+داریم مقایسه کنیم.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{واژه‌های کلیدی}
+
+واژه‌های مهم این درس با معادل فارسی‌شان (حتی اگر در درس‌های قبل آمده
+باشند).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\lr{English}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+فارسی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+توضیح کوتاه
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\lr{Monte Carlo} & \lr{Monte Carlo} (مونت‌کارلو) & تقریب با میانگین
+نمونه‌های تصادفی \\
+\lr{Metropolis algorithm} & الگوریتم \lr{Metropolis} & پیشنهاد یک حرکت و
+پذیرش یا رد آن \\
+\lr{parameter} & پارامتر & کمیت قابل تنظیم مدل که بین افراد یا شرایط فرق
+می‌کند \\
+\lr{estimate} / \lr{estimator} & برآورد / برآوردگر & مقدار به‌دست‌آمده
+برای پارامتر / روش به دست آوردن آن \\
+\lr{Markov chain Monte Carlo (MCMC)} & زنجیره‌ی مارکوف \lr{Monte Carlo} &
+نمونه‌گیری از پسین با یک زنجیره‌ی تصادفی \\
+\lr{forgetting curve} & منحنی فراموشی & کاهش یادآوری با گذشت زمان \\
+\lr{prior} & توزیع پیشین \lr{(prior)} & باور درباره‌ی پارامتر پیش از دیدن
+داده \\
+\lr{sampler} & نمونه‌گیر \lr{(sampler)} & الگوریتمی که از توزیع نمونه
+می‌گیرد \\
+\lr{grid approximation} & تقریب شبکه‌ای \lr{(grid)} & محاسبه‌ی پسین روی
+شبکه‌ای از مقادیر \\
+\lr{posterior} & توزیع پسین \lr{(posterior)} & باور درباره‌ی پارامتر بعد
+از دیدن داده \\
+\lr{chain} & زنجیره & دنباله‌ی نمونه‌های \lr{MCMC} \\
+\lr{proposal} & پیشنهاد \lr{(proposal)} & مقدار جدیدی که الگوریتم امتحان
+می‌کند \\
+\lr{acceptance rate} & نرخ پذیرش & نسبت پیشنهادهای پذیرفته‌شده \\
+\lr{trace plot} & نمودار \lr{trace} & مقدار نمونه‌ها در برابر شماره‌ی
+تکرار \\
+\lr{autocorrelation} & خودهمبستگی & وابستگی نمونه‌های پشت سر هم \\
+\lr{burn-in} / \lr{warm-up} & دوره‌ی گرم‌شدن \lr{(burn-in)} & نمونه‌های
+اولیه که دور ریخته می‌شوند \\
+\lr{sensitivity (d′)} & حساسیت & فاصله‌ی توزیع علامت و نویز \\
+\lr{likelihood} & درست‌نمایی & احتمال داده به‌عنوان تابعی از پارامترها \\
+\lr{starting point} & نقطه‌ی شروع & سوگیری اولیه به سمت یکی از پاسخ‌ها \\
+\lr{response bias} & سوگیری پاسخ & تمایل به یک پاسخ، مستقل از محرک \\
+\lr{large language model (LLM)} & مدل بزرگ زبانی & شبکه‌ی عصبی‌ای که کلمه‌ی
+بعدی متن را پیش‌بینی می‌کند \\
+\lr{self-consistency} & \lr{self-consistency} (رأی اکثریت) & چند بار
+نمونه‌گیری جواب و انتخاب رأی اکثریت \\
+\lr{simulation} & شبیه‌سازی & تولید داده‌ی مصنوعی با اجرای مدل \\
+\lr{MCSE} & خطای استاندارد \lr{Monte Carlo} & خطای شبیه‌سازی در میانگین
+پسین \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{اهداف یادگیری}
+
+در پایان این هفته، دانشجویان می‌توانند:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{توضیح دهند} چرا کمیت‌های پسین انتگرال‌اند، و چطور نمونه‌گیری
+  \lr{Monte Carlo} انتگرال‌ها را به میانگین تبدیل می‌کند، با خطایی که مثل
+  \(1/\sqrt{S}\) کم می‌شود.
+\item
+  منطق \lr{Markov chain Monte Carlo} را \textbf{توصیف کنند}: زنجیره‌ای که
+  توزیع بلندمدتش همان پسین است و فقط از پسین \emph{نرمال‌نشده} استفاده
+  می‌کند.
+\item
+  الگوریتم \lr{Metropolis} (و \lr{Metropolis\lr{--}Hastings)} را برای یک مدل
+  شناختی یک‌پارامتری و دوپارامتری از صفر \textbf{پیاده‌سازی کنند}.
+\item
+  توزیع پیشنهادی \lr{(proposal)} را با استفاده از نرخ پذیرش، \lr{trace
+  plot} و خودهمبستگی \textbf{تنظیم کنند} و دوره‌ی \lr{burn-in} را
+  \textbf{مشخص کنند}.
+\item
+  خلاصه‌های پسین و کمیت‌های مشتق‌شده (مثلاً نیمه‌عمر) را از نمونه‌ها
+  \textbf{حساب کنند} و نمونه‌گیر را با یک جواب معلوم \textbf{اعتبارسنجی
+  کنند}.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مقدمه}
+
+هر چیزی که از یک پسین می‌خواهیم یک \textbf{انتگرال} است: میانگین پسین
+\(\int \theta\, p(\theta\mid\mathbf{y})\,d\theta\)، پسین حاشیه‌ای (با
+انتگرال‌گیری روی بقیه‌ی پارامترها)، \(P(d' > 1\mid\mathbf{y})\)، توزیع
+پیش‌بینی پسین، و \lr{marginal likelihood.} در هفته‌های 9\lr{--}10 این انتگرال‌ها
+را روی شبکه حساب کردیم. این برای دو پارامتر کار کرد. یک مدل \lr{SDT}
+سلسله‌مراتبی برای 20 شرکت‌کننده (هفته‌ی 13) بیش از 40 پارامتر دارد؛ شبکه‌ای
+با فقط 10 نقطه برای هر پارامتر به \(10^{40}\) ارزیابی نیاز دارد.
+
+روش‌های \textbf{\lr{Monte Carlo}} انتگرال‌گیری را با \textbf{نمونه‌گیری}
+جایگزین می‌کنند: اگر بتوانیم مقادیر زیادی از پسین بکشیم، هر انتگرالی به
+میانگین روی نمونه‌ها تبدیل می‌شود و دقت به تعداد نمونه‌ها بستگی دارد، نه به
+تعداد پارامترها. مشکل این است که نمی‌توانیم مستقیماً از پسین نمونه بگیریم؛
+معمولاً حتی ثابت نرمال‌سازش را هم نمی‌توانیم حساب کنیم.
+
+\textbf{\lr{Markov chain Monte Carlo (MCMC)}} این مشکل را با ترفندی
+به‌طرز زیبایی ساده حل می‌کند: یک گام‌زنی تصادفی در فضای پارامتر که به سمت
+مقادیر محتمل‌تر بیشتر از مقادیر کم‌احتمال‌تر حرکت می‌کند، دقیقاً با نسبت‌های
+درست. بعد از مدتی، جاهایی که این گام‌زن به آن‌ها سر می‌زند نمونه‌هایی از
+پسین‌اند. شناخته‌شده‌ترین نسخه، یعنی \textbf{الگوریتم \lr{Metropolis}}، در
+15 خط \lr{Python} جا می‌شود و امروز پیش از استفاده از هر کتابخانه‌ای
+خودتان آن را می‌نویسید.
+
+\paragraph{این موضوع کجا به کار می‌رود؟}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{همه‌ی نرم‌افزارهای بیزی امروزی} \lr{(PyMC}، \lr{Stan}،
+  \lr{JAGS}، \lr{BUGS)} روی \lr{MCMC} ساخته شده‌اند. هر مدل سلسله‌مراتبی
+  در مقاله‌های اخیر روان‌شناسی و علوم اعصاب با نسخه‌ای از آن برازش شده است.
+\item
+  \textbf{فیزیک و شیمی} (جایی که الگوریتم \lr{Metropolis} در سال 1953
+  برای شبیه‌سازی ذرات ابداع شد)، \textbf{همه‌گیرشناسی} (برآورد پارامترهای
+  سرایت)، \textbf{تبارشناسی} (بازسازی درخت‌های تکاملی) و \textbf{مالی}
+  همه به \lr{MCMC} تکیه دارند.
+\item
+  \textbf{علوم شناختی نمونه‌گیری را به‌عنوان \emph{نظریه‌ای درباره‌ی ذهن} هم
+  به کار می‌برد:} بعضی پژوهشگرها پیشنهاد می‌کنند آدم‌ها استنباط بیزی را با
+  نمونه‌گیری ذهنی چند امکان تقریب می‌زنند، که بعضی سوگیری‌ها را توضیح
+  می‌دهد.
+\item
+  \textbf{هوش مصنوعی:} نمونه‌گیری جواب از یک مدل زبانی همان \lr{Monte
+  Carlo} است (بخش هوش مصنوعی و \lr{LLM}ها را ببینید).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{جزوه‌ی درس}
+
+\paragraph{به زبان ساده}
+
+هر سؤالی که از \lr{posterior} می‌پرسیم («مقدار میانگین چیست؟»، «احتمال
+اینکه \(d' > 1\) باشد چقدر است؟») یک انتگرال است، و \lr{grid} نمی‌تواند
+انتگرال روی پارامترهای زیاد را حساب کند. \textbf{\lr{Monte Carlo}}
+انتگرال را با میانگین جایگزین می‌کند: اگر تعداد زیادی مقدار تصادفی
+\emph{کشیده‌شده از} \lr{posterior} داشتیم، میانگین آن‌ها میانگین
+\lr{posterior} بود، کسری که بالای 1 است \(P(d' > 1)\) بود، و الی آخر.
+مشکل به دست آوردن این نمونه‌هاست. \textbf{الگوریتم \lr{Metropolis}} آن‌ها
+را با یک قدم‌زدن تصادفی هوشمندانه به دست می‌آورد. روی یک مقدار پارامتر
+بایستید، یک قدم تصادفی کوچک پیشنهاد کنید و مقایسه کنید جای جدید چقدر
+معقول است (درست‌نمایی × \lr{prior).} اگر معقول‌تر است، به آنجا بروید. اگر
+کمتر معقول است، فقط \emph{گاهی} بروید، با احتمالی برابر نسبت معقول
+بودن‌ها؛ وگرنه همان‌جا بمانید و مقدار فعلی را دوباره ثبت کنید. اگر این کار
+را به اندازه‌ی کافی ادامه دهید، جاهایی که رفته‌اید نمونه‌ای از
+\lr{posterior} هستند. نکته‌ی جالب این است که هرگز به ثابت نرمال‌سازی سخت
+نیاز ندارید، چون فقط از نسبت‌ها استفاده می‌شود.
+
+\textbf{زمان‌بندی پیشنهادی (60 دقیقه):} انتگرال‌گیری \lr{Monte Carlo} 12 ·
+زنجیره‌های مارکوف 8 · الگوریتم \lr{Metropolis} 18 ·
+\lr{Metropolis\lr{--}Hastings} 5 · تنظیم، \lr{burn-in} و خودهمبستگی 12 ·
+پیش‌نمایش 5.
+
+\subsubsection{\texorpdfstring{1. انتگرال‌گیری \lr{Monte
+Carlo}}{1. انتگرال‌گیری Monte Carlo}}
+
+اگر \(\theta^{(1)}, \dots, \theta^{(S)}\) نمونه‌های مستقلی از
+\(p(\theta\mid\mathbf{y})\) باشند، برای هر تابع \(g\):
+
+\[
+\mathbb{E}[g(\theta)\mid\mathbf{y}] = \int g(\theta)\, p(\theta\mid\mathbf{y})\, d\theta \;\approx\; \frac{1}{S}\sum_{s=1}^{S} g\big(\theta^{(s)}\big).
+\]
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+آنچه می‌خواهیم
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(g(\theta)\) را انتخاب کنید
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+برآورد \lr{Monte Carlo}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+میانگین پسین & \(\theta\) & میانگین نمونه‌ها \\
+\(P(\theta > 1 \mid \mathbf{y})\) & شاخص \(\mathbb{1}[\theta > 1]\) &
+نسبت نمونه‌های بالای 1 \\
+پسین یک کمیت مشتق‌شده، مثلاً نیمه‌عمر \(2^{1/d} - 1\) & \(g(d)\) & \(g\) را
+روی هر نمونه اعمال و بعد خلاصه کنید \\
+\lr{credible interval} & \lr{---} & صدک‌ها (یا \lr{HDI)} نمونه‌ها \\
+پسین حاشیه‌ای \(\theta_1\) & \lr{---} & فقط ستون‌های دیگر را نادیده بگیرید \\
+\end{longtable}
+}
+
+\textbf{خطای استاندارد \lr{Monte Carlo}} میانگین برای نمونه‌های مستقل
+\(\mathrm{SD}(g)/\sqrt{S}\) است، مستقل از تعداد پارامترها. به همین دلیل
+نمونه‌گیری در ابعاد بالا بر شبکه برتری دارد.
+
+\paragraph{خواندن ریاضی}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathbb{E}[g(\theta)\mid\mathbf{y}] = \int g(\theta)\,p(\theta\mid\mathbf{y})\,d\theta\):
+  میانگین \lr{posterior} یک کمیت \(g(\theta)\). انتخاب \(g\) یعنی انتخاب
+  سؤال (جدول را ببینید).
+\item
+  \(\approx \frac{1}{S}\sum_{s} g(\theta^{(s)})\): انتگرال را با میانگین
+  ساده روی \(S\) نمونه‌ی \(\theta^{(1)}, \dots, \theta^{(S)}\) جایگزین
+  کن. بالانویس \((s)\) شماره‌ی نمونه است.
+\item
+  \textbf{خطا:} \(\mathrm{SD}(g)/\sqrt{S}\). برای نصف کردن خطا چهار
+  برابر نمونه لازم است، هر تعداد پارامتری که داشته باشیم.
+\item
+  \textbf{مثال:} 10,000 نمونه از \(\mathrm{Beta}(8,4)\)؛ 9,000 تای آن‌ها
+  بالای 0.5 هستند، پس \(P(\theta > 0.5 \mid \mathbf{y}) \approx 0.90\)
+  با خطای \lr{Monte Carlo} برابر
+  \(\sqrt{0.9 \times 0.1/10000} = 0.003\).
+\end{itemize}
+
+\subsubsection{2. زنجیره‌های مارکوف در یک پاراگراف}
+
+یک \textbf{زنجیره‌ی مارکوف} دنباله‌ای
+\(\theta^{(1)}, \theta^{(2)}, \dots\) است که در آن هر مقدار فقط از مقدار
+قبلی، با یک قاعده‌ی گذار ثابت، تولید می‌شود. تحت شرایط ملایم، زنجیره نقطه‌ی
+شروعش را «فراموش می‌کند» و به یک \textbf{توزیع ایستا} \lr{(stationary)}
+می‌رسد: نسبت بلندمدت زمانی که در هر ناحیه می‌گذراند. \lr{MCMC} قاعده‌ی
+گذاری می‌سازد که توزیع ایستایش همان پسین است. دو پیامد: - بخش اولیه‌ی
+زنجیره هنوز بازتاب نقطه‌ی شروع است. به‌عنوان \textbf{\lr{burn-in}}
+\lr{(warm-up)} دور ریخته می‌شود. - نمونه‌های پشت‌سرهم \textbf{همبسته‌اند}،
+پس \(S\) نمونه‌ی همبسته اطلاعات کمتری از \(S\) نمونه‌ی مستقل دارند
+(اندازه‌ی مؤثر نمونه، هفته‌ی 12).
+
+\subsubsection{\texorpdfstring{3. الگوریتم
+\lr{Metropolis}}{3. الگوریتم Metropolis}}
+
+فرض کنید \(\tilde p(\theta) = p(\mathbf{y}\mid\theta)\,p(\theta)\) پسین
+\textbf{نرمال‌نشده} (درست‌نمایی × پیشین) باشد. یک \textbf{توزیع پیشنهادی}
+متقارن انتخاب کنید، معمولاً یک گام تصادفی نرمال
+\(\theta' \sim \mathcal{N}(\theta, \sigma_{\text{\lr{prop}}})\).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  از یک \(\theta^{(0)}\) شروع کنید.
+\item
+  برای \(s = 1, 2, \dots, S\):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    پیشنهاد دهید
+    \(\theta' \sim \mathcal{N}(\theta^{(s-1)}, \sigma_{\text{\lr{prop}}})\).
+  \item
+    احتمال پذیرش را حساب کنید: \[
+    \alpha_{\text{\lr{acc}}} = \min\left(1,\ \frac{\tilde p(\theta')}{\tilde p(\theta^{(s-1)})}\right).
+    \]
+  \item
+    \(u \sim \mathrm{Uniform}(0, 1)\) بکشید. اگر
+    \(u < \alpha_{\text{\lr{acc}}}\)، \textbf{بپذیرید}:
+    \(\theta^{(s)} = \theta'\). وگرنه \textbf{رد کنید}:
+    \(\theta^{(s)} = \theta^{(s-1)}\) (مقدار فعلی در زنجیره \emph{تکرار}
+    می‌شود).
+  \end{itemize}
+\end{enumerate}
+
+\textbf{چرا به‌طور شهودی کار می‌کند:} حرکت‌های سربالا همیشه پذیرفته می‌شوند؛
+حرکت‌های سرپایینی با احتمالی برابر نسبت چگالی‌ها پذیرفته می‌شوند. پس زنجیره
+در هر ناحیه به نسبت احتمال پسینش وقت می‌گذراند.
+
+\textbf{چرا فقط پسین نرمال‌نشده لازم است:} شواهد \(p(\mathbf{y})\) هم در
+صورت و هم در مخرج نسبت ظاهر می‌شود و ساده می‌شود. این کلید سودمندی
+\lr{MCMC} است.
+
+\textbf{جزئیات عملی:} - با \textbf{لگاریتم} کار کنید: اگر
+\(\ln u < \ln\tilde p(\theta') - \ln\tilde p(\theta)\) بپذیرید. -
+\textbf{پارامترهای کران‌دار:} اگر یک پیشنهاد خارج از تکیه‌گاه بیفتد (مثلاً
+\(A > 1\))، پیشینش 0 است، پس \(\ln\tilde p = -\infty\) و پیشنهاد خودکار
+رد می‌شود. (راه دیگر نمونه‌گیری روی یک مقیاس تبدیل‌شده و بی‌کران است، مثل
+هفته‌ی 3؛ در این صورت باید \lr{Jacobian} را به لگاریتم پسین اضافه کرد.) -
+\textbf{چند پارامتر:} همه‌ی پارامترها را هم‌زمان با برداری از انحراف
+معیارهای پیشنهادی پیشنهاد دهید، یا هر بار یک پارامتر را به‌روز کنید (که
+به نمونه‌گیری \lr{Gibbs} می‌رسد، هفته‌ی 12).
+
+\begin{quote}
+\textbf{پیشرفته: تعادل جزئی \lr{(detailed balance).}} یک قاعده‌ی گذار
+\(T(\theta \to \theta')\) توزیع \(\pi\) را ایستا نگه می‌دارد اگر برای
+همه‌ی جفت‌ها
+\(\pi(\theta)\,T(\theta \to \theta') = \pi(\theta')\,T(\theta' \to \theta)\).
+این را برای \lr{Metropolis} با \(\tilde p(\theta') < \tilde p(\theta)\)
+بررسی کنید: سمت چپ
+\(\pi(\theta)\, q(\theta'\mid\theta)\, \tilde p(\theta')/\tilde p(\theta)\)
+و سمت راست \(\pi(\theta')\, q(\theta\mid\theta') \cdot 1\) است. با \(q\)
+متقارن و \(\pi \propto \tilde p\) این دو برابرند.
+\end{quote}
+
+\paragraph{خواندن ریاضی}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\tilde p(\theta) = p(\mathbf{y}\mid\theta)\,p(\theta)\): درست‌نمایی ×
+  \lr{prior}، \emph{بدون} تقسیم بر \lr{evidence.} علامت تیلدا
+  (\lr{\textasciitilde}) یعنی «نرمال‌نشده».
+\item
+  \(\alpha_{\text{\lr{acc}}} = \min(1, \tilde p(\theta')/\tilde p(\theta))\):
+  اگر پیشنهاد معقول‌تر باشد، نسبت بزرگ‌تر از 1 است و \(\min\) آن را روی 1
+  نگه می‌دارد (همیشه پذیرش). اگر نصف معقول باشد، با احتمال 0.5 پذیرفته
+  می‌شود.
+\item
+  «\(u \sim \mathrm{Uniform}(0,1)\) بکش؛ اگر \(u < \alpha\) بود بپذیر»
+  فقط راهی است برای اینکه یک رویداد با احتمال \(\alpha\) اتفاق بیفتد (یک
+  سکه‌ی نامتعادل).
+\item
+  \textbf{مثال حل‌شده، قدم 3:} پیشنهاد 0.95 فقط 0.052 برابر 0.80 معقول
+  است؛ \(u = 0.30 > 0.052\)، پس رد می‌شود و 0.80 بار دوم در زنجیره نوشته
+  می‌شود.
+\end{itemize}
+
+\subsubsection{\texorpdfstring{4. \lr{Metropolis\lr{--}Hastings:} پیشنهادهای
+نامتقارن}{4. Metropolis\lr{--}Hastings: پیشنهادهای نامتقارن}}
+
+اگر توزیع پیشنهادی متقارن نباشد،
+\(q(\theta'\mid\theta) \ne q(\theta\mid\theta')\) (مثلاً پیشنهاد
+\lr{log-normal} برای یک نرخ مثبت)، احتمال پذیرش به یک تصحیح نیاز دارد:
+
+\[
+\alpha_{\text{\lr{acc}}} = \min\left(1,\ \frac{\tilde p(\theta')\, q(\theta \mid \theta')}{\tilde p(\theta)\, q(\theta' \mid \theta)}\right).
+\]
+
+\lr{Metropolis} حالت خاصی است که جمله‌های \(q\) ساده می‌شوند. نمونه‌گیری
+\lr{Gibbs} (هفته‌ی 12) حالت خاص دیگری است که در آن هر پیشنهادی پذیرفته
+می‌شود.
+
+\subsubsection{5. تنظیم و تشخیص مشکلات یک نمونه‌گیر}
+
+انحراف معیار پیشنهادی \(\sigma_{\text{\lr{prop}}}\) کارایی را کنترل می‌کند:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\sigma_{\text{\lr{prop}}}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نرخ پذیرش
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+رفتار
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\lr{trace plot} چه شکلی است
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+خیلی کوچک & خیلی بالا (\lr{\textgreater} 0.9) & گام‌های ریز؛ کاوش کند؛
+خودهمبستگی قوی & خطی که آرام سرگردان است \\
+خیلی بزرگ & خیلی پایین (\lr{\textless} 0.1) & بیشتر پیشنهادها در نواحی
+کم‌احتمال می‌افتند و رد می‌شوند؛ زنجیره گیر می‌کند & پله‌های صاف با فلات‌های
+طولانی \\
+تقریباً درست & \ensuremath{\approx} 0.2 تا 0.5 & اختلاط \lr{(mixing)} خوب & یک «کرم پشمالو»
+\lr{(fuzzy caterpillar)} \\
+\end{longtable}
+}
+
+نتایج نظری کلاسیک نرخ پذیرش بهینه‌ی حدود 0.44 را برای یک پارامتر پیشنهاد
+می‌کنند که برای پارامترهای زیاد به حدود 0.23 می‌رسد. این‌ها را هدف بدانید،
+نه قانون. \(\sigma_{\text{\lr{prop}}}\) را در یک اجرای مقدماتی تنظیم کنید (نه
+در اجرایی که نگه می‌دارید). انحراف معیارهای پیشنهادی خوب هم‌مرتبه با
+انحراف معیارهای پسین‌اند، و پسین‌های همبسته به پیشنهادهای همبسته (یا
+\lr{reparameterization)} نیاز دارند.
+
+\textbf{\lr{Burn-in.}} بخش اولیه‌ی زنجیره را پیش از رسیدن به ناحیه‌ی
+پراحتمال دور بریزید؛ \lr{trace plot} نشان می‌دهد کجا.
+\textbf{\lr{Thinning}} (نگه داشتن هر \(m\)-امین نمونه) حافظه را کم می‌کند
+ولی اطلاعات را دور می‌ریزد. برای استنباط درست لازم نیست.
+
+\textbf{خودهمبستگی.} خودهمبستگی با تأخیر \(h\) همبستگی بین
+\(\theta^{(s)}\) و \(\theta^{(s+h)}\) است. خودهمبستگی بالا یعنی کاوش کند
+و نمونه‌های مؤثراً مستقل کمتر.
+
+\textbf{همیشه یک نمونه‌گیر جدید را} روی مسئله‌ای با جواب معلوم
+\textbf{اعتبارسنجی کنید} (اینجا، \lr{beta-binomial conjugate} و شبکه‌ی
+هفته‌ی 10).
+
+\paragraph{برای یک مهندس}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{انتگرال‌گیری \lr{Monte Carlo}} همان کاری است که برای تخمین
+  \lr{BER} یا احتمال قطعی \lr{(outage)} با شبیه‌سازی می‌کنید: میانگین یک
+  تابع نشانگر روی تعداد زیادی تحقق تصادفی. قانون خطای \(1/\sqrt{S}\)
+  همان است، و به همین دلیل نرخ‌های خطای پایین شبیه‌سازی‌های خیلی طولانی
+  لازم دارند.
+\item
+  یک زنجیره‌ی \lr{MCMC} یک \textbf{فرایند مارکوف} است که توزیع ایستای آن
+  طوری طراحی شده که \lr{posterior} باشد؛ \lr{burn-in} همان حالت گذرا و
+  بخش ایستا همان حالت ماندگار است.
+\item
+  \textbf{خودهمبستگی} زنجیره دقیقاً همان خودهمبستگی یک فرایند تصادفی است.
+  نمونه‌های همبسته اطلاعات کمتری دارند، همان‌طور که نمونه‌های نویز همبسته
+  کندتر میانگین‌گیری می‌شوند؛ هفته‌ی 12 این را به «اندازه‌ی مؤثر نمونه»
+  تبدیل می‌کند.
+\item
+  \textbf{تنظیم پیشنهاد \lr{(proposal)}} یک مسئله‌ی اندازه‌ی گام است، مثل
+  انتخاب اندازه‌ی گام یک فیلتر تطبیقی: خیلی کوچک کند همگرا می‌شود، خیلی
+  بزرگ ناپایدار می‌شود (اینجا: بیشتر قدم‌ها رد می‌شوند).
+\item
+  تفاوت با شبیه‌سازی معمولی: نمی‌توانیم مستقیم از توزیع هدف نمونه‌ی مستقل
+  تولید کنیم، پس فرایندی می‌سازیم که به آن همگرا شود.
+\end{itemize}
+
+\paragraph{برای مدرس}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{زنجیره را روی تخته اجرا کنید.} منحنی \(\theta^7(1-\theta)^3\)
+  را بکشید و چهار قدم مثال حل‌شده را اجرا کنید، در حالی که یک دانشجو
+  مقدارهای «\(u\)» را تولید می‌کند (یک اپلیکیشن عدد تصادفی کافی است). قدم
+  رد‌شده که 0.80 را \emph{تکرار} می‌کند لحظه‌ی کلیدی است؛ بپرسید چرا باید
+  ثبت شود.
+\item
+  \textbf{تشبیهی که جواب می‌دهد:} گردشگری که شب در یک شهر می‌گردد و
+  خیابان‌های روشن را ترجیح می‌دهد. خیابان روشن‌تر: همیشه برو. خیابان
+  تاریک‌تر: فقط گاهی برو. بعد از یک پیاده‌روی طولانی، زمانی که در هر
+  خیابان گذرانده متناسب با روشنایی آن است.
+\item
+  \textbf{سه \lr{trace plot} را} (خیلی کوچک، خوب، خیلی بزرگ) از بخش
+  \lr{D lab} کنار هم نشان دهید. دانشجوها این‌طوری در پنج دقیقه خواندن
+  \lr{trace plot} را یاد می‌گیرند.
+\item
+  \textbf{سؤال‌های رایج.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{«چرا فقط از یک \lr{grid} ریز استفاده نکنیم؟»} با 40 پارامتر
+    \lr{grid} ناممکن است؛ هزینه‌ی نمونه‌گیری این‌طور رشد نمی‌کند.
+  \item
+    \emph{«از کجا بدانیم زنجیره همگرا شده؟»} این موضوع هفته‌ی 12 است (چند
+    زنجیره، \(\hat R\)).
+  \item
+    \emph{«چرا \lr{burn-in} را دور بریزیم؟»} نمونه‌های اولیه هنوز نقطه‌ی
+    شروع دلبخواه را نشان می‌دهند، نه \lr{posterior} را.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مثال حل‌شده}
+
+\textbf{مدل:} یادآوری \(y = 7\) از \(n = 10\) با پیشین تخت، پس
+\(\tilde p(\theta) = \theta^7(1-\theta)^3\) (بدون ثابت‌ها). پسین دقیق:
+\(\mathrm{Beta}(8, 4)\) با میانگین 0.667. پیشنهاد:
+\(\theta' = \theta + \mathcal{N}(0,\allowbreak 0.1)\).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{landscape}\small
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+گام
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\) فعلی
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+پیشنهاد \(\theta'\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tilde p(\theta)\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tilde p(\theta')\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+نسبت
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(u\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+تصمیم
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\theta\) جدید
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.50 & 0.58 & 0.000977 & 0.001636 & 1.675 & 0.42 & پذیرش (سربالا) &
+0.58 \\
+2 & 0.58 & 0.80 & 0.001636 & 0.001678 & 1.026 & 0.71 & پذیرش (سربالا) &
+0.80 \\
+3 & 0.80 & 0.95 & 0.001678 & 0.000087 & 0.052 & 0.30 & \textbf{رد}:
+\(u > 0.052\) & 0.80 \\
+4 & 0.80 & 0.66 & 0.001678 & 0.002144 & 1.278 & 0.88 & پذیرش (سربالا) &
+0.66 \\
+\end{longtable}
+\end{landscape}
+}
+
+\textbf{زنجیره تا اینجا:} 0.50، 0.58، 0.80، \textbf{0.80}، 0.66. گام
+ردشده مقدار 0.80 را در زنجیره \emph{تکرار} می‌کند. این ضروری است: مقادیر
+تکراری راهی است که زنجیره ثبت می‌کند 0.80 از 0.95 محتمل‌تر است. حذف آن‌ها
+نمونه را سوگیر می‌کند.
+
+\textbf{تفسیر.} در چهار گام، زنجیره از نقطه‌ی شروع به ناحیه‌ی چگالی پسین
+بالا (0.6 تا 0.8) رفت و از پرش به دنباله امتناع کرد. در طول هزاران گام،
+نسبت زمانی که نزدیک هر مقدار گذرانده می‌شود به \(\mathrm{Beta}(8, 4)\)
+همگرا می‌شود.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{\lr{lab} (2 ساعت)}{lab (2 ساعت)}}
+
+\subsubsection{اهداف}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  انتگرال‌گیری \lr{Monte Carlo} با نمونه‌های مستقل: دیدن خطای
+  \(1/\sqrt{S}\).
+\item
+  نوشتن یک نمونه‌گیر \lr{Metropolis} و اعتبارسنجی آن روی مدل
+  \lr{beta-binomial.}
+\item
+  نمونه‌گیری از پسین مدل فراموشی توانی، مقایسه با شبکه‌ی هفته‌ی 10، و
+  محاسبه‌ی یک کمیت مشتق‌شده.
+\item
+  تنظیم پیشنهاد: مقایسه‌ی انحراف معیارهای پیشنهادی خیلی کوچک، خوب و خیلی
+  بزرگ با \lr{trace plot}، نرخ پذیرش و خودهمبستگی.
+\end{enumerate}
+
+\textbf{زمان‌بندی:} بخش \lr{A} 15 دقیقه · بخش \lr{B} 25 دقیقه · بخش
+\lr{C} 35 دقیقه · بخش \lr{D} 30 دقیقه · بخش \lr{E} 15 دقیقه.
+
+\subsubsection{آماده‌سازی}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 1 ·
+سلول 1
+\end{quote}
+
+\subsubsection{\texorpdfstring{بخش \lr{A:} انتگرال‌گیری \lr{Monte Carlo}
+(15 دقیقه)}{بخش A: انتگرال‌گیری Monte Carlo (15 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 2 ·
+سلول 2
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{10\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+Exact: mean = 0.5926, P(theta > 0.65) = 0.1967
+S =    100: mean = 0.5865 (MC s.e. 0.0065), P(theta > 0.65) = 0.1800
+S =   1000: mean = 0.5935 (MC s.e. 0.0021), P(theta > 0.65) = 0.2160
+S =  10000: mean = 0.5937 (MC s.e. 0.0007), P(theta > 0.65) = 0.2022
+S = 100000: mean = 0.5927 (MC s.e. 0.0002), P(theta > 0.65) = 0.1971
+\end{Verbatim}
+\end{latin}
+
+ده برابر نمونه‌ی بیشتر حدود \(\sqrt{10} \approx 3.2\) برابر خطای
+\lr{Monte Carlo} کمتر می‌دهد.
+
+\subsubsection{\texorpdfstring{بخش \lr{B:} یک نمونه‌گیر \lr{Metropolis}،
+اعتبارسنجی‌شده (25
+دقیقه)}{بخش B: یک نمونه‌گیر Metropolis، اعتبارسنجی‌شده (25 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 3 ·
+سلول 3
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{8\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+Acceptance rate: 0.59
+Metropolis: mean = 0.5930, SD = 0.0660, 95% interval = [0.458 0.718]
+Exact:      mean = 0.5926, SD = 0.0663, 95% interval = [0.46  0.719]
+\end{Verbatim}
+\end{latin}
+
+\subsubsection{\texorpdfstring{بخش \lr{C: Metropolis} برای مدل فراموشی
+توانی (35 دقیقه)}{بخش C: Metropolis برای مدل فراموشی توانی (35 دقیقه)}}
+
+همان پیشین‌های هفته‌ی 10: \(A \sim \mathrm{Beta}(8, 2)\)،
+\(d \sim \mathrm{Gamma}(2, \text{\lr{scale }} 0.3)\).
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 4 ·
+سلول 4
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{10\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+Acceptance rate: 0.49
+    mean     SD   2.5%  97.5%
+A  0.868  0.052  0.762   0.96
+d  0.418  0.048  0.325   0.51
+Week 10 grid posterior means for comparison: A = 0.867, d = 0.417
+\end{Verbatim}
+\end{latin}
+
+\textbf{کمیت‌های مشتق‌شده} مجانی به دست می‌آیند. پسین نیمه‌عمر
+\(t_{1/2} = 2^{1/d} - 1\) (هفته‌ی 2) و یادآوری پیش‌بینی‌شده بعد از 60 روز
+را حساب کنید:
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 5 ·
+سلول 5
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{8\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+half-life (days)       mean = 4.493, 95% interval = [2.889 7.443]
+P(recall) at 60 days   mean = 0.158, 95% interval = [0.113 0.211]
+P(half-life < 3 days | data) = 0.039
+\end{Verbatim}
+\end{latin}
+
+\subsubsection{\texorpdfstring{بخش \lr{D:} تنظیم توزیع پیشنهادی (30
+دقیقه)}{بخش D: تنظیم توزیع پیشنهادی (30 دقیقه)}}
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 6 ·
+سلول 6
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{8\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+too small    proposal SD = [0.002, 0.002]: acceptance = 0.97, lag-10 autocorrelation of d = 0.98, mean of d = 0.473
+about right  proposal SD = [0.04, 0.05]: acceptance = 0.50, lag-10 autocorrelation of d = 0.26, mean of d = 0.416
+too large    proposal SD = [0.5, 1.5]: acceptance = 0.00, lag-10 autocorrelation of d = 0.94, mean of d = 0.420
+\end{Verbatim}
+\end{latin}
+
+\textbf{به این دقت کنید:} زنجیره‌ی «خیلی کوچک» تقریباً همه‌چیز را می‌پذیرد
+ولی می‌خزد \lr{(trace} که آرام سرگردان است و خودهمبستگی‌اش حتی با تأخیر 60
+نزدیک 1 است)؛ زنجیره‌ی «خیلی بزرگ» تقریباً همه‌چیز را رد می‌کند و مدت‌های
+طولانی ساکن می‌ماند (پله‌های صاف). هر دو با 10 000 تکرار برآوردهای غیرقابل
+اعتماد می‌دهند: میانگین \(d\) زنجیره‌ی «خیلی کوچک» (0.473) از میانگین پسین
+واقعی (0.417) دور است، و میانگین زنجیره‌ی «خیلی بزرگ» فقط به این دلیل
+نزدیک است که تقریباً از مقدار شروعش (0.42) تکان نخورده است. زنجیره‌ی خوب
+تنظیم‌شده شبیه یک کرم پشمالوست و خودهمبستگی‌اش سریع کم می‌شود.
+
+\subsubsection{\texorpdfstring{بخش \lr{E:} تفسیر (15
+دقیقه)}{بخش E: تفسیر (15 دقیقه)}}
+
+در \lr{notebook} جواب دهید: 1. آیا خلاصه‌های پسین \lr{Metropolis} برای
+\((A, d)\) با شبکه‌ی هفته‌ی 10 توافق دارند؟ این توافق چه چیزی را ثابت
+می‌کند؟ 2. نیمه‌عمر حافظه‌ی این شرکت‌کننده را، همراه با عدم قطعیت، در یک
+جمله چطور گزارش می‌کنید؟ 3. چرا پیشنهادهای ردشده باید به‌صورت مقادیر
+تکراری در زنجیره ثبت شوند؟
+
+\subsubsection{تمرین‌ها (به ترتیب سختی)}
+
+\textbf{تمرین 1 \ensuremath{\star}.} با نمونه‌گیر بخش \lr{B}،
+\(P(\theta > 0.65\mid\mathbf{y})\) را برای 30/50 برآورد کنید و با مقدار
+دقیق بخش \lr{A} مقایسه کنید. برای رسیدن به دقت \ensuremath{\pm}0.01 چند تکرار لازم است؟
+
+\textbf{تمرین 2 \ensuremath{\star}.} نمونه‌گیر بخش \lr{C} را از چهار نقطه‌ی شروع خیلی
+متفاوت اجرا کنید، مثلاً \((0.3, 0.05)\)، \((0.99, 2.5)\)، \((0.5, 1.0)\)
+و \((0.9, 0.1)\). همه‌ی \lr{trace}ها را با هم رسم کنید. بعد از چند تکرار
+از هم قابل تشخیص نیستند؟ (این ایده‌ی پشت \lr{R-hat} است، هفته‌ی 12.)
+
+\textbf{تمرین 3 \ensuremath{\star}\ensuremath{\star} (مدل نمایی).} \lr{\nolinkurl{log_post_exp}} را با
+پیشین‌های هفته‌ی 10 بنویسید، از آن نمونه بگیرید و پسین را با شبکه مقایسه
+کنید. بعد توزیع پیش‌بینی پسین را از نمونه‌هایتان حساب کنید و نمودار
+\lr{PPC} هفته‌ی 10 را بازتولید کنید.
+
+\textbf{تمرین 4 \ensuremath{\star}\ensuremath{\star} \lr{(Metropolis\lr{--}Hastings} با پیشنهاد نامتقارن).} از
+\(d\) با یک پیشنهاد گام تصادفی \textbf{\lr{log-normal}}،
+\(\ln d' \sim \mathcal{N}(\ln d,\allowbreak 0.1)\)، که هرگز مقادیر منفی پیشنهاد
+نمی‌دهد، نمونه بگیرید. تصحیح \lr{Hastings} یعنی
+\(q(d\mid d')/q(d'\mid d) = d'/d\) را استخراج و اعمال کنید. نشان دهید
+حذف این تصحیح پسین را سوگیر می‌کند.
+
+\textbf{تمرین 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (پیشرفته: تنظیم تطبیقی).} یک مرحله‌ی \lr{warm-up}
+بنویسید که هر 500 تکرار انحراف معیارهای پیشنهادی را تنظیم کند تا نرخ
+پذیرش به سمت 0.3 برود (مثلاً اگر نرخ خیلی بالاست \lr{SD} را در 1.2 و اگر
+خیلی پایین است در 0.8 ضرب کنید)، و بعد آن‌ها را برای اجرای اصلی ثابت کند.
+چرا تطبیق باید پیش از نمونه‌هایی که نگه می‌دارید متوقف شود؟
+
+\subsubsection{\texorpdfstring{\lr{lab check-off}}{lab check-off}}
+
+نشان دهید: (1) اعتبارسنجی نمونه‌گیرتان در برابر پسین دقیق \lr{Beta} (بخش
+\lr{B)}، (2) \lr{trace plot}ها و خلاصه برای مدل توانی همراه با مقایسه با
+شبکه (بخش \lr{C)}، و (3) نمودار تنظیم با نرخ‌های پذیرش (بخش \lr{D).}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{ارتباط با هوش مصنوعی و
+\lr{LLM}ها}{ارتباط با هوش مصنوعی و LLMها}}
+
+\textbf{نمونه‌گیری جواب از یک \lr{LLM} همان \lr{Monte Carlo} است.} چون یک
+\lr{LLM} خروجی‌اش را نمونه‌گیری می‌کند (کادر هفته‌ی 1)، پرسیدن چندباره‌ی یک
+سؤال جواب‌های مختلفی می‌دهد. ترفند رایجی به نام
+\textbf{\lr{self-consistency}} تعداد \(k\) جواب نمونه‌گیری می‌کند و رأی
+اکثریت را می‌گیرد \lr{{[}Wang et al.,} 2023, \lr{ICLR{]}.} آیا کمک می‌کند،
+و چقدر؟ این یک سؤال \lr{Monte Carlo} است: دقت رأی اکثریت را به‌راحتی
+نمی‌توانیم به‌صورت بسته حساب کنیم، ولی می‌توانیم شبیه‌سازی‌اش کنیم و خطای
+استاندارد \lr{Monte Carlo} را گزارش کنیم، مثل \lr{lab} این هفته.
+
+\begin{quote}
+\textbf{\lr{Code} · کد:} \lr{\nolinkurl{code/week11.py}}, \lr{cell} 7 ·
+سلول 7
+\end{quote}
+
+\textbf{خروجی مورد انتظار:}
+
+\Needspace{9\baselineskip}
+\begin{latin}
+\begin{Verbatim}
+k =  1 samples: majority-vote accuracy = 0.406 (MCSE 0.003)
+k =  5 samples: majority-vote accuracy = 0.506 (MCSE 0.004)
+k = 15 samples: majority-vote accuracy = 0.671 (MCSE 0.003)
+k = 45 samples: majority-vote accuracy = 0.873 (MCSE 0.002)
+\end{Verbatim}
+\end{latin}
+
+\textbf{امتحانش کنید (بدون نیاز به \lr{API).}} - \ensuremath{\star}
+\lr{\nolinkurl{p_answer}} را طوری عوض کنید که یک جواب \emph{غلط}
+محتمل‌ترین باشد (مثلاً \lr{\nolinkurl{[0.30, 0.35, 0.20, 0.15]}}). حالا
+رأی اکثریت چه می‌کند؟ چرا؟ - \ensuremath{\star}\ensuremath{\star} برای \lr{MCSE} برابر 0.001 به چند سؤال
+شبیه‌سازی‌شده (\lr{\nolinkurl{n_sim}}) نیاز دارید؟ جوابتان را با فرمول
+\(\sqrt{p(1-p)/n}\) بررسی کنید. - \ensuremath{\star}\ensuremath{\star} ارتباط با شناخت: ایده‌ی «خرد جمعی
+درون فرد» \lr{(wisdom of the crowd within)} می‌گوید میانگین گرفتن از
+حدس‌های تکراری یک نفر دقت را بالا می‌برد. کدام فرض این شبیه‌سازی (نمونه‌های
+مستقل) احتمالاً برای حدس‌های تکراری انسان، یا برای یک \lr{LLM} با دمای
+پایین، برقرار نیست؟
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{اشتباهات رایج و برداشت‌های نادرست}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{حذف گام‌های ردشده} به‌جای تکرار مقدار فعلی. این کار نمونه را به
+  سمت دنباله‌ها سوگیر می‌کند.
+\item
+  \textbf{استفاده از پسین نرمال‌شده.} لازم نیست و معمولاً ممکن هم نیست؛
+  شواهد در نسبت ساده می‌شود.
+\item
+  \textbf{محاسبه‌ی نسبت بدون لگاریتم.} درست‌نمایی‌ها سرریز می‌کنند. لگاریتم
+  چگالی‌ها را مقایسه کنید.
+\item
+  \textbf{فراموش کردن تکیه‌گاه پیشین.} پیشنهادهای خارج از تکیه‌گاه باید
+  \(\ln\tilde p = -\infty\) بگیرند، وگرنه ممکن است درست‌نمایی در مقادیر
+  ناممکن ارزیابی شود (مثلاً احتمال‌های منفی \lr{\nolinkurl{nan}} تولید
+  می‌کنند).
+\item
+  \textbf{قضاوت درباره‌ی نمونه‌گیر فقط با نرخ پذیرش.} نرخ 30\% همگرایی را
+  تضمین نمی‌کند. به \lr{trace}ها و خودهمبستگی نگاه کنید و چند زنجیره اجرا
+  کنید (هفته‌ی 12).
+\item
+  \textbf{نگه داشتن \lr{burn-in}} یا تنظیم پیشنهاد در طول نمونه‌هایی که
+  نگه می‌دارید. هر دو نتایج را سوگیر می‌کنند.
+\item
+  \textbf{«تکرار بیشتر همیشه درستش می‌کند.»} اگر زنجیره در یک مُد گیر کرده
+  یا مقیاس پیشنهاد بد است، تکرار بیشتر همان زنجیره ممکن است در زمان
+  معقول کمکی نکند. اول تشخیص دهید.
+\item
+  \textbf{فراموش کردن تصحیح \lr{Hastings}} با پیشنهادهای نامتقارن.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{خودآزمایی}
+
+\textbf{1.} چرا خطای \lr{Monte Carlo} مستقل از تعداد پارامترهاست، ولی
+تقریب شبکه‌ای نه؟ \textbf{پاسخ} برآورد \lr{MC} میانگین \(S\) نمونه است و
+خطای استانداردش \(\mathrm{SD}/\sqrt{S}\) است، بدون توجه به بُعد
+\(\theta\). یک شبکه باید کل فضای پارامتر را بپوشاند، پس اندازه‌اش با
+تعداد پارامترها به‌طور نمایی رشد می‌کند.
+
+\textbf{2.} در الگوریتم \lr{Metropolis} چرا به شواهد \(p(\mathbf{y})\)
+نیاز نداریم؟ \textbf{پاسخ} پذیرش فقط به \emph{نسبت} چگالی‌های پسین در
+مقدار پیشنهادی و فعلی بستگی دارد؛ \(p(\mathbf{y})\) در هر دو ظاهر می‌شود
+و ساده می‌شود.
+
+\textbf{3.} \(\tilde p(\theta) = 0.004\) فعلی،
+\(\tilde p(\theta') = 0.001\) پیشنهادی و \(u = 0.18\). پذیرش یا رد؟ اگر
+\(u = 0.31\) باشد چه؟ \textbf{پاسخ} نسبت 0.25 است. با
+\(u = 0.18 < 0.25\) بپذیرید؛ با \(u = 0.31 > 0.25\) رد کنید و مقدار فعلی
+را تکرار کنید.
+
+\textbf{4.} نرخ پذیرش یک زنجیره 0.97 است. احتمالاً چه مشکلی هست و
+\lr{trace} آن چه شکلی دارد؟ \textbf{پاسخ} انحراف معیار پیشنهادی خیلی
+کوچک است: تقریباً هر گام ریزی پذیرفته می‌شود، زنجیره خیلی آرام کاوش می‌کند
+و \lr{trace} مثل خطی است که آرام سرگردان است و خودهمبستگی بالایی دارد.
+انحراف معیار پیشنهادی را بزرگ کنید.
+
+\textbf{5.} \lr{burn-in} چیست و طولش را چطور تعیین می‌کنید؟ \textbf{پاسخ}
+تکرارهای اولیه، پیش از رسیدن زنجیره به ناحیه‌ی پراحتمال، که هنوز بازتاب
+مقدار شروع دلخواه‌اند. طولش را از روی \lr{trace plot}ها (و از چند زنجیره
+که از نقاط مختلف شروع شده‌اند) انتخاب کنید و آن تکرارها را دور بریزید.
+
+\textbf{6.} تصحیح \lr{Hastings} کی لازم است؟ یک مثال بزنید.
+\textbf{پاسخ} وقتی پیشنهاد نامتقارن است،
+\(q(\theta'\mid\theta) \ne q(\theta\mid\theta')\)؛ مثلاً پیشنهاد
+\lr{log-normal} برای یک نرخ مثبت، یا پیشنهادی که به موقعیت مقدار فعلی در
+یک بازه‌ی کران‌دار بستگی دارد.
+
+\textbf{7.} پسین نیمه‌عمر \(t_{1/2} = 2^{1/d} - 1\) را از نمونه‌های
+\lr{MCMC} \(d\) چطور به دست می‌آورید؟ \textbf{پاسخ} هر نمونه‌ی \(d\) را به
+یک نیمه‌عمر تبدیل کنید و نمونه‌های تبدیل‌شده را خلاصه کنید (میانگین، صدک‌ها،
+\lr{HDI).} هیچ استخراج اضافه‌ای لازم نیست؛ این یکی از مزیت‌های عملی بزرگ
+نمونه‌گیری است.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{تکلیف}
+
+این هفته تکلیف نمره‌دار جدیدی نداریم. \textbf{\lr{A4} (تحلیل بیزی با
+شبکه)} در ابتدای درس هفته‌ی 12 تحویل داده می‌شود. \textbf{\lr{A5 (MCMC} از
+صفر)} در هفته‌ی 12 منتشر می‌شود و مستقیماً روی تابع
+\lr{\nolinkurl{metropolis}} امروز ساخته می‌شود، پس \lr{notebook lab} را
+مرتب نگه دارید.
+
+\textbf{تمرین اختیاری (بدون نمره):} تمرین 2 (چند نقطه‌ی شروع) بهترین
+آمادگی برای هفته‌ی 12 است.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{مطالعه‌ی بیشتر}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\lr{Kruschke} (2014)، فصل 7.} \lr{Markov chain Monte Carlo:}
+  مقدمه‌ای شهودی بر الگوریتم \lr{Metropolis} (مثال «سیاستمدار»)، منطق آن
+  و نماینده بودن نمونه‌ها. \emph{(منبع اصلی.)}
+\item
+  \textbf{\lr{Farrell} \lr{\&} \lr{Lewandowsky} (2018)، فصل 7.} برآورد بیزی
+  پارامتر با \lr{MCMC}، به‌کاررفته روی مدل‌های شناختی.
+\item
+  \textbf{\lr{Martin, Kumar} \lr{\&} \lr{Lao} (2021)}: بخش‌های موتورهای
+  استنباط و \lr{MCMC} {[}شماره‌ی فصل بررسی شود{]}.
+\end{itemize}
+
+\emph{پیش‌نمایش هفته‌ی 12:} نمونه‌گیری \lr{Gibbs} (بدون هیچ ردی)، و سؤالی
+که هر کاربر \lr{MCMC} باید جواب دهد: آیا زنجیره‌ام همگرا شده است؟
+\lr{R-hat} و اندازه‌ی مؤثر نمونه را خودمان حساب می‌کنیم و بعد با
+\lr{ArviZ} بررسی می‌کنیم.

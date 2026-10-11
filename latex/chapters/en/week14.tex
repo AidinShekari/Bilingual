@@ -1,0 +1,916 @@
+\section{Week 14: Modeling in Cognitive Science I: Categorization (GCM)
+and Decision Making (Drift-Diffusion)}
+
+\begin{quote}
+\textbf{Chapter 6: Examples of modeling in different areas of cognitive
+science} · Lecture 1 h · Lab 2 h \textbf{Running data:} simulated
+classification data for the classic 5-4 category structure, and
+simulated choice-RT data from a drift-diffusion process in a
+speed/accuracy × easy/hard design.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+categorization & \RL{\CMfa دسته‌بندی} & \RL{\CMfa قرار دادن محرک در یک دسته} \\
+Generalized Context Model (GCM) & \RL{\CMfa مدل بافت تعمیم‌یافته} & \RL{\CMfa مدل}
+exemplar \RL{\CMfa دسته‌بندی بر پایه‌ی شباهت} \\
+drift rate & \RL{\CMfa نرخ رانش} & \RL{\CMfa سرعت میانگین جمع شدن شواهد؛ نشانه‌ی
+کیفیت شواهد} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+response time (RT) & \RL{\CMfa زمان واکنش} & \RL{\CMfa فاصله‌ی ارائه‌ی محرک تا
+پاسخ} \\
+drift-diffusion model (DDM) & \RL{\CMfa مدل} drift-diffusion
+\RL{\CMfa (رانش--انتشار)} & \RL{\CMfa انباشت پیوسته‌ی شواهد بین دو مرز} \\
+speed--accuracy trade-off & \RL{\CMfa بده‌بستان سرعت و دقت} & \RL{\CMfa سریع‌تر پاسخ
+دادن به قیمت خطای بیشتر} \\
+accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
+exemplar & \RL{\CMfa نمونه} (exemplar) & \RL{\CMfa یک مورد ذخیره‌شده در حافظه از یک
+دسته} \\
+prototype & \RL{\CMfa پیش‌نمونه} (prototype) & \RL{\CMfa خلاصه یا میانگین یک دسته} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+attention weight & \RL{\CMfa وزن توجه} & \RL{\CMfa سهم توجه به هر بُعد محرک} \\
+sensitivity (d′) & \RL{\CMfa حساسیت} & \RL{\CMfa فاصله‌ی توزیع علامت و نویز} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+estimate / estimator & \RL{\CMfa برآورد} / \RL{\CMfa برآوردگر} & \RL{\CMfa مقدار به‌دست‌آمده
+برای پارامتر} / \RL{\CMfa روش به دست آوردن آن} \\
+EZ-diffusion & EZ-diffusion & \RL{\CMfa برآورد ساده‌ی پارامترهای} DDM \RL{\CMfa از سه
+آماره} \\
+parameter recovery & \RL{\CMfa بازیابی پارامتر} & \RL{\CMfa آیا برازش، پارامترهای
+معلوم شبیه‌سازی را برمی‌گرداند} \\
+evidence & \RL{\CMfa شواهد} & \RL{\CMfa اطلاعاتی که برای تصمیم جمع می‌شود} \\
+stimulus & \RL{\CMfa محرک} & \RL{\CMfa چیزی که به شرکت‌کننده نشان داده می‌شود} \\
+boundary separation & \RL{\CMfa فاصله‌ی مرزها} & \RL{\CMfa مقدار شواهد لازم برای
+پاسخ؛ نشانه‌ی احتیاط} \\
+non-decision time & \RL{\CMfa زمان غیرتصمیمی} & \RL{\CMfa زمان دیدن محرک و اجرای
+حرکت پاسخ} \\
+similarity & \RL{\CMfa شباهت} & \RL{\CMfa نزدیکی دو محرک در فضای روان‌شناختی} \\
+trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
+embedding & embedding \RL{\CMfa (بردار معنایی)} & \RL{\CMfa برداری که مدل برای یک
+کلمه یا متن می‌سازد} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Describe} exemplar and prototype theories of categorization
+  and \textbf{formalize} them as the GCM and a prototype model.
+\item
+  \textbf{Fit} the GCM and the prototype model to classification data by
+  MLE, \textbf{compare} them, and \textbf{interpret} attention weights
+  and sensitivity.
+\item
+  \textbf{Describe} the drift-diffusion model (DDM) as the continuous
+  limit of the Week 1 random walk, and \textbf{map} its parameters onto
+  cognitive constructs.
+\item
+  \textbf{Estimate} DDM parameters with the closed-form EZ-diffusion
+  method and \textbf{validate} it by parameter recovery.
+\item
+  \textbf{Interpret} experimental effects in terms of model parameters
+  (``this manipulation changed caution, not evidence quality'').
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+The first 13 weeks built a toolkit, mostly on two small running examples
+(forgetting and SDT). Chapter 6 shows the toolkit at work on models that
+have shaped whole research areas. This week covers two of the most
+influential.
+
+\textbf{Categorization.} How do we decide that a new animal is a dog?
+\emph{Prototype theory} says that we compare it with a summary of the
+category, the average dog. \emph{Exemplar theory} says that we compare
+it with stored memories of every dog (and every cat) we have seen. Both
+sound plausible, and verbal arguments went back and forth for years.
+Formal models made the difference: Medin and Schaffer's 5-4 category
+structure was designed so that the two theories make \textbf{opposite
+predictions} for specific stimuli. Nosofsky's \textbf{Generalized
+Context Model (GCM)} turned exemplar theory into a precise, fit-able
+model with interpretable attention weights.
+
+\textbf{Decision making.} In Week 1 we built a random walk that
+accumulates evidence to a boundary. Its continuous version, the
+\textbf{drift-diffusion model}, is arguably the most successful model in
+cognitive psychology: it explains accuracy \emph{and} the full RT
+distributions of correct and error responses, with parameters for
+evidence quality, caution and non-decision time. It is used to study
+ageing, ADHD, depression, learning and the effect of drugs. Fitting the
+full DDM is computationally heavy, but the \textbf{EZ-diffusion} method
+gives good estimates from three summary statistics with closed-form
+equations.
+
+\paragraph{Where is this used?}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Categorization models} explain how people learn concepts
+  (medical students learning to recognize skin lesions, children
+  learning words), and they are used to design better training: which
+  examples to show, and in what order.
+\item
+  \textbf{Exemplar ideas in machine learning}: nearest-neighbor
+  classifiers and kernel methods classify a new case by its similarity
+  to stored examples, the same principle as the GCM.
+\item
+  \textbf{The drift-diffusion model} is one of the most used models in
+  cognitive neuroscience and clinical research: ageing, ADHD,
+  depression, anxiety, effects of drugs and sleep deprivation. It is
+  also used in consumer research (how fast people choose between
+  products) and in neuroeconomics.
+\item
+  \textbf{EZ-diffusion} is popular because it needs only three summary
+  statistics per person and no optimization, so it can be applied to
+  existing datasets quickly.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+Two famous models this week. \textbf{Categorization:} how do we decide
+that a new animal is a dog? One theory says we compare it with an
+average ``ideal dog'' (\textbf{prototype}). Another says we compare it
+with all the dogs and cats we remember and see which group it resembles
+more overall (\textbf{exemplars}). The \textbf{GCM} turns the exemplar
+idea into math: measure the distance between the new item and each
+stored example (paying more \textbf{attention} to some features than
+others), turn distance into similarity (closer = much more similar), and
+choose category A with probability ``total similarity to A / total
+similarity to all''. A clever set of stimuli (the 5-4 structure) makes
+the two theories predict \emph{opposite} things for some items.
+\textbf{Decisions:} the \textbf{drift-diffusion model} is the continuous
+version of Week 1's random walk. Evidence drifts toward the correct
+boundary at an average speed \(v\) (quality of evidence) while being
+jiggled by noise; a response is made when a boundary \(a\) (caution) is
+reached; a fixed time \(T_{er}\) is added for seeing and pressing.
+\textbf{EZ-diffusion} is a shortcut that computes \(v\), \(a\) and
+\(T_{er}\) from just three numbers: accuracy, and the mean and variance
+of correct RTs.
+
+\textbf{Suggested timing (60 min):} categorization theories and the 5-4
+structure 10 · GCM 15 · prototype model and the critical predictions 5 ·
+the drift-diffusion model 15 · EZ-diffusion 10 · interpretation 5.
+
+\subsubsection{1. The 5-4 category structure}
+
+Stimuli vary on four binary dimensions (e.g., the shape, color, size and
+position of a geometric figure in Medin \& Schaffer's design; facial
+features in later versions). Participants learn to classify 9 training
+stimuli into categories A and B, then classify 7 new \textbf{transfer}
+stimuli without feedback. The commonly used stimulus set is {[}verify
+against Medin \& Schaffer, 1978, or Smith \& Minda, 2000{]}:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Category A & Category B & Transfer \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+A1 1110 & B1 1100 & T1 1001 \\
+A2 1010 & B2 0110 & T2 1000 \\
+A3 1011 & B3 0001 & T3 1111 \\
+A4 1101 & B4 0000 & T4 0010 \\
+A5 0111 & & T5 0101 \\
+& & T6 0011 \\
+& & T7 0100 \\
+\end{longtable}
+}
+
+The category A prototype is 1111 and the B prototype is 0000. The
+critical comparison: \textbf{A1 (1110)} shares three features with the A
+prototype, while \textbf{A2 (1010)} shares only two. A prototype model
+therefore predicts that A1 is classified \emph{better} than A2. But A2
+is highly similar to two other A exemplars (A1 and A3) and to no B
+exemplar, whereas A1 is highly similar to two \textbf{B} exemplars (B1
+and B2). An exemplar model can therefore predict that A2 is classified
+\emph{at least as well} as A1, and in the empirical data A2 is typically
+classified better.
+
+\subsubsection{2. The Generalized Context Model (GCM)}
+
+\textbf{Distance} between stimulus \(i\) and stored exemplar \(e\), with
+attention weights \(w_m \ge 0\), \(\sum_m w_m = 1\) (city-block metric
+for separable dimensions):
+
+\[
+\mathrm{dist}_{ie} = \sum_{m=1}^{4} w_m\, |x_{im} - x_{em}|.
+\]
+
+\textbf{Similarity} decays exponentially with distance, with
+\textbf{sensitivity} \(c\):
+
+\[
+s_{ie} = \exp(-c \cdot \mathrm{dist}_{ie}).
+\]
+
+\textbf{Choice rule} (summed similarity, Luce ratio):
+
+\[
+P(A \mid i) = \frac{\sum_{e \in A} s_{ie}}{\sum_{e \in A} s_{ie} + \sum_{e \in B} s_{ie}}.
+\]
+
+\textbf{Parameters:} \(c\) (how steeply similarity falls with distance;
+large \(c\) means only very close exemplars matter) and three free
+attention weights (the fourth is \$1 - \$ the others), so \(k = 4\).
+(This is the overloaded \(c\) from the Week 1 notation table; this week
+it means sensitivity, not an SDT criterion.)
+
+\textbf{Interpretation of attention weights:} \(w_m\) is the share of
+attention given to dimension \(m\). Optimal attention emphasizes
+dimensions that are diagnostic of the category. In the 5-4 structure,
+dimensions 1 and 3 are the most diagnostic.
+
+\textbf{Prototype model:} the same distance, similarity and choice rule,
+but each category is represented by its prototype only:
+\(P(A\mid i) = s_{i,P_A}/(s_{i,P_A} + s_{i,P_B})\). Also \(k = 4\), so
+the comparison is not affected by parameter counting.
+
+\textbf{Likelihood:} if stimulus \(i\) is classified \(n_i\) times and
+called ``A'' \(y_i\) times, then
+\(y_i \sim \mathrm{Binomial}(n_i, P(A\mid i))\), fitted by MLE with
+multi-start (Weeks 3--4). Weights are best estimated through a
+\textbf{softmax reparameterization} (Week 3),
+\(w = \mathrm{softmax}(\eta_1, \eta_2, \eta_3, 0)\), and
+\(c = e^{\gamma}\).
+
+\begin{quote}
+\textbf{Advanced:} the full GCM adds a response-bias parameter \(b_A\),
+a similarity exponent (Gaussian vs.~exponential similarity), a metric
+parameter \(r\) (city-block \(r = 1\) vs.~Euclidean \(r = 2\)) and
+sometimes a response-determinism parameter \(\gamma\) (raising summed
+similarities to a power). Lee \& Wagenmakers (chapter 17) develop a
+Bayesian, hierarchical GCM.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Distance} \(\sum_m w_m|x_{im} - x_{em}|\): count the features
+  on which the new item \(i\) and the stored example \(e\) differ, but
+  weight each feature by its attention \(w_m\). With 4 binary features
+  and equal weights 0.25, one mismatching feature gives distance 0.25.
+\item
+  \textbf{Similarity} \(e^{-c \cdot \mathrm{dist}}\): distance 0 gives
+  similarity 1; with \(c = 2\), distance 0.25 gives \(e^{-0.5} = 0.61\),
+  distance 1 gives \(e^{-2} = 0.14\). A larger \(c\) makes similarity
+  drop faster, so only very close examples matter.
+\item
+  \textbf{Choice rule:} add the similarities to all A examples and to
+  all B examples, and divide. In the worked example, T3 has total
+  similarity 2.79 to A and 1.09 to B, so \(P(A) = 2.79/3.89 = 0.72\).
+\end{itemize}
+
+\subsubsection{3. The drift-diffusion model (DDM)}
+
+Take the Week 1 random walk and let the step size and step duration
+shrink together. Evidence \(X(t)\) then evolves continuously:
+
+\[
+dX = v\,dt + s\,dW(t), \qquad X(0) = z,
+\]
+
+where \(dW\) is Gaussian white noise (a Wiener process). A response is
+made when \(X\) reaches \(a\) (correct) or \(0\) (error);
+\(\mathrm{RT} = T_{\text{decision}} + T_{er}\).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Typical manipulation that changes it
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(v\) (drift rate) & Quality / rate of evidence accumulation & Stimulus
+difficulty; perceptual sensitivity; attention \\
+\(a\) (boundary separation) & Response caution (speed--accuracy setting)
+& Speed vs.~accuracy instructions \\
+\(z\) (starting point) & A priori bias toward one response & Base rates,
+payoffs \\
+\(T_{er}\) (non-decision time; also written \(t_0\)) & Encoding + motor
+time & Response modality, stimulus degradation \\
+\(s\) (within-trial noise) & Scaling constant & Fixed (by convention
+\(s = 0.1\) in EZ, \(s = 1\) elsewhere) \\
+\end{longtable}
+}
+
+The full DDM also includes across-trial variability in drift, starting
+point and non-decision time. Week 1, Exercise 5 showed that drift
+variability produces slow errors.
+
+\textbf{Signature predictions:} right-skewed RT distributions; a
+speed--accuracy trade-off when \(a\) changes; easier stimuli giving
+responses that are faster \emph{and} more accurate (higher \(v\)); a
+change in \(T_{er}\) shifting the whole RT distribution without changing
+its shape.
+
+\paragraph{Reading the math}
+
+\(dX = v\,dt + s\,dW(t)\) reads: ``in a tiny time step \(dt\), the
+evidence changes by a deterministic push \(v\,dt\) plus a random kick
+\(s\,dW\)''. \(dW\) is Gaussian noise whose variance is proportional to
+\(dt\) (so over a step of length \(dt\) the kick has SD \(s\sqrt{dt}\)).
+In the lab simulation this becomes exactly Week 1's random walk with
+small steps: \nolinkurl{x += v*dt + s*sqrt(dt)*randn()}. The table of
+parameters is the important part to memorize: \(v\) = evidence quality,
+\(a\) = caution, \(z\) = bias, \(T_{er}\) = non-decision time.
+
+\subsubsection{4. EZ-diffusion}
+
+Wagenmakers, van der Maas and Grasman (2007) derived closed-form
+estimates of \(v\), \(a\) and \(T_{er}\) (assuming \(z = a/2\), no
+across-trial variability, \(s = 0.1\)) from three statistics: the
+proportion correct \(P_c\), the \textbf{variance} of correct RTs
+\(V_{RT}\) (in s²) and the \textbf{mean} of correct RTs \(M_{RT}\) (in
+s):
+
+\[
+L = \operatorname{logit}(P_c) = \ln\frac{P_c}{1 - P_c}, \qquad
+x = \frac{L\,(L P_c^2 - L P_c + P_c - 0.5)}{V_{RT}},
+\]
+
+\[
+v = \operatorname{sign}(P_c - 0.5)\; s\; x^{1/4}, \qquad
+a = \frac{s^2 L}{v},
+\]
+
+\[
+y = -\frac{v a}{s^2}, \qquad
+\mathrm{MDT} = \frac{a}{2v}\cdot\frac{1 - e^{y}}{1 + e^{y}}, \qquad
+T_{er} = M_{RT} - \mathrm{MDT}.
+\]
+
+\textbf{Edge cases:} the formulas fail at \(P_c = 0.5\) (then \(v = 0\))
+and \(P_c = 1\) (then \(L = \infty\)). For \(P_c = 1\), a standard fix
+is to use \(P_c = 1 - 1/(2N)\), analogous to the extreme-rate
+corrections of Week 2.
+
+\textbf{Strengths and limits.} EZ is fast, needs no optimization and
+recovers parameters well when its assumptions hold (lab Part C). It
+ignores error RTs and the shape of the RT distribution beyond mean and
+variance, and it cannot estimate bias or across-trial variabilities. For
+those, fit the full DDM by MLE or with hierarchical Bayesian methods
+(e.g., the HDDM package or the Wiener likelihood in PyMC/Stan).
+
+\paragraph{Reading the math}
+
+The EZ equations look intimidating but are a recipe; nobody needs to
+memorize them.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(L = \ln(P_c/(1-P_c))\): the \textbf{logit} of accuracy (``log odds
+  of being correct''). \(P_c = 0.8\) gives \(L = \ln 4 = 1.39\).
+\item
+  \(x\) combines accuracy with the \textbf{variance} of correct RTs: the
+  more variable the RTs for a given accuracy, the lower the drift.
+\item
+  \(v\) and \(a\) then follow from \(L\) and \(x\); \(\mathrm{MDT}\) is
+  the predicted \emph{mean decision time}.
+\item
+  \(T_{er} = M_{RT} - \mathrm{MDT}\): whatever part of the mean RT is
+  not decision time is non-decision time.
+\end{enumerate}
+
+Use the worked example (Part 2) to show each step with numbers; then let
+the computer do it (the function \nolinkurl{ez_diffusion} in the lab
+code).
+
+\paragraph{For an engineer}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{GCM} is a similarity-based classifier with an exponential
+  kernel and a weighted L1 (city-block) metric, close to a
+  \textbf{kernel / Parzen-window classifier}. The attention weights act
+  like learned feature weights; \(c\) is the inverse kernel width.
+\item
+  The \textbf{DDM} is a \textbf{Wiener process with drift} between two
+  absorbing boundaries: the classic first-passage-time problem. The
+  continuous-time SPRT (Week 1 box) is exactly this process, with \(v\)
+  \ensuremath{\propto} signal amplitude and \(s\) the noise level.
+\item
+  RT distributions are \textbf{first-passage-time distributions}, which
+  are right-skewed for the same reason detection delays of a sequential
+  detector are.
+\item
+  \textbf{EZ-diffusion} is a method-of-moments estimator: it matches
+  three sample moments (accuracy, mean and variance of correct RTs) to
+  their closed-form model expressions, instead of maximizing a
+  likelihood.
+\end{itemize}
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Let students be the participants.} Before the GCM, show the 9
+  training stimuli of the 5-4 structure as simple drawings (e.g.~shapes
+  with 4 binary features), teach the categories with feedback, then test
+  A1 and A2. The class's own data often show the exemplar pattern.
+\item
+  \textbf{Draw the DDM as Week 1's picture with a smooth, noisy path.}
+  Then change one parameter at a time on the board (wider boundaries,
+  steeper drift, later start) and ask what happens to accuracy and RT.
+\item
+  \textbf{Do not derive EZ.} Present it as a ``calculator'' and spend
+  the time on interpretation (lab Part E): which manipulation changed
+  which parameter.
+\item
+  \textbf{Typical questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``Prototype or exemplar, who won?''} For small, poorly
+    structured categories exemplar models usually fit better; for large,
+    well-structured ones prototypes do well. Both ideas survive in
+    modern models.
+  \item
+    \emph{``Why not just compare mean RTs?''} A slower group could be
+    more cautious, have worse evidence, or be slower motorically; only
+    the DDM separates them.
+  \item
+    \emph{``Are the parameters of EZ and the full DDM the same?''} They
+    estimate the same quantities, but EZ assumes no bias and no
+    trial-to-trial variability.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\subsubsection{Part 1: one GCM prediction by hand}
+
+Stimulus T3 (1111), equal attention \(w_m = 0.25\), sensitivity
+\(c = 2\).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Exemplar
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mismatching dimensions
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Distance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Similarity \(e^{-2\,\mathrm{dist}}\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+A1 1110 & 1 & 0.25 & 0.607 \\
+A2 1010 & 2 & 0.50 & 0.368 \\
+A3 1011 & 1 & 0.25 & 0.607 \\
+A4 1101 & 1 & 0.25 & 0.607 \\
+A5 0111 & 1 & 0.25 & 0.607 \\
+\textbf{Sum A} & & & \textbf{2.794} \\
+B1 1100 & 2 & 0.50 & 0.368 \\
+B2 0110 & 2 & 0.50 & 0.368 \\
+B3 0001 & 3 & 0.75 & 0.223 \\
+B4 0000 & 4 & 1.00 & 0.135 \\
+\textbf{Sum B} & & & \textbf{1.094} \\
+\end{longtable}
+}
+
+\[
+P(A\mid \text{T3}) = \frac{2.794}{2.794 + 1.094} = 0.719.
+\]
+
+\textbf{Interpretation.} T3 is the A prototype, yet the exemplar model
+predicts only about 72\% ``A'' responses with these parameters: two B
+exemplars (B1 and B2) are only two features away. A larger \(c\)
+(sharper similarity) would raise this probability, because the nearest
+neighbors (four A exemplars at distance 0.25) would dominate.
+
+\subsubsection{Part 2: EZ-diffusion by hand}
+
+A participant has \(P_c = 0.802\), \(V_{RT} = 0.112\) s²,
+\(M_{RT} = 0.723\) s.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(L = \ln(0.802/0.198) = 1.399\).
+\item
+  \(x = 1.399 \times (1.399 \times 0.643 - 1.399 \times 0.802 + 0.802 - 0.5)/0.112 = 0.998\).
+\item
+  \(v = 0.1 \times 0.998^{1/4} = 0.100\).
+\item
+  \(a = 0.01 \times 1.399/0.100 = 0.140\).
+\item
+  \(y = -0.100 \times 0.140/0.01 = -1.399\), so
+  \(\mathrm{MDT} = (0.140/0.200) \times (1 - e^{-1.399})/(1 + e^{-1.399}) = 0.423\)
+  s.
+\item
+  \(T_{er} = 0.723 - 0.423 = 0.300\) s.
+\end{enumerate}
+
+\textbf{Interpretation.} Of the mean correct RT of 723 ms, about 423 ms
+is spent accumulating evidence and 300 ms on encoding and responding.
+Drift 0.10 and boundary 0.14 (in EZ units with \(s = 0.1\)) are typical
+values for a moderately difficult task.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Implement the GCM and the prototype model for the 5-4 structure;
+  simulate data from the GCM.
+\item
+  Fit both models by MLE, compare them, and examine the critical
+  A1-vs-A2 prediction.
+\item
+  Check parameter recovery for the GCM.
+\item
+  Simulate a drift-diffusion process, recover its parameters with
+  EZ-diffusion, and interpret a 2 × 2 experiment.
+\end{enumerate}
+
+\textbf{Timing:} Part A 20 min · Part B 25 min · Part C 15 min · Part D
+40 min · Part E 20 min.
+
+\subsubsection{Part A: the 5-4 structure and two models (20 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{20\baselineskip}
+\begin{Verbatim}
+stimulus features  P(A) true  A responses / 20
+      A1     1110       0.84                15
+      A2     1010       0.88                18
+      A3     1011       0.91                18
+      A4     1101       0.60                10
+      A5     0111       0.60                11
+      B1     1100       0.47                10
+      B2     0110       0.47                11
+      B3     0001       0.16                 4
+      B4     0000       0.12                 2
+      T1     1001       0.58                11
+      T2     1000       0.48                11
+      T3     1111       0.87                20
+      T4     0010       0.48                10
+      T5     0101       0.26                 6
+      T6     0011       0.58                12
+      T7     0100       0.19                 4
+\end{Verbatim}
+
+\subsubsection{Part B: fit and compare (25 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+GCM       NLL =  28.36  AIC =  64.72  BIC =  79.79  c = 3.82  w = [0.397 0.111 0.426 0.066]
+prototype NLL =  30.02  AIC =  68.04  BIC =  83.11  c = 1.90  w = [0.435 0.009 0.461 0.095]
+stimulus  observed   GCM  prototype
+      A1      0.75 0.842      0.822
+      A2      0.90 0.884      0.818
+\end{Verbatim}
+
+\textbf{Interpret:} 1. Which model is preferred, and how strong is the
+evidence? (\(\Delta\mathrm{AIC} = 3.3\), so Akaike weights of about 0.84
+vs.~0.16: a moderate preference, not a decisive one.) 2. Look at A1 and
+A2. The data show A2 (0.90) classified better than A1 (0.75). The GCM
+predicts this ordering (0.88 vs.~0.84); the prototype model cannot (0.82
+vs.~0.82). Why does this comparison discriminate between the theories
+more sharply than the overall fit statistic? 3. Interpret the GCM
+attention weights. Which dimensions did the participant attend to, and
+does that make sense given the category structure?
+
+\subsubsection{Part C: is the GCM recoverable at this design? (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+\textbf{Expected output} (about 1 minute):
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+c: r(true, recovered) = 0.08
+w1: r(true, recovered) = 0.91
+w2: r(true, recovered) = 0.76
+w3: r(true, recovered) = 0.89
+w4: r(true, recovered) = 0.85
+\end{Verbatim}
+
+\textbf{What to notice:} the attention weights are recovered well (r =
+0.76--0.91), but the sensitivity \(c\) is essentially \textbf{not
+recoverable} at this design (r = 0.08). With only 16 stimuli and 20
+trials each, a large \(c\) and a moderate \(c\) can produce very similar
+response proportions (once \(c\) is large, predictions saturate), and
+\(c\) trades off with how concentrated the weights are. So we should
+interpret the attention weights from Part B but \textbf{not} the value
+\(\hat c = 3.82\). More trials, a wider range of stimuli, or a Bayesian
+prior on \(c\) would help. This is exactly the kind of result a recovery
+study is for (Week 7).
+
+\subsubsection{Part D: drift-diffusion and EZ (40 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\textbf{Expected output} (about 30 s):
+
+\Needspace{8\baselineskip}
+\begin{Verbatim}
+instruction difficulty    Pc   MRT  v_true  v_EZ  a_true  a_EZ  Ter_EZ
+      speed       easy 0.870 0.423    0.25 0.243    0.08 0.078   0.304
+      speed       hard 0.732 0.466    0.12 0.115    0.08 0.088   0.288
+   accuracy       easy 0.975 0.572    0.25 0.261    0.14 0.140   0.317
+   accuracy       hard 0.818 0.697    0.12 0.111    0.14 0.135   0.313
+\end{Verbatim}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\subsubsection{Part E: interpret the 2 × 2 experiment (20 min)}
+
+Answer in your notebook: 1. Which EZ parameter changes with the
+\textbf{instruction} manipulation, and which with \textbf{difficulty}?
+Did either manipulation affect the parameter it should \emph{not}
+affect? 2. Describe how the RT distribution changes from speed to
+accuracy instructions (Part D figure). Which part of the distribution
+changes most: the leading edge or the tail? 3. A clinical study finds
+that patients are slower than controls but equally accurate. Sketch two
+different DDM accounts of this result, and say which data would
+distinguish them.
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star}.} Compute \(P(A\mid\text{A1})\) and
+\(P(A\mid\text{A2})\) by hand for equal weights and \(c = 2\) under both
+models. Do they reproduce the critical prediction?
+
+\textbf{Exercise 2 \ensuremath{\star}.} Apply EZ to the worked example's statistics and
+to \(P_c = 1.0\) with \(N = 100\) trials (use the edge correction). What
+happens without the correction?
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (prototype data).} Generate data from the
+\textbf{prototype} model and fit both models. Does the model comparison
+identify the generating model? Run a small model recovery (20 datasets
+per generating model) and build the 2 × 2 confusion matrix.
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (EZ recovery and bias).} For 200 simulated
+participants with random \((v, a, T_{er})\) and only 100 trials each,
+compare EZ estimates with the true values. Which parameter is recovered
+worst? Then add across-trial drift variability to the simulator (Week 1,
+Exercise 5) and check which EZ estimate becomes biased.
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: Bayesian GCM).} Fit the GCM in PyMC
+with priors \(c \sim \mathrm{Gamma}(2, \text{scale } 2)\) and
+\(w \sim \mathrm{Dirichlet}(1, 1, 1, 1)\). Compare the posterior of the
+attention weights with the MLE, and run a posterior predictive check on
+the A1-vs-A2 difference. (See Lee \& Wagenmakers, chapter 17, for a
+hierarchical version.)
+
+\subsubsection{Lab check-off}
+
+Show: (1) the fit table and prediction plot for the GCM vs.~the
+prototype model with your answer to question 2, (2) the EZ table for the
+2 × 2 design, and (3) your answer to Part E, question 1.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Exemplar models in a learned ``semantic space''.} The GCM needs
+a psychological space in which to measure distances. Traditionally, that
+space comes from similarity ratings and multidimensional scaling.
+Language models offer an alternative: every word or sentence is mapped
+to an \textbf{embedding vector}, and the distances between vectors are
+often used as a stand-in for psychological similarity. Combining
+embeddings with the GCM gives a model that can classify \emph{any} new
+word with no extra similarity ratings. Whether embedding distances match
+human similarity is an empirical question, and you can test it with the
+tools of this course.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week14.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+P(fruit | tomato) = 0.902
+P(fruit | knife) = 0.094
+P(fruit | nutcracker) = 0.370
+\end{Verbatim}
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Change \(c\) to 1 and to 10. How do
+the three predictions change, and why does ``nutcracker'' change the
+most? - \ensuremath{\star}\ensuremath{\star} Suppose 20 participants classified the three probes, with 19,
+1 and 12 ``fruit'' responses. Fit \(c\) by MLE (binomial likelihood,
+Week 4) and run a \(G^2\) test. Does the embedding space with a single
+parameter fit? - \ensuremath{\star}\ensuremath{\star} Discussion: the embeddings were learned from text,
+not from perception. For which categories might text-based similarity
+differ systematically from human similarity (think of color or shape)?
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Unconstrained attention weights.} Without a sum-to-one
+  constraint, \(c\) and \(w\) trade off perfectly (non-identifiable).
+  Use a softmax reparameterization.
+\item
+  \textbf{Judging exemplar vs.~prototype models by overall fit only.}
+  The theoretically diagnostic predictions (A1 vs.~A2) are often more
+  informative than small differences in AIC.
+\item
+  \textbf{Averaging classification data over participants} who attend to
+  different dimensions. This can make an exemplar-like individual look
+  prototype-like (and vice versa); recall Week 5's aggregation
+  artifacts.
+\item
+  \textbf{Using EZ with incorrect units.} RTs must be in
+  \textbf{seconds} and the variance in s², with \(s = 0.1\). Mixing ms
+  and s gives nonsense.
+\item
+  \textbf{Applying EZ when its assumptions are violated} (strong bias,
+  slow or fast errors). Check error RTs; use the full DDM if needed.
+\item
+  \textbf{``A slower group has a lower drift rate.''} Slowness can come
+  from a higher boundary, a lower drift, or a longer non-decision time.
+  Only a model fitted to accuracy \emph{and} RT distributions can tell
+  which.
+\item
+  \textbf{Forgetting the edge cases} \(P_c = 1\) or \(P_c \le 0.5\) in
+  EZ.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} State the core difference between exemplar and prototype
+theories in one sentence each. \textbf{Answer} Exemplar: a category is
+represented by all stored instances, and classification depends on
+summed similarity to them. Prototype: a category is represented by a
+single summary (central tendency), and classification depends on
+similarity to that summary.
+
+\textbf{2.} In the 5-4 structure, why is the A1-vs-A2 comparison
+diagnostic? \textbf{Answer} A1 is closer to the A prototype (3 of 4
+features), so a prototype model predicts it is classified better than
+A2. But A2 is very similar to other A exemplars and to no B exemplar,
+while A1 is similar to two B exemplars, so the exemplar model can
+predict A2 \ensuremath{\geq} A1. The theories make opposite ordinal predictions.
+
+\textbf{3.} What do the GCM parameters \(c\) and \(w_m\) represent?
+\textbf{Answer} \(c\) is sensitivity: how quickly similarity decreases
+with psychological distance (large \(c\) means only very close exemplars
+matter). \(w_m\) is the proportion of attention allocated to dimension
+\(m\), which stretches distances along attended dimensions.
+
+\textbf{4.} Which DDM parameter would you expect to change under (a)
+speed vs.~accuracy instructions, (b) harder stimuli, (c) a slower motor
+response (e.g., foot instead of finger)? \textbf{Answer} (a) Boundary
+separation \(a\). (b) Drift rate \(v\). (c) Non-decision time
+\(T_{er}\).
+
+\textbf{5.} What three statistics does EZ-diffusion need, and what are
+its main assumptions? \textbf{Answer} Proportion correct, the variance
+of correct RTs, and the mean of correct RTs. It assumes an unbiased
+starting point (\(z = a/2\)), no across-trial variability in parameters,
+and the scaling \(s = 0.1\).
+
+\textbf{6.} How is the DDM related to the random walk model of Week 1?
+\textbf{Answer} It is the continuous-time, continuous-evidence limit of
+the random walk: as step size and step duration go to zero together, the
+random walk converges to a Wiener diffusion process with drift \(v\) and
+noise \(s\).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{A5 (MCMC from scratch)} is due at the start of this week's
+  lecture.
+\item
+  No new assignment: work on the \textbf{final project}. If your project
+  uses the GCM or DDM, today's code is a good starting point; cite the
+  course materials and say what you changed.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Lee \& Wagenmakers (2014), chapter 17.} The Generalized
+  Context Model, fitted in a Bayesian (and hierarchical) way to
+  category-learning data. \emph{(Main reading for categorization.)}
+\item
+  \textbf{Farrell \& Lewandowsky (2018)}: the chapter on models of
+  choice response time {[}verify chapter number{]} for the
+  drift-diffusion model and its relatives.
+\item
+  \textbf{Verguts (2022)}: the chapters on categorization and on
+  decision making {[}verify chapters{]}.
+\item
+  \emph{Optional, outside the course list:} Wagenmakers, E.-J., van der
+  Maas, H. L. J., \& Grasman, R. P. P. P. (2007). An EZ-diffusion model
+  for response time and accuracy. \emph{Psychonomic Bulletin \& Review,
+  14}, 3--22. Medin, D. L., \& Schaffer, M. M. (1978). Context theory of
+  classification learning. \emph{Psychological Review, 85}, 207--238.
+\end{itemize}
+
+\emph{Preview for Week 15:} learning from rewards (reinforcement
+learning), the mind as a Bayesian observer, and how cognitive models and
+AI systems inform each other.

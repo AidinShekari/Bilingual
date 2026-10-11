@@ -1,0 +1,1604 @@
+\section{Week 1: What Is a Cognitive Model?}
+
+\begin{quote}
+\textbf{Chapter 1: Fundamentals of cognitive modeling} · Lecture 1 h ·
+Lab 2 h \textbf{This week's running model:} a simple random walk model
+of two-choice decisions.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Key terms}
+
+Important terms of this lesson, with their Persian equivalents (repeated
+even if they appeared in earlier weeks).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+English
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa فارسی}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\RL{\CMfa توضیح کوتاه}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+cognitive model & \RL{\CMfa مدل شناختی} & \RL{\CMfa توصیف دقیق و ریاضی یا محاسباتی
+از یک فرایند ذهنی} \\
+random walk & \RL{\CMfa گام تصادفی} & \RL{\CMfa جمع شدن گام‌به‌گام شواهد تا رسیدن به
+یک مرز} \\
+verbal theory & \RL{\CMfa نظریه‌ی کلامی} & \RL{\CMfa نظریه‌ای که فقط با کلمات بیان شده
+و پیش‌بینی دقیق نمی‌دهد} \\
+Marr's levels & \RL{\CMfa سطوح تحلیل} Marr & \RL{\CMfa سطح محاسباتی، الگوریتمی و
+پیاده‌سازی} \\
+parameter & \RL{\CMfa پارامتر} & \RL{\CMfa کمیت قابل تنظیم مدل که بین افراد یا شرایط
+فرق می‌کند} \\
+noise & \RL{\CMfa نویز} & \RL{\CMfa تغییرات تصادفی در شواهد یا در داده} \\
+simulation & \RL{\CMfa شبیه‌سازی} & \RL{\CMfa تولید داده‌ی مصنوعی با اجرای مدل} \\
+drift rate & \RL{\CMfa نرخ رانش} & \RL{\CMfa سرعت میانگین جمع شدن شواهد؛ نشانه‌ی
+کیفیت شواهد} \\
+boundary separation & \RL{\CMfa فاصله‌ی مرزها} & \RL{\CMfa مقدار شواهد لازم برای
+پاسخ؛ نشانه‌ی احتیاط} \\
+evidence & \RL{\CMfa شواهد} & \RL{\CMfa اطلاعاتی که برای تصمیم جمع می‌شود} \\
+accuracy & \RL{\CMfa دقت} & \RL{\CMfa نسبت پاسخ‌های درست} \\
+response time (RT) & \RL{\CMfa زمان واکنش} & \RL{\CMfa فاصله‌ی ارائه‌ی محرک تا
+پاسخ} \\
+formal model / formalize & \RL{\CMfa مدل فرمال} / \RL{\CMfa فرمال کردن} & \RL{\CMfa نوشتن
+نظریه به شکل معادله یا الگوریتم} \\
+fit / fitting & \RL{\CMfa برازش} & \RL{\CMfa تنظیم پارامترها تا مدل با داده جور
+شود} \\
+forward / inverse problem & \RL{\CMfa مسئله‌ی مستقیم} / \RL{\CMfa معکوس} &
+\RL{\CMfa شبیه‌سازی (پارامتر} \ensuremath{\leftarrow} \RL{\CMfa داده) در برابر برآورد (داده} \ensuremath{\leftarrow}
+\RL{\CMfa پارامتر)} \\
+non-decision time & \RL{\CMfa زمان غیرتصمیمی} & \RL{\CMfa زمان دیدن محرک و اجرای
+حرکت پاسخ} \\
+speed--accuracy trade-off & \RL{\CMfa بده‌بستان سرعت و دقت} & \RL{\CMfa سریع‌تر پاسخ
+دادن به قیمت خطای بیشتر} \\
+trial & \RL{\CMfa کوشش} (trial) & \RL{\CMfa یک بار انجام تکلیف توسط شرکت‌کننده} \\
+probabilistic programming & \RL{\CMfa برنامه‌نویسی احتمالاتی} & \RL{\CMfa تعریف مدل
+با کد و نمونه‌گیری خودکار} (PyMC) \\
+temperature & \RL{\CMfa دما} (temperature) & \RL{\CMfa پارامتر نویز در انتخاب}
+token\RL{\CMfa ؛} \ensuremath{\beta} = 1/T \\
+random seed & seed \RL{\CMfa تصادفی} & \RL{\CMfa عدد شروع مولد اعداد تصادفی برای
+تکرارپذیری} \\
+quantile & \RL{\CMfa چندک} (quantile) & \RL{\CMfa مقداری که درصد مشخصی از داده زیر
+آن است} \\
+large language model (LLM) & \RL{\CMfa مدل بزرگ زبانی} & \RL{\CMfa شبکه‌ی عصبی‌ای که
+کلمه‌ی بعدی متن را پیش‌بینی می‌کند} \\
+token & token \RL{\CMfa (واحد متن)} & \RL{\CMfa کلمه یا بخشی از کلمه که مدل زبانی
+پیش‌بینی می‌کند} \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Learning outcomes}
+
+By the end of this week, students will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Define} a cognitive model and \textbf{distinguish} it from a
+  verbal theory and from a purely statistical model of the data.
+\item
+  \textbf{Classify} models by purpose (descriptive, process, normative)
+  and by family (symbolic, connectionist, stochastic/dynamical,
+  Bayesian), and \textbf{place} them on Marr's three levels.
+\item
+  \textbf{Explain} how free parameters, a deterministic core and a noise
+  model together turn a model into a \emph{data-generating} machine.
+\item
+  \textbf{Implement} and \textbf{simulate} a random walk decision model
+  in Python, and \textbf{verify} the simulation against analytic
+  predictions.
+\item
+  \textbf{Interpret} how changes in the model's parameters (drift,
+  boundary) map onto psychological constructs (evidence quality,
+  caution).
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Motivation \& big picture}
+
+Consider a familiar verbal theory of simple decisions:
+
+\begin{quote}
+\emph{``When people decide, they gather evidence until they have enough,
+then they respond.''}
+\end{quote}
+
+It sounds complete, but try to get a prediction out of it:
+
+\begin{itemize}
+\tightlist
+\item
+  If we tell participants to \emph{be accurate} rather than \emph{be
+  fast}, how much slower should they get? Twice as slow? 50 ms slower?
+\item
+  Are \textbf{errors} faster or slower than correct responses, or
+  equally fast?
+\item
+  Should the response time (RT) distribution be symmetric or skewed?
+\item
+  If a stimulus becomes harder to see, should RTs change in the same way
+  as under an accuracy instruction?
+\end{itemize}
+
+The verbal theory \textbf{cannot answer any of these}. Each answer
+depends on decisions the theory never made: What counts as ``evidence''?
+Does it arrive continuously or in chunks? What does ``enough'' mean? Is
+the threshold the same for both responses?
+
+As soon as we write the theory down as a model, for example a
+\textbf{random walk} that steps up or down until it reaches a boundary,
+every one of those questions gets a definite answer. Some answers will
+turn out to be \emph{wrong}, and that is useful: a model that can be
+wrong is a model we can learn from. This is the central message of the
+course:
+
+\begin{quote}
+Formal models force us to make our assumptions explicit, produce precise
+predictions, and turn ``Is this theory right?'' into ``How well, and
+why, does this model account for the data?''
+\end{quote}
+
+\paragraph{Where is this used?}
+
+Models like the random walk of this week are not only classroom
+examples. They are used every day in research and practice:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Clinical psychology and psychiatry.} Patients with depression,
+  ADHD or anxiety are often ``slower'' in simple tasks. Decision models
+  show \emph{why}: lower evidence quality, more caution, or slower motor
+  responses. These three explanations call for different interventions.
+\item
+  \textbf{Ageing research.} Older adults respond more slowly. Fitting
+  decision models showed that much of this slowing comes from more
+  caution and slower motor execution, not from worse information
+  processing.
+\item
+  \textbf{Neuroscience.} Neurons in some brain areas increase their
+  firing rate until a threshold before a decision, much like a random
+  walk reaching a boundary. Model parameters are used to link behavior
+  and brain activity.
+\item
+  \textbf{Applied settings.} Eyewitness decisions, medical image reading
+  and quality control all involve deciding under noisy evidence. The
+  same model separates ``how good is the evidence'' from ``how careful
+  is the decision maker''.
+\item
+  \textbf{Artificial intelligence.} Ideas from cognitive models
+  (evidence accumulation, learning from errors, probabilistic inference)
+  are used in AI systems, and AI models are now tested with the methods
+  of this course (see the AI \& LLMs section).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lecture notes}
+
+\paragraph{In plain words}
+
+A \emph{theory} says something in words (``people collect evidence until
+they have enough''). A \emph{model} says the same thing so precisely
+that a computer can run it. Once it can run, the model makes exact
+predictions: how often people will be correct, how long they will take,
+and how both change when we change the task. This week's model is the
+simplest possible decision model. Imagine a token on a number line. Each
+moment it moves one step up (a bit of evidence for the correct answer)
+or one step down (a bit of evidence for the wrong answer). When it
+reaches the top line, the person answers correctly; when it reaches the
+bottom line, they make an error. Only three numbers control everything:
+how strongly the steps lean upward (\textbf{drift}, the quality of the
+evidence), how far apart the two lines are (\textbf{boundary
+separation}, how careful the person is), and where the token starts
+(\textbf{starting point}, bias). By running this little machine many
+times we can see a speed--accuracy trade-off appear by itself, without
+programming it in.
+
+\paragraph{Psychology words in plain language}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Participant (subject):} a person who takes part in an
+  experiment.
+\item
+  \textbf{Stimulus (plural stimuli):} whatever is shown or played to the
+  participant, e.g.~a picture, a word or a tone.
+\item
+  \textbf{Task:} what the participant must do, e.g.~``press left if the
+  dots move left, right if they move right''. A \textbf{two-choice task}
+  has exactly two possible responses.
+\item
+  \textbf{Trial:} one repetition of the task: one stimulus, one
+  response. An experiment usually has hundreds of trials per
+  participant.
+\item
+  \textbf{Response time (RT, reaction time):} the time from stimulus
+  onset to the key press, usually in milliseconds (ms).
+\item
+  \textbf{Accuracy:} the proportion of correct responses.
+\item
+  \textbf{Condition / manipulation:} a change the experimenter makes on
+  purpose (e.g.~``be fast!'' vs.~``be accurate!'' instructions, or easy
+  vs.~hard stimuli), to see how behavior changes.
+\item
+  \textbf{Construct:} a psychological quantity we cannot observe
+  directly, e.g.~\emph{caution}, \emph{attention} or \emph{memory
+  strength}. A good model parameter \emph{measures} a construct.
+\item
+  \textbf{Behavioral data:} what we can record: choices and RTs (not
+  brain signals).
+\end{itemize}
+
+\textbf{Suggested timing (60 min):} motivation 10 · what and why 10 ·
+kinds of models + Marr 15 · models as data-generating machines +
+pipeline 10 · first model (random walk) 12 · notation and course
+logistics 3.
+
+\subsubsection{1. What is a cognitive model?}
+
+A \textbf{cognitive model} is an explicit, usually mathematical or
+computational, description of the processes or representations that are
+assumed to produce behavior. It has three ingredients:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Ingredient
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question it answers
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Random walk example
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Assumptions / structure} & What mechanism do we posit? &
+Evidence accumulates in discrete steps between two boundaries \\
+\textbf{Parameters} & Which quantities are free to vary across people or
+conditions? & Drift \(v\), boundary separation \(a\), start point
+\(z\) \\
+\textbf{Mapping to data} & How does the mechanism produce observable
+responses? & The boundary reached gives the choice; the number of steps
+gives the RT \\
+\end{longtable}
+}
+
+Three related terms are easy to mix up:
+
+\begin{itemize}
+\tightlist
+\item
+  A \textbf{theory} is a set of verbal (often informal) claims about the
+  mind.
+\item
+  A \textbf{model} is one particular formal instantiation of a theory.
+  One theory can be formalized in many different ways.
+\item
+  A \textbf{statistical model} (a t-test, a regression) is also a model,
+  but of the \emph{data}. Its parameters (means, slopes) usually
+  describe the data rather than a cognitive process. In a cognitive
+  model the parameters are meant to \textbf{measure latent psychological
+  quantities}, such as memory decay, caution or attention.
+\end{itemize}
+
+George Box's often-quoted remark that ``all models are wrong, but some
+are useful'' sums up the attitude of this course. We never ask whether a
+model is \emph{true}. We ask whether it is \emph{useful}: does it
+capture the important regularities, generalize to new data, and have
+interpretable parameters?
+
+\subsubsection{2. Why bother with formal models?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Precision.} Writing the model down exposes hidden assumptions
+  (as in the motivation example).
+\item
+  \textbf{Quantitative predictions.} Models predict \emph{how much}, not
+  just \emph{whether}.
+\item
+  \textbf{Deriving surprising consequences.} Our intuitions about
+  complex systems are poor. For example, averaging individual
+  exponential learning curves produces a curve that looks like a
+  \emph{power} law (Week 5).
+\item
+  \textbf{Measurement.} Fitted parameters are measurements of latent
+  constructs. \(d'\) in signal detection theory (Week 2) measures
+  sensitivity separately from response bias, which raw accuracy cannot
+  do.
+\item
+  \textbf{Comparing theories.} Two verbal theories that ``both explain
+  the data'' can be pitted against each other once they are formalized
+  (Weeks 6--7, 10).
+\item
+  \textbf{Bridge to AI.} The same formalisms (probabilistic models,
+  learning rules, neural networks) are used to build artificial agents
+  (Week 15).
+\end{enumerate}
+
+\subsubsection{3. Kinds of cognitive models}
+
+\textbf{By purpose:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Example
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Course weeks
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Descriptive} & \emph{What} is the shape of the data? & Power law
+of practice; exponential forgetting curve & 2--7 \\
+\textbf{Process (mechanistic)} & \emph{How} does the mind produce the
+behavior? & Random walk / drift-diffusion; exemplar model (GCM) & 1,
+14 \\
+\textbf{Normative (rational)} & What \emph{should} an ideal agent do? &
+Bayesian ideal observer for cue combination & 15 \\
+\end{longtable}
+}
+
+The boundaries are fuzzy: an SDT model is partly descriptive and partly
+a process model.
+
+\textbf{By family:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Family
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Core idea
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Example
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Symbolic / rule-based & Cognition as manipulation of symbols and
+production rules & ACT-R production systems \\
+Connectionist & Distributed representations, learning by weight change &
+Delta-rule networks, deep networks \\
+Stochastic / dynamical & Noisy processes unfolding in time & Random
+walk, drift-diffusion, Rescorla--Wagner \\
+Bayesian (probabilistic) & Cognition as probabilistic inference &
+Bayesian observer models \\
+\end{longtable}
+}
+
+\begin{quote}
+\textbf{Watch out:} ``Bayesian modeling'' in this course means two
+different things. (a) \textbf{Bayesian models of cognition} claim that
+the \emph{mind} does Bayesian inference (Week 15). (b) \textbf{Bayesian
+data analysis} is how \emph{we, the scientists,} estimate the parameters
+of any model, Bayesian or not (Weeks 9--13). Weeks 9--13 are mostly
+about (b).
+\end{quote}
+
+\subsubsection{4. Marr's three levels of analysis}
+
+David Marr proposed analyzing an information-processing system at three
+complementary levels:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Level
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Decision example
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Computational} & What problem is being solved, and why? & Choose
+the correct alternative while balancing speed and accuracy \\
+\textbf{Algorithmic / representational} & What representations and
+procedures solve it? & Accumulate noisy evidence until a boundary is
+reached \\
+\textbf{Implementational} & How is it realized physically? & Firing
+rates of neurons ramping up to a threshold \\
+\end{longtable}
+}
+
+Normative models usually live at the computational level, process models
+at the algorithmic level, and computational neuroscience models at the
+implementational level. Most models in this course are
+\textbf{algorithmic-level} models.
+
+\subsubsection{5. A model is a data-generating machine}
+
+The single most important idea for the rest of the course: \textbf{a
+model specifies a probability distribution over possible data.}
+
+\[
+\mathbf{y} \sim p(\mathbf{y} \mid \boldsymbol{\theta}, \mathcal{M})
+\]
+
+Read this as: ``under model \(\mathcal{M}\) with parameters
+\(\boldsymbol{\theta}\), the data \(\mathbf{y}\) are generated from the
+distribution \(p\).'' Many models split this into a deterministic core
+plus noise, for example
+\(y_i = f(x_i; \boldsymbol{\theta}) + \varepsilon_i\) (Week 2). Others,
+like the random walk, are stochastic all the way through.
+
+This gives two directions of reasoning:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Direction
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Given
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Find
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Course weeks
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Forward} & \(\boldsymbol\theta\) & Possible data \(\mathbf{y}\)
+& Simulation / prediction & 1--2 \\
+\textbf{Inverse} & Observed \(\mathbf{y}\) & Plausible
+\(\boldsymbol\theta\) & Parameter estimation / fitting & 3--5, 9--13 \\
+\end{longtable}
+}
+
+The inverse problem is harder. It is what we mean by ``fitting a model
+to data''. Because a model can always be run forwards, we can also test
+our fitting methods: simulate data from \textbf{known} parameters
+\(\boldsymbol\theta^\ast\), fit, and check whether we get
+\(\boldsymbol\theta^\ast\) back (\emph{parameter recovery}, Week 7).
+
+\paragraph{Reading the math}
+
+\(\mathbf{y} \sim p(\mathbf{y} \mid \boldsymbol{\theta}, \mathcal{M})\)
+is read: ``the data \(\mathbf{y}\) are drawn from the probability
+distribution \(p\), given the parameter values \(\boldsymbol\theta\) and
+the model \(\mathcal{M}\).''
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathbf{y}\) (bold) is a \emph{list} of observations, e.g.~the 200
+  responses of one participant.
+\item
+  The symbol \(\sim\) means ``is randomly generated from''. It reminds
+  us that the same model with the same parameters gives \emph{different}
+  data each time, just as a person does not respond identically on every
+  trial.
+\item
+  The vertical bar \(\mid\) means ``given'' or ``assuming''. Everything
+  to the right of it is fixed: the model's equations (\(\mathcal{M}\))
+  and the numbers we plug into them (\(\boldsymbol\theta\)).
+\item
+  \(\boldsymbol\theta\) (theta, bold) collects all parameters,
+  e.g.~\(\boldsymbol\theta = (v, a, z)\) for the random walk.
+\end{itemize}
+
+\textbf{Example.} For a coin with \(P(\text{heads}) = 0.6\), the model
+is ``each flip is heads with probability \(\theta\)'',
+\(\boldsymbol\theta = 0.6\), and \(\mathbf{y}\) could be (H, T, H, H,
+T). Run it again and you get another sequence. \emph{Forward} direction:
+choose \(\theta\), simulate \(\mathbf{y}\). \emph{Inverse} direction
+(fitting, Weeks 3--5): see \(\mathbf{y}\), find a good \(\theta\).
+
+\subsubsection{6. The modeling pipeline (our roadmap)}
+
+\Needspace{11\baselineskip}
+\input{figures/modeling-pipeline}
+
+Every lab in this course runs some version of this loop. Today we focus
+on \textbf{formalize \ensuremath{\rightarrow} simulate \ensuremath{\rightarrow} interpret}, with a small preview of
+\textbf{fit}.
+
+\subsubsection{7. Our first model: a random walk to a boundary}
+
+\textbf{Verbal \ensuremath{\rightarrow} formal.} Evidence is a single number \(X\) that starts
+at \(z\). At each time step it moves \textbf{up by 1} (evidence for the
+correct response) or \textbf{down by 1} (evidence for the error
+response). The walk stops when \(X\) reaches the upper boundary \(a\)
+(correct response) or the lower boundary \(0\) (error).
+
+\[
+X_0 = z, \qquad X_{n} = X_{n-1} + \delta_n, \qquad
+\delta_n =
+\begin{cases}
++1 & \text{with probability } \tfrac{1+v}{2}\\[2pt]
+-1 & \text{with probability } \tfrac{1-v}{2}
+\end{cases}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(v \in (-1, 1)\) is the \textbf{drift}, the average step
+  \(\mathbb{E}[\delta_n] = v\). It represents the \textbf{quality of
+  evidence}: easy stimuli give a large \(v\).
+\item
+  \(a\) is the \textbf{boundary separation}. It represents
+  \textbf{caution}: a wider gap needs more evidence.
+\item
+  \(z\) is the \textbf{start point} (\(0 < z < a\)). With \(z = a/2\)
+  the decision maker is unbiased.
+\item
+  The number of steps until absorption, \(T\), maps onto RT through \[
+  \mathrm{RT} = t_0 + T\,\Delta t,
+  \] where \(t_0\) is \textbf{non-decision time} (encoding plus motor
+  execution) and \(\Delta t\) is the duration of one step.
+\end{itemize}
+
+\textbf{Analytic predictions.} Let \(r = \frac{1-v}{1+v}\). For
+\(v \neq 0\), the probability of a correct response and the mean number
+of steps are:
+
+\[
+P_c = \frac{1 - r^{z}}{1 - r^{a}}, \qquad
+\mathbb{E}[T] = \frac{a\,P_c - z}{v}.
+\]
+
+These two equations already settle the questions from the motivation:
+
+\begin{itemize}
+\tightlist
+\item
+  Increasing \(a\) raises \(P_c\) \textbf{and} \(\mathbb{E}[T]\): a
+  \textbf{speed--accuracy trade-off}.
+\item
+  Increasing \(v\) raises \(P_c\) but \textbf{lowers} \(\mathbb{E}[T]\):
+  easier stimuli are both faster and more accurate.
+\end{itemize}
+
+So the two manipulations leave different signatures in the data. That is
+what lets us \emph{measure} caution and evidence quality separately.
+
+\begin{quote}
+\textbf{Advanced: where the formulas come from.} \(P_c\) is the classic
+\emph{gambler's ruin} result. Let \(h(x)\) be the probability of hitting
+\(a\) before \(0\) when starting from \(x\). Conditioning on the first
+step gives \(h(x) = \tfrac{1+v}{2}h(x+1) + \tfrac{1-v}{2}h(x-1)\) with
+\(h(0)=0\) and \(h(a)=1\). Solving this difference equation gives
+\(h(x) = (1-r^x)/(1-r^a)\). For \(\mathbb{E}[T]\), use \emph{Wald's
+identity}: the final position satisfies
+\(\mathbb{E}[X_T] = z + v\,\mathbb{E}[T]\). Since \(X_T = a\) with
+probability \(P_c\) and \(X_T = 0\) otherwise,
+\(\mathbb{E}[X_T] = aP_c\), and rearranging gives
+\(\mathbb{E}[T] = (aP_c - z)/v\). As the step size and \(\Delta t\)
+shrink together, the random walk becomes the \textbf{drift-diffusion
+model} (Week 14).
+\end{quote}
+
+\begin{quote}
+\textbf{Advanced: a property that turns out to be a weakness.} With an
+unbiased start (\(z = a/2\)), the simple random walk predicts that
+correct and error responses have \textbf{identical RT distributions}.
+Empirically, errors are often \emph{slower} than correct responses when
+accuracy is stressed, and sometimes \emph{faster} under speed stress.
+The simple model cannot produce either pattern. Adding trial-to-trial
+variability in drift or start point can (lab Exercise 5). Finding where
+a model fails is exactly how models improve.
+\end{quote}
+
+\paragraph{Reading the math}
+
+\textbf{The update rule.} \(X_n = X_{n-1} + \delta_n\) says: \emph{the
+evidence now} = \emph{the evidence one step ago} + \emph{one new step}.
+The step \(\delta_n\) is \(+1\) or \(-1\). The probability of \(+1\) is
+\(\tfrac{1+v}{2}\). With \(v = 0\) this is \(0.5\) (a fair coin: no
+information). With \(v = 0.2\) it is \(0.6\), so the walk drifts upward
+on average. The average step is \((+1)(0.6) + (-1)(0.4) = 0.2 = v\),
+which is why \(v\) is called the drift.
+
+\textbf{The accuracy formula.} \(P_c = \dfrac{1 - r^{z}}{1 - r^{a}}\)
+with \(r = \dfrac{1-v}{1+v}\).
+
+\begin{itemize}
+\tightlist
+\item
+  \(r\) is the ratio ``probability of a down step / probability of an up
+  step''. With \(v = 0.2\): \(r = 0.4/0.6 = 2/3\). A small \(r\) means
+  the walk almost always goes up.
+\item
+  \(r^{z}\) and \(r^{a}\) are small numbers when \(z\) and \(a\) are
+  large, so \(P_c\) approaches 1. That is the math behind ``more caution
+  (larger \(a\)) gives higher accuracy''.
+\item
+  You do not need to derive the formula (see the Advanced box). It is
+  enough to plug in numbers and check it against a simulation, as in the
+  lab.
+\end{itemize}
+
+\textbf{The time formula.} \(\mathbb{E}[T] = \dfrac{a P_c - z}{v}\).
+\(\mathbb{E}[\cdot]\) means ``average over many trials''. The numerator
+is how far the walk travels on average (it ends at \(a\) with
+probability \(P_c\), at \(0\) otherwise, and started at \(z\)). Dividing
+by the average speed \(v\) gives the average number of steps, just like
+\emph{time = distance / speed}.
+
+\textbf{RT.} \(\mathrm{RT} = t_0 + T\,\Delta t\): a fixed part \(t_0\)
+(seeing the stimulus, pressing the key) plus the decision time, i.e.~the
+number of steps times the duration of one step.
+
+\paragraph{For an engineer}
+
+You already know this model under another name.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Sequential detection.} The random walk is a discrete version
+  of Wald's \textbf{sequential probability ratio test (SPRT)}:
+  accumulate the log-likelihood ratio of the observations, and decide as
+  soon as it crosses an upper or a lower threshold. Under some
+  assumptions the SPRT gives the smallest average number of observations
+  for given error probabilities, which is one reason the brain might use
+  this strategy.
+\item
+  \textbf{Drift \ensuremath{\approx} signal-to-noise ratio.} Each step is ``signal +
+  noise''. The drift \(v\) is the mean of a step and the randomness of
+  the step is the noise, so \(v\) plays the role of the SNR per sample.
+  A cleaner stimulus is a higher SNR.
+\item
+  \textbf{Boundary \ensuremath{\approx} decision threshold.} Raising the threshold lowers
+  the error probability but increases the detection delay: the classic
+  trade-off between error rate and latency in sequential detection. In
+  psychology this is called the \textbf{speed--accuracy trade-off}.
+\item
+  \textbf{Start point \ensuremath{\approx} prior.} Starting closer to one boundary is like
+  using a non-zero initial log-likelihood ratio, i.e.~a prior in favor
+  of one hypothesis.
+\item
+  \textbf{Non-decision time \ensuremath{\approx} fixed processing delay.} Sensor/encoding
+  latency plus actuator (motor) latency, added to every response.
+\item
+  \textbf{What is new for an engineer:} in engineering we \emph{design}
+  the detector. Here we \emph{observe} a human detector and try to
+  \textbf{infer} its parameters (SNR, threshold) from its decisions and
+  decision times. That inverse problem is the subject of the whole
+  course.
+\end{itemize}
+
+\subsubsection{8. Course-wide notation}
+
+This table is used in \textbf{all} weeks. When a later week introduces a
+symbol, it uses the meaning given here.
+
+\textbf{Data and design}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+First used
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(y_i\), \(\mathbf{y} = (y_1,\dots,y_N)\) & Observation \(i\); vector of
+all observations & Wk 1 \\
+\(N\) & Number of observations (trials) & Wk 1 \\
+\(x_i\) & Experimental condition / independent variable of observation
+\(i\) & Wk 2 \\
+\(j = 1,\dots,J\) & Participant index; number of participants & Wk 5 \\
+\end{longtable}
+}
+
+\textbf{Models and parameters}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+First used
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathcal{M}\), \(\mathcal{M}_1, \mathcal{M}_2\) & A model; competing
+models & Wk 1 \\
+\(\boldsymbol\theta\) & Vector of free parameters & Wk 1 \\
+\(k\) & Number of free parameters & Wk 1 \\
+\(\boldsymbol\theta^\ast\) & True (data-generating) parameter values in
+a simulation & Wk 1 \\
+\(\hat{\boldsymbol\theta}\) & Estimate of \(\boldsymbol\theta\) & Wk
+3 \\
+\(f(x;\boldsymbol\theta)\) & Deterministic part of a model's prediction
+& Wk 2 \\
+\(\hat y_i\) & Model prediction for observation \(i\) & Wk 3 \\
+\(\varepsilon_i\) & Noise (error) term & Wk 2 \\
+\end{longtable}
+}
+
+\textbf{Probability}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(P(\cdot)\) & Probability of an event \\
+\(p(\cdot)\) & Probability mass or density function \\
+\(y \sim \mathcal{D}\) & ``\(y\) is distributed as \(\mathcal{D}\)'' \\
+\(\mathcal{N}(\mu, \sigma)\) & Normal distribution with mean \(\mu\) and
+\textbf{standard deviation} \(\sigma\) (as in scipy and PyMC) \\
+\(\mathrm{Bernoulli}(\theta)\), \(\mathrm{Binomial}(n, \theta)\) &
+Bernoulli and binomial distributions with success probability
+\(\theta\) \\
+\(\mathrm{Beta}(a_0, b_0)\), \(\mathrm{Uniform}(l, u)\) & Beta and
+uniform distributions \\
+\(\Phi\), \(\Phi^{-1}\) & Standard normal CDF and its inverse \\
+\(\mathbb{E}[\cdot]\), \(\mathrm{Var}[\cdot]\) & Expectation and
+variance \\
+\end{longtable}
+}
+
+\textbf{Fitting, evaluation and Bayesian inference}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+First used
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+SSE, MSE, RMSD & Sum of squared errors, mean squared error, root mean
+squared deviation & Wk 3 \\
+\(L(\boldsymbol\theta) = p(\mathbf{y}\mid\boldsymbol\theta,\mathcal{M})\)
+& Likelihood & Wk 4 \\
+\(\ell(\boldsymbol\theta) = \ln L(\boldsymbol\theta)\); NLL \(= -\ell\)
+& Log-likelihood; negative log-likelihood & Wk 4 \\
+\(K\) & Number of cross-validation folds (not the same as \(k\)!) & Wk
+6 \\
+AIC, BIC & Akaike and Bayesian information criteria & Wk 7 \\
+\(p(\boldsymbol\theta)\), \(p(\boldsymbol\theta\mid\mathbf{y})\) &
+Prior; posterior & Wk 9 \\
+\(p(\mathbf{y}\mid\mathcal{M})\) & Marginal likelihood (evidence) & Wk
+10 \\
+\(\mathrm{BF}_{12}\) & Bayes factor for \(\mathcal{M}_1\) over
+\(\mathcal{M}_2\) & Wk 10 \\
+\(\boldsymbol\theta^{(s)}\), \(s = 1,\dots,S\) & \(s\)-th MCMC draw;
+number of draws & Wk 11 \\
+\(C\) & Number of MCMC chains & Wk 12 \\
+\(\hat R\), ESS & Potential scale reduction factor (R-hat); effective
+sample size & Wk 12 \\
+\end{longtable}
+}
+
+\textbf{Model-specific symbols}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Symbols
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+First used
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Random walk / drift-diffusion & \(v\) drift; \(a\) boundary separation;
+\(z\) start point; \(t_0\) non-decision time; \(\Delta t\) step
+duration; \(T\) number of steps & Wk 1, 14 \\
+Signal detection theory & \(H\) hit rate; \(F\) false-alarm rate; \(d'\)
+sensitivity; \(c\) criterion & Wk 2 \\
+Forgetting curves & \(t\) retention interval; \(A\) initial level;
+\(\lambda\) exponential decay rate; \(d\) power-law decay exponent & Wk
+2 \\
+GCM (categorization) & \(w_m\) attention weights; \(c\) sensitivity & Wk
+14 \\
+Reinforcement learning & \(\alpha\) learning rate; \(\beta\) inverse
+temperature; \(Q_t(o)\) value of option \(o\) on trial \(t\) & Wk 15 \\
+\end{longtable}
+}
+
+\textbf{Overloaded symbols (kept because the literature uses them):}
+\(c\) is the SDT criterion except in Week 14, where it is the GCM
+sensitivity. \(t\) is the retention interval in forgetting models and
+the trial index in RL. \(\alpha\) is only used as the RL learning rate.
+We never use \(\alpha\) for a significance level.
+
+\paragraph{For the instructor}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Start with the questions, not the model.} Read the verbal
+  theory aloud and ask students to answer the four questions of the
+  Motivation section. They will disagree. That disagreement is the
+  reason formal models exist.
+\item
+  \textbf{Act out the random walk.} Draw a vertical line on the board
+  with a top line (``correct'') and a bottom line (``error''). Let a
+  student roll a die: 1--4 means up, 5--6 means down
+  (\(v \approx 0.33\)). Count steps until a line is reached. Do this
+  three times and you have three trials with different RTs. Then move
+  the lines further apart and repeat.
+\item
+  \textbf{Keep the math light in this week.} Students only need to
+  \emph{use} the formulas for \(P_c\) and \(\mathbb{E}[T]\), not derive
+  them. Show that the numbers match the simulation in the lab: that is
+  the main message (simulation and analysis agree).
+\item
+  \textbf{Typical student questions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{``Is evidence really discrete steps?''} No.~It is a
+    simplification; Week 14 shows the continuous version
+    (drift-diffusion), which gives similar predictions.
+  \item
+    \emph{``Why not just compare mean RTs with a t-test?''} A t-test
+    says \emph{that} groups differ; the model says \emph{how} (caution
+    vs.~evidence quality).
+  \item
+    \emph{``Which model is the true one?''} None. All models are
+    simplifications; we ask which one is useful (Box's quote).
+  \end{itemize}
+\item
+  \textbf{Time management.} Sections 3--4 (model types, Marr) can be
+  shortened to 10 minutes if needed. Do not skip Section 7: everything
+  in the lab depends on it.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Worked example}
+
+\textbf{Setup.} An unbiased decision maker with drift \(v = 0.2\),
+boundary separation \(a = 6\) and start point \(z = 3\). Non-decision
+time \(t_0 = 300\) ms; each step lasts \(\Delta t = 20\) ms.
+
+\textbf{Step 1: step probabilities.}
+\(P(\delta = +1) = (1 + 0.2)/2 = 0.6\) and \(P(\delta = -1) = 0.4\).
+
+\textbf{Step 2: simulate one trial by hand.} Draw uniform random numbers
+\(u_n\). Step up if \(u_n < 0.6\), otherwise step down.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Step \(n\) & \(u_n\) & \(\delta_n\) & \(X_n\) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & --- & --- & 3 \\
+1 & 0.31 & +1 & 4 \\
+2 & 0.72 & −1 & 3 \\
+3 & 0.55 & +1 & 4 \\
+4 & 0.12 & +1 & 5 \\
+5 & 0.48 & +1 & \textbf{6 = a} \ensuremath{\rightarrow} stop \\
+\end{longtable}
+}
+
+The walk hits the upper boundary: a \textbf{correct} response after
+\(T = 5\) steps, so \(\mathrm{RT} = 300 + 5 \times 20 = 400\) ms.
+
+\textbf{Step 3: analytic accuracy.} \(r = (1-0.2)/(1+0.2) = 2/3\), so
+\(r^3 = 8/27 \approx 0.296\) and \(r^6 = 64/729 \approx 0.088\).
+
+\[
+P_c = \frac{1 - 8/27}{1 - 64/729} = \frac{1}{1 + 8/27} = \frac{27}{35} \approx 0.771.
+\]
+
+(When \(z = a/2\), the formula simplifies to \(P_c = 1/(1 + r^{a/2})\).)
+
+\textbf{Step 4: analytic mean RT.}
+
+\[
+\mathbb{E}[T] = \frac{6 \times 0.771 - 3}{0.2} = \frac{57/35}{0.2} \approx 8.14 \text{ steps},
+\qquad
+\mathbb{E}[\mathrm{RT}] = 300 + 8.14 \times 20 \approx 462.9 \text{ ms}.
+\]
+
+\textbf{Step 5: two manipulations, two signatures.}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Condition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(v\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(a\) (\(z = a/2\))
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(P_c\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathbb{E}[T]\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\mathbb{E}[\mathrm{RT}]\) (ms)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Baseline & 0.2 & 6 & 0.771 & 8.14 & 462.9 \\
+``Be accurate!'' (more caution) & 0.2 & 10 & 0.884 & 19.18 & 683.6 \\
+Easier stimulus (better evidence) & 0.3 & 6 & 0.865 & 7.30 & 446.0 \\
+\end{longtable}
+}
+
+\textbf{Interpretation.} Accuracy instructions buy about 11 percentage
+points of accuracy at a cost of roughly 220 ms. Easier stimuli give a
+\emph{similar} accuracy gain while making responses slightly
+\emph{faster}. A researcher who looked only at accuracy could not tell
+the two situations apart. The model, by using accuracy \emph{and} RT
+together, attributes them to different psychological causes (caution
+vs.~evidence quality).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Lab (2 hours)}
+
+\subsubsection{Goals}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Install a working course environment on your own laptop,
+  \emph{including} the Bayesian tools needed in Week 13.
+\item
+  Practice the basic numpy/matplotlib workflow: random numbers,
+  vectorization, plotting.
+\item
+  Implement the random walk model, simulate an experiment, and
+  \textbf{verify} the simulation against the analytic formulas.
+\item
+  Use the model to \textbf{interpret} a speed--accuracy trade-off.
+\item
+  Get a first taste of \textbf{fitting}: recover the hidden parameters
+  of a ``mystery participant'', \textbf{evaluate} the fit, and
+  \textbf{interpret} the result.
+\end{enumerate}
+
+\textbf{Timing:} Part A 35 min · Part B 15 min · Part C 30 min · Part D
+15 min · Part E 25 min. Exercises not finished in the lab are finished
+at home.
+
+\subsubsection{Part A: Environment setup (35 min)}
+
+We use \textbf{Miniforge}, a free installer for \nolinkurl{conda} that
+uses the community \nolinkurl{conda-forge} channel. It is the most
+reliable way to install PyMC on Windows, macOS and Linux.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Download and install Miniforge from the conda-forge website (choose
+  your operating system; keep the default options).
+\item
+  Save the following file as \nolinkurl{environment.yml} in your course
+  folder:
+\end{enumerate}
+
+\Needspace{16\baselineskip}
+\begin{Verbatim}
+# Cognitive Modeling course environment (same as environment.yml in the course repository)
+name: cogmod
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy>=1.26
+  - scipy>=1.11
+  - pandas>=2.1
+  - matplotlib>=3.8
+  - jupyterlab
+  - pymc>=6.3    # Bayesian modeling (needed from Week 13)
+  - arviz>=1.3   # MCMC diagnostics
+\end{Verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Open the \textbf{Miniforge Prompt} (Windows) or a terminal
+  (macOS/Linux), go to your course folder, and create the environment.
+  This takes 5--15 minutes the first time.
+\end{enumerate}
+
+\Needspace{4\baselineskip}
+\begin{Verbatim}
+conda env create -f environment.yml
+\end{Verbatim}
+
+\Needspace{4\baselineskip}
+\begin{Verbatim}
+conda activate cogmod
+\end{Verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Save this script as \nolinkurl{check_install.py} and run it with
+  \nolinkurl{python check_install.py}. Add \nolinkurl{--sample} to also
+  run a tiny PyMC model; the first run takes about a minute while PyMC
+  compiles.
+\end{enumerate}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/check_install.py} (save and run
+it as a separate script · \RL{\CMfa به‌صورت یک اسکریپت جدا اجرا شود)}
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Start JupyterLab with \nolinkurl{jupyter lab} and create a notebook
+  called \nolinkurl{week01_lab.ipynb}. Run all remaining code in that
+  notebook, one block per cell.
+\end{enumerate}
+
+\begin{quote}
+\textbf{If the check prints a warning like ``g++ not available'':} PyMC
+still works but runs much more slowly. This usually means PyMC was
+installed with \nolinkurl{pip} instead of from the conda-forge
+environment above. The conda-forge installation normally brings the
+compiler that PyMC's backend uses {[}verify on a Windows lab machine
+before Week 1{]}. Recreate the environment with
+\nolinkurl{conda env create -f environment.yml}.
+\end{quote}
+
+\begin{quote}
+\textbf{If installation fails:} do today's lab in \textbf{Google Colab},
+where numpy, scipy, pandas and matplotlib are preinstalled, and fix the
+local install with the instructor before Week 3. The PyMC install must
+work by Week 12.
+\end{quote}
+
+\subsubsection{Part B: Python warm-up (15 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 1 · \RL{\CMfa سلول}
+1
+\end{quote}
+
+\textbf{Expected output:} a proportion close to 0.6 (0.574 with this
+seed) and a running-proportion curve that wobbles at first and then
+settles near the dashed line.
+
+\subsubsection{Part C: Implement, simulate and verify the random walk
+(30 min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 2 · \RL{\CMfa سلول}
+2
+\end{quote}
+
+First, look at what the model does: plot a few evidence trajectories.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 3 · \RL{\CMfa سلول}
+3
+\end{quote}
+
+Now simulate a whole experiment and compare the simulation with the
+analytic predictions. \textbf{Always check a simulation against
+something you know}; this habit will save you many times this term.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 4 · \RL{\CMfa سلول}
+4
+\end{quote}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 5 · \RL{\CMfa سلول}
+5
+\end{quote}
+
+\textbf{Expected output (seed 42):}
+
+\Needspace{12\baselineskip}
+\begin{Verbatim}
+Accuracy   simulated 0.764 | analytic 0.771
+Mean steps simulated 8.27  | analytic 8.14
+Mean RT    simulated 465.3 ms | analytic 462.9 ms
+
+Mean RT by response (1 = correct, 0 = error):
+        count   mean
+choice
+0        1180  466.1
+1        3820  465.1
+\end{Verbatim}
+
+\textbf{What to notice:} - The simulation matches the analytic values to
+within sampling noise. - The RT distributions are \textbf{right-skewed}
+(a long tail of slow responses), which is the typical shape of empirical
+RT distributions. - Correct and error RTs are almost identical (see the
+Advanced box in Lecture §7).
+
+\subsubsection{Part D: Interpret, the speed--accuracy trade-off (15
+min)}
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 6 · \RL{\CMfa سلول}
+6
+\end{quote}
+
+\textbf{Expected output:} three curves rising from the bottom left
+toward 1.0. Moving along one curve (increasing \(a\)) trades speed for
+accuracy. Moving \emph{between} curves (increasing \(v\)) improves
+accuracy at the same or lower RT. The table reproduces the worked
+example: e.g., \(v = 0.2, a = 10\) gives accuracy 0.884 and mean RT
+683.6 ms.
+
+\textbf{Discuss with your neighbor:} an experimenter finds that a drug
+makes participants slower \emph{and} more accurate. Which parameter
+would you suspect changed? What if the drug made them slower and
+\emph{less} accurate?
+
+\subsubsection{Part E: A first fit, evaluation and interpretation (25
+min)}
+
+Your instructor will give you \nolinkurl{week01_mystery.csv}, the data
+of a ``mystery participant'' (1000 trials, columns \nolinkurl{choice}
+and \nolinkurl{rt}). If you do not have the file, the code below
+generates an equivalent dataset with parameters hidden behind a random
+seed. \textbf{Don't peek}: try to recover them.
+
+We assume \(t_0 = 300\) ms and \(\Delta t = 20\) ms are known and
+\(z = a/2\). Only \(v\) and \(a\) are free (\(k = 2\)).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 7 · \RL{\CMfa سلول}
+7
+\end{quote}
+
+\textbf{Fitting by grid search.} For every combination of \(v\) and
+\(a\) on a grid, compute the predicted accuracy and mean RT and measure
+how far they are from the observed values. Each difference is expressed
+in standard-error units so that accuracy and RT are on a comparable
+scale. Week 3 develops this idea properly.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 8 · \RL{\CMfa سلول}
+8
+\end{quote}
+
+\textbf{Evaluating the fit.} We fitted only two summary statistics
+(accuracy and mean RT). A stronger test is whether the model also
+reproduces something we did \emph{not} fit: the \textbf{shape} of the RT
+distribution. We compare RT quantiles of correct responses in the data
+with those of a large simulation at the best-fitting parameters.
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 9 · \RL{\CMfa سلول}
+9
+\end{quote}
+
+\textbf{Expected output (fallback dataset). Open only after you have run
+the fit.}
+
+\Needspace{12\baselineskip}
+\begin{Verbatim}
+Observed: accuracy = 0.836, mean RT = 746.4 ms (N = 1000)
+Best fit: v = 0.15, a = 10 (pred. accuracy 0.819, pred. RT 725.7 ms, discrepancy 5.78)
+
+   quantile  observed   model
+0       0.1     440.0   440.0
+1       0.3     520.0   520.0
+2       0.5     640.0   640.0
+3       0.7     800.0   800.0
+4       0.9    1200.0  1160.0
+\end{Verbatim}
+
+The hidden values were \(v^\ast = 0.16\) and \(a^\ast = 10\). The grid
+search recovered \(a\) exactly and \(v\) to within one grid step (0.15).
+The small miss is not a bug: with 1000 trials, the observed accuracy and
+mean RT differ from their true values by sampling noise, so the
+best-fitting parameters do too. (Week 5 shows how to put an uncertainty
+interval around estimates like these.) RTs are multiples of 20 ms, which
+is why many quantiles match exactly. The model reproduces the shape of
+the distribution well, with only a slight underestimate of the slow tail
+(0.9 quantile).
+
+\textbf{Interpretation questions (write 2--3 sentences each in your
+notebook):} 1. In psychological terms, what do the recovered \(v\) and
+\(a\) say about this participant? 2. The fit used only two numbers from
+the data. Why is the quantile comparison a more convincing check than
+the discrepancy value itself? 3. If this participant were re-tested
+under ``be as fast as possible'' instructions, which parameter should
+change and which should stay the same, according to the model?
+
+\subsubsection{Exercises (increasing difficulty)}
+
+\textbf{Exercise 1 \ensuremath{\star} (sampling noise).} Simulate the baseline model
+(\(v = 0.2\), \(a = 6\)) with \(N = 20\), \(100\) and \(1000\) trials,
+five different seeds each. Make a table of the observed accuracies.
+Compare their spread with the standard error \(\sqrt{P_c(1-P_c)/N}\).
+\emph{Expected:} with \(N = 20\) accuracies can easily range from about
+0.6 to 0.95. The spread shrinks roughly with \(1/\sqrt{N}\).
+
+\textbf{Exercise 2 \ensuremath{\star} (two conditions).} Simulate a ``speed'' condition
+(\(a = 4\)) and an ``accuracy'' condition (\(a = 10\)) with the same
+\(v = 0.2\), 1000 trials each. Report accuracy and mean RT per condition
+and plot both RT distributions. Which aspect of the RT distribution
+changes most: its minimum, its mode, or its tail?
+
+\textbf{Exercise 3 \ensuremath{\star}\ensuremath{\star} (response bias).} Set \(a = 8\) and \(z = 5\)
+(start closer to the correct boundary). Compute \(P_c\) analytically and
+by simulation. Then compare the mean RT of correct and error responses.
+Explain the result in terms of the distance each boundary is from the
+start point. What would \(z = 3\) do?
+
+\textbf{Exercise 4 \ensuremath{\star}\ensuremath{\star} (checking a model property).} For \(z = a/2\),
+verify by simulation (20 000 trials) that correct and error RT
+\emph{quantiles} are equal to within sampling noise. Empirical data
+often show slower errors in difficult, accuracy-stressed conditions. Is
+the simple random walk falsified by such data? What would you change?
+
+\textbf{Exercise 5 \ensuremath{\star}\ensuremath{\star}\ensuremath{\star} (Advanced: across-trial drift variability).}
+Modify \nolinkurl{simulate_trial} so that on every trial the drift is
+drawn as \(v_i \sim \mathcal{N}(v, \eta)\), clipped to
+\([-0.95, 0.95]\). Use \(v = 0.2\), \(\eta = 0.2\), \(a = 8\). Show that
+\textbf{errors are now slower than correct responses} (expected with 20
+000 trials: accuracy \ensuremath{\approx} 0.75, about 12 steps for correct vs.~14 steps for
+error responses), and explain why. \emph{Hint:} which trials are most
+likely to end in an error, and how long do those trials take?
+
+\subsubsection{Lab check-off (counts toward the lab component)}
+
+Show the instructor or TA: (1) the output of
+\nolinkurl{check_install.py} with all packages \nolinkurl{[OK]}, (2)
+your speed--accuracy plot from Part D, and (3) your best-fit parameters
+and quantile plot from Part E.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Connection to AI \& LLMs}
+
+\textbf{Marr's levels for a chatbot.} A large language model (LLM) can
+be described at all three of Marr's levels, and the levels can come
+apart just as they do for people. \emph{Computational:} the model is
+trained to predict the next word (token) in a text. \emph{Algorithmic:}
+a transformer network computes a score (a ``logit'') for every possible
+next token and turns the scores into probabilities.
+\emph{Implementational:} matrix multiplications on GPUs. A claim like
+``the LLM understands the question'' is usually made at the
+computational level, while the evidence (its outputs) is produced by the
+algorithm. Keep the levels apart when you read such claims.
+
+\textbf{A familiar decision rule.} The final step of an LLM is a choice
+rule with a noise parameter, just like the cognitive models in this
+course. The probability of token \(i\) is a softmax with
+\textbf{temperature} \(T\): \(P(i) = e^{z_i/T}/\sum_j e^{z_j/T}\). A low
+\(T\) gives near-deterministic choices and a high \(T\) gives more
+random ones. This is the same rule as the softmax in Week 15, with
+\(\beta = 1/T\).
+
+\begin{quote}
+\textbf{Code · \RL{\CMfa کد:}} \nolinkurl{code/week01.py}, cell 10 · \RL{\CMfa سلول}
+10
+\end{quote}
+
+\textbf{Expected output:}
+
+\Needspace{6\baselineskip}
+\begin{Verbatim}
+T = 0.2: P(A, B, C) = [0.993 0.007 0.   ], sampled shares = [0.994 0.006 0.   ]
+T = 1.0: P(A, B, C) = [0.652 0.24  0.108], sampled shares = [0.662 0.235 0.103]
+T = 2.0: P(A, B, C) = [0.497 0.301 0.202], sampled shares = [0.52  0.281 0.199]
+\end{Verbatim}
+
+\textbf{Try it (no API needed).} - \ensuremath{\star} Find the largest temperature at
+which ``A'' is still chosen at least 90\% of the time. - \ensuremath{\star} Is the LLM's
+temperature closer to the random walk's \emph{noise} or to its
+\emph{boundary} (Week 1, Part C)? Explain. - \ensuremath{\star}\ensuremath{\star} Discussion: someone says
+``the chatbot gave a different answer when I asked again, so it does not
+know the answer.'' Use this box to explain what else could be going on.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Common mistakes \& misconceptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{``A model that fits well is true.''} Good fit is necessary but
+  not sufficient. A flexible model can fit almost anything, including
+  noise (Week 6). Fit says little until you know what the model
+  \emph{could not} have fitted.
+\item
+  \textbf{``More parameters make a better model.''} More parameters make
+  a model \emph{more flexible}, which is not the same as better. We will
+  penalize flexibility explicitly (AIC/BIC, cross-validation, Bayes
+  factors).
+\item
+  \textbf{Confusing simulation with fitting.} Simulation goes from
+  parameters to data; fitting goes from data to parameters. Students
+  often ``fit'' by tweaking parameters until a plot looks nice. That is
+  a legitimate \emph{exploration} but not an estimation method.
+\item
+  \textbf{Treating parameters as directly observable.} \(v\) and \(a\)
+  are \emph{inferred} quantities whose values depend on the model's
+  assumptions (e.g., that \(t_0\) is known). Change the model and the
+  ``same'' parameter may change meaning.
+\item
+  \textbf{Forgetting random seeds.} Unseeded simulations cannot be
+  reproduced, and your results will change every time you run the
+  notebook. Use \nolinkurl{np.random.default_rng(seed)}.
+\item
+  \textbf{Not verifying simulations.} A bug in a simulator produces
+  wrong conclusions that \emph{look} plausible. Compare against an
+  analytic result, a limiting case (e.g., \(v \to 0\) should give
+  \(P_c \to z/a\)), or a published value.
+\item
+  \textbf{Mixing up the two meanings of ``Bayesian''.} Bayesian models
+  of cognition (a claim about the mind) vs.~Bayesian data analysis (a
+  method for scientists).
+\item
+  \textbf{Treating Marr's levels as competing.} They are complementary
+  descriptions of the same system, not rival theories.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Check your understanding}
+
+\textbf{1.} In one sentence each, define a \emph{theory}, a
+\emph{cognitive model} and a \emph{statistical model}. \textbf{Answer} A
+theory is a set of (usually verbal) claims about mental processes. A
+cognitive model is a formal, explicit instantiation of such claims that
+can generate predictions, with parameters that represent psychological
+quantities. A statistical model describes the structure of the data
+(e.g., group means, slopes) without committing to a cognitive mechanism.
+
+\textbf{2.} Classify each as descriptive, process or normative: (a)
+\(\mathrm{RT} = A\,N^{-b}\) as a function of practice trials \(N\); (b)
+the random walk model; (c) an ideal observer that combines visual and
+haptic cues weighted by their reliabilities. \textbf{Answer} (a)
+Descriptive: it summarizes the shape of the data without saying why. (b)
+Process: it specifies a mechanism that produces choices and RTs. (c)
+Normative: it specifies optimal behavior given the available
+information.
+
+\textbf{3.} At which of Marr's levels does the random walk model mainly
+live? Give an example of a claim about the same decision at the
+implementational level. \textbf{Answer} The algorithmic/representational
+level: it describes a procedure (accumulate evidence to a boundary). An
+implementational claim would be, e.g., ``the accumulated evidence is
+carried by the firing rate of neurons in a specific brain area, and the
+response is triggered when that rate reaches a threshold.''
+
+\textbf{4.} What is the difference between the forward and the inverse
+problem? Which one did we solve in Part E of the lab? \textbf{Answer}
+Forward: given parameters, generate (predict) data, i.e., simulation.
+Inverse: given data, infer the parameters, i.e., fitting. Part E solved
+an inverse problem (by grid search), but it relied on solving the
+forward problem many times, once per grid point.
+
+\textbf{5.} Using the formulas, what happens to \(P_c\) when \(v = 0\)?
+(Hint: think about the limit, or about the symmetry of the walk.)
+\textbf{Answer} With no drift the walk is symmetric, and the probability
+of hitting the upper boundary equals \(z/a\) (the limit of the formula
+as \(v \to 0\)). With an unbiased start, \(z = a/2\), accuracy is 0.5,
+i.e., chance. That is sensible: with no evidence the decision maker is
+guessing.
+
+\textbf{6.} Two groups differ in accuracy (0.80 vs.~0.90). Why can't we
+tell from accuracy alone whether they differ in caution or in evidence
+quality? What extra data resolve this? \textbf{Answer} Both a larger
+boundary \(a\) and a larger drift \(v\) raise accuracy, so accuracy
+alone confounds them. RT resolves it: higher caution makes responses
+slower, while better evidence makes them faster (worked example, Step
+5). Fitting the model to accuracy and RT jointly separates the two.
+
+\textbf{7.} Why did we simulate data from \emph{known} parameters before
+trusting the fitting procedure? \textbf{Answer} Only with known true
+values can we check whether the method returns the right answer
+(parameter recovery). If a method cannot recover parameters from data
+generated by the model itself, its estimates from real data are not
+interpretable. This is developed fully in Week 7.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Assignment}
+
+\subsubsection{A0: Setup and ``verbal theory audit'' (ungraded,
+required; due at the start of Week 2)}
+
+A0 does not carry points, but it is required: an incomplete A0 must be
+revised before the Week 2 lab check-off can be awarded.
+
+\textbf{Part 1: Environment (required).} Submit the text output of
+\nolinkurl{python check_install.py --sample} showing all packages
+\nolinkurl{[OK]} and the PyMC posterior mean. If PyMC fails, submit the
+error message and the steps you tried; the TA will help.
+
+\textbf{Part 2: Verbal theory audit (max. 1 page).} Choose one verbal
+theory from your earlier courses, for example ``levels of processing'',
+``attention as a spotlight'', ``practice makes perfect'', ``dual-process
+theories of reasoning'' or ``interference causes forgetting''.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  State the theory in 1--2 sentences.
+\item
+  List \textbf{at least five} decisions the theory leaves unspecified
+  that a formal model would have to make (e.g., functional form, what is
+  noisy, what the free parameters are, how internal states map onto the
+  measured behavior).
+\item
+  For \textbf{two} of these decisions, propose a concrete formal choice
+  (an equation or an algorithmic step).
+\item
+  Describe \textbf{one} prediction that would differ depending on which
+  choice is made, and an experiment that could tell them apart.
+\end{enumerate}
+
+\textbf{Feedback criteria (pass / revise):}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Criterion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pass
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Revise
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Environment & All packages \nolinkurl{[OK]}, or a clear error report
+with attempted fixes & No output submitted \\
+Underspecification & \ensuremath{\geq} 5 distinct, genuinely unspecified decisions &
+Fewer than 5, or restatements of the theory \\
+Formalization & Two concrete, unambiguous formal choices & Vague (``use
+a function'') \\
+Diverging prediction & A specific prediction plus an experiment that
+distinguishes the choices & No prediction, or a prediction that does not
+depend on the choice \\
+\end{longtable}
+}
+
+The best audits will be discussed briefly at the start of the Week 2
+lecture.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Further reading}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Farrell \& Lewandowsky (2018), chapters 1--2.} Introduction to
+  computational modeling and the move from verbal theories to formal
+  models. \emph{(Main reading for this week.)}
+\item
+  \textbf{Verguts (2022), introductory chapter {[}verify{]}.} A short,
+  accessible motivation for modeling cognitive processes.
+\item
+  \textbf{Anderson (2014), introductory chapter {[}verify{]}.} Places
+  cognitive modeling alongside computational neuroscience, useful
+  context for Marr's implementational level.
+\item
+  \emph{Optional classic (outside the course list):} Marr, D. (1982).
+  \emph{Vision.} W. H. Freeman. The original source of the three levels
+  of analysis.
+\end{itemize}
+
+\emph{Preview for Week 2:} we turn signal detection theory and
+forgetting curves into Python models and study how each parameter shapes
+the predictions. Assignment A1 will be released.
